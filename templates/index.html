@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero__grid">
+    <div>
+      <span class="eyebrow">AI-powered career intelligence</span>
+      <h1>Build a career platform that turns resumes into a learning strategy.</h1>
+      <p class="lead">Prayash combines local machine learning, O*NET intelligence, and an optional Llama 3 narrative layer to surface automation risk, role fit, and a practical learning roadmap without storing resume data in a permanent database.</p>
+
+      <div class="actions" style="margin-top: 2rem;">
+        <a class="button" href="#analysis">Start analysis</a>
+        <a class="button-outline" href="{{ url_for('methodology') }}">View methodology</a>
+      </div>
+
+      <div class="chips" style="margin-top: 2rem;">
+        <span class="chip">Local-first privacy</span>
+        <span class="chip">Dual-mode pipeline</span>
+        <span class="chip">Learning roadmap</span>
+      </div>
+    </div>
+
+    <div class="hero-panel">
+      <div class="inline-actions" style="justify-content: space-between; margin-bottom: 1.5rem;">
+        <div>
+          <h2 class="section-title" style="margin: 0;">Dual-Mode Dashboard</h2>
+          <p class="small-note" style="margin: 0.4rem 0 0;">Exactly styled after the Stitch dual-mode control.</p>
+        </div>
+        <div class="mode-toggle" role="tablist" aria-label="Analysis mode">
+          <button class="mode-toggle__button is-active" type="button" data-mode="standard">Standard <small>(Local ML)</small></button>
+          <button class="mode-toggle__button" type="button" data-mode="advanced">Advanced <small>(Deep AI)</small></button>
+        </div>
+      </div>
+
+      <div class="score-ring" style="--score: 0.24;">
+        <div class="score-ring__content">
+          <p class="score-ring__value">24%</p>
+          <p class="score-ring__label">Low risk</p>
+        </div>
+      </div>
+
+      <div class="hero-mini-grid">
+        <div class="kpi">
+          <div class="kpi__label">Automation risk</div>
+          <div class="kpi__value">Low-to-moderate</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi__label">Learning signal</div>
+          <div class="kpi__value">Adjacent skills</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="form-section" id="analysis">
+  <div class="container">
+    <div class="section-card">
+      <div class="inline-actions" style="justify-content: space-between; align-items: end; margin-bottom: 1rem;">
+        <div>
+          <h2 class="section-title">Analyze your trajectory</h2>
+          <p class="section-subtitle">Upload a resume or paste text. The platform stays local-first and keeps the resume in memory only for the current request.</p>
+        </div>
+        <span class="status-pill is-warm">No permanent SQL storage</span>
+      </div>
+
+      <form class="results-shell" data-analysis-form>
+        <input type="hidden" name="mode" value="standard" data-mode-input>
+
+        <div class="upload-zone" data-drop-zone>
+          <div class="upload-zone__badge">↥</div>
+          <h3 class="section-title" style="margin: 0;">Drag and drop your resume</h3>
+          <p class="section-subtitle" style="margin-top: 0.75rem;">PDF, DOCX, or plain text. The file is read, analyzed, and discarded after response generation.</p>
+          <input type="file" name="resume_file" accept=".pdf,.docx,.txt" class="hidden" data-file-input>
+          <div class="actions" style="justify-content: center; margin-top: 1.5rem;">
+            <button class="button" type="button" data-browse-button>Browse files</button>
+          </div>
+          <p class="small-note" data-upload-status style="margin: 0.85rem 0 0;">No file selected yet.</p>
+        </div>
+
+        <div class="field">
+          <label for="resume_text">Resume text</label>
+          <textarea id="resume_text" name="resume_text" placeholder="Paste your resume or a job-focused profile summary here." data-resume-text></textarea>
+        </div>
+
+        <div class="inline-actions" style="justify-content: space-between;">
+          <div class="mode-toggle" role="tablist" aria-label="Analysis mode duplicate">
+            <button class="mode-toggle__button is-active" type="button" data-mode="standard">Standard <small>(Local ML)</small></button>
+            <button class="mode-toggle__button" type="button" data-mode="advanced">Advanced <small>(Deep AI)</small></button>
+          </div>
+          <button class="button-secondary" type="submit" data-assess-button>Run analysis</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container feature-grid">
+    <article class="feature-card">
+      <h3 class="section-title">Deep market intelligence</h3>
+      <p class="section-subtitle">Risk scoring and role matching are grounded in the automation risk dataset, not a generic prompt chain.</p>
+      <div class="chart-placeholder" style="margin-top: 1rem;">
+        <div class="chart-columns">
+          <span style="height: 58%;"></span>
+          <span style="height: 76%;"></span>
+          <span style="height: 42%;"></span>
+          <span style="height: 82%;"></span>
+          <span style="height: 50%;"></span>
+        </div>
+      </div>
+    </article>
+
+    <article class="feature-card" style="background: linear-gradient(180deg, rgba(76,29,149,0.98), rgba(48,0,121,0.96)); color: white; border-color: transparent;">
+      <h3 class="section-title" style="color: white;">Neural skill mapping</h3>
+      <p class="section-subtitle" style="color: rgba(255,255,255,0.78);">The roadmap suggests Coursera learning paths aligned to the strongest skill intersections in the resume.</p>
+      <div class="pill-row" style="margin-top: 1rem;">
+        <span class="chip" style="background: rgba(255,255,255,0.12); color: white;">Coursera</span>
+        <span class="chip" style="background: rgba(255,255,255,0.12); color: white;">O*NET</span>
+      </div>
+    </article>
+
+    <article class="feature-card">
+      <h3 class="section-title">Privacy-first defaults</h3>
+      <p class="section-subtitle">Resume data is never written to a permanent database. The API only processes in memory and returns structured JSON.</p>
+    </article>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container dashboard-grid">
+    <div class="span-4 glass-card">
+      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Risk Index</div>
+      <div class="score-ring" data-risk-ring style="--score: 0.08; margin-top: 1.2rem; width: 11rem;">
+        <div class="score-ring__content">
+          <p class="score-ring__value" data-risk-score-display>--</p>
+          <p class="score-ring__label" data-risk-label-display>Awaiting analysis</p>
+        </div>
+      </div>
+      <p class="section-subtitle centered" data-risk-summary>Upload a resume to see the automation risk prediction.</p>
+    </div>
+
+    <div class="span-8 glass-card">
+      <div class="inline-actions" style="justify-content: space-between; margin-bottom: 1rem;">
+        <h3 class="section-title" style="margin: 0;">Skill competency vs market demand</h3>
+        <span class="status-pill" data-role-status>Awaiting analysis</span>
+      </div>
+      <p class="section-subtitle" style="margin-top: 0;">Live role-match bars derived from the local ML prediction.</p>
+      <div class="compact-list" data-role-bars>
+        <div class="list-card">
+          <div>
+            <strong>Awaiting analysis</strong>
+            <p>Upload a resume to populate the live prediction.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="result-modal hidden" data-result-modal aria-hidden="true">
+  <div class="result-modal__backdrop" data-modal-close></div>
+  <div class="result-modal__panel glass-card" role="dialog" aria-modal="true" aria-labelledby="result-modal-title">
+    <div class="inline-actions" style="justify-content: space-between; margin-bottom: 1rem;">
+      <div>
+        <p class="small-note" style="margin: 0 0 0.4rem; text-transform: uppercase; letter-spacing: 0.12em;">Assessment result</p>
+        <h3 class="section-title" id="result-modal-title" data-modal-title style="margin: 0;">Analysis output</h3>
+      </div>
+      <button class="button-ghost" type="button" data-modal-close>Close</button>
+    </div>
+
+    <div class="modal-kpis">
+      <div class="kpi">
+        <div class="kpi__label">Automation risk</div>
+        <div class="kpi__value" data-modal-risk-score>--</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Risk band</div>
+        <div class="kpi__value" data-modal-risk-label>Awaiting analysis</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Mode</div>
+        <div class="kpi__value" data-modal-mode>Standard</div>
+      </div>
+    </div>
+
+    <div class="result-banner" data-result-banner aria-live="polite" style="margin-top: 1rem;">
+      <h3 class="result-banner__title" data-result-status>Analysis output will appear here.</h3>
+      <p class="result-banner__text" data-narrative></p>
+    </div>
+
+    <div class="modal-grid" style="margin-top: 1rem;">
+      <div class="summary-card">
+        <h3 class="section-title" style="margin: 0 0 1rem;">Top role matches</h3>
+        <div class="compact-list" data-roles-list></div>
+      </div>
+
+      <div class="roadmap-card">
+        <h3 class="section-title" style="margin: 0 0 1rem;">Learning roadmap</h3>
+        <div class="compact-list" data-roadmap-list></div>
+      </div>
+
+      <div class="summary-card">
+        <h3 class="section-title" style="margin: 0 0 1rem;">RIASEC fit</h3>
+        <div class="compact-list" data-riasec-list></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

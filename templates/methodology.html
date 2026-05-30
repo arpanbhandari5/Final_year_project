@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container page-hero__grid">
+    <div>
+      <span class="eyebrow">Methodology</span>
+      <h1>Production pipeline built for local ML, explainability, and fast iteration.</h1>
+      <p class="lead">The platform blends resume text, automation-risk modeling, O*NET clusters, and the optional Llama 3 narrative layer into a single request-response flow.</p>
+    </div>
+    <div class="glass-card">
+      <h2 class="section-title">Team standard</h2>
+      <p class="section-subtitle">Arpan, Umanga, and Samir can iterate independently because the app is split into templates, static assets, model training, and a small API surface.</p>
+      <div class="tag-list" style="margin-top: 1rem;">
+        <span class="tag">Flask</span>
+        <span class="tag">scikit-learn</span>
+        <span class="tag">Ollama</span>
+        <span class="tag">O*NET</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container method-grid">
+    <article class="method-card">
+      <h3 class="section-title">1. Ingest</h3>
+      <p class="section-subtitle">Load <strong>automation_risk.csv</strong>, <strong>resume_corpus.csv</strong>, <strong>coursera_catalog.csv</strong>, and the O*NET files. The training script also tolerates the current filename typo for the skills file.</p>
+    </article>
+    <article class="method-card">
+      <h3 class="section-title">2. Vectorize</h3>
+      <p class="section-subtitle">Fit one TF-IDF vocabulary across job risk rows, resume corpus language, and O*NET skill profiles so similarity works across both candidate text and occupational language.</p>
+    </article>
+    <article class="method-card">
+      <h3 class="section-title">3. Predict</h3>
+      <p class="section-subtitle">Use the local model for immediate risk scoring and role matching, then optionally pass the structured result to Ollama for a richer career narrative.</p>
+    </article>
+    <article class="method-card">
+      <h3 class="section-title">4. Recommend</h3>
+      <p class="section-subtitle">Generate a learning roadmap using the course index and the strongest skill overlaps with the top matched occupational clusters.</p>
+    </article>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container dashboard-grid">
+    <div class="span-6 glass-card">
+      <h3 class="section-title">Data lineage</h3>
+      <div class="timeline" style="margin-top: 1rem;">
+        <div class="timeline-item"><div><strong>Resume input</strong><p>Uploaded file or pasted text only.</p></div><span class="status-pill">Ephemeral</span></div>
+        <div class="timeline-item"><div><strong>Local vectorizer</strong><p>TF-IDF maps the text to role and cluster similarity.</p></div><span class="status-pill">In-memory</span></div>
+        <div class="timeline-item"><div><strong>Local ML score</strong><p>Risk is predicted before any advanced narrative layer.</p></div><span class="status-pill">Fast path</span></div>
+      </div>
+    </div>
+
+    <div class="span-6 glass-card">
+      <h3 class="section-title">Deployment posture</h3>
+      <p class="section-subtitle">The app never writes resumes to a permanent database. If the advanced mode is enabled, only the already-computed ML output and the resume text are posted to the local Ollama endpoint.</p>
+      <div class="chart-placeholder" style="margin-top: 1rem;">
+        <div class="chart-points">
+          <span class="p1"></span><span class="p2"></span><span class="p3"></span><span class="p4"></span><span class="p5"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

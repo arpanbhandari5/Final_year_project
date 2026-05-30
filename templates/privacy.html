@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container page-hero__grid">
+    <div>
+      <span class="eyebrow">Privacy</span>
+      <h1>Local-first by design, with no permanent SQL persistence for resume data.</h1>
+      <p class="lead">Prayash is built for confidence: files are processed in memory, model artifacts are local, and advanced narrative generation never requires uploading data to a remote application database.</p>
+    </div>
+    <div class="privacy-card glass-card">
+      <h2 class="section-title">Data handling</h2>
+      <div class="compact-list" style="margin-top: 1rem;">
+        <div class="list-card"><div><strong>Resume</strong><p>Parsed in memory, discarded after analysis.</p></div><span class="status-pill is-danger">Not stored</span></div>
+        <div class="list-card"><div><strong>Analysis result</strong><p>Returned to the browser as JSON for immediate display.</p></div><span class="status-pill">Ephemeral</span></div>
+        <div class="list-card"><div><strong>Models</strong><p>Saved locally in ml_models/ for repeatable inference.</p></div><span class="status-pill is-warm">Local only</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container insight-grid">
+    <article class="privacy-card">
+      <h3 class="section-title">Controls</h3>
+      <p class="section-subtitle">Input fields, file uploads, and API requests are designed to keep the analysis request self-contained. No permanent user profile table, analytics sink, or SQL history layer is required.</p>
+    </article>
+    <article class="privacy-card">
+      <h3 class="section-title">Security posture</h3>
+      <p class="section-subtitle">The app is safe to run locally on a team workstation or within a controlled demo environment. Session state is minimal and does not carry resume content forward.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title or site_name }}</title>
+  <meta name="description" content="Prayash: Learning for better future career intelligence platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="navbar">
+      <div class="container navbar__inner">
+        <a class="brand" href="{{ url_for('index') }}" aria-label="Prayash home">
+          <span class="brand__name">Prayash</span>
+          <span class="brand__tagline">Learning for better future</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary">
+          <a class="nav-link {% if active_page == 'home' %}is-active{% endif %}" href="{{ url_for('index') }}">Home</a>
+          <a class="nav-link {% if active_page == 'methodology' %}is-active{% endif %}" href="{{ url_for('methodology') }}">Methodology</a>
+          <a class="nav-link {% if active_page == 'privacy' %}is-active{% endif %}" href="{{ url_for('privacy') }}">Privacy</a>
+          <a class="nav-link {% if active_page == 'insights' %}is-active{% endif %}" href="{{ url_for('insights') }}">Insights</a>
+          <a class="nav-link {% if active_page == 'partnerships' %}is-active{% endif %}" href="{{ url_for('partnerships') }}">Partnerships</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div class="brand">
+          <span class="brand__name">Prayash</span>
+          <span class="brand__tagline">Team effort by Arpan, Umanga, and Samir</span>
+        </div>
+        <div class="footer__links">
+          <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+          <a href="{{ url_for('methodology') }}">Methodology</a>
+          <a href="{{ url_for('insights') }}">Insights</a>
+          <a href="{{ url_for('partnerships') }}">Partnerships</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

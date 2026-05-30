@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container page-hero__grid">
+    <div>
+      <span class="eyebrow">Insights</span>
+      <h1>Explain the platform with the same clarity the dashboard gives the candidate.</h1>
+      <p class="lead">This page is built to showcase analytics, course mapping, and the visual language used across Prayash.</p>
+    </div>
+    <div class="glass-card">
+      <h2 class="section-title">Sample visualization stack</h2>
+      <div class="chart-placeholder" style="margin-top: 1rem;">
+        <div class="chart-columns">
+          <span style="height: 34%;"></span>
+          <span style="height: 62%;"></span>
+          <span style="height: 86%;"></span>
+          <span style="height: 48%;"></span>
+          <span style="height: 70%;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container insight-grid">
+    <article class="insight-card">
+      <h3 class="section-title">Automation risk bands</h3>
+      <p class="section-subtitle">A compact view for low, moderate, and elevated risk states, keyed to the local ML output.</p>
+    </article>
+    <article class="insight-card">
+      <h3 class="section-title">RIASEC profile</h3>
+      <p class="section-subtitle">A ranking of Realistic, Investigative, Artistic, Social, Enterprising, and Conventional fit derived from O*NET interests and resume language.</p>
+    </article>
+    <article class="insight-card">
+      <h3 class="section-title">Learning roadmap</h3>
+      <p class="section-subtitle">Course cards pulled from the Coursera catalog and matched to the most relevant skill gaps.</p>
+    </article>
+    <article class="insight-card">
+      <h3 class="section-title">Job compatibility</h3>
+      <p class="section-subtitle">Top role candidates ranked by similarity between the resume and the automated risk corpus.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}

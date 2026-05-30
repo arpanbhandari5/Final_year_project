@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container page-hero__grid">
+    <div>
+      <span class="eyebrow">Partnerships</span>
+      <h1>Invite schools, career centers, and teams to use Prayash as a guided career intelligence layer.</h1>
+      <p class="lead">The platform works well for workshops, student advising, internal talent development, and skill-upskilling programs.</p>
+    </div>
+    <div class="contact-card glass-card">
+      <h2 class="section-title">Collaboration model</h2>
+      <div class="compact-list" style="margin-top: 1rem;">
+        <div class="list-card"><div><strong>Universities</strong><p>Student advising and career readiness programs.</p></div><span class="status-pill">Academic</span></div>
+        <div class="list-card"><div><strong>Employers</strong><p>Internal mobility and skill transition planning.</p></div><span class="status-pill">Enterprise</span></div>
+        <div class="list-card"><div><strong>Training partners</strong><p>Roadmap-based learning journeys and cohorts.</p></div><span class="status-pill">Enablement</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container partnership-grid">
+    <article class="form-card">
+      <h3 class="section-title">Start a pilot</h3>
+      <p class="section-subtitle">Use Prayash with a cohort, a department, or a talent team.</p>
+      <form class="field" style="margin-top: 1rem; gap: 1rem;">
+        <label>
+          Organization
+          <input type="text" placeholder="Organization name">
+        </label>
+        <label>
+          Contact email
+          <input type="email" placeholder="name@company.com">
+        </label>
+        <label>
+          Use case
+          <textarea placeholder="Tell us what you want to achieve."></textarea>
+        </label>
+        <button class="button" type="button">Request a walkthrough</button>
+      </form>
+    </article>
+    <article class="form-card">
+      <h3 class="section-title">What partners get</h3>
+      <div class="compact-list" style="margin-top: 1rem;">
+        <div class="list-card"><div><strong>Custom workshops</strong><p>Career intelligence + learning roadmap sessions.</p></div></div>
+        <div class="list-card"><div><strong>Branded deployments</strong><p>Bringing the Prayash experience into your ecosystem.</p></div></div>
+        <div class="list-card"><div><strong>Roadmap exports</strong><p>Shareable recommendations for advisors and learners.</p></div></div>
+      </div>
+    </article>
+  </div>
+</section>
+{% endblock %}

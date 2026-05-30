@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+ml_models/*.pkl
+mcp_config.json
+*.log
+.venv/
+.pytest_cache/
+playwright-report/
+htmlcov/
+prayash_landing_upload.html
+prayash_dual_mode_dashboard.html
+nvm-windows/
+nvm-setup.exe
