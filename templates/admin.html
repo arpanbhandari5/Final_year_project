@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container page-hero__grid">
+    <div>
+      <span class="eyebrow">Admin</span>
+      <h1>Operational analytics for the Prayash capstone review.</h1>
+      <p class="lead">This dashboard summarizes upload volume, prediction bands, and recent feedback from the local database.</p>
+    </div>
+    <div class="glass-card">
+      <h2 class="section-title">Access control</h2>
+      {% if requires_login %}
+      <p class="section-subtitle">Sign in with the admin credentials configured for the local environment.</p>
+      {% if login_error %}
+      <p class="small-note" style="color: var(--error);">{{ login_error }}</p>
+      {% endif %}
+      <form method="post" class="results-shell" style="margin-top: 1rem;">
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="button-secondary" type="submit">Enter dashboard</button>
+      </form>
+      {% else %}
+      <p class="section-subtitle">Signed in as a reviewer. Use the metrics below to verify model rigor and data capture.</p>
+      <form method="post" action="{{ url_for('admin_logout') }}" style="margin-top: 1rem;">
+        <button class="button-ghost" type="submit">Sign out</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% if not requires_login %}
+<section class="content-section">
+  <div class="container dashboard-grid">
+    <div class="span-4 glass-card motion-fade-up">
+      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Uploads</div>
+      <p class="score-ring__value" style="font-size: 3rem; margin-top: 1rem;">{{ metrics.total_uploads }}</p>
+      <p class="section-subtitle">Total resume analyses stored in the local review database.</p>
+    </div>
+    <div class="span-4 glass-card motion-fade-up motion-stagger-1">
+      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Average risk</div>
+      <p class="score-ring__value" style="font-size: 3rem; margin-top: 1rem;">{{ '%.0f'|format(metrics.average_risk * 100) }}%</p>
+      <p class="section-subtitle">Mean automation-risk score across all recorded uploads.</p>
+    </div>
+    <div class="span-4 glass-card motion-fade-up motion-stagger-2">
+      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Feedback</div>
+      <p class="score-ring__value" style="font-size: 3rem; margin-top: 1rem;">{{ metrics.recent_feedback|length }}</p>
+      <p class="section-subtitle">Recent feedback messages captured from the review flow.</p>
+    </div>
+
+    <div class="span-6 glass-card motion-fade-up">
+      <h3 class="section-title">Prediction counts</h3>
+      <canvas id="modeChart" height="220"></canvas>
+    </div>
+    <div class="span-6 glass-card motion-fade-up motion-stagger-1">
+      <h3 class="section-title">Risk distribution</h3>
+      <canvas id="riskChart" height="220"></canvas>
+    </div>
+
+    <div class="span-12 glass-card motion-fade-up">
+      <h3 class="section-title">Recent uploads</h3>
+      <div class="compact-list" style="margin-top: 1rem;">
+        {% for upload in metrics.recent_uploads %}
+        <div class="list-card">
+          <div>
+            <strong>{{ upload.filename }}</strong>
+            <p>{{ upload.mode|title }} · {{ upload.risk_label }} risk · {{ '%.0f'|format(upload.risk_score * 100) }}%</p>
+          </div>
+          <span class="status-pill">{{ upload.created_at.strftime('%Y-%m-%d') }}</span>
+        </div>
+        {% else %}
+        <div class="list-card"><div><strong>No uploads yet</strong><p>Run a resume analysis to populate the admin metrics.</p></div></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container dashboard-grid">
+    <div class="span-12 glass-card motion-fade-up">
+      <h3 class="section-title">Recent feedback</h3>
+      <div class="compact-list" style="margin-top: 1rem;">
+        {% for item in metrics.recent_feedback %}
+        <div class="list-card">
+          <div>
+            <strong>Rating {{ item.rating if item.rating is not none else 'N/A' }}</strong>
+            <p>{{ item.message }}</p>
+          </div>
+          <span class="status-pill">{{ item.created_at.strftime('%Y-%m-%d') }}</span>
+        </div>
+        {% else %}
+        <div class="list-card"><div><strong>No feedback yet</strong><p>Captured feedback will appear here.</p></div></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const chartData = {{ chart_data|tojson }};
+  const modeCtx = document.getElementById('modeChart');
+  const riskCtx = document.getElementById('riskChart');
+
+  if (modeCtx) {
+    new Chart(modeCtx, {
+      type: 'doughnut',
+      data: {
+        labels: chartData.modeLabels,
+        datasets: [{
+          data: chartData.modeValues,
+          backgroundColor: ['#4c1d95', '#712edd'],
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } },
+        cutout: '68%',
+      },
+    });
+  }
+
+  if (riskCtx) {
+    new Chart(riskCtx, {
+      type: 'bar',
+      data: {
+        labels: chartData.riskLabels,
+        datasets: [{
+          label: 'Uploads',
+          data: chartData.riskValues,
+          backgroundColor: ['#cfdaf2', '#8b4ef7', '#340075'],
+          borderRadius: 12,
+        }],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } },
+        },
+        plugins: { legend: { display: false } },
+      },
+    });
+  }
+</script>
+{% endif %}
+{% endblock %}

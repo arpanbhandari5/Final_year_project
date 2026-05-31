@@ -1,4 +1,9 @@
 (() => {
+  /** @typedef {{ job_role?: string, industry?: string, similarity?: number, risk_score?: number, skills?: string[], openings?: Array<{label?: string, url?: string}> }} JobPivot */
+  /** @typedef {{ course?: string, skill?: string, reason?: string, url?: string }} RoadmapItem */
+  /** @typedef {{ primary?: string, secondary?: string, tertiary?: string, scores?: Record<string, number|string> }} RiasecProfile */
+  /** @typedef {{ success?: boolean, mode?: string, risk_score?: number, risk_label?: string, cognitive_career_narrative?: string, top_roles?: JobPivot[], roadmap?: RoadmapItem[], riasec?: RiasecProfile, skill_clusters?: Array<Record<string, unknown>> }} AnalysisResult */
+
   const form = document.querySelector("[data-analysis-form]");
   const modeButtons = document.querySelectorAll("[data-mode]");
   const modeInput = document.querySelector("[data-mode-input]");
@@ -27,6 +32,7 @@
   const dashboardRiskSummary = document.querySelector("[data-risk-summary]");
   const dashboardRoleStatus = document.querySelector("[data-role-status]");
   const dashboardRoleBars = document.querySelector("[data-role-bars]");
+  const riskInsights = document.querySelector("[data-risk-insights]");
 
   if (!form || !fileInput || !submitButton) {
     return;
@@ -35,6 +41,7 @@
   let activeMode = modeInput?.value || "standard";
   let selectedFile = null;
   const originalSubmitLabel = submitButton.textContent.trim();
+  let loadingSkeletonTimer = null;
 
   const describeFile = (file) => {
     if (!file) {
@@ -75,12 +82,44 @@
     }
   };
 
+  const clearLoadingSkeleton = () => {
+    if (loadingSkeletonTimer) {
+      window.clearTimeout(loadingSkeletonTimer);
+      loadingSkeletonTimer = null;
+    }
+    if (modal) {
+      modal.classList.remove("is-loading-advanced");
+    }
+  };
+
+  const renderAdvancedSkeleton = () => {
+    if (!modal) return;
+    modal.classList.add("is-loading-advanced");
+    if (resultStatus) {
+      resultStatus.textContent = "Analyzing with Llama 3...";
+      resultStatus.classList.add("shimmer-line");
+    }
+    if (narrative) {
+      narrative.textContent = "Preparing an executive narrative, role pivots, and roadmap suggestions.";
+      narrative.classList.add("shimmer-line");
+    }
+    if (dashboardRoleStatus) {
+      dashboardRoleStatus.textContent = "Processing advanced request";
+    }
+  };
+
   const setMode = (mode) => {
     activeMode = mode;
     if (modeInput) {
       modeInput.value = mode;
     }
     modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+    [dashboardRiskRing, dashboardRiskScore, dashboardRiskLabel, dashboardRoleBars, resultBanner].forEach((element) => {
+      if (!element) return;
+      element.classList.remove("motion-fade-up", "motion-stagger-1", "motion-stagger-2", "motion-stagger-3");
+      void element.offsetWidth;
+      element.classList.add("motion-fade-up");
+    });
   };
 
   const openModal = () => {
@@ -117,6 +156,9 @@
 
     if (busy) {
       openModal();
+      if (activeMode === "advanced") {
+        renderAdvancedSkeleton();
+      }
       if (modalTitle) {
         modalTitle.textContent = message || "Analyzing resume locally...";
       }
@@ -173,8 +215,8 @@
       dashboardRoleStatus.textContent = uniqueRoles.length ? "Live prediction" : "No matches";
     }
     if (dashboardRoleBars) {
-      dashboardRoleBars.innerHTML = uniqueRoles.slice(0, 3).map((role) => `
-        <div>
+      dashboardRoleBars.innerHTML = uniqueRoles.slice(0, 3).map((role, index) => `
+        <div class="motion-fade-up motion-stagger-${Math.min(index + 1, 5)}">
           <div class="inline-actions" style="justify-content: space-between;">
             <strong>${role.job_role}</strong><strong class="muted">${Math.round((role.similarity || 0) * 100)}%</strong>
           </div>
@@ -185,7 +227,80 @@
     }
   };
 
+  const renderReasoningInsights = (payload) => {
+    if (!riskInsights) return;
+    const reasoning = payload.reasoning || {};
+    const cards = [];
+
+    if (reasoning.summary) {
+      cards.push(`
+        <div class="list-card pivot-card motion-fade-up">
+          <div>
+            <strong>Why this score</strong>
+            <p>${reasoning.summary}</p>
+          </div>
+        </div>
+      `);
+    }
+
+    (reasoning.risk_drivers || []).forEach((driver, index) => {
+      cards.push(`
+        <div class="list-card motion-fade-up motion-stagger-${Math.min(index + 1, 5)}">
+          <div>
+            <strong>Risk driver ${index + 1}</strong>
+            <p>${driver}</p>
+          </div>
+        </div>
+      `);
+    });
+
+    if (reasoning.skills_detected?.length) {
+      cards.push(`
+        <div class="list-card motion-fade-up">
+          <div>
+            <strong>Detected skills</strong>
+            <p>${reasoning.skills_detected.join(", ")}</p>
+          </div>
+        </div>
+      `);
+    }
+
+    if (reasoning.next_steps?.length) {
+      cards.push(`
+        <div class="list-card motion-fade-up">
+          <div>
+            <strong>Recommended next steps</strong>
+            <p>${reasoning.next_steps.join(" · ")}</p>
+          </div>
+        </div>
+      `);
+    }
+
+    if (reasoning.evidence?.length) {
+      cards.push(`
+        <div class="list-card motion-fade-up">
+          <div>
+            <strong>Evidence trail</strong>
+            <p>${reasoning.evidence.map((item) => `${item.label}: ${item.value}`).join(" · ")}</p>
+          </div>
+        </div>
+      `);
+    }
+
+    cards.push(`
+      <div class="list-card motion-fade-up">
+        <div>
+          <strong>Confidence note</strong>
+          <p>${reasoning.confidence_note || "Explainability is grounded in the local feature trace."}</p>
+        </div>
+      </div>
+    `);
+
+    riskInsights.innerHTML = cards.join("");
+  };
+
   const renderModal = (payload) => {
+    clearLoadingSkeleton();
     const uniqueRoles = dedupeRoles(payload.top_roles || []);
     if (modalTitle) {
       modalTitle.textContent = payload.mode === "advanced" ? "Deep AI narrative generated" : "Local ML analysis complete";
@@ -206,11 +321,12 @@
       narrative.textContent = payload.cognitive_career_narrative || "";
     }
     updateDashboardResults(payload);
+    renderReasoningInsights(payload);
 
     renderList(rolesList, uniqueRoles, (role) => {
       const openingLinks = buildRoleLinks(role);
       return `
-      <div class="list-card">
+      <div class="list-card pivot-card motion-fade-up">
         <div>
           <strong>${role.job_role}</strong>
           <p>${role.industry} · Risk ${Math.round((role.risk_score || 0) * 100)}%</p>
@@ -224,7 +340,7 @@
     });
 
     renderList(roadmapList, payload.roadmap || [], (course) => `
-      <div class="roadmap-item">
+      <div class="roadmap-item motion-fade-up">
         <div>
           <strong>${course.course}</strong>
           <p>${course.skill} · ${course.reason}</p>
@@ -234,7 +350,7 @@
     `);
 
     renderList(riasecList, Object.entries(payload.riasec?.scores || {}), ([name, score]) => `
-      <div class="list-card">
+      <div class="list-card motion-fade-up">
         <div>
           <strong>${name}</strong>
           <p>Career preference alignment</p>
@@ -245,6 +361,7 @@
   };
 
   const renderError = (message) => {
+    clearLoadingSkeleton();
     openModal();
     if (resultBanner) {
       resultBanner.style.background = "rgba(186, 26, 26, 0.08)";
@@ -278,6 +395,16 @@
     if (dashboardRoleStatus) {
       dashboardRoleStatus.textContent = "Error";
     }
+    if (riskInsights) {
+      riskInsights.innerHTML = `
+        <div class="list-card">
+          <div>
+            <strong>Analysis unavailable</strong>
+            <p>${message}</p>
+          </div>
+        </div>
+      `;
+    }
   };
 
   modeButtons.forEach((button) => {
@@ -289,6 +416,9 @@
   fileInput.addEventListener("change", () => {
     selectedFile = fileInput.files?.[0] || null;
     setUploadStatus(describeFile(selectedFile));
+    if (dropZone) {
+      dropZone.classList.remove("is-dropped");
+    }
   });
 
   if (dropZone) {
@@ -314,6 +444,8 @@
       fileInput.files = transfer.files;
       selectedFile = droppedFile;
       setUploadStatus(describeFile(selectedFile));
+      dropZone.classList.add("is-dropped");
+      window.setTimeout(() => dropZone.classList.remove("is-dropped"), 700);
     });
   }
 
@@ -337,7 +469,7 @@
     setBusy(true, activeMode === "advanced" ? "Running advanced analysis..." : "Running local analysis...");
 
     try {
-      const response = await fetch("/api/analyze", {
+      const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
       });

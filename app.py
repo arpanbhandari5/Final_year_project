@@ -11,10 +11,12 @@ from typing import Any
 import joblib
 import numpy as np
 import requests
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, redirect, render_template, request, url_for
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from bootstrap import ensure_model_artifacts
 from risk_assessor import analyze_resume as assess_resume
 from resume_parser import extract_resume_text as parse_resume_file
+from storage import User, authenticate_user, create_user, dashboard_metrics, get_user_by_email, init_database, record_feedback, record_upload
 
 try:
     from docx import Document
@@ -36,10 +38,39 @@ COURSES_PATH = MODEL_DIR / "courses.pkl"
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config.update(
     SECRET_KEY=os.environ.get("FLASK_SECRET_KEY", "prayash-local-development-secret"),
+    SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", f"sqlite:///{(BASE_DIR / 'prayash.db').as_posix()}"),
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
     MAX_CONTENT_LENGTH=8 * 1024 * 1024,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
 )
+
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+
+@login_manager.user_loader
+def load_user(user_id: str) -> User | None:
+    try:
+        return User.query.get(int(user_id))
+    except Exception:
+        return None
+
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    if request.path.startswith("/api/"):
+        return jsonify({"success": False, "error": "Authentication required."}), 401
+    return redirect(url_for("login", next=request.path))
+
+
+def initialize_database() -> None:
+    init_database(app)
+
+
+initialize_database()
 
 
 def _safe_load_bundle() -> dict[str, Any]:
@@ -349,12 +380,68 @@ def inject_globals() -> dict[str, Any]:
     return {
         "site_name": "Prayash",
         "site_tagline": "Learning for better future",
+        "is_authenticated": bool(current_user.is_authenticated),
+        "admin_authenticated": bool(current_user.is_authenticated and getattr(current_user, "is_admin_email", False)),
     }
 
 
 @app.get("/")
 def index() -> str:
     return render_template("index.html", active_page="home", title="Prayash: Learning for better future")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login() -> str:
+    error = None
+    next_url = request.args.get("next") or request.form.get("next") or url_for("workspace")
+
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
+        user = authenticate_user(email, password)
+        if user:
+            login_user(user, remember=True)
+            return redirect(next_url)
+        error = "Invalid email or password."
+
+    return render_template("login.html", active_page="login", title="Login | Prayash", error=error, next_url=next_url)
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup() -> str:
+    error = None
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
+        confirm = request.form.get("confirm_password") or ""
+
+        if not email or "@" not in email:
+            error = "Enter a valid email address."
+        elif len(password) < 6:
+            error = "Password must be at least 6 characters."
+        elif password != confirm:
+            error = "Passwords do not match."
+        elif get_user_by_email(email):
+            error = "Email already exists. Please log in."
+        else:
+            user = create_user(email=email, password=password, role="student")
+            login_user(user, remember=True)
+            return redirect(url_for("workspace"))
+
+    return render_template("signup.html", active_page="signup", title="Sign Up | Prayash", error=error)
+
+
+@app.post("/logout")
+@login_required
+def logout() -> Any:
+    logout_user()
+    return redirect(url_for("index"))
+
+
+@app.get("/workspace")
+@login_required
+def workspace() -> str:
+    return render_template("workspace.html", active_page="workspace", title="Workspace | Prayash")
 
 
 @app.get("/methodology")
@@ -377,13 +464,67 @@ def partnerships() -> str:
     return render_template("partnerships.html", active_page="partnerships", title="Partnerships | Prayash")
 
 
+@app.route("/admin", methods=["GET"])
+@login_required
+def admin_dashboard() -> str:
+    if not getattr(current_user, "is_admin_email", False):
+        return redirect(url_for("workspace"))
+
+    metrics = dashboard_metrics()
+    chart_data = {
+        "modeLabels": ["Standard", "Advanced"],
+        "modeValues": [metrics["mode_counts"]["standard"], metrics["mode_counts"]["advanced"]],
+        "riskLabels": ["Low", "Moderate", "Elevated"],
+        "riskValues": [metrics["risk_buckets"]["low"], metrics["risk_buckets"]["moderate"], metrics["risk_buckets"]["elevated"]],
+    }
+    return render_template(
+        "admin.html",
+        title="Admin | Prayash",
+        active_page="admin",
+        metrics=metrics,
+        chart_data=chart_data,
+    )
+
+
+@app.post("/admin/logout")
+@login_required
+def admin_logout() -> Any:
+    logout_user()
+    return redirect(url_for("login"))
+
+
 @app.get("/healthz")
 def healthz() -> tuple[dict[str, str], int]:
     return {"status": "ok"}, 200
 
 
-@app.post("/api/analyze")
-def api_analyze():
+@app.post("/api/feedback")
+def api_feedback():
+    payload = request.get_json(silent=True) if request.is_json else {}
+    message = (request.form.get("message") or (payload or {}).get("message", "")).strip()
+    rating_raw = request.form.get("rating") or (payload or {}).get("rating")
+    upload_id_raw = request.form.get("upload_id") or (payload or {}).get("upload_id")
+    if not message:
+        return jsonify({"success": False, "error": "Feedback message is required."}), 400
+
+    rating = None
+    upload_id = None
+    try:
+        rating = int(rating_raw) if rating_raw is not None and rating_raw != "" else None
+    except Exception:
+        rating = None
+    try:
+        upload_id = int(upload_id_raw) if upload_id_raw is not None and upload_id_raw != "" else None
+    except Exception:
+        upload_id = None
+
+    feedback = record_feedback(message=message, rating=rating, upload_id=upload_id, user_id=current_user.id if current_user.is_authenticated else None)
+    if feedback is None:
+        return jsonify({"success": False, "error": "Could not store feedback."}), 500
+    return jsonify({"success": True})
+
+
+def _handle_upload_request():
     payload = request.get_json(silent=True) if request.is_json else {}
     resume_text = request.form.get("resume_text") or (payload or {}).get("resume_text", "")
     mode = request.form.get("mode") or (payload or {}).get("mode", "standard")
@@ -404,10 +545,29 @@ def api_analyze():
     try:
         ensure_model_artifacts()
         analysis = assess_resume(resume_text, mode=mode)
+        record_upload(
+            filename=uploaded_file.filename if uploaded_file and uploaded_file.filename else "pasted_resume.txt",
+            file_type=(uploaded_file.filename.rsplit(".", 1)[-1].lower() if uploaded_file and uploaded_file.filename and "." in uploaded_file.filename else "text"),
+            mode=analysis.get("mode", mode),
+            risk_score=analysis.get("risk_score", 0.0),
+            risk_label=analysis.get("risk_label", "Low"),
+            reasoning=analysis.get("reasoning", {}),
+            user_id=current_user.id if current_user.is_authenticated else None,
+        )
         analysis.update({"success": True})
         return jsonify(analysis)
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 500
+
+
+@app.post("/api/upload")
+def api_upload():
+    return _handle_upload_request()
+
+
+@app.post("/api/analyze")
+def api_analyze():
+    return _handle_upload_request()
 
 
 if __name__ == "__main__":

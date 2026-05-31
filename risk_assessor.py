@@ -249,6 +249,78 @@ Keep it specific, actionable, and suitable for an executive dashboard.
         return None
 
 
+def _build_reasoning(
+    resume_text: str,
+    risk_score: float,
+    risk_label: str,
+    top_roles: list[dict[str, Any]],
+    clusters: list[dict[str, Any]],
+    roadmap: list[dict[str, Any]],
+    riasec: dict[str, Any],
+) -> dict[str, Any]:
+    detected_skills = _format_top_skills(_split_keywords(resume_text), limit=6)
+    primary_role = top_roles[0] if top_roles else {}
+    primary_cluster = clusters[0] if clusters else {}
+
+    risk_drivers: list[str] = []
+    if risk_score < 0.35:
+        risk_drivers.append("The resume uses role-specific language that maps to lower-risk, knowledge-heavy work.")
+    elif risk_score < 0.7:
+        risk_drivers.append("The profile mixes analytical signals with adjacent skills, producing a mid-band automation risk.")
+    else:
+        risk_drivers.append("The profile aligns with repeatable tasks that the local model treats as higher automation risk.")
+
+    if primary_role.get("job_role"):
+        risk_drivers.append(
+            f"Top occupational alignment is with {primary_role['job_role']} at {round(float(primary_role.get('similarity', 0.0)) * 100)}% similarity."
+        )
+    if primary_cluster.get("title"):
+        risk_drivers.append(
+            f"Closest O*NET cluster is {primary_cluster['title']} with {round(float(primary_cluster.get('similarity', 0.0)) * 100)}% similarity."
+        )
+
+    evidence = []
+    if primary_role:
+        evidence.append(
+            {
+                "label": "Best matching role",
+                "value": primary_role.get("job_role") or "Unspecified",
+                "detail": f"Similarity {round(float(primary_role.get('similarity', 0.0)) * 100)}%",
+            }
+        )
+    if primary_cluster:
+        evidence.append(
+            {
+                "label": "Closest cluster",
+                "value": primary_cluster.get("title") or "Unspecified",
+                "detail": f"Similarity {round(float(primary_cluster.get('similarity', 0.0)) * 100)}%",
+            }
+        )
+    if riasec.get("primary"):
+        evidence.append(
+            {
+                "label": "RIASEC fit",
+                "value": f"{riasec.get('primary')} / {riasec.get('secondary')}",
+                "detail": "Preference profile derived from resume keywords and O*NET interests.",
+            }
+        )
+
+    recommendations: list[str] = []
+    for item in roadmap[:3]:
+        course = item.get("course") or item.get("skill")
+        if course and course not in recommendations:
+            recommendations.append(str(course))
+
+    return {
+        "summary": f"{risk_label} risk based on resume language, role similarity, and occupational cluster overlap.",
+        "risk_drivers": risk_drivers,
+        "evidence": evidence,
+        "skills_detected": detected_skills,
+        "next_steps": recommendations,
+        "confidence_note": "Explainability is derived from local TF-IDF similarity and rule-based feature tracing.",
+    }
+
+
 def analyze_resume(resume_text: str, mode: str = "standard") -> dict[str, Any]:
     bundle, courses = load_artifacts()
     if not bundle:
@@ -266,6 +338,7 @@ def analyze_resume(resume_text: str, mode: str = "standard") -> dict[str, Any]:
     clusters = _skill_clusters(model_bundle, cleaned_resume)
     roadmap = _generate_roadmap(model_bundle, cleaned_resume, top_roles)
     riasec = _riasec_profile(clusters, cleaned_resume)
+    reasoning = _build_reasoning(cleaned_resume, risk_score, "Low" if risk_score < 0.35 else "Moderate" if risk_score < 0.7 else "Elevated", top_roles, clusters, roadmap, riasec)
 
     analysis: dict[str, Any] = {
         "mode": mode,
@@ -275,6 +348,7 @@ def analyze_resume(resume_text: str, mode: str = "standard") -> dict[str, Any]:
         "skill_clusters": clusters,
         "roadmap": roadmap,
         "riasec": riasec,
+        "reasoning": reasoning,
         "privacy": {
             "storage": "Ephemeral only",
             "resume_persistence": False,
