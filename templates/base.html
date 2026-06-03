@@ -13,10 +13,10 @@
 <body>
   <div class="site-shell">
     <header class="navbar">
-      <div class="container navbar__inner">
+      <div class="navbar__inner">
         <a class="brand" href="{{ url_for('index') }}" aria-label="Prayash home">
           <span class="brand__name">Prayash</span>
-          <span class="brand__tagline">Learning for better future</span>
+          <span class="brand__tagline">Career Intelligence</span>
         </a>
 
         <nav class="nav-links" aria-label="Primary">
@@ -24,7 +24,7 @@
           <a class="nav-link {% if active_page == 'methodology' %}is-active{% endif %}" href="{{ url_for('methodology') }}">Methodology</a>
           <a class="nav-link {% if active_page == 'privacy' %}is-active{% endif %}" href="{{ url_for('privacy') }}">Privacy</a>
           <a class="nav-link {% if active_page == 'insights' %}is-active{% endif %}" href="{{ url_for('insights') }}">Insights</a>
-          <a class="nav-link {% if active_page == 'partnerships' %}is-active{% endif %}" href="{{ url_for('partnerships') }}">Partnerships</a>
+          <a class="nav-link {% if active_page == 'partnerships' %}is-active{% endif %}" href="{{ url_for('partnerships') }}">Partners</a>
           {% if is_authenticated %}
           <a class="nav-link {% if active_page == 'workspace' %}is-active{% endif %}" href="{{ url_for('workspace') }}">Workspace</a>
           {% else %}
@@ -36,7 +36,7 @@
           {% endif %}
           {% if is_authenticated %}
           <form method="post" action="{{ url_for('logout') }}" style="display: inline; margin: 0;">
-            <button type="submit" class="nav-link" style="background: transparent; border: 0; padding: 0.65rem 0.15rem;">Logout</button>
+            <button type="submit" class="nav-link" style="background: transparent; border: 0; padding: 0.7rem 1.2rem; color: var(--text-muted); font-size: 0.95rem; font-weight: 600;">Logout</button>
           </form>
           {% endif %}
         </nav>
@@ -48,10 +48,10 @@
     </main>
 
     <footer class="footer">
-      <div class="container footer__inner">
+      <div class="footer__inner">
         <div class="brand">
           <span class="brand__name">Prayash</span>
-          <span class="brand__tagline">Team effort by Arpan, Umanga, and Samir</span>
+          <span class="brand__tagline">AI Career Intelligence</span>
         </div>
         <div class="footer__links">
           <a href="{{ url_for('privacy') }}">Privacy Policy</a>

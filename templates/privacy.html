@@ -2,33 +2,80 @@
 
 {% block content %}
 <section class="page-section page-hero">
-  <div class="container page-hero__grid">
-    <div>
-      <span class="eyebrow">Privacy</span>
-      <h1>Local-first by design, with no permanent SQL persistence for resume data.</h1>
-      <p class="lead">Prayash is built for confidence: files are processed in memory, model artifacts are local, and advanced narrative generation never requires uploading data to a remote application database.</p>
-    </div>
-    <div class="privacy-card glass-card">
-      <h2 class="section-title">Data handling</h2>
-      <div class="compact-list" style="margin-top: 1rem;">
-        <div class="list-card"><div><strong>Resume</strong><p>Parsed in memory, discarded after analysis.</p></div><span class="status-pill is-danger">Not stored</span></div>
-        <div class="list-card"><div><strong>Analysis result</strong><p>Returned to the browser as JSON for immediate display.</p></div><span class="status-pill">Ephemeral</span></div>
-        <div class="list-card"><div><strong>Models</strong><p>Saved locally in ml_models/ for repeatable inference.</p></div><span class="status-pill is-warm">Local only</span></div>
+  <div class="container">
+    <div class="page-hero__grid">
+      <div>
+        <span class="eyebrow">Your Privacy</span>
+        <h1>Local-first design means your data stays yours.</h1>
+        <p class="lead">Prayash processes resumes in memory, never stores them permanently, and keeps all model artifacts local. Your career intelligence is computed privately.</p>
+      </div>
+      <div class="glass-card">
+        <h2 class="section-title">Core principle</h2>
+        <p class="section-subtitle">We believe career analysis should be fast, transparent, and private. That's why Prayash uses in-memory processing and local machine learning models.</p>
+        <div class="tag-list" style="margin-top: 1.5rem;">
+          <span class="tag">In-memory processing</span>
+          <span class="tag">No permanent storage</span>
+          <span class="tag">Local ML models</span>
+          <span class="tag">Privacy by design</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <section class="content-section">
-  <div class="container insight-grid">
-    <article class="privacy-card">
-      <h3 class="section-title">Controls</h3>
-      <p class="section-subtitle">Input fields, file uploads, and API requests are designed to keep the analysis request self-contained. No permanent user profile table, analytics sink, or SQL history layer is required.</p>
-    </article>
-    <article class="privacy-card">
-      <h3 class="section-title">Security posture</h3>
-      <p class="section-subtitle">The app is safe to run locally on a team workstation or within a controlled demo environment. Session state is minimal and does not carry resume content forward.</p>
-    </article>
+  <div class="container">
+    <div style="max-width: 1000px; margin: 0 auto;">
+      <h2 style="text-align: center; margin-bottom: 2rem; color: var(--text-strong);">How your data is protected</h2>
+      <div class="method-grid">
+        <article class="privacy-card">
+          <h3>Resume handling</h3>
+          <p class="section-subtitle">Your resume is parsed in memory during analysis. After we return results to your browser, the file is immediately discarded. No backup, no logging, no storage.</p>
+        </article>
+        <article class="privacy-card">
+          <h3>Analysis results</h3>
+          <p class="section-subtitle">Risk scores, skill matches, and career insights are computed locally and sent to your browser as JSON. These results remain under your control.</p>
+        </article>
+        <article class="privacy-card">
+          <h3>Model artifacts</h3>
+          <p class="section-subtitle">Machine learning models are saved locally in the ml_models/ directory. They're used for inference only—they don't track or store user data.</p>
+        </article>
+        <article class="privacy-card">
+          <h3>Advanced AI mode</h3>
+          <p class="section-subtitle">If you enable advanced narrative generation, we send only your already-computed ML results to the local Ollama instance. No resume text leaves your system.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section" style="background: linear-gradient(180deg, rgba(34, 211, 238, 0.08), transparent);">
+  <div class="container">
+    <div style="max-width: 900px; margin: 0 auto; display: grid; gap: 2rem; grid-template-columns: 1fr 1fr;">
+      <div class="glass-card">
+        <h3 class="section-title">What we do NOT do</h3>
+        <ul style="margin: 1rem 0 0; padding-left: 1.5rem; color: var(--text-muted); line-height: 1.8;">
+          <li>Create user profiles</li>
+          <li>Track session history</li>
+          <li>Sell resume data</li>
+          <li>Use analytics trackers</li>
+          <li>Require persistent login</li>
+          <li>Build advertising profiles</li>
+        </ul>
+      </div>
+
+      <div class="glass-card">
+        <h3 class="section-title">Your security posture</h3>
+        <p class="section-subtitle" style="margin-bottom: 1rem;">Run Prayash with confidence in these scenarios:</p>
+        <ul style="margin: 0; padding-left: 1.5rem; color: var(--text-muted); line-height: 1.8;">
+          <li>Local team workstations</li>
+          <li>Controlled demo environments</li>
+          <li>Private training sessions</li>
+          <li>University capstone projects</li>
+          <li>Enterprise research labs</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 {% endblock %}

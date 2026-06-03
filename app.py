@@ -16,7 +16,7 @@ from flask_login import LoginManager, current_user, login_required, login_user, 
 from bootstrap import ensure_model_artifacts
 from risk_assessor import analyze_resume as assess_resume
 from resume_parser import extract_resume_text as parse_resume_file
-from storage import User, authenticate_user, create_user, dashboard_metrics, get_user_by_email, init_database, record_feedback, record_upload
+from storage import User, authenticate_user, authenticate_admin, create_user, dashboard_metrics, get_user_by_email, init_database, record_feedback, record_upload
 
 try:
     from docx import Document
@@ -464,11 +464,27 @@ def partnerships() -> str:
     return render_template("partnerships.html", active_page="partnerships", title="Partnerships | Prayash")
 
 
-@app.route("/admin", methods=["GET"])
-@login_required
+@app.route("/admin", methods=["GET", "POST"])
 def admin_dashboard() -> str:
-    if not getattr(current_user, "is_admin_email", False):
-        return redirect(url_for("workspace"))
+    login_error = None
+
+    if request.method == "POST":
+        username = (request.form.get("username") or "").strip().lower()
+        password = request.form.get("password") or ""
+        user = authenticate_admin(username, password)
+        if user:
+            login_user(user, remember=True)
+            return redirect(url_for("admin_dashboard"))
+        login_error = "Invalid admin credentials."
+
+    if not current_user.is_authenticated or not getattr(current_user, "is_admin_email", False):
+        return render_template(
+            "admin.html",
+            title="Admin | Prayash",
+            active_page="admin",
+            requires_login=True,
+            login_error=login_error,
+        )
 
     metrics = dashboard_metrics()
     chart_data = {
@@ -481,6 +497,7 @@ def admin_dashboard() -> str:
         "admin.html",
         title="Admin | Prayash",
         active_page="admin",
+        requires_login=False,
         metrics=metrics,
         chart_data=chart_data,
     )

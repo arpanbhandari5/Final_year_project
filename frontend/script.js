@@ -23,6 +23,8 @@
   const rolesList = document.querySelector("[data-roles-list]");
   const roadmapList = document.querySelector("[data-roadmap-list]");
   const riasecList = document.querySelector("[data-riasec-list]");
+  const riskScore = document.querySelector("[data-risk-score]");
+  const riskLabel = document.querySelector("[data-risk-label]");
   const uploadStatus = document.querySelector("[data-upload-status]");
   const dashboardRiskRing = document.querySelector("[data-risk-ring]");
   const dashboardRiskScore = document.querySelector("[data-risk-score-display]");
@@ -55,6 +57,7 @@
     if (!file) {
       return "No file selected yet.";
     }
+
     return `Selected file: ${file.name}`;
   };
 
@@ -62,6 +65,7 @@
 
   const dedupeRoles = (roles) => {
     const roleMap = new Map();
+
     (roles || []).forEach((role) => {
       const key = normalizeRoleKey(role);
       const current = roleMap.get(key);
@@ -69,6 +73,7 @@
         roleMap.set(key, role);
       }
     });
+
     return Array.from(roleMap.values()).sort((left, right) => (right.similarity || 0) - (left.similarity || 0));
   };
 
@@ -435,11 +440,13 @@
     if (!scrollSections.length) return;
     const scrollPos = window.scrollY + window.innerHeight / 4;
     let currentSection = scrollSections[0];
+
     scrollSections.forEach((section) => {
       if (section.offsetTop <= scrollPos) {
         currentSection = section;
       }
     });
+
     const activeHref = currentSection ? `#${currentSection.id}` : "#hero";
     [...sidebarLinks, ...topbarLinks].forEach((link) => {
       link.classList.toggle("active", link.getAttribute("href") === activeHref);
@@ -501,28 +508,34 @@
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
     const formData = new FormData(form);
     if (selectedFile && !formData.get("resume_file")) {
       formData.set("resume_file", selectedFile);
     }
     formData.set("mode", activeMode);
+
     const text = (formData.get("resume_text") || "").toString().trim();
     const hasFile = fileInput.files && fileInput.files.length > 0;
     if (!hasFile && !text) {
       renderError("Add a resume file or paste resume text before starting the assessment.");
       return;
     }
+
     setUploadStatus(describeFile(selectedFile || fileInput.files?.[0] || null));
     setBusy(true, activeMode === "advanced" ? "Running advanced analysis..." : "Running local analysis...");
+
     try {
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
       });
+
       const payload = await response.json();
       if (!response.ok || !payload.success) {
         throw new Error(payload.error || "Analysis failed.");
       }
+
       resetResultStyles();
       renderModal(payload);
     } catch (error) {

@@ -2,33 +2,39 @@
 
 {% block content %}
 <section class="page-section page-hero">
-  <div class="container page-hero__grid">
-    <div>
-      <span class="eyebrow">Account</span>
-      <h1>Create a Prayash account.</h1>
-      <p class="lead">Sign up to unlock session persistence and protected workspace access for your capstone review flow.</p>
-    </div>
-    <div class="glass-card">
-      <h2 class="section-title">Sign Up</h2>
-      {% if error %}
-      <p class="small-note" style="color: var(--error);">{{ error }}</p>
-      {% endif %}
-      <form method="post" class="results-shell" style="margin-top: 1rem;">
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" autocomplete="email" required>
+  <div class="container">
+    <div class="page-hero__grid">
+      <div>
+        <span class="eyebrow">Get Started</span>
+        <h1>Create your account</h1>
+        <p class="lead">Join Prayash to unlock session persistence, protected workspace access, and personalized career intelligence powered by AI.</p>
+      </div>
+      <div class="glass-card">
+        <h2 class="section-title">Sign Up</h2>
+        {% if error %}
+        <div style="padding: 1rem; background: rgba(242, 102, 92, 0.1); border: 1px solid rgba(242, 102, 92, 0.3); border-radius: 0.9rem; color: #f97316; font-size: 0.95rem; margin-bottom: 1rem;">
+          {{ error }}
         </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" name="password" type="password" autocomplete="new-password" required>
-        </div>
-        <div class="field">
-          <label for="confirm_password">Confirm password</label>
-          <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" required>
-        </div>
-        <button class="button-secondary" type="submit">Create account</button>
-      </form>
-      <p class="section-subtitle" style="margin-top: 1rem;">Already registered? <a href="{{ url_for('login') }}" style="text-decoration: underline;">Log in</a>.</p>
+        {% endif %}
+        <form method="post" class="results-shell">
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="your@email.com" required>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="new-password" placeholder="••••••••" required>
+          </div>
+          <div class="field">
+            <label for="confirm_password">Confirm Password</label>
+            <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" placeholder="••••••••" required>
+          </div>
+          <button class="button" type="submit" style="min-width: auto; width: 100%;">Create Account</button>
+        </form>
+        <p style="margin: 1.5rem 0 0; text-align: center; color: var(--text-muted); font-size: 0.95rem;">
+          Already have an account? <a href="{{ url_for('login') }}" style="color: var(--accent-alt); text-decoration: none; font-weight: 600; transition: color 200ms ease;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--accent-alt)'">Sign in here</a>
+        </p>
+      </div>
     </div>
   </div>
 </section>

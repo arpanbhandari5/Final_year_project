@@ -9,5 +9,7 @@ playwright-report/
 htmlcov/
 prayash_landing_upload.html
 prayash_dual_mode_dashboard.html
+.env
+prayash.db
 nvm-windows/
 nvm-setup.exe
