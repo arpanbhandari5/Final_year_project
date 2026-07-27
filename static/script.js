@@ -2,7 +2,8 @@
   /** @typedef {{ job_role?: string, industry?: string, similarity?: number, risk_score?: number, skills?: string[], openings?: Array<{label?: string, url?: string}> }} JobPivot */
   /** @typedef {{ course?: string, skill?: string, reason?: string, url?: string }} RoadmapItem */
   /** @typedef {{ primary?: string, secondary?: string, tertiary?: string, scores?: Record<string, number|string> }} RiasecProfile */
-  /** @typedef {{ success?: boolean, mode?: string, risk_score?: number, risk_label?: string, cognitive_career_narrative?: string, top_roles?: JobPivot[], roadmap?: RoadmapItem[], riasec?: RiasecProfile, skill_clusters?: Array<Record<string, unknown>> }} AnalysisResult */
+  /** @typedef {{ learning_actions?: string[], job_search_actions?: string[], education_training_actions?: string[], support_resources?: string[] }} GuidedNextSteps */
+  /** @typedef {{ success?: boolean, mode?: string, risk_score?: number, risk_label?: string, cognitive_career_narrative?: string, top_roles?: JobPivot[], roadmap?: RoadmapItem[], riasec?: RiasecProfile, skill_clusters?: Array<Record<string, unknown>>, guided_next_steps?: GuidedNextSteps, report_guide?: Record<string, string[]>, support_resources?: Array<Record<string, string>> }} AnalysisResult */
 
   const form = document.querySelector("[data-analysis-form]");
   const modeButtons = document.querySelectorAll("[data-mode]");
@@ -33,15 +34,90 @@
   const dashboardRoleStatus = document.querySelector("[data-role-status]");
   const dashboardRoleBars = document.querySelector("[data-role-bars]");
   const riskInsights = document.querySelector("[data-risk-insights]");
+  const pathButtons = document.querySelectorAll("[data-path-option]");
+  const pathTitle = document.querySelector("[data-path-title]");
+  const pathDescription = document.querySelector("[data-path-description]");
+  const pathActions = document.querySelector("[data-path-actions]");
+  const heroTitle = document.querySelector("[data-hero-title]");
+  const heroLead = document.querySelector("[data-hero-lead]");
+  const heroActions = document.querySelector("[data-hero-actions]");
+  const heroPrimaryLink = document.querySelector("[data-hero-primary-link]");
+  const analysisIntro = document.querySelector("[data-analysis-intro]");
+  const nextStepsStatus = document.querySelector("[data-next-steps-status]");
+  const nextStepsLearning = document.querySelector("[data-next-learning]");
+  const nextStepsJobs = document.querySelector("[data-next-jobs]");
+  const nextStepsEducation = document.querySelector("[data-next-education]");
+  const nextStepsSupport = document.querySelector("[data-next-support]");
+  const modalNextSteps = document.querySelector("[data-modal-next-steps]");
 
   if (!form || !fileInput || !submitButton) {
     return;
   }
 
   let activeMode = modeInput?.value || "standard";
+  let activePath = "student";
   let selectedFile = null;
   const originalSubmitLabel = submitButton.textContent.trim();
   let loadingSkeletonTimer = null;
+
+  const PATHWAY_CONTENT = {
+    student: {
+      heroTitle: "Turn your student experience into a confident career launch plan.",
+      heroLead: "Use your resume, projects, and coursework to identify roles, skill priorities, and practical next actions you can start this week.",
+      analysisIntro: "Upload your student resume or paste a profile summary. You will get role fit, skill roadmap, and low-pressure next steps.",
+      panelTitle: "Student path selected",
+      panelDescription: "Start with standard mode for fast role alignment, then use advanced mode if you want richer narrative guidance.",
+      actions: [
+        "Run a standard analysis and review your top three role matches.",
+        "Pick one roadmap course and schedule weekly learning blocks.",
+        "Update one project bullet with stronger role keywords.",
+      ],
+      chips: ["Student-ready roles", "Project-to-job translation", "Interview preparation"],
+      ctaLabel: "Start student assessment",
+    },
+    "job-seeker": {
+      heroTitle: "Focus your job search with clearer role fit and stronger resume targeting.",
+      heroLead: "Identify the roles where your profile already aligns, then prioritize skill and application actions that improve interview conversion.",
+      analysisIntro: "Upload your current resume to get top role matches, automation risk, and a practical action sequence for applications.",
+      panelTitle: "Job-seeker path selected",
+      panelDescription: "Use role similarity and risk indicators to focus where your profile is strongest right now.",
+      actions: [
+        "Track recurring requirements across 10 recent job postings.",
+        "Tailor your resume summary to your top matched role.",
+        "Use one roadmap item to close a visible skill gap.",
+      ],
+      chips: ["Role match clarity", "Resume optimization", "Application focus"],
+      ctaLabel: "Start job-search assessment",
+    },
+    "career-switcher": {
+      heroTitle: "Plan your career transition with realistic steps and transferable skill mapping.",
+      heroLead: "See where your current background overlaps with target roles, then build a practical bridge through focused learning and role targeting.",
+      analysisIntro: "Upload your current resume to uncover transferable strengths, target-role alignment, and training priorities.",
+      panelTitle: "Career-switcher path selected",
+      panelDescription: "A transition works best when you combine targeted roles, visible proof projects, and short-cycle skill gains.",
+      actions: [
+        "Pick two transferable skills from your strongest role match.",
+        "Build one portfolio proof item for your target direction.",
+        "Commit to a 4 to 8 week transition learning plan.",
+      ],
+      chips: ["Transferable strengths", "Transition roadmap", "Targeted training"],
+      ctaLabel: "Start transition assessment",
+    },
+    "new-workforce": {
+      heroTitle: "Get a clear first-career direction with practical, beginner-friendly guidance.",
+      heroLead: "Use your early experience to identify entry-level role options, next skills, and action steps that build confidence quickly.",
+      analysisIntro: "Upload your resume or profile summary to get an approachable report with role options and immediate next steps.",
+      panelTitle: "New-workforce path selected",
+      panelDescription: "Start with a simple plan: one role focus, one learning milestone, and one weekly job-search routine.",
+      actions: [
+        "Choose one target role and build your resume around it.",
+        "Take one beginner-friendly roadmap course this month.",
+        "Apply to a consistent set of entry-level opportunities each week.",
+      ],
+      chips: ["Entry-level pathways", "Beginner support", "First-job strategy"],
+      ctaLabel: "Start first-career assessment",
+    },
+  };
 
   const describeFile = (file) => {
     if (!file) {
@@ -190,6 +266,119 @@
     container.innerHTML = items.map(renderer).join("");
   };
 
+  const renderSimpleSteps = (container, items, heading) => {
+    if (!container) return;
+    const safeItems = (items || []).filter(Boolean);
+    if (!safeItems.length) {
+      container.innerHTML = `<div class="list-card"><div><strong>No actions yet</strong><p>Run analysis to generate practical next steps.</p></div></div>`;
+      return;
+    }
+    container.innerHTML = safeItems.map((item) => `
+      <div class="list-card motion-fade-up">
+        <div>
+          <strong>${heading}</strong>
+          <p>${item}</p>
+        </div>
+      </div>
+    `).join("");
+  };
+
+  const buildFallbackNextSteps = (payload) => {
+    const riskBand = (payload.risk_label || "Moderate").toLowerCase();
+    const topRoles = dedupeRoles(payload.top_roles || []).slice(0, 2);
+    const roadmap = payload.roadmap || [];
+
+    const learningActions = roadmap.slice(0, 3).map((item) => `Start '${item.course}' and focus on ${item.skill || "core skill"} this week.`);
+    if (!learningActions.length) {
+      learningActions.push("Pick one high-impact skill gap and schedule three focused practice sessions this week.");
+    }
+
+    const jobActions = topRoles.length
+      ? [
+          ...topRoles.map((role) => `Save 10 postings for ${role.job_role} and track repeated requirements.`),
+          "Update your resume summary with language from your best-matched role.",
+        ]
+      : [
+          "Collect 10 postings in your target field and list repeated skills.",
+          "Tailor your resume headline for one target role before applying.",
+        ];
+
+    const educationActions = [
+      riskBand === "elevated"
+        ? "Prioritize transferable digital and analytical skills to reduce automation exposure."
+        : riskBand === "low"
+          ? "Deepen specialization in your strongest areas to preserve your low-risk profile."
+          : "Build adjacent skills that improve resilience and role flexibility.",
+      "Compare one short certificate and one longer credential for your target direction.",
+      "Set a 4, 8, or 12-week timeline and add deadlines to your calendar.",
+    ];
+
+    const supportActions = [
+      "Review methodology to understand how scores and role matches are generated.",
+      "Review privacy details to confirm data handling safeguards.",
+      "Use advanced mode if you want deeper narrative guidance.",
+    ];
+
+    return {
+      learning_actions: learningActions,
+      job_search_actions: jobActions,
+      education_training_actions: educationActions,
+      support_resources: supportActions,
+    };
+  };
+
+  const renderGuidedNextSteps = (payload) => {
+    const guided = payload.guided_next_steps || buildFallbackNextSteps(payload);
+    renderSimpleSteps(nextStepsLearning, guided.learning_actions, "Learning action");
+    renderSimpleSteps(nextStepsJobs, guided.job_search_actions, "Job action");
+    renderSimpleSteps(nextStepsEducation, guided.education_training_actions, "Training action");
+    renderSimpleSteps(nextStepsSupport, guided.support_resources, "Support resource");
+
+    if (nextStepsStatus) {
+      nextStepsStatus.textContent = "Updated from latest analysis";
+    }
+
+    if (modalNextSteps) {
+      const compact = [
+        ...(guided.learning_actions || []).slice(0, 1),
+        ...(guided.job_search_actions || []).slice(0, 1),
+        ...(guided.education_training_actions || []).slice(0, 1),
+      ];
+      renderSimpleSteps(modalNextSteps, compact, "Next step");
+    }
+  };
+
+  const renderPathway = (pathKey) => {
+    const content = PATHWAY_CONTENT[pathKey] || PATHWAY_CONTENT.student;
+    activePath = pathKey;
+
+    if (heroTitle) heroTitle.textContent = content.heroTitle;
+    if (heroLead) heroLead.textContent = content.heroLead;
+    if (analysisIntro) analysisIntro.textContent = content.analysisIntro;
+    if (pathTitle) pathTitle.textContent = content.panelTitle;
+    if (pathDescription) pathDescription.textContent = content.panelDescription;
+    if (heroPrimaryLink) heroPrimaryLink.textContent = content.ctaLabel;
+
+    if (heroActions) {
+      heroActions.innerHTML = (content.chips || []).map((chip) => `<span class="chip">${chip}</span>`).join("");
+    }
+
+    if (pathActions) {
+      pathActions.innerHTML = (content.actions || []).map((action) => `
+        <div class="list-card">
+          <div>
+            <strong>Suggested action</strong>
+            <p>${action}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    pathButtons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.pathOption === pathKey);
+    });
+  };
+
   const resetResultStyles = () => {
     if (!resultBanner) return;
     resultBanner.style.background = "";
@@ -322,6 +511,7 @@
     }
     updateDashboardResults(payload);
     renderReasoningInsights(payload);
+    renderGuidedNextSteps(payload);
 
     renderList(rolesList, uniqueRoles, (role) => {
       const openingLinks = buildRoleLinks(role);
@@ -405,10 +595,31 @@
         </div>
       `;
     }
+    if (nextStepsStatus) {
+      nextStepsStatus.textContent = "Unavailable";
+    }
+    [nextStepsLearning, nextStepsJobs, nextStepsEducation, nextStepsSupport, modalNextSteps].forEach((container) => {
+      if (!container) return;
+      container.innerHTML = `
+        <div class="list-card">
+          <div>
+            <strong>Guidance unavailable</strong>
+            <p>${message}</p>
+          </div>
+        </div>
+      `;
+    });
   };
 
   modeButtons.forEach((button) => {
     button.addEventListener("click", () => setMode(button.dataset.mode));
+  });
+
+  pathButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const pathKey = button.dataset.pathOption || "student";
+      renderPathway(pathKey);
+    });
   });
 
   browseButton.addEventListener("click", () => fileInput.click());
@@ -489,4 +700,5 @@
   });
 
   setMode(activeMode);
+  renderPathway(activePath);
 })();

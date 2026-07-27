@@ -21,6 +21,8 @@
 
         <nav class="nav-links" aria-label="Primary">
           <a class="nav-link {% if active_page == 'home' %}is-active{% endif %}" href="{{ url_for('index') }}">Home</a>
+          <a class="nav-link" href="{{ url_for('index') }}#start-here">Start Here</a>
+          <a class="nav-link" href="{{ url_for('index') }}#resource-hub">Resources</a>
           <a class="nav-link {% if active_page == 'methodology' %}is-active{% endif %}" href="{{ url_for('methodology') }}">Methodology</a>
           <a class="nav-link {% if active_page == 'privacy' %}is-active{% endif %}" href="{{ url_for('privacy') }}">Privacy</a>
           <a class="nav-link {% if active_page == 'insights' %}is-active{% endif %}" href="{{ url_for('insights') }}">Insights</a>
@@ -54,6 +56,8 @@
           <span class="brand__tagline">Team effort by Arpan, Umanga, and Samir</span>
         </div>
         <div class="footer__links">
+          <a href="{{ url_for('index') }}#start-here">Start Here</a>
+          <a href="{{ url_for('index') }}#next-steps">What to do next</a>
           <a href="{{ url_for('privacy') }}">Privacy Policy</a>
           <a href="{{ url_for('methodology') }}">Methodology</a>
           <a href="{{ url_for('insights') }}">Insights</a>

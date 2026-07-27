@@ -524,6 +524,119 @@ def api_feedback():
     return jsonify({"success": True})
 
 
+def _build_support_resources() -> list[dict[str, str]]:
+    return [
+        {
+            "title": "Learning resources",
+            "description": "Use roadmap suggestions to strengthen high-impact skills in the next 2 to 6 weeks.",
+            "link": url_for("methodology"),
+            "cta": "Explore methodology",
+        },
+        {
+            "title": "Job search help",
+            "description": "Use top role matches as search keywords for alerts, applications, and profile updates.",
+            "link": url_for("insights"),
+            "cta": "Open insights",
+        },
+        {
+            "title": "Education and training",
+            "description": "Compare short certificates and longer pathways for your target roles.",
+            "link": url_for("partnerships"),
+            "cta": "See partnerships",
+        },
+        {
+            "title": "Support and privacy",
+            "description": "Review how your data is handled and where to get additional guidance.",
+            "link": url_for("privacy"),
+            "cta": "Read privacy details",
+        },
+    ]
+
+
+def _build_guided_next_steps(analysis: dict[str, Any]) -> dict[str, list[str]]:
+    top_roles = analysis.get("top_roles") or []
+    roadmap = analysis.get("roadmap") or []
+    risk_label = str(analysis.get("risk_label") or "Moderate")
+
+    role_names = [str(role.get("job_role") or "").strip() for role in top_roles if role.get("job_role")]
+    primary_roles = [name for name in role_names if name][:2]
+
+    learning_actions: list[str] = []
+    for item in roadmap[:3]:
+        course = str(item.get("course") or "").strip()
+        skill = str(item.get("skill") or "core skill").strip()
+        if course:
+            learning_actions.append(f"Start '{course}' and focus on {skill} this week.")
+
+    if not learning_actions:
+        learning_actions.append("Pick one high-impact skill gap and schedule three focused practice sessions this week.")
+
+    job_search_actions: list[str] = []
+    if primary_roles:
+        for role_name in primary_roles:
+            job_search_actions.append(f"Save 10 recent postings for {role_name} and track repeated requirements.")
+        job_search_actions.append("Update your resume summary using keywords from your strongest role matches.")
+    else:
+        job_search_actions.extend(
+            [
+                "Collect 10 postings in your target field and list repeated skills.",
+                "Tailor your resume headline for one target role before applying.",
+            ]
+        )
+
+    education_actions = [
+        "Compare one short certificate and one longer credential for your target direction.",
+        "Set a realistic 4, 8, or 12-week timeline and add deadlines to your calendar.",
+    ]
+    if risk_label.lower() == "elevated":
+        education_actions.insert(0, "Prioritize transferable digital and analytical skills to reduce automation exposure.")
+    elif risk_label.lower() == "low":
+        education_actions.insert(0, "Deepen specialization in your strongest areas to preserve your low-risk profile.")
+    else:
+        education_actions.insert(0, "Build adjacent skills that improve resilience and role flexibility.")
+
+    support_resources = [
+        "Review the methodology page to understand how scores and role matches are produced.",
+        "Review the privacy page for clear data handling details.",
+        "Use advanced mode when you want additional narrative guidance.",
+    ]
+
+    return {
+        "learning_actions": learning_actions,
+        "job_search_actions": job_search_actions,
+        "education_training_actions": education_actions,
+        "support_resources": support_resources,
+    }
+
+
+def _build_report_guide(analysis: dict[str, Any]) -> dict[str, list[str]]:
+    risk_label = str(analysis.get("risk_label") or "Moderate")
+    mode = str(analysis.get("mode") or "standard")
+
+    return {
+        "how_this_works": [
+            "Upload or paste your resume.",
+            "Prayash runs local ML scoring for risk, role match, roadmap, and RIASEC fit.",
+            "Advanced mode adds optional narrative guidance while preserving core ML outputs.",
+        ],
+        "what_your_report_means": [
+            f"Your current automation band is {risk_label}.",
+            "Top role matches show where your profile aligns today.",
+            "Roadmap items suggest practical learning moves based on detected skills.",
+        ],
+        "what_to_do_next": [
+            "Choose 1 to 2 actions and complete them in the next 14 days.",
+            "Apply to roles that overlap with your strongest matches.",
+            f"Re-run your report after updates, using {mode} mode as your baseline.",
+        ],
+        "need_help": [
+            "Use the methodology page for model logic and assumptions.",
+            "Use the privacy page for data handling details.",
+            "Share feedback after your run so recommendations can improve over time.",
+        ],
+    }
+
+
 def _handle_upload_request():
     payload = request.get_json(silent=True) if request.is_json else {}
     resume_text = request.form.get("resume_text") or (payload or {}).get("resume_text", "")
@@ -545,6 +658,9 @@ def _handle_upload_request():
     try:
         ensure_model_artifacts()
         analysis = assess_resume(resume_text, mode=mode)
+        analysis.setdefault("guided_next_steps", _build_guided_next_steps(analysis))
+        analysis.setdefault("support_resources", _build_support_resources())
+        analysis.setdefault("report_guide", _build_report_guide(analysis))
         record_upload(
             filename=uploaded_file.filename if uploaded_file and uploaded_file.filename else "pasted_resume.txt",
             file_type=(uploaded_file.filename.rsplit(".", 1)[-1].lower() if uploaded_file and uploaded_file.filename and "." in uploaded_file.filename else "text"),

@@ -5,12 +5,16 @@
   <div class="container hero__grid">
     <div>
       <span class="eyebrow">AI-powered career intelligence</span>
-      <h1>Build a career platform that turns resumes into a learning strategy.</h1>
-      <p class="lead">Prayash combines local machine learning, O*NET intelligence, and an optional Llama 3 narrative layer to surface automation risk, role fit, and a practical learning roadmap without storing resume data in a permanent database.</p>
+      <h1 data-hero-title>Get clear career direction from your resume, with practical next moves you can use today.</h1>
+      <p class="lead" data-hero-lead>Prayash combines local machine learning, O*NET intelligence, and optional deep AI guidance to show your automation risk, role fit, and learning priorities without permanently storing your resume.</p>
 
       <div class="actions" style="margin-top: 2rem;">
-        <a class="button" href="#analysis">Start analysis</a>
+        <a class="button" href="#analysis" data-hero-primary-link>Start my assessment</a>
         <a class="button-outline" href="{{ url_for('methodology') }}">View methodology</a>
+      </div>
+
+      <div class="path-action-list" style="margin-top: 1.25rem;" data-hero-actions>
+        <span class="chip">Choose a path below to personalize your next steps</span>
       </div>
 
       <div class="chips" style="margin-top: 2rem;">
@@ -53,13 +57,55 @@
   </div>
 </section>
 
+<section class="content-section" id="start-here">
+  <div class="container">
+    <div class="section-card">
+      <div class="inline-actions" style="justify-content: space-between; align-items: flex-start; gap: 1.5rem; margin-bottom: 1rem;">
+        <div>
+          <h2 class="section-title">Start Here: Choose your path</h2>
+          <p class="section-subtitle">Pick the journey that best matches your current situation. We will tailor guidance and suggested actions around it.</p>
+        </div>
+        <span class="status-pill is-warm">Guided experience</span>
+      </div>
+
+      <div class="path-grid" role="list" aria-label="Career path options">
+        <button class="path-card is-active" type="button" data-path-option="student" role="listitem">
+          <strong>I'm a student</strong>
+          <p>Turn coursework and projects into career-ready signals.</p>
+        </button>
+        <button class="path-card" type="button" data-path-option="job-seeker" role="listitem">
+          <strong>I'm looking for work</strong>
+          <p>Align your profile to active roles and hiring language.</p>
+        </button>
+        <button class="path-card" type="button" data-path-option="career-switcher" role="listitem">
+          <strong>I want to change careers</strong>
+          <p>Identify transferable skills and close priority gaps.</p>
+        </button>
+        <button class="path-card" type="button" data-path-option="new-workforce" role="listitem">
+          <strong>I'm new to the workforce</strong>
+          <p>Build a confident first plan with practical next actions.</p>
+        </button>
+      </div>
+
+      <div class="path-guidance" data-path-guidance>
+        <h3 class="section-title" style="margin: 0;" data-path-title>Student path selected</h3>
+        <p class="section-subtitle" data-path-description>Start with a standard analysis, then use your top role matches to prioritize one learning goal and one internship-ready resume update.</p>
+        <div class="compact-list" data-path-actions>
+          <div class="list-card"><div><strong>Suggested action</strong><p>Run a standard analysis and review your top three role matches.</p></div></div>
+          <div class="list-card"><div><strong>Suggested action</strong><p>Pick one roadmap course and schedule weekly learning blocks.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="form-section" id="analysis">
   <div class="container">
     <div class="section-card">
       <div class="inline-actions" style="justify-content: space-between; align-items: end; margin-bottom: 1rem;">
         <div>
           <h2 class="section-title">Analyze your trajectory</h2>
-          <p class="section-subtitle">Upload a resume or paste text. The platform stays local-first and keeps the resume in memory only for the current request.</p>
+          <p class="section-subtitle" data-analysis-intro>Upload a resume or paste text. The platform stays local-first and keeps the resume in memory only for the current request.</p>
         </div>
         <span class="status-pill is-warm">No permanent SQL storage</span>
       </div>
@@ -92,6 +138,23 @@
         </div>
       </form>
     </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container feature-grid">
+    <article class="feature-card">
+      <h3 class="section-title">How this works</h3>
+      <p class="section-subtitle">Upload or paste your resume, choose standard or advanced mode, and receive role fit, automation risk, roadmap suggestions, and RIASEC guidance in one report.</p>
+    </article>
+    <article class="feature-card">
+      <h3 class="section-title">What your report means</h3>
+      <p class="section-subtitle">Your report combines risk band, role similarity, and skill direction so you can decide where to focus next with confidence.</p>
+    </article>
+    <article class="feature-card">
+      <h3 class="section-title">What to do next</h3>
+      <p class="section-subtitle">Use your guided next steps to pick one learning action and one job action for the next 14 days.</p>
+    </article>
   </div>
 </section>
 
@@ -180,6 +243,91 @@
   </div>
 </section>
 
+<section class="content-section" id="next-steps">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="inline-actions" style="justify-content: space-between; margin-bottom: 1rem;">
+        <div>
+          <h3 class="section-title" style="margin: 0;">Guided next steps</h3>
+          <p class="section-subtitle" style="margin-top: 0.4rem;">Practical actions generated from your current analysis results.</p>
+        </div>
+        <span class="status-pill" data-next-steps-status>Awaiting analysis</span>
+      </div>
+
+      <div class="next-steps-grid">
+        <div class="summary-card">
+          <h4 class="section-title" style="margin: 0 0 0.8rem; font-size: 1.1rem;">Learning actions</h4>
+          <div class="compact-list" data-next-learning>
+            <div class="list-card"><div><strong>Run analysis first</strong><p>Your learning actions will appear here after assessment.</p></div></div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <h4 class="section-title" style="margin: 0 0 0.8rem; font-size: 1.1rem;">Job search actions</h4>
+          <div class="compact-list" data-next-jobs>
+            <div class="list-card"><div><strong>Run analysis first</strong><p>Your job search actions will appear here after assessment.</p></div></div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <h4 class="section-title" style="margin: 0 0 0.8rem; font-size: 1.1rem;">Education and training</h4>
+          <div class="compact-list" data-next-education>
+            <div class="list-card"><div><strong>Run analysis first</strong><p>Your education suggestions will appear here after assessment.</p></div></div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <h4 class="section-title" style="margin: 0 0 0.8rem; font-size: 1.1rem;">Support resources</h4>
+          <div class="compact-list" data-next-support>
+            <div class="list-card"><div><strong>Run analysis first</strong><p>Your support options will appear here after assessment.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section" id="resource-hub">
+  <div class="container">
+    <div class="section-card">
+      <div class="inline-actions" style="justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+        <div>
+          <h3 class="section-title" style="margin: 0;">Resource hub</h3>
+          <p class="section-subtitle" style="margin-top: 0.4rem;">A structured place to find learning, job, training, and support pathways.</p>
+        </div>
+        <span class="status-pill">Career support</span>
+      </div>
+
+      <div class="resource-grid">
+        <article class="feature-card">
+          <h4 class="section-title" style="font-size: 1.2rem;">Learning resources</h4>
+          <p class="section-subtitle">Review how skill matching and roadmap guidance are produced.</p>
+          <a class="button-ghost" href="{{ url_for('methodology') }}">Open methodology</a>
+        </article>
+        <article class="feature-card">
+          <h4 class="section-title" style="font-size: 1.2rem;">Job search help</h4>
+          <p class="section-subtitle">Use insights and trend context to improve role targeting and applications.</p>
+          <a class="button-ghost" href="{{ url_for('insights') }}">Open insights</a>
+        </article>
+        <article class="feature-card">
+          <h4 class="section-title" style="font-size: 1.2rem;">Education and training paths</h4>
+          <p class="section-subtitle">Explore collaborations and pathways that can support upskilling decisions.</p>
+          <a class="button-ghost" href="{{ url_for('partnerships') }}">Open partnerships</a>
+        </article>
+        <article class="feature-card">
+          <h4 class="section-title" style="font-size: 1.2rem;">Need help?</h4>
+          <p class="section-subtitle">Read privacy commitments, then sign in to continue in the workspace.</p>
+          <div class="actions" style="margin-top: 0.8rem;">
+            <a class="button-ghost" href="{{ url_for('privacy') }}">Privacy</a>
+            {% if is_authenticated %}
+            <a class="button-ghost" href="{{ url_for('workspace') }}">Workspace</a>
+            {% else %}
+            <a class="button-ghost" href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div class="result-modal hidden" data-result-modal aria-hidden="true">
   <div class="result-modal__backdrop" data-modal-close></div>
   <div class="result-modal__panel glass-card" role="dialog" aria-modal="true" aria-labelledby="result-modal-title">
@@ -225,6 +373,13 @@
       <div class="summary-card">
         <h3 class="section-title" style="margin: 0 0 1rem;">RIASEC fit</h3>
         <div class="compact-list" data-riasec-list></div>
+      </div>
+    </div>
+
+    <div class="summary-card" style="margin-top: 1rem;">
+      <h3 class="section-title" style="margin: 0 0 1rem;">What to do next</h3>
+      <div class="compact-list" data-modal-next-steps>
+        <div class="list-card"><div><strong>Run analysis</strong><p>Practical next actions will appear here.</p></div></div>
       </div>
     </div>
   </div>
