@@ -2,7 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Prayash">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Prayash">
+  <meta name="msapplication-TileColor" content="#4c1d95">
+  <meta name="msapplication-TileImage" content="/static/icons/icon-144x144.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/icon.svg') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
   <title>{{ title or site_name }}</title>
   <meta name="description" content="Prayash: Learning for better future career intelligence platform.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +34,14 @@
           <span class="brand__tagline">Learning for better future</span>
         </a>
 
-        <nav class="nav-links" aria-label="Primary">
+        <!-- Mobile hamburger menu -->
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation" aria-expanded="false" data-mobile-menu>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+
+        <nav class="nav-links" aria-label="Primary" data-nav-links>
           <a class="nav-link {% if active_page == 'home' %}is-active{% endif %}" href="{{ url_for('index') }}">Home</a>
           <a class="nav-link" href="{{ url_for('index') }}#start-here">Start Here</a>
           <a class="nav-link" href="{{ url_for('index') }}#resource-hub">Resources</a>
@@ -44,6 +66,9 @@
         </nav>
       </div>
     </header>
+
+    <!-- Mobile nav backdrop -->
+    <div class="nav-backdrop" data-nav-backdrop></div>
 
     <main>
       {% block content %}{% endblock %}
@@ -71,6 +96,19 @@
         </div>
       </div>
     </footer>
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div class="pwa-install-banner hidden" data-pwa-install-banner>
+    <div class="pwa-install-banner__content">
+      <span class="pwa-install-banner__icon">📱</span>
+      <div>
+        <strong>Install Prayash</strong>
+        <p>Add to your home screen for the best experience</p>
+      </div>
+      <button class="button" data-pwa-install-button>Install</button>
+      <button class="button-ghost" data-pwa-dismiss>✕</button>
+    </div>
   </div>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
