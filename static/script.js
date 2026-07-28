@@ -1,4 +1,68 @@
 (() => {
+  // ── PWA: Register Service Worker ──
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/static/sw.js")
+        .then((reg) => console.log("SW registered:", reg.scope))
+        .catch((err) => console.warn("SW registration failed:", err));
+    });
+  }
+
+  // ── PWA: Install Banner ──
+  let deferredPrompt = null;
+  const installBanner = document.querySelector("[data-pwa-install-banner]");
+  const installButton = document.querySelector("[data-pwa-install-button]");
+  const dismissButton = document.querySelector("[data-pwa-dismiss]");
+  const bannerDismissed = localStorage.getItem("prayash-pwa-dismissed");
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBanner && !bannerDismissed) installBanner.classList.remove("hidden");
+  });
+
+  installButton?.addEventListener("click", () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+        if (installBanner) installBanner.classList.add("hidden");
+      });
+    }
+  });
+
+  dismissButton?.addEventListener("click", () => {
+    if (installBanner) installBanner.classList.add("hidden");
+    localStorage.setItem("prayash-pwa-dismissed", "1");
+  });
+
+  // ── Mobile Menu Toggle ──
+  const mobileToggle = document.querySelector("[data-mobile-menu]");
+  const navLinks = document.querySelector("[data-nav-links]");
+  const navBackdrop = document.querySelector("[data-nav-backdrop]");
+  const closeMobileMenu = () => {
+    if (navLinks) navLinks.classList.remove("is-open");
+    if (mobileToggle) {
+      mobileToggle.classList.remove("is-open");
+      mobileToggle.setAttribute("aria-expanded", "false");
+    }
+    if (navBackdrop) navBackdrop.classList.remove("is-visible");
+  };
+  if (mobileToggle && navLinks) {
+    mobileToggle.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("is-open");
+      mobileToggle.classList.toggle("is-open");
+      mobileToggle.setAttribute("aria-expanded", String(isOpen));
+      if (navBackdrop) navBackdrop.classList.toggle("is-visible", isOpen);
+    });
+    navBackdrop?.addEventListener("click", closeMobileMenu);
+    navLinks.querySelectorAll(".nav-link").forEach((link) => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+  }
+
+  // ── Original App Logic ──
   /** @typedef {{ job_role?: string, industry?: string, similarity?: number, risk_score?: number, skills?: string[], openings?: Array<{label?: string, url?: string}> }} JobPivot */
   /** @typedef {{ course?: string, skill?: string, reason?: string, url?: string }} RoadmapItem */
   /** @typedef {{ primary?: string, secondary?: string, tertiary?: string, scores?: Record<string, number|string> }} RiasecProfile */
@@ -701,4 +765,70 @@
 
   setMode(activeMode);
   renderPathway(activePath);
+
+  // ── Scroll Reveal: IntersectionObserver ──
+  const REVEAL_SELECTORS = [
+    ".feature-card",
+    ".insight-card",
+    ".method-card",
+    ".form-card",
+    ".section-card",
+    ".glass-card",
+    ".privacy-card",
+    ".contact-card",
+    ".dashboard-grid > div",
+    ".page-hero__grid > div",
+    ".hero__grid > div",
+    ".hero__grid > .hero-panel",
+  ].join(", ");
+
+  const initScrollReveal = () => {
+    // Skip if user prefers reduced motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const directions = ["", "", "", "--left", "--right", "--scale"]; // bias toward default (up)
+    document.querySelectorAll(REVEAL_SELECTORS).forEach((el) => {
+      if (el.closest(".result-modal")) return; // skip modal internals
+      const dir = directions[Math.floor(Math.random() * directions.length)];
+      el.classList.add(`reveal${dir}`);
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+  };
+
+  // Stagger children in grids that just became visible
+  const initStaggerClasses = () => {
+    document.querySelectorAll(
+      ".feature-grid, .insight-grid, .method-grid, .partnership-grid, .dashboard-grid, .hero__grid, .page-hero__grid"
+    ).forEach((grid) => {
+      const children = grid.querySelectorAll(":scope > .reveal");
+      children.forEach((child, i) => {
+        const n = (i % 5) + 1;
+        child.classList.add(`reveal--stagger-${n}`);
+      });
+    });
+  };
+
+  // Run after DOM is painted
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      initScrollReveal();
+      initStaggerClasses();
+    });
+  } else {
+    initScrollReveal();
+    initStaggerClasses();
+  }
 })();
