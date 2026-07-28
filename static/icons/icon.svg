@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4c1d95"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <circle cx="256" cy="200" r="80" fill="none" stroke="url(#glow)" stroke-width="8" opacity="0.6"/>
+  <circle cx="256" cy="200" r="40" fill="url(#glow)" opacity="0.3"/>
+  <path d="M180 320 Q256 260 332 320" fill="none" stroke="url(#glow)" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  <text x="256" y="380" text-anchor="middle" font-family="Inter, sans-serif" font-size="64" font-weight="800" fill="white">P</text>
+  <text x="256" y="440" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="600" fill="rgba(255,255,255,0.6)" letter-spacing="4">PRAYASH</text>
+</svg>
