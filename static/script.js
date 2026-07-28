@@ -1,4 +1,69 @@
 (() => {
+  // ── Dark Mode Toggle (3-state: auto / light / dark) ──
+  const themeToggle = document.querySelector("[data-theme-toggle]");
+  const themeModeLabel = document.querySelector("[data-theme-mode-label]");
+  const html = document.documentElement;
+  const STORAGE_KEY = "prayash-theme-mode";
+
+  const prefersDarkMedia = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  const isSystemDark = () => prefersDarkMedia ? prefersDarkMedia.matches : false;
+
+  const MODE_CYCLE = ["auto", "light", "dark"];
+  const MODE_ICONS = { auto: "🌓", light: "☀️", dark: "🌙" };
+  const MODE_LABELS = { auto: "Auto", light: "Light", dark: "Dark" };
+
+  let themeMode = localStorage.getItem(STORAGE_KEY) || "auto";
+  if (!MODE_CYCLE.includes(themeMode)) themeMode = "auto";
+
+  const applyTheme = (mode) => {
+    if (mode === "auto") {
+      applyResolvedTheme(isSystemDark() ? "dark" : "light");
+    } else {
+      applyResolvedTheme(mode);
+    }
+    updateToggleUI(mode);
+  };
+
+  const applyResolvedTheme = (resolved) => {
+    html.setAttribute("data-theme", resolved);
+  };
+
+  const updateToggleUI = (mode) => {
+    if (themeToggle) {
+      themeToggle.setAttribute("aria-label", `Theme: ${MODE_LABELS[mode]}. Click to cycle.`);
+      themeToggle.setAttribute("title", `${MODE_LABELS[mode]} mode` + (mode === "auto" ? " (follows OS setting)" : " (manual)") );
+    }
+    if (themeModeLabel) {
+      themeModeLabel.textContent = MODE_LABELS[mode];
+    }
+    // Toggle icon visibility
+    document.querySelectorAll(".theme-toggle-icon").forEach((icon) => {
+      const iconMode = icon.getAttribute("data-icon");
+      icon.style.display = iconMode === mode ? "inline" : "none";
+    });
+  };
+
+  // Initialize on load (head script already set data-theme for FOUC prevention)
+  applyTheme(themeMode);
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const currentIndex = MODE_CYCLE.indexOf(themeMode);
+      themeMode = MODE_CYCLE[(currentIndex + 1) % MODE_CYCLE.length];
+      localStorage.setItem(STORAGE_KEY, themeMode);
+      applyTheme(themeMode);
+    });
+  }
+
+  // Listen for system preference changes (only when in auto mode)
+  if (prefersDarkMedia) {
+    prefersDarkMedia.addEventListener("change", () => {
+      if (themeMode === "auto") {
+        applyResolvedTheme(isSystemDark() ? "dark" : "light");
+      }
+    });
+  }
+
   // ── PWA: Register Service Worker ──
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -41,6 +106,7 @@
   const mobileToggle = document.querySelector("[data-mobile-menu]");
   const navLinks = document.querySelector("[data-nav-links]");
   const navBackdrop = document.querySelector("[data-nav-backdrop]");
+  const navbar = document.querySelector(".navbar");
   const closeMobileMenu = () => {
     if (navLinks) navLinks.classList.remove("is-open");
     if (mobileToggle) {
@@ -48,6 +114,7 @@
       mobileToggle.setAttribute("aria-expanded", "false");
     }
     if (navBackdrop) navBackdrop.classList.remove("is-visible");
+    if (navbar) navbar.classList.remove("menu-open");
   };
   if (mobileToggle && navLinks) {
     mobileToggle.addEventListener("click", () => {
@@ -55,6 +122,7 @@
       mobileToggle.classList.toggle("is-open");
       mobileToggle.setAttribute("aria-expanded", String(isOpen));
       if (navBackdrop) navBackdrop.classList.toggle("is-visible", isOpen);
+      if (navbar) navbar.classList.toggle("menu-open", isOpen);
     });
     navBackdrop?.addEventListener("click", closeMobileMenu);
     navLinks.querySelectorAll(".nav-link").forEach((link) => {

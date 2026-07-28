@@ -24,6 +24,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <!-- Prevent flash of wrong theme on load -->
+  <script>
+    (function() {
+      var m = localStorage.getItem('prayash-theme-mode');
+      var dark = false;
+      if (m === 'dark') { dark = true; }
+      else if (!m || m === 'auto') { dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; }
+      if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
 </head>
 <body>
   <div class="site-shell">
@@ -63,6 +73,14 @@
             <button type="submit" class="nav-link" style="background: transparent; border: 0; padding: 0.65rem 0.15rem;">Logout</button>
           </form>
           {% endif %}
+          <div class="nav-theme-controls">
+            <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+              <span class="theme-toggle-icon" data-icon="auto" aria-hidden="true">🌓</span>
+              <span class="theme-toggle-icon" data-icon="light" aria-hidden="true">☀️</span>
+              <span class="theme-toggle-icon" data-icon="dark" aria-hidden="true">🌙</span>
+            </button>
+            <span class="theme-mode-label" data-theme-mode-label>Auto</span>
+          </div>
         </nav>
       </div>
     </header>
