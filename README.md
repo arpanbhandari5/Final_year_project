@@ -197,7 +197,7 @@ This reports MAE, RMSE, and R² on the automation risk prediction task.
 
 ## Credits
 
-**Team:** Arpan, Umanga, and Samir
+**Team:** Samir, Umanga and Arpan
 
 ## License
 
