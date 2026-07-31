@@ -17,14 +17,23 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from uuid import uuid4
 
 # Ensure the project root is on sys.path so that app can be imported.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+# Ensure send_email is always mocked to avoid real SMTP calls in tests
+os.environ.setdefault("MAIL_USERNAME", "")
+os.environ.setdefault("MAIL_PASSWORD", "")
+os.environ.setdefault("SMTP_USERNAME", "")
+os.environ.setdefault("SMTP_PASSWORD", "")
+
 # Point the database to a temporary file so tests don't touch the real DB.
+# Use a unique temp dir per test invocation to prevent cross-test contamination.
+_TEST_DB_DIR = Path(tempfile.mkdtemp())
 os.environ.setdefault("DATABASE_URL",
-                       f"sqlite:///{PROJECT_ROOT / 'instance' / 'test_prayash.db'}")
+                       f"sqlite:///{(_TEST_DB_DIR / 'test_prayash.db').as_posix()}")
 
 
 @pytest.fixture
@@ -35,9 +44,12 @@ def app():
     # Disable CSRF for testing; we'll test CSRF separately via the API endpoint.
     flask_app.config["WTF_CSRF_ENABLED"] = False
     flask_app.config["TESTING"] = True
+    # Use a unique in-memory / temp database for isolation
+    db_path = _TEST_DB_DIR / f"test_{uuid4().hex[:8]}.db"
+    flask_app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path.as_posix()}"
 
     with flask_app.app_context():
-        from storage import db, init_database
+        from storage import db
         # Create tables inside the test DB
         db.create_all()
         from storage import seed_default_users
@@ -45,9 +57,8 @@ def app():
         yield flask_app
         # Clean up test DB after the test
         db.drop_all()
-        # Windows may hold a lock on the file; ignore cleanup errors
+        # Remove the temp DB file
         try:
-            db_path = PROJECT_ROOT / "instance" / "test_prayash.db"
             if db_path.exists():
                 db_path.unlink()
         except PermissionError:
