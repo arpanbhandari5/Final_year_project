@@ -16,16 +16,22 @@
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 
   <!-- Favicon -->
+  <!-- Favicon: multiple formats for broad browser support -->
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/icon.svg') }}">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/icon-72x72.png') }}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+  <link rel="mask-icon" href="{{ url_for('static', filename='icons/icon.svg') }}" color="#4c1d95">
   <title>{{ title or site_name }}</title>
   <meta name="description" content="Prayash: Learning for better future career intelligence platform.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v=static_version) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='auth-assistant.css', v=static_version) }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <!-- Prevent flash of wrong theme on load -->
-  <script>
+  <script nonce="{{ csp_nonce }}">
     (function() {
       var m = localStorage.getItem('prayash-theme-mode');
       var dark = false;
@@ -70,6 +76,7 @@
           {% endif %}
           {% if is_authenticated %}
           <form method="post" action="{{ url_for('logout') }}" style="display: inline; margin: 0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="nav-link" style="background: transparent; border: 0; padding: 0.65rem 0.15rem;">Logout</button>
           </form>
           {% endif %}
@@ -116,6 +123,18 @@
     </footer>
   </div>
 
+  <!-- Toast Notifications -->
+  <div class="toast-container" data-toast-container role="status" aria-live="polite"></div>
+
+  <!-- Keyboard Shortcuts Panel -->
+  <div class="shortcuts-panel" data-shortcuts-panel role="dialog" aria-label="Keyboard shortcuts"></div>
+
+  <!-- Service Worker Update Banner -->
+  <div class="sw-update-banner hidden" data-sw-update>
+    <span>New version available</span>
+    <button class="button" data-sw-update-btn>Refresh</button>
+  </div>
+
   <!-- PWA Install Banner -->
   <div class="pwa-install-banner hidden" data-pwa-install-banner>
     <div class="pwa-install-banner__content">
@@ -129,7 +148,7 @@
     </div>
   </div>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js', v=static_version) }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

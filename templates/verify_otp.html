@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include "auth_assistant.html" %}
+
+<div class="auth-split" data-auth-mode="verify">
+  <aside class="auth-split__brand">
+    <div class="auth-split__brand-inner">
+      <div class="auth-split__logo">
+        <svg width="52" height="52" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="url(#otp-grad)"/>
+          <path d="M12 28V14L20 10L28 14V28L20 32L12 28Z" stroke="white" stroke-width="1.5" fill="none"/>
+          <path d="M16 20L19 23L24 17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="30" cy="10" r="3" fill="rgba(211,187,255,0.3)" stroke="rgba(211,187,255,0.6)" stroke-width="0.5"/>
+          <defs><linearGradient id="otp-grad" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#8b4ef7"/><stop offset="1" stop-color="#d3bbff"/></linearGradient></defs>
+        </svg>
+      </div>
+      <h1 class="auth-split__brand-name">Prayash</h1>
+      <p class="auth-split__tagline">Verify your email</p>
+      <div class="auth-split__divider"></div>
+      <ul class="auth-split__props">
+        <li class="auth-split__prop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l4 4 8-8"/></svg>Check your inbox for the code</li>
+        <li class="auth-split__prop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l4 4 8-8"/></svg>Code expires in 10 minutes</li>
+        <li class="auth-split__prop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l4 4 8-8"/></svg>Unlock career insights</li>
+      </ul>
+      <div class="auth-split__orb auth-split__orb--1" aria-hidden="true"></div>
+      <div class="auth-split__orb auth-split__orb--3" aria-hidden="true"></div>
+    </div>
+  </aside>
+
+  <main class="auth-split__form">
+    <div class="auth-split__card">
+      <div class="auth-tabs" role="tablist">
+        <span class="auth-tab is-active" role="tab">Email Verification</span>
+      </div>
+
+      <div class="auth-form-pane is-active" style="padding: 2rem;">
+        <div class="otp-header" style="text-align:center;margin-bottom:1.5rem;">
+          <div class="otp-icon" style="margin-bottom:1rem;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <h2 class="otp-title" style="font-size:1.3rem;font-weight:600;margin:0 0 0.5rem;color:var(--text)">Enter Verification Code</h2>
+          <p class="otp-subtitle" style="color:var(--text-muted);font-size:0.9rem;margin:0;">
+            We sent a 6-digit code to
+          </p>
+          <p class="otp-email" style="color:var(--primary);font-weight:500;margin:0.25rem 0 0;font-size:0.95rem;">{{ email }}</p>
+        </div>
+
+        {% if error %}
+        <div class="auth-error animate-shake" role="alert">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="8" cy="8" r="7"/><path d="M5.5 5.5L10.5 10.5M10.5 5.5L5.5 10.5" stroke-linecap="round"/>
+          </svg>
+          <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form method="post" class="auth-form" id="otp-form" novalidate>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="purpose" value="verify_email">
+
+          <div class="otp-input-group" style="display:flex;gap:0.6rem;justify-content:center;margin:1.5rem 0;direction:ltr;">
+            {% for i in range(6) %}
+            <input
+              type="text"
+              name="otp_digit_{{ i }}"
+              class="otp-digit"
+              id="otp-{{ i }}"
+              maxlength="1"
+              inputmode="numeric"
+              pattern="[0-9]"
+              autocomplete="one-time-code"
+              required
+              data-otp-index="{{ i }}"
+              style="width:48px;height:56px;text-align:center;font-size:1.4rem;font-weight:600;border:2px solid var(--border);border-radius:12px;background:var(--card-bg);color:var(--text);outline:none;transition:all 0.2s ease;caret-color:var(--primary);"
+              {% if i == 0 %}autofocus{% endif %}
+            >
+            {% endfor %}
+          </div>
+          <input type="hidden" name="otp" id="otp-combined" value="">
+
+          <button type="submit" class="auth-btn" id="verify-btn" data-auth-submit style="width:100%;margin-top:0.5rem;">
+            <span class="auth-btn__text" id="verify-btn-text">Verify Email</span>
+            <span class="auth-btn__spinner" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </button>
+
+          <div class="otp-resend" style="text-align:center;margin-top:1.25rem;">
+            <p style="color:var(--text-muted);font-size:0.85rem;margin:0;">
+              Didn't receive the code?
+              <button type="button" class="otp-resend-btn" id="resend-btn" style="background:none;border:none;color:var(--primary);cursor:pointer;font-weight:500;font-size:0.85rem;padding:0;text-decoration:underline;" disabled>
+                Resend<span id="resend-timer" style="color:var(--text-muted);font-weight:400;"> in 60s</span>
+              </button>
+            </p>
+          </div>
+        </form>
+
+        <p style="text-align:center;margin-top:1.5rem;color:var(--text-muted);font-size:0.85rem;">
+          <a href="{{ url_for('signup') }}" style="color:var(--text-muted);">Use a different email</a>
+        </p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script nonce="{{ csp_nonce }}" src="{{ url_for('static', filename='auth-assistant.js', v=static_version) }}"></script>
+<script nonce="{{ csp_nonce }}">
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.AuthAssistant && window.AuthAssistant.init) {
+      window.AuthAssistant.init({ page: 'verify' });
+    }
+  });
+</script>
+<script nonce="{{ csp_nonce }}">
+(function() {
+  // OTP digit auto-focus
+  var inputs = document.querySelectorAll('[data-otp-index]');
+  var combined = document.getElementById('otp-combined');
+  var form = document.getElementById('otp-form');
+  var resendBtn = document.getElementById('resend-btn');
+  var resendTimer = document.getElementById('resend-timer');
+  var verifyBtn = document.getElementById('verify-btn');
+  var verifyText = document.getElementById('verify-btn-text');
+
+  if (inputs.length) {
+    inputs.forEach(function(inp, idx) {
+      inp.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+        if (this.value && idx < inputs.length - 1) {
+          inputs[idx + 1].focus();
+        }
+        // Update combined value
+        var val = '';
+        inputs.forEach(function(i) { val += i.value; });
+        if (combined) combined.value = val;
+        // Auto-submit when all 6 digits entered
+        if (val.length === 6 && form) {
+          verifyBtn.classList.add('is-loading');
+          verifyText.textContent = 'Verifying...';
+          form.submit();
+        }
+      });
+
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && idx > 0) {
+          inputs[idx - 1].focus();
+        }
+      });
+
+      inp.addEventListener('focus', function() {
+        this.select();
+      });
+
+      inp.addEventListener('paste', function(e) {
+        e.preventDefault();
+        var paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+        for (var i = 0; i < paste.length && i < inputs.length; i++) {
+          inputs[i].value = paste[i];
+        }
+        if (paste.length) {
+          inputs[Math.min(paste.length, inputs.length - 1)].focus();
+        }
+        var val = '';
+        inputs.forEach(function(i) { val += i.value; });
+        if (combined) combined.value = val;
+        if (val.length === 6 && form) {
+          verifyBtn.classList.add('is-loading');
+          verifyText.textContent = 'Verifying...';
+          form.submit();
+        }
+      });
+    });
+  }
+
+  // Resend cooldown timer
+  var cooldown = 60;
+  if (resendBtn && resendTimer) {
+    function updateTimer() {
+      if (cooldown > 0) {
+        resendTimer.textContent = ' in ' + cooldown + 's';
+        resendBtn.disabled = true;
+        cooldown--;
+        setTimeout(updateTimer, 1000);
+      } else {
+        resendTimer.textContent = '';
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend code';
+      }
+    }
+    updateTimer();
+
+    resendBtn.addEventListener('click', function() {
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      var csrf = document.querySelector('input[name="csrf_token"]');
+      fetch('{{ url_for("resend_otp") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': csrf ? csrf.value : '' },
+        body: 'csrf_token=' + encodeURIComponent(csrf ? csrf.value : '') + '&purpose=verify_email'
+      }).then(function(r) { return r.json(); }).then(function(data) {
+        if (data.success) {
+          cooldown = 60;
+          btn.textContent = 'Resend';
+          resendTimer.textContent = ' in ' + cooldown + 's';
+          btn.disabled = true;
+          setTimeout(function() { updateTimer(); }, 1000);
+          showToast(data.message, 'success');
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Resend code';
+          showToast(data.error || 'Failed to resend', 'error');
+        }
+      }).catch(function() {
+        btn.disabled = false;
+        btn.textContent = 'Resend code';
+        showToast('Network error', 'error');
+      });
+    });
+  }
+
+  // Toast notification helper
+  function showToast(msg, type) {
+    var t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:0.9rem;z-index:9999;background:' + (type === 'error' ? 'var(--error)' : 'var(--success)') + ';color:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.3);animation:slideUp 0.3s ease;';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function() { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(function() { t.remove(); }, 300); }, 3000);
+  }
+})();
+</script>
+{% endblock %}

@@ -5,20 +5,152 @@
   <div class="container page-hero__grid">
     <div>
       <span class="eyebrow">Workspace</span>
-      <h1>Your authenticated Prayash workspace.</h1>
-      <p class="lead">You are signed in. Continue your analysis from the landing page or review admin analytics if your email has admin access.</p>
-      <div class="actions" style="margin-top: 1.5rem;">
-        <a class="button" href="{{ url_for('index') }}#analysis">Go to analysis</a>
+      <h1>Welcome back, {{ current_user.email }}.</h1>
+      <p class="lead">Your authenticated Prayash workspace. Run analyses, review past results, or dive into insights.</p>
+      <div class="actions workspace-actions">
+        <a class="button" href="{{ url_for('index') }}#analysis">Run new analysis</a>
         <a class="button-outline" href="{{ url_for('insights') }}">View insights</a>
+        <a class="button-ghost" href="{{ url_for('methodology') }}">Methodology</a>
       </div>
     </div>
     <div class="glass-card">
       <h2 class="section-title">Session status</h2>
-      <div class="compact-list" style="margin-top: 1rem;">
-        <div class="list-card"><div><strong>Auth state</strong><p>Logged in and persisted with Flask-Login.</p></div><span class="status-pill">Active</span></div>
-        <div class="list-card"><div><strong>User</strong><p>{{ current_user.email }}</p></div><span class="status-pill is-warm">Signed in</span></div>
+      <div class="compact-list workspace-status-list">
+        <div class="list-card">
+          <div><strong>Auth state</strong><p>Logged in and persisted with Flask-Login.</p></div>
+          <span class="status-pill">Active</span>
+        </div>
+        <div class="list-card">
+          <div><strong>User</strong><p>{{ current_user.email }}</p></div>
+          <span class="status-pill is-warm">Signed in</span>
+        </div>
+        <div class="list-card">
+          <div><strong>Theme</strong><p>Switch between light, dark, or auto mode using the toggle in the navbar.</p></div>
+          <span class="status-pill">Customisable</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<section class="content-section">
+  <div class="container">
+    <div class="workspace-dashboard-grid">
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">📄</div>
+        <h3 class="section-title">Analyze a resume</h3>
+        <p class="section-subtitle">Upload or paste your resume for automation risk scoring, role matching, and a personalised learning roadmap.</p>
+        <a class="button-secondary" href="{{ url_for('index') }}#analysis">Go to analysis</a>
+      </div>
+
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">📊</div>
+        <h3 class="section-title">Review methodology</h3>
+        <p class="section-subtitle">Understand how the ML pipeline works — TF-IDF vectorization, Ridge regression, O*NET matching, and RIASEC profiling.</p>
+        <a class="button-outline" href="{{ url_for('methodology') }}">Open methodology</a>
+      </div>
+
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">🛡️</div>
+        <h3 class="section-title">Privacy & data</h3>
+        <p class="section-subtitle">Resume data stays ephemeral — processed in memory and discarded after each analysis. No permanent storage of your personal data.</p>
+        <a class="button-outline" href="{{ url_for('privacy') }}">Privacy details</a>
+      </div>
+
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">🎯</div>
+        <h3 class="section-title">Skills gap analysis</h3>
+        <p class="section-subtitle">Compare your resume skills against 20+ career roles. Get a match score, missing skills, and a personalised learning action plan.</p>
+        <a class="button-outline" href="{{ url_for('skills_gap') }}">Analyze skills gap</a>
+      </div>
+
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">🔑</div>
+        <h3 class="section-title">Quick tips</h3>
+        <p class="section-subtitle">Press <kbd>?</kbd> for keyboard shortcuts, <kbd>E</kbd> to focus the text area, <kbd>R</kbd> to run analysis, and <kbd>Esc</kbd> to close modals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container">
+    <div class="glass-card workspace-feedback-card">
+      <div class="inline-actions" style="justify-content: space-between;">
+        <div>
+          <h3 class="section-title">Have feedback?</h3>
+          <p class="section-subtitle" style="margin-top: 0.4rem;">Your input helps improve the platform. Share your thoughts with the team.</p>
+        </div>
+        <a class="button-ghost" href="{{ url_for('index') }}#analysis" data-export-button>Send feedback</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ═══ Career Chat Widget (SAHAY_AI-inspired AI advisor) ═══ -->
+<div id="career-chat" class="career-chat" data-career-chat>
+  <!-- Toggle Button -->
+  <button id="career-chat-toggle" class="career-chat-toggle" aria-label="Open career assistant" title="Ask about your career">
+    <span class="career-chat-toggle__icon" aria-hidden="true">💼</span>
+  </button>
+
+  <!-- Chat Panel -->
+  <div id="career-chat-panel" class="career-chat-panel" role="dialog" aria-label="Career assistant chat">
+    <!-- Header -->
+    <div class="career-chat__header">
+      <div class="career-chat__avatar" aria-hidden="true">🤖</div>
+      <div class="career-chat__header-info">
+        <span class="career-chat__header-name">Career Advisor</span>
+        <span class="career-chat__header-status">
+          <span class="chat-status-dot" aria-hidden="true"></span>
+          <span data-chat-status-text>Ready to help</span>
+        </span>
+      </div>
+      <button class="career-chat__minimize" data-chat-minimize aria-label="Minimize chat" title="Minimize">_</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="career-chat-messages" class="career-chat__messages" role="log" aria-live="polite">
+      <div class="chat-message is-assistant">
+        <div class="chat-message__avatar" aria-hidden="true">🤖</div>
+        <div class="chat-message__bubble">
+          👋 Hi! I'm your AI Career Advisor. I can help with:
+          <br><br>
+          • Skill development & learning recommendations<br>
+          • Job search strategies & career advice<br>
+          • Resume improvement tips<br>
+          • Interview preparation<br>
+          • Salary & compensation questions<br><br>
+          What would you like to know?
+          <div class="chat-quick-actions">
+            <button class="chat-quick-action" data-chat-quick="What skills should I learn?">💡 Skills</button>
+            <button class="chat-quick-action" data-chat-quick="How can I improve my resume?">📄 Resume</button>
+            <button class="chat-quick-action" data-chat-quick="Tips for job interviews?">🎯 Interviews</button>
+            <button class="chat-quick-action" data-chat-quick="Help me plan my career path">🗺️ Career</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="career-chat__input-area">
+      <input
+        id="career-chat-input"
+        class="career-chat__input"
+        type="text"
+        placeholder="Ask about your career..."
+        autocomplete="off"
+        aria-label="Type your career question"
+      >
+      <button id="career-chat-send" class="career-chat__send" aria-label="Send message" title="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='career-chat.css', v=static_version) }}">
+
+<script src="{{ url_for('static', filename='career-chat.js', v=static_version) }}"></script>
 {% endblock %}

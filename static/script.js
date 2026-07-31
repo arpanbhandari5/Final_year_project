@@ -1,902 +1,724 @@
+/**
+ * Prayash — Frontend Intelligence
+ * Features: SSE progress, toasts, keyboard shortcuts, password meter,
+ *           SW update, export, comparison, state persistence
+ */
 (() => {
-  // ── Dark Mode Toggle (3-state: auto / light / dark) ──
-  const themeToggle = document.querySelector("[data-theme-toggle]");
-  const themeModeLabel = document.querySelector("[data-theme-mode-label]");
+  'use strict';
+
+  // ─── STATE PERSISTENCE ───
+  const STORAGE = {
+    theme: 'prayash-theme-mode',
+    mode: 'prayash-analysis-mode',
+    path: 'prayash-active-path',
+    pwaDismissed: 'prayash-pwa-dismissed',
+  };
+  const load = (key, fb) => { try { return localStorage.getItem(key) || fb; } catch { return fb; } };
+  const save = (key, v) => { try { localStorage.setItem(key, v); } catch {} };
+
+  // ─── DOM REFS & CSRF ───
+  const $ = (s, p) => (p || document).querySelector(s);
+  const $$ = (s, p) => Array.from((p || document).querySelectorAll(s));
   const html = document.documentElement;
-  const STORAGE_KEY = "prayash-theme-mode";
+  const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+  let csrfToken = csrfMeta?.getAttribute('content') || '';
 
-  const prefersDarkMedia = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
-  const isSystemDark = () => prefersDarkMedia ? prefersDarkMedia.matches : false;
+  /** Fetch a fresh CSRF token and update both the variable and the <meta> tag */
+  const refreshCsrfToken = async () => {
+    try {
+      const res = await fetch('/api/csrf-token');
+      if (!res.ok) return;
+      const d = await res.json();
+      if (d.csrf_token) {
+        csrfToken = d.csrf_token;
+        if (csrfMeta) csrfMeta.setAttribute('content', csrfToken);
+      }
+    } catch { /* silently fail — next request will trigger reactive retry */ }
+  };
 
-  const MODE_CYCLE = ["auto", "light", "dark"];
-  const MODE_ICONS = { auto: "🌓", light: "☀️", dark: "🌙" };
-  const MODE_LABELS = { auto: "Auto", light: "Light", dark: "Dark" };
+  /** Proactive refresh every 50 minutes (buffer before 60 min expiry) */
+  const CSRF_REFRESH_MS = 50 * 60 * 1000;
+  setInterval(refreshCsrfToken, CSRF_REFRESH_MS);
 
-  let themeMode = localStorage.getItem(STORAGE_KEY) || "auto";
-  if (!MODE_CYCLE.includes(themeMode)) themeMode = "auto";
-
-  const applyTheme = (mode) => {
-    if (mode === "auto") {
-      applyResolvedTheme(isSystemDark() ? "dark" : "light");
+  /**
+   * POST helper that auto-includes the CSRF token.
+   * If the server responds with 400 and the body mentions "CSRF",
+   * the token is refreshed and the request is retried once automatically.
+   */
+  const apiPost = async (url, body, isRetry = false) => {
+    const headers = { 'X-CSRFToken': csrfToken };
+    const opts = { method: 'POST', headers };
+    if (body instanceof FormData) {
+      opts.body = body;
     } else {
-      applyResolvedTheme(mode);
+      headers['Content-Type'] = 'application/json';
+      opts.body = JSON.stringify(body);
     }
-    updateToggleUI(mode);
+    const res = await fetch(url, opts);
+    if (res.status === 400 && !isRetry) {
+      const cloned = res.clone();
+      try {
+        const text = await cloned.text();
+        if (/csrf/i.test(text)) {
+          await refreshCsrfToken();
+          return apiPost(url, body, true);
+        }
+      } catch { /* ignore clone/parse errors */ }
+    }
+    return res;
   };
 
-  const applyResolvedTheme = (resolved) => {
-    html.setAttribute("data-theme", resolved);
+  // ─── TOAST SYSTEM ───
+  const toastContainer = $('[data-toast-container]');
+  const toast = (message, type = 'info', duration = 4000) => {
+    if (!toastContainer) return;
+    const icons = { success: '\u2713', error: '\u2715', warning: '\u26A0', info: '\u2139' };
+    const el = document.createElement('div');
+    el.className = `toast toast--${type}`;
+    el.setAttribute('role', 'alert');
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'toast__icon';
+    iconSpan.textContent = icons[type] || '\u2139';
+    const msgSpan = document.createElement('span');
+    msgSpan.className = 'toast__msg';
+    msgSpan.textContent = message;
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'toast__close';
+    closeBtn.setAttribute('aria-label', 'Dismiss');
+    closeBtn.textContent = '\u00D7';
+    closeBtn.addEventListener('click', () => el.remove());
+    el.append(iconSpan, msgSpan, closeBtn);
+    toastContainer.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('toast--visible'));
+    setTimeout(() => { el.classList.remove('toast--visible'); setTimeout(() => el.remove(), 300); }, duration);
   };
 
+  // ─── KEYBOARD SHORTCUTS ───
+  const shortcutsPanel = $('[data-shortcuts-panel]');
+  const SHORTCUTS = [
+    { key: '?', label: 'Toggle this help' },
+    { key: 'E', label: 'Focus resume text area' },
+    { key: 'R', label: 'Run analysis' },
+    { key: 'M', label: 'Toggle mode (Standard/Advanced)' },
+    { key: 'C', label: 'Open comparison mode' },
+    { key: 'Esc', label: 'Close modal / panel' },
+  ];
+  const renderShortcuts = () => {
+    if (!shortcutsPanel) return;
+    shortcutsPanel.innerHTML = `<div class="shortcuts__header"><strong>Keyboard Shortcuts</strong><button class="shortcuts__close" data-shortcuts-close aria-label="Close">&times;</button></div><div class="shortcuts__list">${SHORTCUTS.map(s => `<div class="shortcuts__row"><kbd>${s.key}</kbd><span>${s.label}</span></div>`).join('')}</div>`;
+    shortcutsPanel.querySelector('[data-shortcuts-close]').addEventListener('click', () => shortcutsPanel.classList.remove('shortcuts--visible'));
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+      if (e.key === 'Escape') { closeModal(); closeComparison(); shortcutsPanel?.classList.remove('shortcuts--visible'); }
+      return;
+    }
+    switch (e.key) {
+      case '?': e.preventDefault(); shortcutsPanel?.classList.toggle('shortcuts--visible'); break;
+      case 'E': case 'e': e.preventDefault(); $('[data-resume-text]')?.focus(); break;
+      case 'R': case 'r': e.preventDefault(); $('[data-assess-button]')?.click(); break;
+      case 'M': case 'm': e.preventDefault(); setMode({ standard: 'advanced', advanced: 'standard' }[activeMode] || 'standard'); break;
+      case 'C': case 'c': e.preventDefault(); toggleComparison(); break;
+      case 'Escape': closeModal(); closeComparison(); shortcutsPanel?.classList.remove('shortcuts--visible'); break;
+    }
+  });
+
+  // ─── SW UPDATE ───
+  const swUpdateBanner = $('[data-sw-update]');
+  const swUpdateBtn = $('[data-sw-update-btn]');
+  let swRegistration = null;
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/static/sw.js').then(reg => {
+        swRegistration = reg;
+        reg.addEventListener('updatefound', () => {
+          const inst = reg.installing;
+          inst?.addEventListener('statechange', () => {
+            if (inst.state === 'installed' && navigator.serviceWorker.controller) {
+              swUpdateBanner?.classList.remove('hidden');
+              toast('A new version is available. Refresh to update.', 'info', 8000);
+            }
+          });
+        });
+      }).catch(() => {});
+    });
+    swUpdateBtn?.addEventListener('click', () => { swRegistration?.waiting?.postMessage({ type: 'SKIP_WAITING' }); window.location.reload(); });
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!refreshing) { refreshing = true; window.location.reload(); } });
+  }
+
+  // ─── DARK MODE ───
+  const themeToggle = $('[data-theme-toggle]');
+  const themeModeLabel = $('[data-theme-mode-label]');
+  const prefersDarkMedia = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  const isSystemDark = () => prefersDarkMedia?.matches || false;
+  const MODE_CYCLE = ['auto', 'light', 'dark'];
+  const MODE_LABELS = { auto: 'Auto', light: 'Light', dark: 'Dark' };
+  let themeMode = load(STORAGE.theme, 'auto');
+  if (!MODE_CYCLE.includes(themeMode)) themeMode = 'auto';
+  const applyTheme = (mode) => { applyResolvedTheme(mode === 'auto' ? (isSystemDark() ? 'dark' : 'light') : mode); updateToggleUI(mode); };
+  const applyResolvedTheme = (r) => html.setAttribute('data-theme', r);
   const updateToggleUI = (mode) => {
-    if (themeToggle) {
-      themeToggle.setAttribute("aria-label", `Theme: ${MODE_LABELS[mode]}. Click to cycle.`);
-      themeToggle.setAttribute("title", `${MODE_LABELS[mode]} mode` + (mode === "auto" ? " (follows OS setting)" : " (manual)") );
-    }
-    if (themeModeLabel) {
-      themeModeLabel.textContent = MODE_LABELS[mode];
-    }
-    // Toggle icon visibility
-    document.querySelectorAll(".theme-toggle-icon").forEach((icon) => {
-      const iconMode = icon.getAttribute("data-icon");
-      icon.style.display = iconMode === mode ? "inline" : "none";
-    });
+    themeToggle?.setAttribute('aria-label', `Theme: ${MODE_LABELS[mode]}. Click to cycle.`);
+    if (themeModeLabel) themeModeLabel.textContent = MODE_LABELS[mode];
+    $$('.theme-toggle-icon').forEach(icon => { icon.style.display = icon.getAttribute('data-icon') === mode ? 'inline' : 'none'; });
   };
-
-  // Initialize on load (head script already set data-theme for FOUC prevention)
   applyTheme(themeMode);
+  if (themeModeLabel) themeModeLabel.textContent = MODE_LABELS[themeMode];
+  themeToggle?.addEventListener('click', () => { themeMode = MODE_CYCLE[(MODE_CYCLE.indexOf(themeMode) + 1) % 3]; save(STORAGE.theme, themeMode); applyTheme(themeMode); });
+  prefersDarkMedia?.addEventListener('change', () => { if (themeMode === 'auto') applyResolvedTheme(isSystemDark() ? 'dark' : 'light'); });
 
-  if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-      const currentIndex = MODE_CYCLE.indexOf(themeMode);
-      themeMode = MODE_CYCLE[(currentIndex + 1) % MODE_CYCLE.length];
-      localStorage.setItem(STORAGE_KEY, themeMode);
-      applyTheme(themeMode);
-    });
-  }
-
-  // Listen for system preference changes (only when in auto mode)
-  if (prefersDarkMedia) {
-    prefersDarkMedia.addEventListener("change", () => {
-      if (themeMode === "auto") {
-        applyResolvedTheme(isSystemDark() ? "dark" : "light");
-      }
-    });
-  }
-
-  // ── PWA: Register Service Worker ──
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("/static/sw.js")
-        .then((reg) => console.log("SW registered:", reg.scope))
-        .catch((err) => console.warn("SW registration failed:", err));
-    });
-  }
-
-  // ── PWA: Install Banner ──
+  // ─── PWA INSTALL ───
   let deferredPrompt = null;
-  const installBanner = document.querySelector("[data-pwa-install-banner]");
-  const installButton = document.querySelector("[data-pwa-install-button]");
-  const dismissButton = document.querySelector("[data-pwa-dismiss]");
-  const bannerDismissed = localStorage.getItem("prayash-pwa-dismissed");
+  const installBanner = $('[data-pwa-install-banner]');
+  const installButton = $('[data-pwa-install-button]');
+  const dismissButton = $('[data-pwa-dismiss]');
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if (installBanner && !load(STORAGE.pwaDismissed, null)) installBanner.classList.remove('hidden'); });
+  installButton?.addEventListener('click', () => { deferredPrompt?.prompt(); deferredPrompt?.userChoice.then(() => { deferredPrompt = null; installBanner?.classList.add('hidden'); }); });
+  dismissButton?.addEventListener('click', () => { installBanner?.classList.add('hidden'); save(STORAGE.pwaDismissed, '1'); });
 
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installBanner && !bannerDismissed) installBanner.classList.remove("hidden");
-  });
+  // ─── MOBILE MENU ───
+  const mobileToggle = $('[data-mobile-menu]');
+  const navLinks = $('[data-nav-links]');
+  const navBackdrop = $('[data-nav-backdrop]');
+  const navbar = $('.navbar');
+  const closeMobileMenu = () => { navLinks?.classList.remove('is-open'); mobileToggle?.classList.remove('is-open'); mobileToggle?.setAttribute('aria-expanded', 'false'); navBackdrop?.classList.remove('is-visible'); navbar?.classList.remove('menu-open'); };
+  mobileToggle?.addEventListener('click', () => { const o = navLinks?.classList.toggle('is-open'); mobileToggle?.classList.toggle('is-open'); mobileToggle?.setAttribute('aria-expanded', String(o)); navBackdrop?.classList.toggle('is-visible', o); navbar?.classList.toggle('menu-open', o); });
+  navBackdrop?.addEventListener('click', closeMobileMenu);
+  $$('.nav-link', navLinks).forEach(l => l.addEventListener('click', closeMobileMenu));
 
-  installButton?.addEventListener("click", () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(() => {
-        deferredPrompt = null;
-        if (installBanner) installBanner.classList.add("hidden");
-      });
-    }
-  });
+  renderShortcuts();
 
-  dismissButton?.addEventListener("click", () => {
-    if (installBanner) installBanner.classList.add("hidden");
-    localStorage.setItem("prayash-pwa-dismissed", "1");
-  });
+  // ==================================================================
+  // ─── ANALYSIS APP ───
+  // ==================================================================
 
-  // ── Mobile Menu Toggle ──
-  const mobileToggle = document.querySelector("[data-mobile-menu]");
-  const navLinks = document.querySelector("[data-nav-links]");
-  const navBackdrop = document.querySelector("[data-nav-backdrop]");
-  const navbar = document.querySelector(".navbar");
-  const closeMobileMenu = () => {
-    if (navLinks) navLinks.classList.remove("is-open");
-    if (mobileToggle) {
-      mobileToggle.classList.remove("is-open");
-      mobileToggle.setAttribute("aria-expanded", "false");
-    }
-    if (navBackdrop) navBackdrop.classList.remove("is-visible");
-    if (navbar) navbar.classList.remove("menu-open");
-  };
-  if (mobileToggle && navLinks) {
-    mobileToggle.addEventListener("click", () => {
-      const isOpen = navLinks.classList.toggle("is-open");
-      mobileToggle.classList.toggle("is-open");
-      mobileToggle.setAttribute("aria-expanded", String(isOpen));
-      if (navBackdrop) navBackdrop.classList.toggle("is-visible", isOpen);
-      if (navbar) navbar.classList.toggle("menu-open", isOpen);
-    });
-    navBackdrop?.addEventListener("click", closeMobileMenu);
-    navLinks.querySelectorAll(".nav-link").forEach((link) => {
-      link.addEventListener("click", closeMobileMenu);
-    });
-  }
+  const form = $('[data-analysis-form]');
+  const modeButtons = $$('[data-mode]');
+  const modeInput = $('[data-mode-input]');
+  const browseButton = $('[data-browse-button]');
+  const fileInput = $('[data-file-input]');
+  const dropZone = $('[data-drop-zone]');
+  const submitButton = $('[data-assess-button]');
+  const exportButton = $('[data-export-button]');
+  const modal = $('[data-result-modal]');
+  const modalTitle = $('[data-modal-title]');
+  const modalRiskScore = $('[data-modal-risk-score]');
+  const modalRiskLabel = $('[data-modal-risk-label]');
+  const modalMode = $('[data-modal-mode]');
+  const modalCloseButtons = $$('[data-modal-close]');
+  const resultBanner = $('[data-result-banner]');
+  const resultStatus = $('[data-result-status]');
+  const narrative = $('[data-narrative]');
+  const rolesList = $('[data-roles-list]');
+  const roadmapList = $('[data-roadmap-list]');
+  const riasecList = $('[data-riasec-list]');
+  const uploadStatus = $('[data-upload-status]');
+  const dashboardRiskRing = $('[data-risk-ring]');
+  const dashboardRiskScore = $('[data-risk-score-display]');
+  const dashboardRiskLabel = $('[data-risk-label-display]');
+  const dashboardRiskSummary = $('[data-risk-summary]');
+  const dashboardRoleStatus = $('[data-role-status]');
+  const dashboardRoleBars = $('[data-role-bars]');
+  const riskInsights = $('[data-risk-insights]');
+  const nextStepsStatus = $('[data-next-steps-status]');
+  const nextStepsLearning = $('[data-next-learning]');
+  const nextStepsJobs = $('[data-next-jobs]');
+  const nextStepsEducation = $('[data-next-education]');
+  const nextStepsSupport = $('[data-next-support]');
+  const modalNextSteps = $('[data-modal-next-steps]');
+  const progressBar = $('[data-progress-bar]');
+  const progressStatus = $('[data-progress-status]');
+  const progressPercent = $('[data-progress-percent]');
+  const comparePanel = $('[data-compare-panel]');
+  const compareToggle = $('[data-compare-toggle]');
+  const compareTextA = $('[data-compare-text-a]');
+  const compareTextB = $('[data-compare-text-b]');
+  const compareRun = $('[data-compare-run]');
+  const compareResults = $('[data-compare-results]');
+  const passwordInput = $('[data-password-input]');
+  const strengthBar = $('[data-strength-bar]');
+  const strengthLabel = $('[data-strength-label]');
+  const pathButtons = $$('[data-path-option]');
+  const pathTitle = $('[data-path-title]');
+  const pathDescription = $('[data-path-description]');
+  const pathActions = $('[data-path-actions]');
+  const heroTitle = $('[data-hero-title]');
+  const heroLead = $('[data-hero-lead]');
+  const heroActions = $('[data-hero-actions]');
+  const heroPrimaryLink = $('[data-hero-primary-link]');
+  const analysisIntro = $('[data-analysis-intro]');
 
-  // ── Original App Logic ──
-  /** @typedef {{ job_role?: string, industry?: string, similarity?: number, risk_score?: number, skills?: string[], openings?: Array<{label?: string, url?: string}> }} JobPivot */
-  /** @typedef {{ course?: string, skill?: string, reason?: string, url?: string }} RoadmapItem */
-  /** @typedef {{ primary?: string, secondary?: string, tertiary?: string, scores?: Record<string, number|string> }} RiasecProfile */
-  /** @typedef {{ learning_actions?: string[], job_search_actions?: string[], education_training_actions?: string[], support_resources?: string[] }} GuidedNextSteps */
-  /** @typedef {{ success?: boolean, mode?: string, risk_score?: number, risk_label?: string, cognitive_career_narrative?: string, top_roles?: JobPivot[], roadmap?: RoadmapItem[], riasec?: RiasecProfile, skill_clusters?: Array<Record<string, unknown>>, guided_next_steps?: GuidedNextSteps, report_guide?: Record<string, string[]>, support_resources?: Array<Record<string, string>> }} AnalysisResult */
+  if (!form || !submitButton) return;
 
-  const form = document.querySelector("[data-analysis-form]");
-  const modeButtons = document.querySelectorAll("[data-mode]");
-  const modeInput = document.querySelector("[data-mode-input]");
-  const browseButton = document.querySelector("[data-browse-button]");
-  const fileInput = document.querySelector("[data-file-input]");
-  const dropZone = document.querySelector("[data-drop-zone]");
-  const submitButton = document.querySelector("[data-assess-button]");
-  const modal = document.querySelector("[data-result-modal]");
-  const modalTitle = document.querySelector("[data-modal-title]");
-  const modalRiskScore = document.querySelector("[data-modal-risk-score]");
-  const modalRiskLabel = document.querySelector("[data-modal-risk-label]");
-  const modalMode = document.querySelector("[data-modal-mode]");
-  const modalCloseButtons = document.querySelectorAll("[data-modal-close]");
-  const resultBanner = document.querySelector("[data-result-banner]");
-  const resultStatus = document.querySelector("[data-result-status]");
-  const narrative = document.querySelector("[data-narrative]");
-  const rolesList = document.querySelector("[data-roles-list]");
-  const roadmapList = document.querySelector("[data-roadmap-list]");
-  const riasecList = document.querySelector("[data-riasec-list]");
-  const riskScore = document.querySelector("[data-risk-score]");
-  const riskLabel = document.querySelector("[data-risk-label]");
-  const uploadStatus = document.querySelector("[data-upload-status]");
-  const dashboardRiskRing = document.querySelector("[data-risk-ring]");
-  const dashboardRiskScore = document.querySelector("[data-risk-score-display]");
-  const dashboardRiskLabel = document.querySelector("[data-risk-label-display]");
-  const dashboardRiskSummary = document.querySelector("[data-risk-summary]");
-  const dashboardRoleStatus = document.querySelector("[data-role-status]");
-  const dashboardRoleBars = document.querySelector("[data-role-bars]");
-  const riskInsights = document.querySelector("[data-risk-insights]");
-  const pathButtons = document.querySelectorAll("[data-path-option]");
-  const pathTitle = document.querySelector("[data-path-title]");
-  const pathDescription = document.querySelector("[data-path-description]");
-  const pathActions = document.querySelector("[data-path-actions]");
-  const heroTitle = document.querySelector("[data-hero-title]");
-  const heroLead = document.querySelector("[data-hero-lead]");
-  const heroActions = document.querySelector("[data-hero-actions]");
-  const heroPrimaryLink = document.querySelector("[data-hero-primary-link]");
-  const analysisIntro = document.querySelector("[data-analysis-intro]");
-  const nextStepsStatus = document.querySelector("[data-next-steps-status]");
-  const nextStepsLearning = document.querySelector("[data-next-learning]");
-  const nextStepsJobs = document.querySelector("[data-next-jobs]");
-  const nextStepsEducation = document.querySelector("[data-next-education]");
-  const nextStepsSupport = document.querySelector("[data-next-support]");
-  const modalNextSteps = document.querySelector("[data-modal-next-steps]");
-
-  if (!form || !fileInput || !submitButton) {
-    return;
-  }
-
-  let activeMode = modeInput?.value || "standard";
-  let activePath = "student";
+  // ─── STATE ───
+  let activeMode = load(STORAGE.mode, 'standard');
+  let activePath = load(STORAGE.path, 'student');
   let selectedFile = null;
+  let lastAnalysis = null;
   const originalSubmitLabel = submitButton.textContent.trim();
-  let loadingSkeletonTimer = null;
 
-  const PATHWAY_CONTENT = {
-    student: {
-      heroTitle: "Turn your student experience into a confident career launch plan.",
-      heroLead: "Use your resume, projects, and coursework to identify roles, skill priorities, and practical next actions you can start this week.",
-      analysisIntro: "Upload your student resume or paste a profile summary. You will get role fit, skill roadmap, and low-pressure next steps.",
-      panelTitle: "Student path selected",
-      panelDescription: "Start with standard mode for fast role alignment, then use advanced mode if you want richer narrative guidance.",
-      actions: [
-        "Run a standard analysis and review your top three role matches.",
-        "Pick one roadmap course and schedule weekly learning blocks.",
-        "Update one project bullet with stronger role keywords.",
-      ],
-      chips: ["Student-ready roles", "Project-to-job translation", "Interview preparation"],
-      ctaLabel: "Start student assessment",
-    },
-    "job-seeker": {
-      heroTitle: "Focus your job search with clearer role fit and stronger resume targeting.",
-      heroLead: "Identify the roles where your profile already aligns, then prioritize skill and application actions that improve interview conversion.",
-      analysisIntro: "Upload your current resume to get top role matches, automation risk, and a practical action sequence for applications.",
-      panelTitle: "Job-seeker path selected",
-      panelDescription: "Use role similarity and risk indicators to focus where your profile is strongest right now.",
-      actions: [
-        "Track recurring requirements across 10 recent job postings.",
-        "Tailor your resume summary to your top matched role.",
-        "Use one roadmap item to close a visible skill gap.",
-      ],
-      chips: ["Role match clarity", "Resume optimization", "Application focus"],
-      ctaLabel: "Start job-search assessment",
-    },
-    "career-switcher": {
-      heroTitle: "Plan your career transition with realistic steps and transferable skill mapping.",
-      heroLead: "See where your current background overlaps with target roles, then build a practical bridge through focused learning and role targeting.",
-      analysisIntro: "Upload your current resume to uncover transferable strengths, target-role alignment, and training priorities.",
-      panelTitle: "Career-switcher path selected",
-      panelDescription: "A transition works best when you combine targeted roles, visible proof projects, and short-cycle skill gains.",
-      actions: [
-        "Pick two transferable skills from your strongest role match.",
-        "Build one portfolio proof item for your target direction.",
-        "Commit to a 4 to 8 week transition learning plan.",
-      ],
-      chips: ["Transferable strengths", "Transition roadmap", "Targeted training"],
-      ctaLabel: "Start transition assessment",
-    },
-    "new-workforce": {
-      heroTitle: "Get a clear first-career direction with practical, beginner-friendly guidance.",
-      heroLead: "Use your early experience to identify entry-level role options, next skills, and action steps that build confidence quickly.",
-      analysisIntro: "Upload your resume or profile summary to get an approachable report with role options and immediate next steps.",
-      panelTitle: "New-workforce path selected",
-      panelDescription: "Start with a simple plan: one role focus, one learning milestone, and one weekly job-search routine.",
-      actions: [
-        "Choose one target role and build your resume around it.",
-        "Take one beginner-friendly roadmap course this month.",
-        "Apply to a consistent set of entry-level opportunities each week.",
-      ],
-      chips: ["Entry-level pathways", "Beginner support", "First-job strategy"],
-      ctaLabel: "Start first-career assessment",
-    },
+  // ─── PATHWAYS ───
+  const P = {
+    student: { h: 'Turn your student experience into a confident career launch plan.', l: 'Use your resume, projects, and coursework to identify roles and skill priorities.', ai: 'Upload your student resume or paste a profile summary.', pt: 'Student path selected', pd: 'Start with standard mode for fast role alignment.', a: ['Run standard analysis and review top three role matches.', 'Pick one roadmap course and schedule weekly blocks.', 'Update one project bullet with stronger keywords.'], c: ['Student-ready roles', 'Project-to-job translation', 'Interview preparation'], cta: 'Start student assessment' },
+    'job-seeker': { h: 'Focus your job search with clearer role fit.', l: 'Identify roles where your profile aligns and prioritize application actions.', ai: 'Upload your resume for top role matches and automation risk.', pt: 'Job-seeker path selected', pd: 'Use role similarity and risk indicators to focus your search.', a: ['Track requirements across 10 recent job postings.', 'Tailor your resume to your top matched role.', 'Use one roadmap item to close a skill gap.'], c: ['Role match clarity', 'Resume optimization', 'Application focus'], cta: 'Start job-search assessment' },
+    'career-switcher': { h: 'Plan your career transition with transferable skill mapping.', l: 'See where your background overlaps with target roles.', ai: 'Upload your resume to uncover transferable strengths.', pt: 'Career-switcher path selected', pd: 'Combine targeted roles with proof projects and short-cycle gains.', a: ['Pick two transferable skills from your strongest role match.', 'Build one portfolio proof item.', 'Commit to a 4\u20138 week transition plan.'], c: ['Transferable strengths', 'Transition roadmap', 'Targeted training'], cta: 'Start transition assessment' },
+    'new-workforce': { h: 'Get a clear first-career direction.', l: 'Use your early experience to identify entry-level roles.', ai: 'Upload your resume for approachable role options.', pt: 'New-workforce path selected', pd: 'One role focus, one milestone, one weekly routine.', a: ['Choose one target role and build your resume around it.', 'Take one beginner-friendly roadmap course.', 'Apply to entry-level opportunities weekly.'], c: ['Entry-level pathways', 'Beginner support', 'First-job strategy'], cta: 'Start first-career assessment' },
   };
 
-  const describeFile = (file) => {
-    if (!file) {
-      return "No file selected yet.";
-    }
-
-    return `Selected file: ${file.name}`;
-  };
-
-  const normalizeRoleKey = (role) => `${(role?.job_role || "").trim().toLowerCase()}::${(role?.industry || "").trim().toLowerCase()}`;
-
+  // ─── HELPERS ───
+  const describeFile = (f) => f ? `Selected file: ${f.name}` : 'No file selected yet.';
+  const key = (r) => `${(r?.job_role || '').trim().toLowerCase()}::${(r?.industry || '').trim().toLowerCase()}`;
   const dedupeRoles = (roles) => {
-    const roleMap = new Map();
-
-    (roles || []).forEach((role) => {
-      const key = normalizeRoleKey(role);
-      const current = roleMap.get(key);
-      if (!current || (role.similarity || 0) > (current.similarity || 0)) {
-        roleMap.set(key, role);
-      }
-    });
-
-    return Array.from(roleMap.values()).sort((left, right) => (right.similarity || 0) - (left.similarity || 0));
+    const m = new Map();
+    (roles || []).forEach(r => { const k = key(r); const c = m.get(k); if (!c || (r.similarity || 0) > (c.similarity || 0)) m.set(k, r); });
+    return Array.from(m.values()).sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
   };
+  const roleLinks = (role) => { const q = encodeURIComponent(role?.job_role || 'career'); return [{ label: 'Indeed', url: `https://www.indeed.com/jobs?q=${q}` }, { label: 'LinkedIn', url: `https://www.linkedin.com/jobs/search/?keywords=${q}` }, { label: 'Naukri', url: `https://www.naukri.com/${encodeURIComponent((role?.job_role || 'career').toLowerCase().replace(/\s+/g, '-'))}-jobs` }]; };
+  const setUploadStatus = (m) => { if (uploadStatus) uploadStatus.textContent = m; };
 
-  const buildRoleLinks = (role) => {
-    const query = encodeURIComponent(role?.job_role || "career role");
-    return [
-      { label: "Indeed", url: `https://www.indeed.com/jobs?q=${query}` },
-      { label: "LinkedIn", url: `https://www.linkedin.com/jobs/search/?keywords=${query}` },
-      { label: "Naukri", url: `https://www.naukri.com/${encodeURIComponent((role?.job_role || "career").toLowerCase().replace(/\s+/g, "-"))}-jobs` },
-    ];
+  // ─── SSE PROGRESS BAR ───
+  const updateProgress = (pct, status) => {
+    if (progressBar) { progressBar.style.setProperty('--progress', `${Math.max(0, Math.min(100, pct))}%`); progressBar.classList.add('progress-bar--active'); }
+    if (progressStatus) progressStatus.textContent = status || 'Processing...';
+    if (progressPercent) progressPercent.textContent = `${pct}%`;
   };
+  const hideProgress = () => { progressBar?.classList.remove('progress-bar--active'); if (progressStatus) progressStatus.textContent = ''; if (progressPercent) progressPercent.textContent = ''; };
 
-  const setUploadStatus = (message) => {
-    if (uploadStatus) {
-      uploadStatus.textContent = message;
-    }
-  };
+  // ─── MODAL ───
+  const openModal = () => { modal?.classList.remove('hidden'); modal?.classList.add('is-open'); modal?.setAttribute('aria-hidden', 'false'); };
+  const closeModal = () => { modal?.classList.remove('is-open'); modal?.classList.add('hidden'); modal?.setAttribute('aria-hidden', 'true'); hideProgress(); };
+  modalCloseButtons.forEach(b => b.addEventListener('click', closeModal));
+  modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-  const clearLoadingSkeleton = () => {
-    if (loadingSkeletonTimer) {
-      window.clearTimeout(loadingSkeletonTimer);
-      loadingSkeletonTimer = null;
-    }
-    if (modal) {
-      modal.classList.remove("is-loading-advanced");
-    }
-  };
-
-  const renderAdvancedSkeleton = () => {
-    if (!modal) return;
-    modal.classList.add("is-loading-advanced");
-    if (resultStatus) {
-      resultStatus.textContent = "Analyzing with Llama 3...";
-      resultStatus.classList.add("shimmer-line");
-    }
-    if (narrative) {
-      narrative.textContent = "Preparing an executive narrative, role pivots, and roadmap suggestions.";
-      narrative.classList.add("shimmer-line");
-    }
-    if (dashboardRoleStatus) {
-      dashboardRoleStatus.textContent = "Processing advanced request";
-    }
-  };
-
+  // ─── SET MODE ───
   const setMode = (mode) => {
     activeMode = mode;
-    if (modeInput) {
-      modeInput.value = mode;
-    }
-    modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
-    [dashboardRiskRing, dashboardRiskScore, dashboardRiskLabel, dashboardRoleBars, resultBanner].forEach((element) => {
-      if (!element) return;
-      element.classList.remove("motion-fade-up", "motion-stagger-1", "motion-stagger-2", "motion-stagger-3");
-      void element.offsetWidth;
-      element.classList.add("motion-fade-up");
-    });
+    if (modeInput) modeInput.value = mode;
+    modeButtons.forEach(b => b.classList.toggle('is-active', b.dataset.mode === mode));
+    save(STORAGE.mode, mode);
+    [dashboardRiskRing, dashboardRiskScore, dashboardRiskLabel, dashboardRoleBars, resultBanner].forEach(el => { if (!el) return; el.classList.remove('motion-fade-up', 'motion-stagger-1', 'motion-stagger-2', 'motion-stagger-3'); void el.offsetWidth; el.classList.add('motion-fade-up'); });
   };
 
-  const openModal = () => {
-    if (!modal) return;
-    modal.classList.remove("hidden");
-    modal.classList.add("is-open");
-    modal.setAttribute("aria-hidden", "false");
-  };
-
-  const closeModal = () => {
-    if (!modal) return;
-    modal.classList.remove("is-open");
-    modal.classList.add("hidden");
-    modal.setAttribute("aria-hidden", "true");
-  };
-
-  modalCloseButtons.forEach((button) => {
-    button.addEventListener("click", closeModal);
-  });
-
-  modal?.addEventListener("click", (event) => {
-    if (event.target === modal) {
-      closeModal();
-    }
-  });
-
+  // ─── BUSY ───
   const setBusy = (busy, message) => {
     submitButton.disabled = busy;
-    browseButton.disabled = busy;
-    modeButtons.forEach((button) => {
-      button.disabled = busy;
-    });
-    submitButton.textContent = busy ? "Loading..." : originalSubmitLabel;
-
+    if (browseButton) browseButton.disabled = busy;
+    modeButtons.forEach(b => { b.disabled = busy; });
+    submitButton.textContent = busy ? 'Analyzing...' : originalSubmitLabel;
     if (busy) {
       openModal();
-      if (activeMode === "advanced") {
-        renderAdvancedSkeleton();
-      }
-      if (modalTitle) {
-        modalTitle.textContent = message || "Analyzing resume locally...";
-      }
-      if (modalMode) {
-        modalMode.textContent = `${activeMode === "advanced" ? "Advanced" : "Standard"} mode`;
-      }
-      if (modalRiskScore) {
-        modalRiskScore.textContent = "Processing...";
-      }
-      if (modalRiskLabel) {
-        modalRiskLabel.textContent = "In progress";
-      }
-      if (resultStatus) {
-        resultStatus.textContent = message || "Analyzing resume locally...";
-      }
-      if (narrative) {
-        narrative.textContent = "Please wait while Prayash processes the resume in memory.";
-      }
-      if (dashboardRiskSummary) {
-        dashboardRiskSummary.textContent = "Processing prediction...";
-      }
-    } else {
-      modal?.classList.remove("is-processing");
+      if (modalTitle) modalTitle.textContent = message || 'Analyzing...';
+      if (modalMode) modalMode.textContent = `${activeMode === 'advanced' ? 'Advanced' : 'Standard'} mode`;
+      if (modalRiskScore) modalRiskScore.textContent = 'Processing...';
+      if (modalRiskLabel) modalRiskLabel.textContent = 'In progress';
+      if (resultStatus) resultStatus.textContent = message || 'Analyzing...';
+      if (narrative) narrative.textContent = 'Processing resume in memory...';
+      if (dashboardRiskSummary) dashboardRiskSummary.textContent = 'Processing prediction...';
     }
   };
 
-  const renderList = (container, items, renderer) => {
-    if (!container) return;
-    container.innerHTML = items.map(renderer).join("");
+  // ─── RENDER HELPERS ───
+  const renderList = (c, items, fn) => { if (c) c.innerHTML = (items || []).map(fn).join(''); };
+  const simpleSteps = (c, items, heading) => {
+    if (!c) return;
+    const safe = (items || []).filter(Boolean);
+    if (!safe.length) { c.innerHTML = '<div class="list-card"><div><strong>No actions yet</strong><p>Run analysis to generate next steps.</p></div></div>'; return; }
+    c.innerHTML = safe.map(i => `<div class="list-card motion-fade-up"><div><strong>${heading}</strong><p>${i}</p></div></div>`).join('');
+  };
+  const fallbackSteps = (payload) => {
+    const band = (payload.risk_label || 'Moderate').toLowerCase();
+    const top = dedupeRoles(payload.top_roles || []).slice(0, 2);
+    const road = payload.roadmap || [];
+    const learn = road.slice(0, 3).map(i => `Start '${i.course}' and focus on ${i.skill || 'core skill'} this week.`);
+    if (!learn.length) learn.push('Pick one high-impact skill gap and schedule three practice sessions.');
+    const job = top.length ? [...top.map(r => `Save 10 postings for ${r.job_role} and track requirements.`), 'Update resume summary with matched role keywords.'] : ['Collect 10 postings and list repeated skills.', 'Tailor resume headline for one target role.'];
+    const edu = [band === 'elevated' ? 'Prioritize digital and analytical skills.' : band === 'low' ? 'Deepen specialization.' : 'Build adjacent skills.', 'Compare certificates vs credentials.', 'Set a 4\u201312 week timeline.'];
+    return { learning_actions: learn, job_search_actions: job, education_training_actions: edu, support_resources: ['Review methodology.', 'Review privacy.', 'Use advanced mode.'] };
+  };
+  const nextSteps = (payload) => {
+    const g = payload.guided_next_steps || fallbackSteps(payload);
+    simpleSteps(nextStepsLearning, g.learning_actions, 'Learning');
+    simpleSteps(nextStepsJobs, g.job_search_actions, 'Job search');
+    simpleSteps(nextStepsEducation, g.education_training_actions, 'Training');
+    simpleSteps(nextStepsSupport, g.support_resources, 'Support');
+    if (nextStepsStatus) nextStepsStatus.textContent = 'Updated';
+    if (modalNextSteps) simpleSteps(modalNextSteps, [...(g.learning_actions || []).slice(0, 1), ...(g.job_search_actions || []).slice(0, 1), ...(g.education_training_actions || []).slice(0, 1)], 'Next');
   };
 
-  const renderSimpleSteps = (container, items, heading) => {
-    if (!container) return;
-    const safeItems = (items || []).filter(Boolean);
-    if (!safeItems.length) {
-      container.innerHTML = `<div class="list-card"><div><strong>No actions yet</strong><p>Run analysis to generate practical next steps.</p></div></div>`;
-      return;
-    }
-    container.innerHTML = safeItems.map((item) => `
-      <div class="list-card motion-fade-up">
-        <div>
-          <strong>${heading}</strong>
-          <p>${item}</p>
-        </div>
-      </div>
-    `).join("");
+  // ─── PATHWAY ───
+  const renderPathway = (k) => {
+    const c = P[k] || P.student;
+    activePath = k; save(STORAGE.path, k);
+    if (heroTitle) heroTitle.textContent = c.h;
+    if (heroLead) heroLead.textContent = c.l;
+    if (analysisIntro) analysisIntro.textContent = c.ai;
+    if (pathTitle) pathTitle.textContent = c.pt;
+    if (pathDescription) pathDescription.textContent = c.pd;
+    if (heroPrimaryLink) heroPrimaryLink.textContent = c.cta;
+    if (heroActions) heroActions.innerHTML = (c.c || []).map(x => `<span class="chip">${x}</span>`).join('');
+    if (pathActions) pathActions.innerHTML = (c.a || []).map(x => `<div class="list-card"><div><strong>Action</strong><p>${x}</p></div></div>`).join('');
+    pathButtons.forEach(b => b.classList.toggle('is-active', b.dataset.pathOption === k));
   };
 
-  const buildFallbackNextSteps = (payload) => {
-    const riskBand = (payload.risk_label || "Moderate").toLowerCase();
-    const topRoles = dedupeRoles(payload.top_roles || []).slice(0, 2);
-    const roadmap = payload.roadmap || [];
-
-    const learningActions = roadmap.slice(0, 3).map((item) => `Start '${item.course}' and focus on ${item.skill || "core skill"} this week.`);
-    if (!learningActions.length) {
-      learningActions.push("Pick one high-impact skill gap and schedule three focused practice sessions this week.");
-    }
-
-    const jobActions = topRoles.length
-      ? [
-          ...topRoles.map((role) => `Save 10 postings for ${role.job_role} and track repeated requirements.`),
-          "Update your resume summary with language from your best-matched role.",
-        ]
-      : [
-          "Collect 10 postings in your target field and list repeated skills.",
-          "Tailor your resume headline for one target role before applying.",
-        ];
-
-    const educationActions = [
-      riskBand === "elevated"
-        ? "Prioritize transferable digital and analytical skills to reduce automation exposure."
-        : riskBand === "low"
-          ? "Deepen specialization in your strongest areas to preserve your low-risk profile."
-          : "Build adjacent skills that improve resilience and role flexibility.",
-      "Compare one short certificate and one longer credential for your target direction.",
-      "Set a 4, 8, or 12-week timeline and add deadlines to your calendar.",
-    ];
-
-    const supportActions = [
-      "Review methodology to understand how scores and role matches are generated.",
-      "Review privacy details to confirm data handling safeguards.",
-      "Use advanced mode if you want deeper narrative guidance.",
-    ];
-
-    return {
-      learning_actions: learningActions,
-      job_search_actions: jobActions,
-      education_training_actions: educationActions,
-      support_resources: supportActions,
-    };
+  // ─── DASHBOARD ───
+  const resetStyles = () => { if (!resultBanner) return; resultBanner.style.background = ''; resultBanner.style.borderColor = ''; resultBanner.style.color = ''; };
+  const updateDashboard = (payload) => {
+    const roles = dedupeRoles(payload.top_roles || []);
+    if (dashboardRiskRing) dashboardRiskRing.style.setProperty('--score', `${Math.max(0.05, Math.min(0.95, payload.risk_score || 0))}`);
+    if (dashboardRiskScore) dashboardRiskScore.textContent = `${Math.round((payload.risk_score || 0) * 100)}%`;
+    if (dashboardRiskLabel) dashboardRiskLabel.textContent = payload.risk_label ? `${payload.risk_label} risk` : 'Risk';
+    if (dashboardRiskSummary) dashboardRiskSummary.textContent = payload.cognitive_career_narrative || 'Prediction ready.';
+    if (dashboardRoleStatus) dashboardRoleStatus.textContent = roles.length ? 'Live' : 'No matches';
+    if (dashboardRoleBars) dashboardRoleBars.innerHTML = roles.slice(0, 3).map((r, i) => `<div class="motion-fade-up motion-stagger-${Math.min(i + 1, 5)}"><div class="inline-actions" style="justify-content: space-between;"><strong>${r.job_role}</strong><strong class="muted">${Math.round((r.similarity || 0) * 100)}%</strong></div><div class="bar"><span style="width: ${Math.round((r.similarity || 0) * 100)}%;"></span></div><p class="small-note">${r.industry} \u00B7 Risk ${Math.round((r.risk_score || 0) * 100)}%</p></div>`).join('');
   };
-
-  const renderGuidedNextSteps = (payload) => {
-    const guided = payload.guided_next_steps || buildFallbackNextSteps(payload);
-    renderSimpleSteps(nextStepsLearning, guided.learning_actions, "Learning action");
-    renderSimpleSteps(nextStepsJobs, guided.job_search_actions, "Job action");
-    renderSimpleSteps(nextStepsEducation, guided.education_training_actions, "Training action");
-    renderSimpleSteps(nextStepsSupport, guided.support_resources, "Support resource");
-
-    if (nextStepsStatus) {
-      nextStepsStatus.textContent = "Updated from latest analysis";
-    }
-
-    if (modalNextSteps) {
-      const compact = [
-        ...(guided.learning_actions || []).slice(0, 1),
-        ...(guided.job_search_actions || []).slice(0, 1),
-        ...(guided.education_training_actions || []).slice(0, 1),
-      ];
-      renderSimpleSteps(modalNextSteps, compact, "Next step");
-    }
-  };
-
-  const renderPathway = (pathKey) => {
-    const content = PATHWAY_CONTENT[pathKey] || PATHWAY_CONTENT.student;
-    activePath = pathKey;
-
-    if (heroTitle) heroTitle.textContent = content.heroTitle;
-    if (heroLead) heroLead.textContent = content.heroLead;
-    if (analysisIntro) analysisIntro.textContent = content.analysisIntro;
-    if (pathTitle) pathTitle.textContent = content.panelTitle;
-    if (pathDescription) pathDescription.textContent = content.panelDescription;
-    if (heroPrimaryLink) heroPrimaryLink.textContent = content.ctaLabel;
-
-    if (heroActions) {
-      heroActions.innerHTML = (content.chips || []).map((chip) => `<span class="chip">${chip}</span>`).join("");
-    }
-
-    if (pathActions) {
-      pathActions.innerHTML = (content.actions || []).map((action) => `
-        <div class="list-card">
-          <div>
-            <strong>Suggested action</strong>
-            <p>${action}</p>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    pathButtons.forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.pathOption === pathKey);
-    });
-  };
-
-  const resetResultStyles = () => {
-    if (!resultBanner) return;
-    resultBanner.style.background = "";
-    resultBanner.style.borderColor = "";
-    resultBanner.style.color = "";
-  };
-
-  const updateDashboardResults = (payload) => {
-    const uniqueRoles = dedupeRoles(payload.top_roles || []);
-    if (dashboardRiskRing) {
-      dashboardRiskRing.style.setProperty("--score", `${Math.max(0.05, Math.min(0.95, payload.risk_score || 0))}`);
-    }
-    if (dashboardRiskScore) {
-      dashboardRiskScore.textContent = `${Math.round((payload.risk_score || 0) * 100)}%`;
-    }
-    if (dashboardRiskLabel) {
-      dashboardRiskLabel.textContent = payload.risk_label ? `${payload.risk_label} risk` : "Risk";
-    }
-    if (dashboardRiskSummary) {
-      dashboardRiskSummary.textContent = payload.cognitive_career_narrative || "Local ML prediction ready.";
-    }
-    if (dashboardRoleStatus) {
-      dashboardRoleStatus.textContent = uniqueRoles.length ? "Live prediction" : "No matches";
-    }
-    if (dashboardRoleBars) {
-      dashboardRoleBars.innerHTML = uniqueRoles.slice(0, 3).map((role, index) => `
-        <div class="motion-fade-up motion-stagger-${Math.min(index + 1, 5)}">
-          <div class="inline-actions" style="justify-content: space-between;">
-            <strong>${role.job_role}</strong><strong class="muted">${Math.round((role.similarity || 0) * 100)}%</strong>
-          </div>
-          <div class="bar"><span style="width: ${Math.round((role.similarity || 0) * 100)}%;"></span></div>
-          <p class="small-note" style="margin: 0.45rem 0 0;">${role.industry} · Risk ${Math.round((role.risk_score || 0) * 100)}%</p>
-        </div>
-      `).join("");
-    }
-  };
-
-  const renderReasoningInsights = (payload) => {
+  const renderReasoning = (payload) => {
     if (!riskInsights) return;
-    const reasoning = payload.reasoning || {};
+    const r = payload.reasoning || {};
     const cards = [];
-
-    if (reasoning.summary) {
-      cards.push(`
-        <div class="list-card pivot-card motion-fade-up">
-          <div>
-            <strong>Why this score</strong>
-            <p>${reasoning.summary}</p>
-          </div>
-        </div>
-      `);
-    }
-
-    (reasoning.risk_drivers || []).forEach((driver, index) => {
-      cards.push(`
-        <div class="list-card motion-fade-up motion-stagger-${Math.min(index + 1, 5)}">
-          <div>
-            <strong>Risk driver ${index + 1}</strong>
-            <p>${driver}</p>
-          </div>
-        </div>
-      `);
-    });
-
-    if (reasoning.skills_detected?.length) {
-      cards.push(`
-        <div class="list-card motion-fade-up">
-          <div>
-            <strong>Detected skills</strong>
-            <p>${reasoning.skills_detected.join(", ")}</p>
-          </div>
-        </div>
-      `);
-    }
-
-    if (reasoning.next_steps?.length) {
-      cards.push(`
-        <div class="list-card motion-fade-up">
-          <div>
-            <strong>Recommended next steps</strong>
-            <p>${reasoning.next_steps.join(" · ")}</p>
-          </div>
-        </div>
-      `);
-    }
-
-    if (reasoning.evidence?.length) {
-      cards.push(`
-        <div class="list-card motion-fade-up">
-          <div>
-            <strong>Evidence trail</strong>
-            <p>${reasoning.evidence.map((item) => `${item.label}: ${item.value}`).join(" · ")}</p>
-          </div>
-        </div>
-      `);
-    }
-
-    cards.push(`
-      <div class="list-card motion-fade-up">
-        <div>
-          <strong>Confidence note</strong>
-          <p>${reasoning.confidence_note || "Explainability is grounded in the local feature trace."}</p>
-        </div>
-      </div>
-    `);
-
-    riskInsights.innerHTML = cards.join("");
+    if (r.summary) cards.push(`<div class="list-card pivot-card"><div><strong>Why this score</strong><p>${r.summary}</p></div></div>`);
+    (r.risk_drivers || []).forEach((d, i) => cards.push(`<div class="list-card"><div><strong>Risk driver ${i + 1}</strong><p>${d}</p></div></div>`));
+    if (r.skills_detected?.length) cards.push(`<div class="list-card"><div><strong>Skills</strong><p>${r.skills_detected.join(', ')}</p></div></div>`);
+    cards.push(`<div class="list-card"><div><strong>Confidence</strong><p>${r.confidence_note || 'Local feature trace.'}</p></div></div>`);
+    riskInsights.innerHTML = cards.join('');
   };
 
-  const renderModal = (payload) => {
-    clearLoadingSkeleton();
-    const uniqueRoles = dedupeRoles(payload.top_roles || []);
-    if (modalTitle) {
-      modalTitle.textContent = payload.mode === "advanced" ? "Deep AI narrative generated" : "Local ML analysis complete";
-    }
-    if (modalRiskScore) {
-      modalRiskScore.textContent = `${Math.round((payload.risk_score || 0) * 100)}%`;
-    }
-    if (modalRiskLabel) {
-      modalRiskLabel.textContent = payload.risk_label ? `${payload.risk_label} risk` : "Risk";
-    }
-    if (modalMode) {
-      modalMode.textContent = `${payload.mode === "advanced" ? "Advanced" : "Standard"} mode`;
-    }
-    if (resultStatus) {
-      resultStatus.textContent = payload.mode === "advanced" ? "Deep AI narrative generated" : "Local ML analysis complete";
-    }
-    if (narrative) {
-      narrative.textContent = payload.cognitive_career_narrative || "";
-    }
-    updateDashboardResults(payload);
-    renderReasoningInsights(payload);
-    renderGuidedNextSteps(payload);
-
-    renderList(rolesList, uniqueRoles, (role) => {
-      const openingLinks = buildRoleLinks(role);
-      return `
-      <div class="list-card pivot-card motion-fade-up">
-        <div>
-          <strong>${role.job_role}</strong>
-          <p>${role.industry} · Risk ${Math.round((role.risk_score || 0) * 100)}%</p>
-          <div class="pill-row" style="margin-top: 0.75rem;">
-            ${openingLinks.map((link) => `<a class="button-ghost" href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}
-          </div>
-        </div>
-        <span class="status-pill">${Math.round((role.similarity || 0) * 100)}% match</span>
-      </div>
-    `;
-    });
-
-    renderList(roadmapList, payload.roadmap || [], (course) => `
-      <div class="roadmap-item motion-fade-up">
-        <div>
-          <strong>${course.course}</strong>
-          <p>${course.skill} · ${course.reason}</p>
-        </div>
-        ${course.url ? `<a class="button-ghost" href="${course.url}" target="_blank" rel="noreferrer">Open</a>` : ""}
-      </div>
-    `);
-
-    renderList(riasecList, Object.entries(payload.riasec?.scores || {}), ([name, score]) => `
-      <div class="list-card motion-fade-up">
-        <div>
-          <strong>${name}</strong>
-          <p>Career preference alignment</p>
-        </div>
-        <span class="status-pill">${score}</span>
-      </div>
-    `);
+  // ─── RENDER RESULTS ───
+  const renderResults = (payload) => {
+    lastAnalysis = payload;
+    const roles = dedupeRoles(payload.top_roles || []);
+    if (modalTitle) modalTitle.textContent = payload.mode === 'advanced' ? 'Deep AI narrative' : 'Analysis complete';
+    if (modalRiskScore) modalRiskScore.textContent = `${Math.round((payload.risk_score || 0) * 100)}%`;
+    if (modalRiskLabel) modalRiskLabel.textContent = payload.risk_label ? `${payload.risk_label} risk` : 'Risk';
+    if (modalMode) modalMode.textContent = `${payload.mode === 'advanced' ? 'Advanced' : 'Standard'} mode`;
+    if (resultStatus) resultStatus.textContent = payload.mode === 'advanced' ? 'Deep AI narrative' : 'Analysis complete';
+    if (narrative) narrative.textContent = payload.cognitive_career_narrative || '';
+    updateDashboard(payload);
+    renderReasoning(payload);
+    nextSteps(payload);
+    renderList(rolesList, roles, (r) => { const l = roleLinks(r); return `<div class="list-card pivot-card"><div><strong>${r.job_role}</strong><p>${r.industry} \u00B7 Risk ${Math.round((r.risk_score || 0) * 100)}%</p><div class="pill-row">${l.map(x => `<a class="button-ghost" href="${x.url}" target="_blank" rel="noreferrer">${x.label}</a>`).join('')}</div></div><span class="status-pill">${Math.round((r.similarity || 0) * 100)}%</span></div>`; });
+    renderList(roadmapList, payload.roadmap || [], (c) => `<div class="roadmap-item"><div><strong>${c.course}</strong><p>${c.skill} \u00B7 ${c.reason}</p></div>${c.url ? `<a class="button-ghost" href="${c.url}" target="_blank" rel="noreferrer">Open</a>` : ''}</div>`);
+    renderList(riasecList, Object.entries(payload.riasec?.scores || {}), ([n, s]) => `<div class="list-card"><div><strong>${n}</strong></div><span class="status-pill">${s}</span></div>`);
+    toast('Analysis complete!', 'success');
   };
 
-  const renderError = (message) => {
-    clearLoadingSkeleton();
+  const renderError = (msg) => {
+    hideProgress();
     openModal();
-    if (resultBanner) {
-      resultBanner.style.background = "rgba(186, 26, 26, 0.08)";
-      resultBanner.style.borderColor = "rgba(186, 26, 26, 0.35)";
-      resultBanner.style.color = "var(--error)";
-    }
-    if (modalTitle) {
-      modalTitle.textContent = "Assessment could not complete";
-    }
-    if (modalRiskScore) {
-      modalRiskScore.textContent = "--";
-    }
-    if (modalRiskLabel) {
-      modalRiskLabel.textContent = "Error";
-    }
-    if (modalMode) {
-      modalMode.textContent = `${activeMode === "advanced" ? "Advanced" : "Standard"} mode`;
-    }
-    if (resultStatus) {
-      resultStatus.textContent = "Assessment could not complete";
-    }
-    if (narrative) {
-      narrative.textContent = message;
-    }
-    if (rolesList) rolesList.innerHTML = "";
-    if (roadmapList) roadmapList.innerHTML = "";
-    if (riasecList) riasecList.innerHTML = "";
-    if (dashboardRiskSummary) {
-      dashboardRiskSummary.textContent = message;
-    }
-    if (dashboardRoleStatus) {
-      dashboardRoleStatus.textContent = "Error";
-    }
-    if (riskInsights) {
-      riskInsights.innerHTML = `
-        <div class="list-card">
-          <div>
-            <strong>Analysis unavailable</strong>
-            <p>${message}</p>
-          </div>
-        </div>
-      `;
-    }
-    if (nextStepsStatus) {
-      nextStepsStatus.textContent = "Unavailable";
-    }
-    [nextStepsLearning, nextStepsJobs, nextStepsEducation, nextStepsSupport, modalNextSteps].forEach((container) => {
-      if (!container) return;
-      container.innerHTML = `
-        <div class="list-card">
-          <div>
-            <strong>Guidance unavailable</strong>
-            <p>${message}</p>
-          </div>
-        </div>
-      `;
-    });
+    if (resultBanner) { resultBanner.style.background = 'rgba(186,26,26,0.08)'; resultBanner.style.borderColor = 'rgba(186,26,26,0.35)'; resultBanner.style.color = 'var(--error)'; }
+    if (modalTitle) modalTitle.textContent = 'Could not complete';
+    if (modalRiskScore) modalRiskScore.textContent = '--';
+    if (modalRiskLabel) modalRiskLabel.textContent = 'Error';
+    if (modalMode) modalMode.textContent = `${activeMode === 'advanced' ? 'Advanced' : 'Standard'}`;
+    if (resultStatus) resultStatus.textContent = 'Could not complete';
+    if (narrative) narrative.textContent = msg;
+    if (rolesList) rolesList.innerHTML = '';
+    if (roadmapList) roadmapList.innerHTML = '';
+    if (riasecList) riasecList.innerHTML = '';
+    if (dashboardRiskSummary) dashboardRiskSummary.textContent = msg;
+    if (dashboardRoleStatus) dashboardRoleStatus.textContent = 'Error';
+    if (riskInsights) riskInsights.innerHTML = `<div class="list-card"><div><strong>Unavailable</strong><p>${msg}</p></div></div>`;
+    if (nextStepsStatus) nextStepsStatus.textContent = 'Unavailable';
+    [nextStepsLearning, nextStepsJobs, nextStepsEducation, nextStepsSupport, modalNextSteps].forEach(c => { if (c) c.innerHTML = `<div class="list-card"><div><strong>Unavailable</strong><p>${msg}</p></div></div>`; });
+    toast(msg, 'error', 6000);
   };
 
-  modeButtons.forEach((button) => {
-    button.addEventListener("click", () => setMode(button.dataset.mode));
-  });
-
-  pathButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const pathKey = button.dataset.pathOption || "student";
-      renderPathway(pathKey);
-    });
-  });
-
-  browseButton.addEventListener("click", () => fileInput.click());
-
-  fileInput.addEventListener("change", () => {
-    selectedFile = fileInput.files?.[0] || null;
-    setUploadStatus(describeFile(selectedFile));
-    if (dropZone) {
-      dropZone.classList.remove("is-dropped");
+  // ─── SSE STREAMING ───
+  const streamAnalysis = async (text) => {
+    const url = `/api/analyze-stream?text=${encodeURIComponent(text)}&mode=${activeMode}`;
+    if (text.length > 1800) {
+      // URL too long, fallback to POST
+      const fd = new FormData();
+      fd.set('resume_text', text);
+      fd.set('mode', activeMode);
+      return submitStandard(fd);
     }
-  });
+    setBusy(true, `Running ${activeMode} analysis...`);
+    updateProgress(0, 'Starting...');
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Failed to start streaming');
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop() || '';
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const d = JSON.parse(line.slice(6));
+            if (d.step === 'error') throw new Error(d.data?.error || 'Analysis failed');
+            if (d.percent >= 0) updateProgress(d.percent, d.status);
+            if (d.step === 'complete' && d.data) { resetStyles(); renderResults(d.data); setBusy(false); return d.data; }
+          } catch (e) { if (e.message === 'Analysis failed') throw e; }
+        }
+      }
+      throw new Error('Stream ended without completion');
+    } catch (error) {
+      renderError(error.message || 'Analysis failed.');
+      setBusy(false);
+      throw error;
+    }
+  };
+
+  // ─── SUBMIT ───
+  const submitStandard = async (formData) => {
+    setBusy(true, `Running ${activeMode} analysis...`);
+    try {
+      const res = await apiPost('/api/upload', formData);
+      const p = await res.json();
+      if (!res.ok || !p.success) throw new Error(p.error || 'Analysis failed.');
+      resetStyles();
+      renderResults(p);
+    } catch (error) {
+      renderError(error.message || 'Analysis failed.');
+    } finally { setBusy(false); }
+  };
+
+  // ─── EVENT BINDINGS ───
+  modeButtons.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  pathButtons.forEach(b => b.addEventListener('click', () => renderPathway(b.dataset.pathOption || 'student')));
+  browseButton?.addEventListener('click', () => fileInput?.click());
+  fileInput?.addEventListener('change', () => { selectedFile = fileInput.files?.[0] || null; setUploadStatus(describeFile(selectedFile)); dropZone?.classList.remove('is-dropped'); if (selectedFile) toast(`File: ${selectedFile.name}`, 'info', 3000); });
 
   if (dropZone) {
-    ["dragenter", "dragover"].forEach((eventName) => {
-      dropZone.addEventListener(eventName, (event) => {
-        event.preventDefault();
-        dropZone.classList.add("is-dragover");
-      });
-    });
-
-    ["dragleave", "drop"].forEach((eventName) => {
-      dropZone.addEventListener(eventName, (event) => {
-        event.preventDefault();
-        dropZone.classList.remove("is-dragover");
-      });
-    });
-
-    dropZone.addEventListener("drop", (event) => {
-      const droppedFile = event.dataTransfer?.files?.[0];
-      if (!droppedFile) return;
-      const transfer = new DataTransfer();
-      transfer.items.add(droppedFile);
-      fileInput.files = transfer.files;
-      selectedFile = droppedFile;
-      setUploadStatus(describeFile(selectedFile));
-      dropZone.classList.add("is-dropped");
-      window.setTimeout(() => dropZone.classList.remove("is-dropped"), 700);
+    ['dragenter', 'dragover'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('is-dragover'); }));
+    ['dragleave', 'drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('is-dragover'); }));
+    dropZone.addEventListener('drop', ev => {
+      const f = ev.dataTransfer?.files?.[0]; if (!f) return;
+      const dt = new DataTransfer(); dt.items.add(f); fileInput.files = dt.files;
+      selectedFile = f; setUploadStatus(describeFile(selectedFile));
+      dropZone.classList.add('is-dropped'); setTimeout(() => dropZone.classList.remove('is-dropped'), 700);
+      toast(`Dropped: ${f.name}`, 'info', 3000);
     });
   }
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(form);
-    if (selectedFile && !formData.get("resume_file")) {
-      formData.set("resume_file", selectedFile);
-    }
-    formData.set("mode", activeMode);
-
-    const text = (formData.get("resume_text") || "").toString().trim();
-    const hasFile = fileInput.files && fileInput.files.length > 0;
-    if (!hasFile && !text) {
-      renderError("Add a resume file or paste resume text before starting the assessment.");
-      return;
-    }
-
-    setUploadStatus(describeFile(selectedFile || fileInput.files?.[0] || null));
-    setBusy(true, activeMode === "advanced" ? "Running advanced analysis..." : "Running local analysis...");
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const payload = await response.json();
-      if (!response.ok || !payload.success) {
-        throw new Error(payload.error || "Analysis failed.");
-      }
-
-      resetResultStyles();
-      renderModal(payload);
-    } catch (error) {
-      renderError(error.message || "Analysis failed.");
-    } finally {
-      setBusy(false);
-    }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    if (selectedFile && !fd.get('resume_file')) fd.set('resume_file', selectedFile);
+    fd.set('mode', activeMode);
+    const text = (fd.get('resume_text') || '').toString().trim();
+    if (!(fileInput?.files?.length > 0) && !text) { renderError('Add resume text or a file.'); return; }
+    if (activeMode === 'advanced' && text) await streamAnalysis(text);
+    else await submitStandard(fd);
   });
 
+  // ─── EXPORT ───
+  exportButton?.addEventListener('click', async () => {
+    if (!lastAnalysis) { toast('Run analysis first.', 'warning'); return; }
+    try {
+      const res = await apiPost('/api/export', { analysis: lastAnalysis });
+      const d = await res.json();
+      if (!d.success) throw new Error(d.error);
+      const w = window.open('', '_blank'); w.document.write(d.html); w.document.close(); w.print();
+      toast('Report opened for printing.', 'success');
+    } catch (err) { toast('Export: ' + err.message, 'error'); }
+  });
+
+  // ─── PASSWORD STRENGTH ───
+  let pwTimer = null;
+  passwordInput?.addEventListener('input', () => {
+    clearTimeout(pwTimer);
+    const pw = passwordInput.value;
+    if (!pw) { if (strengthBar) { strengthBar.style.setProperty('--pw-width', '0%'); strengthBar.style.setProperty('--pw-color', 'var(--error)'); } if (strengthLabel) strengthLabel.textContent = ''; return; }
+    pwTimer = setTimeout(async () => {
+      try {
+        const res = await apiPost('/api/check-password', { password: pw });
+        const d = await res.json();
+        if (strengthBar) { strengthBar.style.setProperty('--pw-width', d.width); strengthBar.style.setProperty('--pw-color', d.color); }
+        if (strengthLabel) { strengthLabel.textContent = d.label; strengthLabel.style.color = d.color; }
+      } catch {}
+    }, 300);
+  });
+
+  // ─── COMPARISON ───
+  const toggleComparison = () => {
+    if (!comparePanel) return;
+    comparePanel.classList.toggle('compare-panel--visible');
+    if (comparePanel.classList.contains('compare-panel--visible')) compareToggle?.classList.add('is-active');
+    else { compareToggle?.classList.remove('is-active'); compareResults?.classList.add('hidden'); }
+  };
+  const closeComparison = () => { comparePanel?.classList.remove('compare-panel--visible'); compareToggle?.classList.remove('is-active'); compareResults?.classList.add('hidden'); };
+  compareToggle?.addEventListener('click', toggleComparison);
+  compareRun?.addEventListener('click', async () => {
+    const a = compareTextA?.value.trim(); const b = compareTextB?.value.trim();
+    if (!a || !b) { toast('Both texts required.', 'warning'); return; }
+    compareRun.disabled = true; compareRun.textContent = 'Comparing...';
+    compareResults?.classList.add('hidden');
+    try {
+      const res = await apiPost('/api/compare', { text_a: a, text_b: b, mode: activeMode });
+      const d = await res.json();
+      if (!d.success) throw new Error(d.error);
+      if (compareResults) {
+        compareResults.innerHTML = `<div class="compare-result-grid"><div class="compare-col"><h4>A</h4><div class="kpi"><div class="kpi__label">Risk</div><div class="kpi__value">${Math.round(d.risk_a * 100)}%</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${d.label_a}</div></div></div><div class="compare-vs"><span>VS</span><div class="compare-delta">\u0394 ${Math.round(d.risk_delta * 100)}%</div></div><div class="compare-col"><h4>B</h4><div class="kpi"><div class="kpi__label">Risk</div><div class="kpi__value">${Math.round(d.risk_b * 100)}%</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${d.label_b}</div></div></div></div>`;
+        compareResults.classList.remove('hidden');
+      }
+      toast('Comparison complete!', 'success');
+    } catch (err) { toast('Compare: ' + err.message, 'error'); }
+    finally { compareRun.disabled = false; compareRun.textContent = 'Compare'; }
+  });
+
+  // ─── INIT ───
   setMode(activeMode);
   renderPathway(activePath);
 
-  // ── Scroll Reveal: IntersectionObserver ──
-  const REVEAL_SELECTORS = [
-    ".feature-card",
-    ".insight-card",
-    ".method-card",
-    ".form-card",
-    ".section-card",
-    ".glass-card",
-    ".privacy-card",
-    ".contact-card",
-    ".dashboard-grid > div",
-    ".page-hero__grid > div",
-    ".hero__grid > div",
-    ".hero__grid > .hero-panel",
-  ].join(", ");
-
-  const initScrollReveal = () => {
-    // Skip if user prefers reduced motion
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const directions = ["", "", "", "--left", "--right", "--scale"]; // bias toward default (up)
-    document.querySelectorAll(REVEAL_SELECTORS).forEach((el) => {
-      if (el.closest(".result-modal")) return; // skip modal internals
-      const dir = directions[Math.floor(Math.random() * directions.length)];
-      el.classList.add(`reveal${dir}`);
-    });
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-    );
-
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+  // ─── SCROLL REVEAL ───
+  const REVEAL_SEL = '.feature-card, .insight-card, .method-card, .form-card, .section-card, .glass-card, .privacy-card, .contact-card, .dashboard-grid > div, .page-hero__grid > div, .hero__grid > div, .hero__grid > .hero-panel';
+  const initReveal = () => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const dirs = ['', '', '', '--left', '--right', '--scale'];
+    document.querySelectorAll(REVEAL_SEL).forEach(el => { if (el.closest('.result-modal')) return; el.classList.add('reveal' + dirs[Math.floor(Math.random() * dirs.length)]); });
+    const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
   };
+  const initStagger = () => { document.querySelectorAll('.feature-grid, .insight-grid, .method-grid, .partnership-grid, .dashboard-grid, .hero__grid, .page-hero__grid').forEach(g => { g.querySelectorAll(':scope > .reveal').forEach((c, i) => c.classList.add('reveal--stagger-' + ((i % 5) + 1))); }); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { initReveal(); initStagger(); });
+  else { initReveal(); initStagger(); }
 
-  // Stagger children in grids that just became visible
-  const initStaggerClasses = () => {
-    document.querySelectorAll(
-      ".feature-grid, .insight-grid, .method-grid, .partnership-grid, .dashboard-grid, .hero__grid, .page-hero__grid"
-    ).forEach((grid) => {
-      const children = grid.querySelectorAll(":scope > .reveal");
-      children.forEach((child, i) => {
-        const n = (i % 5) + 1;
-        child.classList.add(`reveal--stagger-${n}`);
-      });
-    });
-  };
+  // ─── SKILLS GAP ANALYSIS ───
+  const skillsGapSection = document.getElementById('skills-gap-section');
+  const skillsGapRole = document.getElementById('skills-gap-role');
+  const skillsGapForm = document.getElementById('skills-gap-form');
+  const skillsGapButton = document.getElementById('skills-gap-submit');
+  const skillsGapResults = document.getElementById('skills-gap-results');
+  const skillsGapLoading = document.getElementById('skills-gap-loading');
+  const skillsGapError = document.getElementById('skills-gap-error');
 
-  // Run after DOM is painted
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      initScrollReveal();
-      initStaggerClasses();
-    });
-  } else {
-    initScrollReveal();
-    initStaggerClasses();
+  // Populate roles dropdown on load
+  if (skillsGapRole) {
+    fetch('/api/skills-gap/roles')
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.roles) {
+          data.roles.forEach(role => {
+            const opt = document.createElement('option');
+            opt.value = role;
+            opt.textContent = role;
+            skillsGapRole.appendChild(opt);
+          });
+        }
+      })
+      .catch(() => {});
   }
+
+  // Handle skill gap form submission
+  if (skillsGapForm) {
+    skillsGapForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const resumeTextEl = document.querySelector('[data-resume-text]');
+      const resumeText = resumeTextEl ? resumeTextEl.value.trim() : '';
+      const targetRole = skillsGapRole ? skillsGapRole.value : '';
+
+      if (!resumeText || resumeText.length < 20) {
+        toast('Please enter resume text first (min 20 characters).', 'warning');
+        return;
+      }
+      if (!targetRole) {
+        toast('Please select a target role.', 'warning');
+        return;
+      }
+
+      if (skillsGapButton) skillsGapButton.disabled = true;
+      if (skillsGapButton) skillsGapButton.textContent = 'Analyzing...';
+      if (skillsGapLoading) skillsGapLoading.classList.remove('hidden');
+      if (skillsGapResults) skillsGapResults.classList.add('hidden');
+      if (skillsGapError) skillsGapError.classList.add('hidden');
+
+      try {
+        const res = await apiPost('/api/skills-gap/analyze', {
+          resume_text: resumeText,
+          target_role: targetRole
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Analysis failed.');
+        }
+
+        renderSkillsGap(data.analysis);
+      } catch (err) {
+        if (skillsGapError) {
+          skillsGapError.textContent = err.message || 'Failed to analyze skills gap.';
+          skillsGapError.classList.remove('hidden');
+        }
+        toast(err.message || 'Analysis failed.', 'error');
+      } finally {
+        if (skillsGapButton) skillsGapButton.disabled = false;
+        if (skillsGapButton) skillsGapButton.textContent = 'Analyze Skills Gap';
+        if (skillsGapLoading) skillsGapLoading.classList.add('hidden');
+      }
+    });
+  }
+
+  // Render skills gap results
+  function renderSkillsGap(analysis) {
+    if (!skillsGapResults) return;
+    
+    const matchPct = analysis.match_percentage || 0;
+    const matchColor = matchPct >= 70 ? '#22c55e' : matchPct >= 40 ? '#eab308' : '#ef4444';
+    const matchLabel = matchPct >= 70 ? 'Strong Match' : matchPct >= 40 ? 'Partial Match' : 'Low Match';
+
+    skillsGapResults.innerHTML = `
+      <div class="skills-gap-result">
+        <div class="skills-gap-header">
+          <div>
+            <h3 class="section-title">Skills Gap Analysis: ${analysis.target_role}</h3>
+            <p class="section-subtitle">Comparing your resume against ${analysis.total_required} required skills</p>
+          </div>
+          <div class="skills-gap-score" style="text-align:center;">
+            <div class="skills-gap-ring" style="--pct: ${matchPct}%; --color: ${matchColor};">
+              <span class="skills-gap-ring__value">${matchPct}%</span>
+            </div>
+            <span style="font-size:0.78rem;font-weight:600;color:${matchColor};">${matchLabel}</span>
+          </div>
+        </div>
+
+        <div class="skills-gap-grid">
+          <div class="list-card" style="border-color: #22c55e44;">
+            <div>
+              <strong style="color:#22c55e;">✅ Matched Skills (${analysis.matched_count})</strong>
+              ${analysis.matched_skills.length ? analysis.matched_skills.map(s => `<span class="chip" style="background:#22c55e22;color:#22c55e;margin:2px 4px 2px 0;">${s}</span>`).join('') : '<p style="color:var(--text-muted);margin-top:0.5rem;">No direct skill matches found.</p>'}
+            </div>
+          </div>
+          <div class="list-card" style="border-color: #ef444444;">
+            <div>
+              <strong style="color:#ef4444;">❌ Missing Skills (${analysis.missing_count})</strong>
+              ${analysis.missing_skills.length ? analysis.missing_skills.map(s => `<span class="chip" style="background:#ef444422;color:#ef4444;margin:2px 4px 2px 0;">${s}</span>`).join('') : '<p style="color:var(--text-muted);margin-top:0.5rem;">No missing skills — you\'re fully qualified!</p>'}
+            </div>
+          </div>
+        </div>
+
+        ${analysis.recommendations && analysis.recommendations.length ? `
+          <div class="skills-gap-recommendations" style="margin-top:1.5rem;">
+            <h4 class="section-title" style="font-size:1.1rem;">📚 Learning Recommendations</h4>
+            <div class="skills-gap-recs-grid" style="display:grid;gap:0.75rem;margin-top:0.75rem;">
+              ${analysis.recommendations.map(r => `
+                <div class="list-card motion-fade-up">
+                  <div>
+                    <strong>${r.skill}</strong>
+                    <span class="status-pill ${r.priority === 'High' ? 'is-danger' : 'is-warm'}" style="margin-left:0.5rem;">${r.priority}</span>
+                    <ul style="margin:0.5rem 0 0;padding-left:1.25rem;color:var(--text-muted);font-size:0.85rem;">
+                      ${r.resources.map(res => `<li style="margin-bottom:0.25rem;">${res}</li>`).join('')}
+                    </ul>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+    skillsGapResults.classList.remove('hidden');
+    toast('Skills gap analysis complete!', 'success');
+  }
+
+  console.log('Prayash UI ready');
+  toast('Prayash ready. Press <strong>?</strong> for shortcuts.', 'info', 5000);
 })();
