@@ -138,6 +138,15 @@ def _record_otp_request(email: str) -> None:
     _OTP_REQUEST_STORE[(email or "").strip().lower()] = time.time()
 
 
+def _is_dev_mode() -> bool:
+    """True in development (default); False when FLASK_ENV=production.
+
+    Used to surface the OTP code on-screen when email delivery is not
+    available, so the forgot-password flow remains usable locally.
+    """
+    return os.environ.get("FLASK_ENV", "development") != "production"
+
+
 def _rate_limit_key() -> str:
     """Derive a rate-limit key from the client IP."""
     forwarded = request.headers.get("X-Forwarded-For", "")
@@ -786,7 +795,11 @@ def resend_otp():
 
     session[session_key] = user.email
     message = "A new reset code has been sent." if purpose == "reset_password" else "A new verification code has been sent."
-    return jsonify({"success": True, "message": message})
+    payload: dict[str, Any] = {"success": True, "message": message}
+    if _is_dev_mode():
+        # Development convenience: return the code so the front-end can show it.
+        payload["dev_otp"] = otp.otp
+    return jsonify(payload)
 
 
 # ── Forgot Password with OTP ──
@@ -797,6 +810,7 @@ def forgot_password_otp():
     """Handle forgot password flow with OTP."""
     error = None
     sent = False
+    dev_otp = None
     email = session.get("reset_email", "")
 
     if request.method == "POST":
@@ -818,6 +832,16 @@ def forgot_password_otp():
                     send_email(user.email, subject, html_body, text_body)
                     session["reset_email"] = user.email
                     email = user.email
+                    # In development, surface the code on-screen so the flow
+                    # works even when SMTP delivery fails (e.g. no valid
+                    # Gmail App Password configured). Never shown in production.
+                    if _is_dev_mode():
+                        dev_otp = otp.otp
+                        log.warning(
+                            "DEV MODE: OTP for %s shown on-screen (email delivery may be unavailable). "
+                            "Set FLASK_ENV=production to hide it.",
+                            email_input,
+                        )
                 # Always show success to prevent email enumeration
                 sent = True
 
@@ -828,6 +852,7 @@ def forgot_password_otp():
         error=error,
         sent=sent,
         email=email if sent else "",
+        dev_otp=dev_otp,
     )
 
 
