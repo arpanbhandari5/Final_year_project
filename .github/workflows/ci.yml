@@ -27,12 +27,14 @@ jobs:
           pip install pytest
 
       - name: Cache ML models
+        id: cache-ml
         uses: actions/cache@v4
         with:
           path: ml_models/
           key: ml-models-${{ hashFiles('train_model.py', 'data/*.csv') }}
 
       - name: Train ML model (if cache miss)
+        if: steps.cache-ml.outputs.cache-hit != 'true'
         run: python train_model.py
 
       - name: Run unit tests
