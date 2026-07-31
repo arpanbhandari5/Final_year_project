@@ -533,6 +533,35 @@ def test_career_chat_fallback_topics(client) -> None:
         assert len(data["answer"]) > 20, f"Topic '{topic}' returned too-short answer"
 
 
+def test_career_chat_interview_vs_career_path_distinct(client) -> None:
+    """Regression: 'Tips for job interviews?' and 'Help me plan my career path'
+    must return different, topic-specific answers. The old fallback matched
+    'job' before 'interview' and returned the identical job-search text for
+    both questions."""
+    interview_resp = client.post(
+        "/api/career-chat", json={"message": "Tips for job interviews?"}
+    )
+    career_resp = client.post(
+        "/api/career-chat", json={"message": "Help me plan my career path"}
+    )
+
+    assert interview_resp.status_code == 200
+    assert career_resp.status_code == 200
+
+    interview_answer = interview_resp.get_json()["answer"].lower()
+    career_answer = career_resp.get_json()["answer"].lower()
+
+    assert interview_answer != career_answer, (
+        "Interview and career-path answers must differ"
+    )
+    assert "interview" in interview_answer and "star" in interview_answer, (
+        f"Interview answer missing interview guidance: {interview_answer[:100]}"
+    )
+    assert "career" in career_answer and "path" in career_answer, (
+        f"Career-path answer missing career guidance: {career_answer[:100]}"
+    )
+
+
 def test_career_chat_resume_context(client) -> None:
     """Resume text can be sent as context."""
     resp = client.post(
@@ -939,6 +968,47 @@ def test_career_chat_stream_fallback_topics(client) -> None:
             f"Topic '{topic}' answer missing expected keywords. "
             f"Keywords: {keywords}, Answer preview: {full_answer[:80]}"
         )
+
+
+def test_career_chat_stream_interview_vs_career_path_distinct(client) -> None:
+    """Regression for the streaming endpoint: interview and career-path
+    questions must stream different, topic-specific fallback answers."""
+    import json as _json
+
+    def _stream_answer(message: str) -> str:
+        resp = client.post(
+            "/api/career-chat/stream", json={"message": message}
+        )
+        assert resp.status_code == 200, f"Message '{message}' failed"
+        body = resp.get_data(as_text=True)
+        events = body.split("\n\n")
+        full = ""
+        for event_str in events:
+            if not event_str.strip():
+                continue
+            lines = event_str.strip().split("\n")
+            event_type = ""
+            data_str = ""
+            for line in lines:
+                if line.startswith("event: "):
+                    event_type = line[7:].strip()
+                elif line.startswith("data: "):
+                    data_str = line[6:].strip()
+            if event_type == "token" and data_str:
+                try:
+                    full += _json.loads(data_str).get("content", "")
+                except _json.JSONDecodeError:
+                    pass
+        return full.lower()
+
+    interview_answer = _stream_answer("Tips for job interviews?")
+    career_answer = _stream_answer("Help me plan my career path")
+
+    assert interview_answer != career_answer, (
+        "Stream: interview and career-path answers must differ"
+    )
+    assert "interview" in interview_answer and "star" in interview_answer
+    assert "career" in career_answer and "path" in career_answer
 
 
 def test_career_chat_stream_session_continuity(client) -> None:

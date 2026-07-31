@@ -1674,6 +1674,85 @@ def _cleanup_stale_career_sessions() -> None:
         log.debug("Cleaned up %d stale career chat session(s)", len(stale))
 
 
+def _rule_based_career_answer(question: str) -> str:
+    """Rule-based fallback answer for the career chat when no LLM is available.
+
+    Order matters — more specific topics are matched first so that, e.g.,
+    "Tips for job interviews?" returns interview advice rather than the generic
+    job-search answer, and "Help me plan my career path" gets dedicated
+    career-path guidance instead of the same job-search text.
+    """
+    q = (question or "").lower()
+
+    def has_any(keywords: list[str]) -> bool:
+        # Word-boundary prefix match: "skill" matches "skills" and "learning"
+        # matches "learn", but "earn" never matches inside "learn" or "bearn".
+        return any(re.search(rf"\b{re.escape(kw)}", q) for kw in keywords)
+
+    if has_any(["interview", "mock", "crack", "behavioral"]):
+        return (
+            "To prepare for interviews: 1) Review common questions for your target role, "
+            "2) Prepare STAR-format stories from your experience, "
+            "3) Practice technical questions with platforms like LeetCode or HackerRank, "
+            "4) Research the company's culture and recent news, "
+            "5) Do mock interviews with friends or platforms like Pramp, "
+            "6) Prepare thoughtful questions to ask the interviewer."
+        )
+    if has_any(["salary", "pay", "earn", "compensation", "negotiate"]):
+        return (
+            "Salary ranges vary by location, experience, and industry. "
+            "Use sites like Glassdoor, Levels.fyi, and LinkedIn Salary to research "
+            "market rates for your target roles. Consider total compensation including "
+            "benefits, equity, and bonuses."
+        )
+    if has_any(["resume", "cv", "ats", "achievement"]):
+        return (
+            "To improve your resume: 1) Add specific, quantifiable achievements, "
+            "2) Use keywords from target job descriptions, "
+            "3) Include a professional summary section, "
+            "4) Keep your format clean and ATS-friendly (PDF recommended), "
+            "5) Ensure your contact info (email, LinkedIn) is clearly visible."
+        )
+    if has_any(["career", "path", "roadmap", "growth", "goal"]):
+        return (
+            "Let's map out your career path: 1) Review the top role matches from your "
+            "analysis report to see where your profile fits today, "
+            "2) Identify the skills you'll need for your target role, "
+            "3) Follow the learning roadmap in your report to close skill gaps, "
+            "4) Set 3-month and 12-month goals with measurable milestones, "
+            "5) Re-run your analysis after each milestone to track progress. "
+            "Want me to suggest specific courses or roles to explore?"
+        )
+    if has_any(["job", "apply", "position", "hiring", "search", "role"]):
+        return (
+            "For job searching, use your top role matches from the analysis as search keywords. "
+            "Tailor your resume summary to highlight the skills most relevant to your target role. "
+            "Consider setting up job alerts for your strongest matching positions."
+        )
+    if has_any(["skill", "learn", "study", "course", "improve"]):
+        return (
+            "Based on your resume analysis, I recommend focusing on skill development. "
+            "Check the learning roadmap in your analysis report for personalized course recommendations. "
+            "Start with the top suggested Coursera courses for your skill gaps."
+        )
+    if has_any(["hello", "hi", "hey", "help"]):
+        return (
+            "Hi! I'm your AI career assistant. I can help with:\n"
+            "• Skill development and learning recommendations\n"
+            "• Job search strategies and career advice\n"
+            "• Resume improvement tips\n"
+            "• Interview preparation\n"
+            "• Salary and compensation questions\n"
+            "What would you like to know?"
+        )
+    return (
+        "That's a great question! For more personalized advice, "
+        "try running a resume analysis first to get tailored recommendations. "
+        "To unlock AI-powered career guidance, set your DeepSeek or OpenAI API key "
+        "in the server environment variables."
+    )
+
+
 @app.post("/api/career-chat")
 @rate_limit
 def api_career_chat():
@@ -1861,60 +1940,7 @@ def api_career_chat():
 
     # ── Fallback: rule-based response when no LLM is available ──
     if not llm_available:
-        question_lower = question.lower()
-
-        if any(kw in question_lower for kw in ["skill", "learn", "study", "course", "improve"]):
-            answer = (
-                "Based on your resume analysis, I recommend focusing on skill development. "
-                "Check the learning roadmap in your analysis report for personalized course recommendations. "
-                "Start with the top suggested Coursera courses for your skill gaps."
-            )
-        elif any(kw in question_lower for kw in ["job", "career", "role", "position", "apply"]):
-            answer = (
-                "For job searching, use your top role matches from the analysis as search keywords. "
-                "Tailor your resume summary to highlight the skills most relevant to your target role. "
-                "Consider setting up job alerts for your strongest matching positions."
-            )
-        elif any(kw in question_lower for kw in ["resume", "cv", "improve", "better", "weak"]):
-            answer = (
-                "To improve your resume: 1) Add specific, quantifiable achievements, "
-                "2) Use keywords from target job descriptions, "
-                "3) Include a professional summary section, "
-                "4) Keep your format clean and ATS-friendly (PDF recommended), "
-                "5) Ensure your contact info (email, LinkedIn) is clearly visible."
-            )
-        elif any(kw in question_lower for kw in ["salary", "pay", "earn", "compensation"]):
-            answer = (
-                "Salary ranges vary by location, experience, and industry. "
-                "Use sites like Glassdoor, Levels.fyi, and LinkedIn Salary to research "
-                "market rates for your target roles. Consider total compensation including "
-                "benefits, equity, and bonuses."
-            )
-        elif any(kw in question_lower for kw in ["interview", "prepare", "questions"]):
-            answer = (
-                "To prepare for interviews: 1) Review common questions for your target role, "
-                "2) Prepare STAR-format stories from your experience, "
-                "3) Practice technical skills with platforms like LeetCode or HackerRank, "
-                "4) Research the company's culture and recent news, "
-                "5) Prepare thoughtful questions to ask the interviewer."
-            )
-        elif any(kw in question_lower for kw in ["hello", "hi ", "hey", "help"]):
-            answer = (
-                "Hi! I'm your AI career assistant. I can help with:\n"
-                "• Skill development and learning recommendations\n"
-                "• Job search strategies and career advice\n"
-                "• Resume improvement tips\n"
-                "• Interview preparation\n"
-                "• Salary and compensation questions\n"
-                "What would you like to know?"
-            )
-        else:
-            answer = (
-                "That's a great question! For more personalized advice, "
-                "try running a resume analysis first to get tailored recommendations. "
-                "To unlock AI-powered career guidance, set your DeepSeek or OpenAI API key "
-                "in the server environment variables."
-            )
+        answer = _rule_based_career_answer(question)
 
     # Store in conversation history
     history.append({"role": "user", "content": question})
@@ -2041,49 +2067,7 @@ def api_career_chat_stream():
             log.warning("Streaming career chat failed: %s", exc)
 
         # Fallback: rule-based answer (sent as one event)
-        question_lower = question.lower()
-        if any(kw in question_lower for kw in ["skill", "learn", "study", "course", "improve"]):
-            full_answer = (
-                "Based on your resume analysis, I recommend focusing on skill development. "
-                "Check the learning roadmap in your analysis report for personalized course recommendations. "
-                "Start with the top suggested Coursera courses for your skill gaps."
-            )
-        elif any(kw in question_lower for kw in ["job", "career", "role", "position", "apply"]):
-            full_answer = (
-                "For job searching, use your top role matches from the analysis as search keywords. "
-                "Tailor your resume summary to highlight the skills most relevant to your target role. "
-                "Consider setting up job alerts for your strongest matching positions."
-            )
-        elif any(kw in question_lower for kw in ["resume", "cv", "improve", "better", "weak"]):
-            full_answer = (
-                "To improve your resume: 1) Add specific, quantifiable achievements, "
-                "2) Use keywords from target job descriptions, "
-                "3) Include a professional summary section, "
-                "4) Keep your format clean and ATS-friendly (PDF recommended), "
-                "5) Ensure your contact info (email, LinkedIn) is clearly visible."
-            )
-        elif any(kw in question_lower for kw in ["salary", "pay", "earn", "compensation"]):
-            full_answer = (
-                "Salary ranges vary by location, experience, and industry. "
-                "Use sites like Glassdoor, Levels.fyi, and LinkedIn Salary to research "
-                "market rates for your target roles. Consider total compensation including "
-                "benefits, equity, and bonuses for a complete picture."
-            )
-        elif any(kw in question_lower for kw in ["interview", "prepare", "mock", "crack"]):
-            full_answer = (
-                "To prepare for interviews: 1) Research the company and role thoroughly, "
-                "2) Practice common questions with the STAR method, "
-                "3) Prepare your own questions to ask the interviewer, "
-                "4) Review technical fundamentals for your target role, "
-                "5) Do mock interviews with friends or platforms like Pramp."
-            )
-        else:
-            full_answer = (
-                "That's a great question! Based on your profile, I recommend exploring the "
-                "analysis report for personalized insights. You can also ask me about skills "
-                "development, job search strategies, resume improvement, interview preparation, "
-                "or salary negotiation. What would you like to know more about?"
-            )
+        full_answer = _rule_based_career_answer(question)
 
         yield from sse("meta", {"session_id": session_id})
         yield from sse("token", {"content": full_answer})
