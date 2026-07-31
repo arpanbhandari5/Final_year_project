@@ -1,10 +1,27 @@
+# ── Core ──
+python-dotenv>=1.0,<2.0
 Flask>=3.0,<4.0
 Flask-Login>=0.6,<1.0
 Flask-SQLAlchemy>=3.1,<4.0
+Flask-Compress>=1.15,<2.0
+Flask-WTF>=1.2,<2.0
+Flask-Mail>=0.10,<1.0
+Flask-Dance[sqlalchemy]>=7.0,<8.0
+WTForms>=3.1,<4.0
+
+# ── ML / Data ──
 joblib>=1.4,<2.0
 numpy>=2.0,<3.0
 pandas>=2.2,<3.0
-requests>=2.32,<3.0
 scikit-learn>=1.5,<2.0
+requests>=2.32,<3.0
+
+# ── Resume Parsing ──
 pypdf>=5.0,<6.0
 python-docx>=1.1,<2.0
+PyMuPDF>=1.26.0
+
+# ── LLM API (OpenAI-compatible — used for both DeepSeek and ChatGPT) ──
+openai>=1.55,<2.0
+
+# ── Email (Flask-Mail for SMTP; smtplib fallback is built-in) ──

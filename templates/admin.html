@@ -1,114 +1,464 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="page-section page-hero">
-  <div class="container page-hero__grid">
-    <div>
-      <span class="eyebrow">Admin</span>
-      <h1>Operational analytics for the Prayash capstone review.</h1>
-      <p class="lead">This dashboard summarizes upload volume, prediction bands, and recent feedback from the local database.</p>
-    </div>
-    <div class="glass-card">
-      <h2 class="section-title">Access control</h2>
-      {% if requires_login %}
-      <p class="section-subtitle">Sign in with the admin credentials configured for the local environment.</p>
+<!-- ═══ ADMIN LOGIN SCREEN ═══ -->
+{% if requires_login %}
+<section class="page-section" style="min-height:70vh;display:grid;place-items:center;">
+  <div class="container" style="max-width:460px;">
+    <div class="admin-login-card">
+      <div class="admin-login-header">
+        <div class="admin-login-icon">🔐</div>
+        <h1>Admin Access</h1>
+        <p>Sign in with your admin credentials to manage the platform.</p>
+      </div>
       {% if login_error %}
-      <p class="small-note" style="color: var(--error);">{{ login_error }}</p>
+      <div class="admin-alert admin-alert--error">
+        <span>⚠️</span>
+        <span>{{ login_error }}</span>
+      </div>
       {% endif %}
-      <form method="post" class="results-shell" style="margin-top: 1rem;">
-        <div class="field">
-          <label for="username">Username</label>
-          <input id="username" name="username" type="text" autocomplete="username" required>
+      <form method="post" class="admin-login-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="admin-field">
+          <label for="username">Username / Email</label>
+          <input id="username" name="username" type="text" autocomplete="username" required placeholder="admin@prayash.local">
         </div>
-        <div class="field">
+        <div class="admin-field">
           <label for="password">Password</label>
-          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
         </div>
-        <button class="button-secondary" type="submit">Enter dashboard</button>
+        <button class="admin-btn admin-btn--primary" type="submit">Enter Dashboard</button>
       </form>
-      {% else %}
-      <p class="section-subtitle">Signed in as a reviewer. Use the metrics below to verify model rigor and data capture.</p>
-      <form method="post" action="{{ url_for('admin_logout') }}" style="margin-top: 1rem;">
-        <button class="button-ghost" type="submit">Sign out</button>
-      </form>
-      {% endif %}
+      <p class="admin-login-hint">Default: <code>admin@prayash.local</code> / <code>prayash-admin</code></p>
     </div>
   </div>
 </section>
+{% else %}
 
-{% if not requires_login %}
-<section class="content-section">
-  <div class="container dashboard-grid">
-    <div class="span-4 glass-card motion-fade-up">
-      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Uploads</div>
-      <p class="score-ring__value" style="font-size: 3rem; margin-top: 1rem;">{{ metrics.total_uploads }}</p>
-      <p class="section-subtitle">Total resume analyses stored in the local review database.</p>
+<!-- ═══ ADMIN DASHBOARD LAYOUT ═══ -->
+<div class="admin-shell">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" data-admin-sidebar>
+    <div class="admin-sidebar-header">
+      <div class="admin-sidebar-brand">
+        <span class="admin-sidebar-icon">⚙️</span>
+        <span class="admin-sidebar-title">Admin Panel</span>
+      </div>
+      <button class="admin-sidebar-close" data-admin-sidebar-close aria-label="Close sidebar">✕</button>
     </div>
-    <div class="span-4 glass-card motion-fade-up motion-stagger-1">
-      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Average risk</div>
-      <p class="score-ring__value" style="font-size: 3rem; margin-top: 1rem;">{{ '%.0f'|format(metrics.average_risk * 100) }}%</p>
-      <p class="section-subtitle">Mean automation-risk score across all recorded uploads.</p>
+    <nav class="admin-sidebar-nav">
+      <button class="admin-nav-item is-active" type="button" data-admin-tab="overview">
+        <span class="admin-nav-icon">📊</span>
+        <span>Overview</span>
+      </button>
+      <button class="admin-nav-item" type="button" data-admin-tab="users">
+        <span class="admin-nav-icon">👥</span>
+        <span>Users</span>
+        <span class="admin-nav-badge">{{ metrics.total_users }}</span>
+      </button>
+      <button class="admin-nav-item" type="button" data-admin-tab="uploads">
+        <span class="admin-nav-icon">📁</span>
+        <span>Analysis History</span>
+        <span class="admin-nav-badge">{{ metrics.total_uploads }}</span>
+      </button>
+      <button class="admin-nav-item" type="button" data-admin-tab="feedback">
+        <span class="admin-nav-icon">💬</span>
+        <span>Feedback</span>
+        <span class="admin-nav-badge">{{ metrics.recent_feedback|length }}</span>
+      </button>
+    </nav>
+    <div class="admin-sidebar-footer">
+      <form method="post" action="{{ url_for('admin_logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="admin-nav-item admin-nav-item--logout" type="submit">
+          <span class="admin-nav-icon">🚪</span>
+          <span>Sign Out</span>
+        </button>
+      </form>
     </div>
-    <div class="span-4 glass-card motion-fade-up motion-stagger-2">
-      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Feedback</div>
-      <p class="score-ring__value" style="font-size: 3rem; margin-top: 1rem;">{{ metrics.recent_feedback|length }}</p>
-      <p class="section-subtitle">Recent feedback messages captured from the review flow.</p>
-    </div>
+  </aside>
+  <!-- Sidebar backdrop (mobile) -->
+  <div class="admin-sidebar-backdrop" data-admin-sidebar-backdrop></div>
 
-    <div class="span-6 glass-card motion-fade-up">
-      <h3 class="section-title">Prediction counts</h3>
-      <canvas id="modeChart" height="220"></canvas>
-    </div>
-    <div class="span-6 glass-card motion-fade-up motion-stagger-1">
-      <h3 class="section-title">Risk distribution</h3>
-      <canvas id="riskChart" height="220"></canvas>
-    </div>
+  <!-- Main Content -->
+  <main class="admin-main">
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <button class="admin-topbar-menu" data-admin-sidebar-toggle aria-label="Toggle sidebar">☰</button>
+      <div class="admin-topbar-title">
+        <h2>Dashboard</h2>
+        <span class="admin-topbar-subtitle">Platform overview &amp; management</span>
+      </div>
+      <div class="admin-topbar-actions">
+        <span class="admin-topbar-time" id="adminClock"></span>
+        <form method="post" action="{{ url_for('admin_logout') }}" style="margin:0;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="admin-btn admin-btn--ghost" type="submit">Sign Out</button>
+        </form>
+      </div>
+    </header>
 
-    <div class="span-12 glass-card motion-fade-up">
-      <h3 class="section-title">Recent uploads</h3>
-      <div class="compact-list" style="margin-top: 1rem;">
-        {% for upload in metrics.recent_uploads %}
-        <div class="list-card">
-          <div>
-            <strong>{{ upload.filename }}</strong>
-            <p>{{ upload.mode|title }} · {{ upload.risk_label }} risk · {{ '%.0f'|format(upload.risk_score * 100) }}%</p>
+    <!-- ═══ OVERVIEW TAB ═══ -->
+    <div class="admin-panel is-active" data-admin-panel="overview">
+      <!-- KPI Cards -->
+      <div class="admin-kpi-grid">
+        <div class="admin-kpi-card admin-kpi-card--users motion-fade-up">
+          <div class="admin-kpi-icon">👥</div>
+          <div class="admin-kpi-body">
+            <span class="admin-kpi-value" data-count="{{ metrics.total_users }}">{{ metrics.total_users }}</span>
+            <span class="admin-kpi-label">Total Users</span>
           </div>
-          <span class="status-pill">{{ upload.created_at.strftime('%Y-%m-%d') }}</span>
+          <div class="admin-kpi-trend">
+            <span class="admin-kpi-trend-value">{{ metrics.verified_users }} verified</span>
+          </div>
         </div>
-        {% else %}
-        <div class="list-card"><div><strong>No uploads yet</strong><p>Run a resume analysis to populate the admin metrics.</p></div></div>
-        {% endfor %}
+        <div class="admin-kpi-card admin-kpi-card--uploads motion-fade-up motion-stagger-1">
+          <div class="admin-kpi-icon">📁</div>
+          <div class="admin-kpi-body">
+            <span class="admin-kpi-value" data-count="{{ metrics.total_uploads }}">{{ metrics.total_uploads }}</span>
+            <span class="admin-kpi-label">Total Analyses</span>
+          </div>
+          <div class="admin-kpi-trend">
+            <span class="admin-kpi-trend-value">{{ metrics.mode_counts.standard }} standard · {{ metrics.mode_counts.advanced }} advanced</span>
+          </div>
+        </div>
+        <div class="admin-kpi-card admin-kpi-card--risk motion-fade-up motion-stagger-2">
+          <div class="admin-kpi-icon">🎯</div>
+          <div class="admin-kpi-body">
+            <span class="admin-kpi-value" data-count="{{ '%.0f'|format(metrics.average_risk * 100) }}">{{ '%.0f'|format(metrics.average_risk * 100) }}%</span>
+            <span class="admin-kpi-label">Avg Automation Risk</span>
+          </div>
+          <div class="admin-kpi-trend">
+            <span class="admin-kpi-trend-value">{{ metrics.risk_buckets.low }} low · {{ metrics.risk_buckets.moderate }} mod · {{ metrics.risk_buckets.elevated }} high</span>
+          </div>
+        </div>
+        <div class="admin-kpi-card admin-kpi-card--admin motion-fade-up motion-stagger-3">
+          <div class="admin-kpi-icon">🔑</div>
+          <div class="admin-kpi-body">
+            <span class="admin-kpi-value" data-count="{{ metrics.admin_users }}">{{ metrics.admin_users }}</span>
+            <span class="admin-kpi-label">Admin Accounts</span>
+          </div>
+          <div class="admin-kpi-trend">
+            <span class="admin-kpi-trend-value">{{ metrics.oauth_users }} OAuth users</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="admin-charts-grid">
+        <div class="admin-card motion-fade-up">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Analysis Mode Distribution</h3>
+            <span class="admin-card-badge">{{ metrics.mode_counts.standard + metrics.mode_counts.advanced }} total</span>
+          </div>
+          <div class="admin-card-body">
+            <canvas id="modeChart" height="220"></canvas>
+          </div>
+        </div>
+        <div class="admin-card motion-fade-up motion-stagger-1">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Risk Distribution</h3>
+            <span class="admin-card-badge">Low / Moderate / Elevated</span>
+          </div>
+          <div class="admin-card-body">
+            <canvas id="riskChart" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity Row -->
+      <div class="admin-activity-grid">
+        <div class="admin-card motion-fade-up">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Recent Users</h3>
+            <a href="#" class="admin-card-action" data-admin-tab="users">View All →</a>
+          </div>
+          <div class="admin-card-body" style="padding:0;">
+            <div class="admin-list">
+              {% for u in metrics.recent_users %}
+              <div class="admin-list-item">
+                <div class="admin-list-avatar">{{ (u.full_name or u.email)[0]|upper }}</div>
+                <div class="admin-list-info">
+                  <strong>{{ u.full_name or u.email }}</strong>
+                  <span>{{ u.email }}</span>
+                </div>
+                <div class="admin-list-meta">
+                  <span class="admin-chip {% if u.email_verified %}admin-chip--success{% else %}admin-chip--warning{% endif %}">
+                    {% if u.email_verified %}Verified{% else %}Pending{% endif %}
+                  </span>
+                  <span class="admin-list-date">{{ u.created_at.strftime('%b %d, %Y') }}</span>
+                </div>
+              </div>
+              {% else %}
+              <div class="admin-list-empty">No users registered yet.</div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="admin-card motion-fade-up motion-stagger-1">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Recent Uploads</h3>
+            <a href="#" class="admin-card-action" data-admin-tab="uploads">View All →</a>
+          </div>
+          <div class="admin-card-body" style="padding:0;">
+            <div class="admin-list">
+              {% for upload in metrics.recent_uploads %}
+              <div class="admin-list-item">
+                <div class="admin-list-avatar admin-list-avatar--doc">📄</div>
+                <div class="admin-list-info">
+                  <strong>{{ upload.filename|truncate(30) }}</strong>
+                  <span>{{ upload.mode|title }} · {{ upload.risk_label }} risk</span>
+                </div>
+                <div class="admin-list-meta">
+                  <span class="admin-chip {% if upload.risk_label == 'Low' %}admin-chip--success{% elif upload.risk_label == 'Moderate' %}admin-chip--warning{% else %}admin-chip--danger{% endif %}">
+                    {{ '%.0f'|format(upload.risk_score * 100) }}%
+                  </span>
+                  <span class="admin-list-date">{{ upload.created_at.strftime('%b %d') }}</span>
+                </div>
+              </div>
+              {% else %}
+              <div class="admin-list-empty">No uploads yet.</div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<section class="content-section">
-  <div class="container dashboard-grid">
-    <div class="span-12 glass-card motion-fade-up">
-      <h3 class="section-title">Recent feedback</h3>
-      <div class="compact-list" style="margin-top: 1rem;">
-        {% for item in metrics.recent_feedback %}
-        <div class="list-card">
+    <!-- ═══ USERS TAB ═══ -->
+    <div class="admin-panel" data-admin-panel="users">
+      <div class="admin-card">
+        <div class="admin-card-header">
           <div>
-            <strong>Rating {{ item.rating if item.rating is not none else 'N/A' }}</strong>
-            <p>{{ item.message }}</p>
+            <h3 class="admin-card-title">User Management</h3>
+            <p class="admin-card-subtitle">All registered users on the platform.</p>
           </div>
-          <span class="status-pill">{{ item.created_at.strftime('%Y-%m-%d') }}</span>
+          <div class="admin-card-header-actions">
+            <span class="admin-chip admin-chip--success">{{ metrics.verified_users }} verified</span>
+            <span class="admin-chip admin-chip--warning">{{ metrics.total_users - metrics.verified_users }} pending</span>
+            <span class="admin-chip">{{ metrics.total_users }} total</span>
+          </div>
         </div>
-        {% else %}
-        <div class="list-card"><div><strong>No feedback yet</strong><p>Captured feedback will appear here.</p></div></div>
-        {% endfor %}
+        <div class="admin-card-body" style="padding:0;">
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Username</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Joined</th>
+                  <th>Last Login</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for u in users %}
+                <tr>
+                  <td><span class="admin-id">{{ u.id }}</span></td>
+                  <td>
+                    <div class="admin-user-cell">
+                      <div class="admin-user-avatar">{{ (u.full_name or u.email)[0]|upper }}</div>
+                      <strong>{{ u.full_name or '—' }}</strong>
+                    </div>
+                  </td>
+                  <td>{{ u.email }}</td>
+                  <td><span class="admin-mono">{{ u.username or '—' }}</span></td>
+                  <td>
+                    <span class="admin-chip {% if u.role == 'admin' %}admin-chip--primary{% else %}admin-chip--default{% endif %}">
+                      {{ u.role }}
+                    </span>
+                  </td>
+                  <td>
+                    {% if u.email_verified %}
+                    <span class="admin-status admin-status--active">Verified</span>
+                    {% else %}
+                    <span class="admin-status admin-status--pending">Pending</span>
+                    {% endif %}
+                  </td>
+                  <td><span class="admin-mono">{{ u.created_at.strftime('%Y-%m-%d') }}</span></td>
+                  <td><span class="admin-mono">{{ u.last_login.strftime('%Y-%m-%d') if u.last_login else '—' }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="admin-table-empty">No users registered yet.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const chartData = {{ chart_data|tojson }};
-  const modeCtx = document.getElementById('modeChart');
-  const riskCtx = document.getElementById('riskChart');
+    <!-- ═══ UPLOADS TAB ═══ -->
+    <div class="admin-panel" data-admin-panel="uploads">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div>
+            <h3 class="admin-card-title">Analysis History</h3>
+            <p class="admin-card-subtitle">All resume analyses recorded in the database.</p>
+          </div>
+          <span class="admin-chip">{{ metrics.total_uploads }} total</span>
+        </div>
+        <div class="admin-card-body" style="padding:0;">
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Mode</th>
+                  <th>Risk Level</th>
+                  <th>Score</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for upload in metrics.all_uploads %}
+                <tr>
+                  <td>
+                    <div class="admin-user-cell">
+                      <span class="admin-file-icon">📄</span>
+                      <strong>{{ upload.filename|truncate(35) }}</strong>
+                    </div>
+                  </td>
+                  <td><span class="admin-chip">{{ upload.mode|title }}</span></td>
+                  <td>
+                    <span class="admin-chip {% if upload.risk_label == 'Low' %}admin-chip--success{% elif upload.risk_label == 'Moderate' %}admin-chip--warning{% else %}admin-chip--danger{% endif %}">
+                      {{ upload.risk_label }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="admin-score-bar">
+                      <span class="admin-score-fill" style="width:{{ '%.0f'|format(upload.risk_score * 100) }}%;"></span>
+                    </div>
+                    <span class="admin-mono" style="font-size:0.75rem;">{{ '%.0f'|format(upload.risk_score * 100) }}%</span>
+                  </td>
+                  <td><span class="admin-mono">{{ upload.created_at.strftime('%Y-%m-%d %H:%M') }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="admin-table-empty">No analyses recorded yet.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ FEEDBACK TAB ═══ -->
+    <div class="admin-panel" data-admin-panel="feedback">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div>
+            <h3 class="admin-card-title">User Feedback</h3>
+            <p class="admin-card-subtitle">Recent feedback captured from the review flow.</p>
+          </div>
+          <span class="admin-chip">{{ metrics.recent_feedback|length }} items</span>
+        </div>
+        <div class="admin-card-body">
+          <div class="admin-feedback-grid">
+            {% for item in metrics.recent_feedback %}
+            <div class="admin-feedback-card">
+              <div class="admin-feedback-header">
+                <div class="admin-feedback-stars">
+                  {% if item.rating is not none %}
+                    {% for i in range(5) %}
+                      <span class="admin-star {% if i < item.rating %}is-filled{% endif %}">★</span>
+                    {% endfor %}
+                  {% else %}
+                    <span class="admin-mono">No rating</span>
+                  {% endif %}
+                </div>
+                <span class="admin-feedback-date">{{ item.created_at.strftime('%b %d, %Y') }}</span>
+              </div>
+              <p class="admin-feedback-message">{{ item.message }}</p>
+            </div>
+            {% else %}
+            <div class="admin-list-empty" style="grid-column:1/-1;">No feedback captured yet.</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ CHARTS ═══ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script nonce="{{ csp_nonce }}">
+(function() {
+  'use strict';
+
+  // ── Live Clock ──
+  const clockEl = document.getElementById('adminClock');
+  if (clockEl) {
+    function updateClock() {
+      const now = new Date();
+      clockEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+
+  // ── Sidebar Toggle ──
+  const sidebar = document.querySelector('[data-admin-sidebar]');
+  const backdrop = document.querySelector('[data-admin-sidebar-backdrop]');
+  const toggleBtn = document.querySelector('[data-admin-sidebar-toggle]');
+  const closeBtn = document.querySelector('[data-admin-sidebar-close]');
+
+  function openSidebar() {
+    if (sidebar) sidebar.classList.add('is-open');
+    if (backdrop) backdrop.classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove('is-open');
+    if (backdrop) backdrop.classList.remove('is-visible');
+    document.body.style.overflow = '';
+  }
+
+  if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+  if (backdrop) backdrop.addEventListener('click', closeSidebar);
+
+  // Close sidebar on window resize > 1024px
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 1024) closeSidebar();
+  });
+
+  // ── Tab Navigation ──
+  const tabs = document.querySelectorAll('[data-admin-tab]');
+  const panels = document.querySelectorAll('[data-admin-panel]');
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = tab.dataset.adminTab;
+      if (!target) return;
+
+      // Update nav items
+      tabs.forEach(function(t) { t.classList.remove('is-active'); });
+      tab.classList.add('is-active');
+
+      // Update panels
+      panels.forEach(function(p) { p.classList.remove('is-active'); });
+      var panel = document.querySelector('[data-admin-panel="' + target + '"]');
+      if (panel) panel.classList.add('is-active');
+
+      // Close sidebar on mobile after selecting
+      if (window.innerWidth <= 1024) closeSidebar();
+    });
+  });
+
+  // ── Charts ──
+  var chartData = {{ chart_data|tojson }};
+  var modeCtx = document.getElementById('modeChart');
+  var riskCtx = document.getElementById('riskChart');
+
+  // Chart defaults
+  Chart.defaults.font.family = 'Inter, sans-serif';
+  Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--on-surface-variant').trim() || '#6e6880';
 
   if (modeCtx) {
     new Chart(modeCtx, {
@@ -117,14 +467,21 @@
         labels: chartData.modeLabels,
         datasets: [{
           data: chartData.modeValues,
-          backgroundColor: ['#4c1d95', '#712edd'],
+          backgroundColor: ['#6d3fd4', '#c9a8ff'],
           borderWidth: 0,
+          hoverOffset: 8,
         }],
       },
       options: {
         responsive: true,
-        plugins: { legend: { position: 'bottom' } },
-        cutout: '68%',
+        maintainAspectRatio: false,
+        cutout: '72%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { padding: 16, usePointStyle: true, pointStyle: 'circle' },
+          },
+        },
       },
     });
   }
@@ -137,19 +494,32 @@
         datasets: [{
           label: 'Uploads',
           data: chartData.riskValues,
-          backgroundColor: ['#cfdaf2', '#8b4ef7', '#340075'],
-          borderRadius: 12,
+          backgroundColor: ['#22c55e', '#eab308', '#ef4444'],
+          borderRadius: 8,
+          borderSkipped: false,
+          barPercentage: 0.6,
         }],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
-          y: { beginAtZero: true, ticks: { precision: 0 } },
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0, stepSize: 1 },
+            grid: { color: 'rgba(123, 116, 131, 0.12)' },
+          },
+          x: {
+            grid: { display: false },
+          },
         },
-        plugins: { legend: { display: false } },
+        plugins: {
+          legend: { display: false },
+        },
       },
     });
   }
+})();
 </script>
 {% endif %}
 {% endblock %}

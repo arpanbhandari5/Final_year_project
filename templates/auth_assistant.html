@@ -1,0 +1,62 @@
+<!-- ================================================================
+     Prayash — Auth Assistant Widget
+     Floating conversational AI guide for authentication pages
+     ================================================================ -->
+
+<!-- Toggle Button -->
+<button id="auth-assistant-toggle" class="auth-assistant-toggle" aria-label="Open auth assistant">
+  <span class="unread-dot" aria-hidden="true"></span>
+  <span class="toggle-icon" aria-hidden="true">💬</span>
+</button>
+
+<!-- Chat Panel -->
+<div id="auth-assistant-panel" class="auth-assistant-panel" role="dialog" aria-label="Auth assistant chat">
+  
+  <!-- Header -->
+  <div class="auth-assistant__header">
+    <div class="auth-assistant__avatar" aria-hidden="true">🤖</div>
+    <div class="auth-assistant__header-info">
+      <span class="auth-assistant__header-name">Prayash Guide</span>
+      <span class="auth-assistant__header-status">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span data-auth-status-text>Online</span>
+      </span>
+    </div>
+    <button id="auth-assistant-minimize" class="auth-assistant__minimize" aria-label="Minimize chat" title="Minimize">
+      _
+    </button>
+  </div>
+
+  <!-- Mode Toggle -->
+  <div class="auth-assistant__mode-bar" role="tablist" aria-label="Assistant mode">
+    <button class="auth-mode-btn is-active" data-mode="auth" role="tab" aria-selected="true" title="Authentication help">
+      <span aria-hidden="true">🔐</span> Auth Help
+    </button>
+    <button class="auth-mode-btn" data-mode="career" role="tab" aria-selected="false" title="Career advice">
+      <span aria-hidden="true">💼</span> Career Advice
+    </button>
+  </div>
+
+  <!-- Messages Area -->
+  <div id="auth-assistant-messages" class="auth-assistant__messages" role="log" aria-live="polite">
+    <!-- Messages are dynamically inserted here -->
+  </div>
+
+  <!-- Input Area -->
+  <div class="auth-assistant__input-area">
+    <input
+      id="auth-assistant-input"
+      class="auth-assistant__input"
+      type="text"
+      placeholder="Ask me anything..."
+      autocomplete="off"
+      aria-label="Type your message"
+    >
+    <button id="auth-assistant-send" class="auth-assistant__send" aria-label="Send message" title="Send">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+      </svg>
+    </button>
+  </div>
+
+</div>

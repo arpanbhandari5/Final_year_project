@@ -134,9 +134,59 @@
             <button class="mode-toggle__button is-active" type="button" data-mode="standard">Standard <small>(Local ML)</small></button>
             <button class="mode-toggle__button" type="button" data-mode="advanced">Advanced <small>(Deep AI)</small></button>
           </div>
-          <button class="button-secondary" type="submit" data-assess-button>Run analysis</button>
+          <div class="inline-actions">
+            <button class="button-secondary" type="submit" data-assess-button>Run analysis</button>
+            <button class="button-ghost" type="button" data-export-button>Export PDF</button>
+            <button class="button-ghost compare-toggle" type="button" data-compare-toggle>Compare</button>
+          </div>
+        </div>
+
+        <!-- Comparison Panel -->
+        <div class="compare-panel" data-compare-panel>
+          <h3>Compare Two Resumes</h3>
+          <div class="compare-inputs">
+            <textarea placeholder="Paste Resume A text here..." data-compare-text-a></textarea>
+            <textarea placeholder="Paste Resume B text here..." data-compare-text-b></textarea>
+          </div>
+          <button class="button-secondary" type="button" data-compare-run>Compare</button>
+          <div class="compare-results hidden" data-compare-results></div>
         </div>
       </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SKILLS GAP ANALYSIS SECTION ═══ -->
+<section class="content-section" id="skills-gap">
+  <div class="container">
+    <div class="section-card" id="skills-gap-section">
+      <div class="inline-actions" style="justify-content:space-between;align-items:start;margin-bottom:1rem;">
+        <div>
+          <h2 class="section-title">🎯 Skills Gap Analysis</h2>
+          <p class="section-subtitle">Compare your resume skills against a target role to find what you already have and what to learn next.</p>
+        </div>
+        <span class="status-pill is-warm">New feature</span>
+      </div>
+
+      <form id="skills-gap-form" class="skills-gap-form" method="post" style="display:flex;gap:1rem;align-items:end;flex-wrap:wrap;">
+        <div class="field" style="flex:1;min-width:200px;">
+          <label for="skills-gap-role">Select target role</label>
+          <select id="skills-gap-role" style="padding:0.85rem 0.95rem;">
+            <option value="">Loading available roles...</option>
+          </select>
+        </div>
+        <button type="submit" id="skills-gap-submit" class="button-secondary" style="white-space:nowrap;">
+          Analyze Skills Gap
+        </button>
+      </form>
+
+      <div id="skills-gap-loading" class="hidden" style="text-align:center;padding:2rem 0;">
+        <div style="font-size:1.2rem;color:var(--primary);">🔍 Analyzing skills gap...</div>
+      </div>
+
+      <div id="skills-gap-error" class="auth-error hidden" role="alert" style="margin-top:1rem;"></div>
+
+      <div id="skills-gap-results" class="hidden" style="margin-top:1.5rem;"></div>
     </div>
   </div>
 </section>
@@ -337,6 +387,15 @@
         <h3 class="section-title" id="result-modal-title" data-modal-title style="margin: 0;">Analysis output</h3>
       </div>
       <button class="button-ghost" type="button" data-modal-close>Close</button>
+    </div>
+
+    <!-- SSE Progress Bar -->
+    <div class="progress-bar" data-progress-bar>
+      <div class="progress-bar__fill"></div>
+    </div>
+    <div class="progress-info">
+      <span class="progress-status" data-progress-status></span>
+      <span class="progress-percent" data-progress-percent></span>
     </div>
 
     <div class="modal-kpis">
