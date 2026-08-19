@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="pr-perf-hero" id="perf-top">
+  <div class="container pr-perf-hero__inner">
+    <div class="pr-perf-hero__text">
+      <span class="pr-eyebrow">System Health</span>
+      <h1>Performance monitoring dashboard.</h1>
+      <p class="lead">Live status of the RAG retrieval pipeline, cached chat sessions, and API rate limits — all computed locally in memory.</p>
+
+      <div class="pr-perf-hero__meta">
+        <span class="pr-live-dot" id="perf-live-dot" aria-hidden="true"></span>
+        <span id="perf-refresh-note">Auto-refreshing every 10 seconds</span>
+      </div>
+    </div>
+
+    <div class="pr-health perf-health-card" data-tilt data-tilt-max="5">
+      <div class="pr-health__head">
+        <span class="pr-health__label">Pipeline status</span>
+        <span class="status-pill is-warm" id="perf-status">Loading…</span>
+      </div>
+
+      <div class="perf-gauge" id="perf-gauge" style="--gauge: 0;">
+        <div class="perf-gauge__ring">
+          <span class="perf-gauge__icon" id="perf-gauge-icon" aria-hidden="true">⚙️</span>
+        </div>
+      </div>
+
+      <div class="pr-health__grid">
+        <div class="pr-mini-kpi">
+          <div class="pr-mini-kpi__label">Cached RAG</div>
+          <div class="pr-mini-kpi__value" id="perf-cached">--</div>
+        </div>
+        <div class="pr-mini-kpi">
+          <div class="pr-mini-kpi__label">Active chats</div>
+          <div class="pr-mini-kpi__value" id="perf-active">--</div>
+        </div>
+        <div class="pr-mini-kpi">
+          <div class="pr-mini-kpi__label">Cache TTL</div>
+          <div class="pr-mini-kpi__value" id="perf-ttl">--</div>
+        </div>
+        <div class="pr-mini-kpi">
+          <div class="pr-mini-kpi__label">Rate limit</div>
+          <div class="pr-mini-kpi__value" id="perf-rate">--</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="perf-body" id="perf-kpis">
+  <div class="container">
+    <div id="perf-error" class="auth-error hidden" role="alert" style="margin-bottom:1rem;"></div>
+
+    <!-- ── KPI tiles ── -->
+    <div class="perf-kpis">
+      <div class="perf-kpi-tile perf-reveal perf-reveal--1">
+        <span class="perf-kpi-tile__icon" aria-hidden="true">🗂️</span>
+        <div class="perf-kpi-tile__body">
+          <span class="perf-kpi-tile__label">Cached RAG sessions</span>
+          <strong class="perf-kpi-tile__value" id="perf-cached-2">--</strong>
+          <span class="perf-spark" aria-hidden="true"><i style="height:42%"></i><i style="height:68%"></i><i style="height:55%"></i><i style="height:80%"></i><i style="height:64%"></i><i style="height:92%"></i></span>
+        </div>
+        <span class="status-pill" id="perf-rag-badge">--</span>
+      </div>
+      <div class="perf-kpi-tile perf-reveal perf-reveal--2">
+        <span class="perf-kpi-tile__icon" aria-hidden="true">💬</span>
+        <div class="perf-kpi-tile__body">
+          <span class="perf-kpi-tile__label">Active chat sessions</span>
+          <strong class="perf-kpi-tile__value" id="perf-active-2">--</strong>
+          <span class="perf-spark" aria-hidden="true"><i style="height:30%"></i><i style="height:52%"></i><i style="height:74%"></i><i style="height:46%"></i><i style="height:60%"></i><i style="height:38%"></i></span>
+        </div>
+        <span class="status-pill" id="perf-chat-badge">--</span>
+      </div>
+      <div class="perf-kpi-tile perf-reveal perf-reveal--3">
+        <span class="perf-kpi-tile__icon" aria-hidden="true">⏳</span>
+        <div class="perf-kpi-tile__body">
+          <span class="perf-kpi-tile__label">Cache TTL</span>
+          <strong class="perf-kpi-tile__value" id="perf-ttl-2">--</strong>
+          <span class="perf-spark" aria-hidden="true"><i style="height:58%"></i><i style="height:58%"></i><i style="height:58%"></i><i style="height:58%"></i><i style="height:58%"></i><i style="height:58%"></i></span>
+        </div>
+        <span class="status-pill" id="perf-ttl-badge">Memory bound</span>
+      </div>
+      <div class="perf-kpi-tile perf-reveal perf-reveal--4">
+        <span class="perf-kpi-tile__icon" aria-hidden="true">🛡️</span>
+        <div class="perf-kpi-tile__body">
+          <span class="perf-kpi-tile__label">Service state</span>
+          <strong class="perf-kpi-tile__value" id="perf-active-bool">--</strong>
+          <span class="perf-spark" aria-hidden="true"><i style="height:50%"></i><i style="height:72%"></i><i style="height:40%"></i><i style="height:88%"></i><i style="height:62%"></i><i style="height:96%"></i></span>
+        </div>
+        <span class="status-pill is-warm" id="perf-service-badge">Local-only</span>
+      </div>
+    </div>
+
+    <!-- ── Main grid ── -->
+    <div class="perf-main-grid">
+
+      <!-- RAG cache detail -->
+      <div class="perf-card perf-card--glass perf-reveal perf-reveal--2">
+        <div class="inline-actions" style="justify-content:space-between;margin-bottom:1.25rem;">
+          <div>
+            <span class="section-eyebrow">Retrieval layer</span>
+            <h2 class="section-title" style="margin:0;">RAG retrieval cache</h2>
+            <p class="section-subtitle" style="margin:0.3rem 0 0;">Session-aware retrievers kept in memory for instant follow-up answers.</p>
+          </div>
+          <span class="perf-pulse-chip"><span class="perf-pulse-chip__dot"></span>Live</span>
+        </div>
+
+        <div class="perf-cache-meter">
+          <div class="perf-cache-meter__head">
+            <span>Cache utilization</span>
+            <strong id="perf-cache-meter-value">--</strong>
+          </div>
+          <div class="perf-cache-meter__track">
+            <div class="perf-cache-meter__fill" id="perf-cache-meter-fill" style="width:0%;"></div>
+          </div>
+        </div>
+
+        <div class="compact-list perf-list">
+          <div class="list-card">
+            <div><strong>Cached RAG sessions</strong><p>Resume-specific retrieval indexes built from past chat sessions.</p></div>
+            <span class="status-pill" id="perf-cached-3">--</span>
+          </div>
+          <div class="list-card">
+            <div><strong>Active chat sessions</strong><p>Concurrent career-chat conversations tracked by the server.</p></div>
+            <span class="status-pill" id="perf-active-3">--</span>
+          </div>
+          <div class="list-card">
+            <div><strong>Cache TTL</strong><p>How long an idle retrieval index stays in memory before eviction.</p></div>
+            <span class="status-pill" id="perf-ttl-3">--</span>
+          </div>
+          <div class="list-card">
+            <div><strong>Oldest cached session</strong><p>Age of the oldest live entry in the RAG cache.</p></div>
+            <span class="status-pill" id="perf-oldest">--</span>
+          </div>
+          <div class="list-card">
+            <div><strong>Service state</strong><p>Whether the global RAG service singleton is available.</p></div>
+            <span class="status-pill" id="perf-active-4">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rate limiting + info -->
+      <div style="display:grid;gap:1.5rem;align-content:start;">
+        <div class="perf-card perf-card--glass perf-reveal perf-reveal--3">
+          <div class="inline-actions" style="justify-content:space-between;margin-bottom:1rem;">
+            <div>
+              <span class="section-eyebrow">Abuse protection</span>
+              <h3 class="section-title" style="margin:0;">API rate limits</h3>
+            </div>
+            <span class="status-pill is-warm">Rolling window</span>
+          </div>
+          <p class="section-subtitle" style="margin:0 0 1rem;">Protects the ML endpoints from abuse; reset every rolling window.</p>
+
+          <div class="perf-gauges">
+            <div class="perf-gauge-mini">
+              <div class="perf-gauge-mini__head">
+                <span>Window</span>
+                <strong id="perf-rate-window">--</strong>
+              </div>
+              <div class="perf-gauge-mini__track">
+                <div class="perf-gauge-mini__fill" style="width:100%;"></div>
+              </div>
+            </div>
+            <div class="perf-gauge-mini">
+              <div class="perf-gauge-mini__head">
+                <span>Max requests</span>
+                <strong id="perf-rate-max">--</strong>
+              </div>
+              <div class="perf-gauge-mini__track">
+                <div class="perf-gauge-mini__fill" style="width:72%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="perf-card perf-card--glass perf-reveal perf-reveal--4">
+          <div class="inline-actions" style="justify-content:space-between;margin-bottom:1rem;">
+            <div>
+              <span class="section-eyebrow">Architecture</span>
+              <h3 class="section-title" style="margin:0;">How it's built</h3>
+            </div>
+            <span class="status-pill" id="perf-local-badge">100% local</span>
+          </div>
+          <ul class="perf-feature-list">
+            <li><span class="perf-feature-list__icon" aria-hidden="true">🧮</span><div><strong>TF-IDF retrieval</strong><p>Resume context vectorized lazily per chat session.</p></div></li>
+            <li><span class="perf-feature-list__icon" aria-hidden="true">🧹</span><div><strong>Auto eviction</strong><p>Cache evicts stale sessions after the TTL to bound memory.</p></div></li>
+            <li><span class="perf-feature-list__icon" aria-hidden="true">🔒</span><div><strong>Private by default</strong><p>Everything runs locally — no external API calls for retrieval.</p></div></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Bottom status strip ── -->
+    <div class="perf-status-strip perf-reveal perf-reveal--5">
+      <div class="perf-status-strip__item"><span class="perf-status-strip__ic" aria-hidden="true">⚡</span><div><strong>Rolling window limits</strong><p>Rate counters reset automatically.</p></div></div>
+      <div class="perf-status-strip__item"><span class="perf-status-strip__ic" aria-hidden="true">🧠</span><div><strong>In-memory cache</strong><p>No persistent storage for retrievers.</p></div></div>
+      <div class="perf-status-strip__item"><span class="perf-status-strip__ic" aria-hidden="true">🔁</span><div><strong>Auto refresh</strong><p>Status updates every 10 seconds.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<script nonce="{{ csp_nonce }}">
+(function() {
+  const status = document.getElementById('perf-status');
+  const errEl = document.getElementById('perf-error');
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+  // Animate numeric values counting up (falls back instantly for non-numeric text)
+  function countUp(el, raw) {
+    if (!el) return;
+    const match = String(raw).match(/^([\d.]+)(.*)$/);
+    if (!match || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.textContent = raw;
+      return;
+    }
+    const target = parseFloat(match[1]);
+    const suffix = match[2] || '';
+    const dur = 900;
+    const t0 = performance.now();
+    const step = (t) => {
+      const p = Math.min(1, (t - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function fmtAgo(secs) {
+    if (!secs || secs <= 0) return 'Fresh';
+    if (secs < 60) return Math.round(secs) + 's ago';
+    if (secs < 3600) return Math.round(secs / 60) + 'm ago';
+    return Math.round(secs / 3600) + 'h ago';
+  }
+
+  function setGauge(pct) {
+    const gauge = document.getElementById('perf-gauge');
+    const fill = document.getElementById('perf-cache-meter-fill');
+    const value = document.getElementById('perf-cache-meter-value');
+    const icon = document.getElementById('perf-gauge-icon');
+    if (gauge) gauge.style.setProperty('--gauge', pct);
+    if (fill) fill.style.width = pct + '%';
+    if (value) value.textContent = pct + '%';
+    if (icon) icon.textContent = pct > 50 ? '🔥' : '🌱';
+  }
+
+  async function load() {
+    try {
+      const res = await fetch('/api/rag-status');
+      const d = await res.json();
+      if (!res.ok || !d.success) throw new Error(d.error || 'Failed to load status');
+
+      const rag = d.rag_service || {};
+      const active = d.active_sessions;
+      const ttl = (rag.ttl_seconds || 0);
+      const tt = ttl >= 3600 ? Math.round(ttl / 3600) + 'h' : ttl >= 60 ? Math.round(ttl / 60) + 'm' : ttl + 's';
+
+      const cached = rag.cached_sessions ?? 0;
+
+      set('perf-cached', cached);
+      set('perf-active', active ?? 0);
+      set('perf-ttl', tt);
+      set('perf-rate', d.rate_limit_max + ' req / ' + d.rate_limit_window + 's');
+
+      countUp(document.getElementById('perf-cached-2'), cached);
+      countUp(document.getElementById('perf-active-2'), (active ?? 0) + ' live');
+      set('perf-ttl-2', tt);
+      set('perf-active-bool', rag.active ? 'Online' : 'Offline');
+      const serviceBadge = document.getElementById('perf-service-badge');
+      if (serviceBadge) {
+        serviceBadge.textContent = rag.active ? 'Online' : 'Local-only';
+        serviceBadge.className = 'status-pill' + (rag.active ? '' : ' is-warm');
+      }
+
+      set('perf-cached-3', cached);
+      set('perf-active-3', active ?? 0);
+      set('perf-ttl-3', tt);
+      set('perf-oldest', fmtAgo(rag.oldest_session_seconds));
+      set('perf-active-4', rag.active ? 'Online' : 'Offline');
+
+      set('perf-rate-window', d.rate_limit_window + 's');
+      set('perf-rate-max', d.rate_limit_max + ' req');
+
+      const warm = cached > 0;
+      const ragBadge = document.getElementById('perf-rag-badge');
+      ragBadge.textContent = warm ? 'Warm cache' : 'Cold';
+      ragBadge.className = 'status-pill' + (warm ? '' : ' is-warm');
+
+      const chatBadge = document.getElementById('perf-chat-badge');
+      chatBadge.textContent = active > 0 ? 'Live' : 'Idle';
+      chatBadge.className = 'status-pill' + (active > 0 ? '' : ' is-warm');
+
+      // Cache utilization: normalize to a 50-session visual cap
+      const pct = Math.min(100, Math.round((cached / 50) * 100));
+      setGauge(pct);
+
+      status.textContent = 'Healthy';
+      status.className = 'status-pill';
+      const dot = document.getElementById('perf-live-dot');
+      if (dot) dot.classList.add('is-live');
+      const gaugeOk = document.getElementById('perf-gauge');
+      if (gaugeOk) gaugeOk.classList.remove('is-error');
+    } catch (e) {
+      status.textContent = 'Unavailable';
+      status.className = 'status-pill is-warm';
+      setGauge(100);
+      const icon = document.getElementById('perf-gauge-icon');
+      if (icon) icon.textContent = '⚠️';
+      const gaugeErr = document.getElementById('perf-gauge');
+      if (gaugeErr) gaugeErr.classList.add('is-error');
+      errEl.textContent = String(e.message || e);
+      errEl.classList.remove('hidden');
+    }
+  }
+
+  // ─── Scroll reveal for perf cards (fail-safe: never strand content hidden) ───
+  const perfReveals = Array.from(document.querySelectorAll('.perf-reveal'));
+  try {
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      perfReveals.forEach((el) => obs.observe(el));
+    } else {
+      perfReveals.forEach((el) => el.classList.add('is-visible'));
+    }
+  } catch (err) {
+    perfReveals.forEach((el) => el.classList.add('is-visible'));
+  }
+
+  // ─── 3D tilt for the health card ───
+  const tiltEl = document.querySelector('[data-tilt]');
+  if (tiltEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const max = parseFloat(tiltEl.getAttribute('data-tilt-max')) || 5;
+    let raf = null;
+    tiltEl.addEventListener('mousemove', (e) => {
+      const r = tiltEl.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        tiltEl.style.setProperty('--rx', ((0.5 - py) * max).toFixed(2) + 'deg');
+        tiltEl.style.setProperty('--ry', ((px - 0.5) * max).toFixed(2) + 'deg');
+      });
+    });
+    tiltEl.addEventListener('mouseleave', () => {
+      if (raf) cancelAnimationFrame(raf);
+      tiltEl.style.setProperty('--rx', '0deg');
+      tiltEl.style.setProperty('--ry', '0deg');
+    });
+  }
+
+  load();
+  setInterval(load, 10000);
+})();
+</script>
+{% endblock %}

@@ -4,43 +4,358 @@
 <section class="page-section page-hero">
   <div class="container page-hero__grid">
     <div>
-      <span class="eyebrow">Insights</span>
-      <h1>Explain the platform with the same clarity the dashboard gives the candidate.</h1>
-      <p class="lead">This page is built to showcase analytics, course mapping, and the visual language used across Prayash.</p>
+      <span class="eyebrow">Analytics Dashboard</span>
+      <h1>Insights and career intelligence dashboard.</h1>
+      <p class="lead">Analyze your resume text below to see skills breakdown, career path matches, and a personalised learning roadmap - all computed locally.</p>
     </div>
-    <div class="glass-card">
-      <h2 class="section-title">Sample visualization stack</h2>
-      <div class="chart-placeholder" style="margin-top: 1rem;">
-        <div class="chart-columns">
-          <span style="height: 34%;"></span>
-          <span style="height: 62%;"></span>
-          <span style="height: 86%;"></span>
-          <span style="height: 48%;"></span>
-          <span style="height: 70%;"></span>
-        </div>
+    <div class="glass-card insights-stats-card">
+      <div class="inline-actions" style="justify-content:space-between;margin-bottom:0.5rem;">
+        <span class="section-title" style="margin:0;">Quick stats</span>
+        <span class="status-pill is-warm" id="insights-status">Awaiting input</span>
+      </div>
+      <div class="insights-mini-stats" id="insights-quick-stats">
+        <div class="kpi"><div class="kpi__label">Skills detected</div><div class="kpi__value" id="stats-skills">--</div></div>
+        <div class="kpi"><div class="kpi__label">Categories</div><div class="kpi__value" id="stats-categories">--</div></div>
+        <div class="kpi"><div class="kpi__label">Quality score</div><div class="kpi__value" id="stats-quality">--</div></div>
+        <div class="kpi"><div class="kpi__label">Career matches</div><div class="kpi__value" id="stats-paths">--</div></div>
       </div>
     </div>
   </div>
 </section>
 
 <section class="content-section">
-  <div class="container insight-grid">
-    <article class="insight-card">
-      <h3 class="section-title">Automation risk bands</h3>
-      <p class="section-subtitle">A compact view for low, moderate, and elevated risk states, keyed to the local ML output.</p>
-    </article>
-    <article class="insight-card">
-      <h3 class="section-title">RIASEC profile</h3>
-      <p class="section-subtitle">A ranking of Realistic, Investigative, Artistic, Social, Enterprising, and Conventional fit derived from O*NET interests and resume language.</p>
-    </article>
-    <article class="insight-card">
-      <h3 class="section-title">Learning roadmap</h3>
-      <p class="section-subtitle">Course cards pulled from the Coursera catalog and matched to the most relevant skill gaps.</p>
-    </article>
-    <article class="insight-card">
-      <h3 class="section-title">Job compatibility</h3>
-      <p class="section-subtitle">Top role candidates ranked by similarity between the resume and the automated risk corpus.</p>
-    </article>
+  <div class="container">
+    <div class="section-card" style="padding:1.5rem;">
+      <div class="inline-actions" style="justify-content:space-between;align-items:end;gap:1rem;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <h2 class="section-title" style="margin:0 0 0.3rem;">Enter resume text</h2>
+          <p class="section-subtitle" style="margin:0;">Paste your resume or a career summary below to generate insights.</p>
+        </div>
+        <button class="button-secondary" id="insights-analyze-btn" type="button" style="white-space:nowrap;">
+          <span id="insights-btn-text">Analyze for insights</span>
+        </button>
+      </div>
+      <div class="field" style="margin-top:1rem;">
+        <textarea id="insights-resume-text" placeholder="Paste your resume text here..." style="min-height:120px;resize:vertical;" data-insights-text></textarea>
+      </div>
+      <div id="insights-error" class="auth-error hidden" role="alert" style="margin-top:0.5rem;"></div>
+    </div>
   </div>
 </section>
+
+<div id="insights-results-area" class="hidden">
+
+  <section class="content-section">
+    <div class="container">
+      <div class="glass-card" style="padding:1.5rem;">
+        <div class="inline-actions" style="justify-content:space-between;margin-bottom:1.5rem;">
+          <div>
+            <h2 class="section-title" style="margin:0;">Skill categories breakdown</h2>
+            <p class="section-subtitle" style="margin:0.3rem 0 0;">Skills detected across <span id="insights-cat-count">0</span> categories</p>
+          </div>
+          <span class="status-pill" id="insights-skills-count">0 skills</span>
+        </div>
+        <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:0.75rem;"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" id="resume-analysis">
+    <div class="container">
+      <div class="glass-card" style="padding:1.5rem;">
+        <div class="inline-actions" style="justify-content:space-between;margin-bottom:1.5rem;">
+          <div>
+            <h2 class="section-title" style="margin:0;">Resume analysis</h2>
+            <p class="section-subtitle" style="margin:0.3rem 0 0;">Everything we extracted from your resume — contact info, education, experience, projects, and more.</p>
+          </div>
+          <span class="status-pill" id="insights-sections-count">--</span>
+        </div>
+
+        <!-- Contact info -->
+        <div class="resume-contact-grid" id="resume-contact-container"></div>
+
+        <!-- Sections found pills -->
+        <div id="resume-sections-pills" class="resume-sections-pills"></div>
+
+        <!-- Education -->
+        <div class="resume-block" id="resume-education-block" hidden>
+          <h3 class="resume-block__title">🎓 Education</h3>
+          <div id="resume-education-list" class="resume-list"></div>
+        </div>
+
+        <!-- Experience -->
+        <div class="resume-block" id="resume-experience-block" hidden>
+          <h3 class="resume-block__title">💼 Experience</h3>
+          <div id="resume-experience-list" class="resume-list"></div>
+        </div>
+
+        <!-- Projects -->
+        <div class="resume-block" id="resume-projects-block" hidden>
+          <h3 class="resume-block__title">📁 Projects</h3>
+          <div id="resume-projects-list" class="resume-list"></div>
+        </div>
+
+        <!-- Certifications -->
+        <div class="resume-block" id="resume-certs-block" hidden>
+          <h3 class="resume-block__title">🏅 Certifications</h3>
+          <div id="resume-certs-list" class="resume-chip-list"></div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="resume-block" id="resume-achievements-block" hidden>
+          <h3 class="resume-block__title">🌟 Achievements & awards</h3>
+          <div id="resume-achievements-list" class="resume-chip-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div class="section-card">
+        <div class="inline-actions" style="justify-content:space-between;margin-bottom:1rem;">
+          <div>
+            <h2 class="section-title" style="margin:0;">Career path matches</h2>
+            <p class="section-subtitle" style="margin:0.3rem 0 0;">Roles ranked by keyword overlap with your resume</p>
+          </div>
+          <span class="status-pill" id="insights-paths-count">0 matches</span>
+        </div>
+        <div class="insights-paths-grid" id="insights-paths-container">
+          <div class="list-card"><div><strong>No matches yet</strong><p>Run analysis to see your career path matches.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div class="section-card">
+        <div class="inline-actions" style="justify-content:space-between;margin-bottom:1rem;">
+          <div>
+            <h2 class="section-title" style="margin:0;">Learning roadmap</h2>
+            <p class="section-subtitle" style="margin:0.3rem 0 0;">Progressive stages tailored to your detected skill areas</p>
+          </div>
+          <span class="status-pill" id="insights-roadmap-weeks">0 weeks</span>
+        </div>
+        <div id="insights-roadmap-container">
+          <div class="list-card"><div><strong>No roadmap yet</strong><p>Run analysis to generate your learning roadmap.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div class="glass-card" style="padding:1.5rem;">
+        <div class="inline-actions" style="justify-content:space-between;margin-bottom:0.5rem;">
+          <div>
+            <h2 class="section-title" style="margin:0;">Resume completeness</h2>
+            <p class="section-subtitle" style="margin:0.3rem 0 0;">Quality assessment based on sections found</p>
+          </div>
+          <span class="status-pill" id="insights-quality-grade">--</span>
+        </div>
+        <div id="insights-quality-container"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script nonce="{{ csp_nonce }}">
+(function() {
+  'use strict';
+  const btn = document.getElementById('insights-analyze-btn');
+  const textarea = document.getElementById('insights-resume-text');
+  const err = document.getElementById('insights-error');
+  const results = document.getElementById('insights-results-area');
+  const btnText = document.getElementById('insights-btn-text');
+  const csrf = () => document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+  const status = document.getElementById('insights-status');
+
+  function showError(m) { err.textContent = m; err.classList.remove('hidden'); }
+  function hideError() { err.classList.add('hidden'); err.textContent = ''; }
+  function setBusy(b) { btn.disabled = b; btnText.textContent = b ? 'Analyzing...' : 'Analyze for insights'; }
+
+  function esc(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str == null ? '' : String(str)));
+    return div.innerHTML;
+  }
+
+  // ── Resume analysis (SAHAY_AI-inspired structured breakdown) ──
+  function renderResumeAnalysis(p) {
+    p = p || {};
+    const contact = p.contact || {};
+
+    // Contact info cards
+    const cEl = document.getElementById('resume-contact-container');
+    const cItems = [];
+    if (contact.email) cItems.push({ label: 'Email', value: contact.email, href: 'mailto:' + contact.email });
+    if (contact.phone) cItems.push({ label: 'Phone', value: contact.phone, href: 'tel:' + String(contact.phone).replace(/[^\d+]/g, '') });
+    if (contact.linkedin) cItems.push({ label: 'LinkedIn', value: contact.linkedin, href: 'https://' + String(contact.linkedin).replace(/^https?:\/\//, ''), ext: true });
+    if (contact.github) cItems.push({ label: 'GitHub', value: contact.github, href: 'https://' + String(contact.github).replace(/^https?:\/\//, ''), ext: true });
+    cEl.innerHTML = cItems.length
+      ? cItems.map(function(i) {
+          return '<div class="resume-contact-card">' +
+            '<span class="resume-contact-card__label">' + esc(i.label) + '</span>' +
+            '<a class="resume-contact-card__value" href="' + esc(i.href) + '"' + (i.ext ? ' target="_blank" rel="noopener"' : '') + '>' + esc(i.value) + '</a></div>';
+        }).join('')
+      : '<p class="section-subtitle" style="margin:0;">No contact information detected.</p>';
+
+    // Sections found pills
+    const sf = p.sections_found || [];
+    document.getElementById('resume-sections-pills').innerHTML = sf.length
+      ? sf.map(function(s) { return '<span class="chip">' + esc(s) + '</span>'; }).join('')
+      : '';
+    document.getElementById('insights-sections-count').textContent = sf.length ? sf.length + ' sections found' : 'No sections found';
+
+    // Generic renderer for simple text lists
+    function renderList(blockId, listId, items, emptyText) {
+      const block = document.getElementById(blockId);
+      const list = document.getElementById(listId);
+      if (items && items.length) {
+        block.hidden = false;
+        list.innerHTML = items.map(function(it) { return '<div class="resume-item"><p class="resume-item__text">' + esc(it) + '</p></div>'; }).join('');
+      } else {
+        block.hidden = true;
+        list.innerHTML = '';
+      }
+    }
+
+    // Education, experience
+    renderList('resume-education-block', 'resume-education-list', p.education);
+    renderList('resume-experience-block', 'resume-experience-list', p.experience);
+
+    // Projects (may be strings or {name, description})
+    const projs = p.projects || [];
+    const projBlock = document.getElementById('resume-projects-block');
+    if (projs.length) {
+      projBlock.hidden = false;
+      document.getElementById('resume-projects-list').innerHTML = projs.map(function(pr) {
+        const name = typeof pr === 'string' ? pr : (pr.name || 'Untitled project');
+        const desc = typeof pr === 'object' && pr.description ? pr.description : [];
+        const descArr = Array.isArray(desc) ? desc : [desc];
+        const descHtml = descArr.filter(Boolean).map(function(d) { return '<li>' + esc(d) + '</li>'; }).join('');
+        return '<div class="resume-item"><strong class="resume-item__title">' + esc(name) + '</strong>' + (descHtml ? '<ul class="resume-item__list">' + descHtml + '</ul>' : '') + '</div>';
+      }).join('');
+    } else {
+      projBlock.hidden = true;
+      document.getElementById('resume-projects-list').innerHTML = '';
+    }
+
+    // Certifications + achievements as chips
+    function renderChips(blockId, listId, items) {
+      const block = document.getElementById(blockId);
+      const list = document.getElementById(listId);
+      if (items && items.length) {
+        block.hidden = false;
+        list.innerHTML = items.map(function(it) { return '<span class="chip">' + esc(it) + '</span>'; }).join('');
+      } else {
+        block.hidden = true;
+        list.innerHTML = '';
+      }
+    }
+    renderChips('resume-certs-block', 'resume-certs-list', p.certifications);
+    renderChips('resume-achievements-block', 'resume-achievements-list', p.achievements);
+  }
+
+  document.getElementById('insights-analyze-btn').addEventListener('click', async function() {
+    const text = textarea.value.trim();
+    if (!text || text.length < 20) { showError('Please enter at least 20 characters.'); return; }
+    hideError(); setBusy(true); status.textContent = 'Analyzing...';
+    try {
+      const res = await fetch('/api/insights-summary', { method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf() },
+        body: JSON.stringify({ resume_text: text }) });
+      const d = await res.json();
+      if (!res.ok || !d.success) throw new Error(d.error || 'Failed.');
+
+      // Skills categories
+      const cats = d.skills?.by_category || {};
+      const entries = Object.entries(cats);
+      const max = Math.max(1, ...entries.map(([, s]) => s.length));
+      document.getElementById('skills-categories-container').innerHTML =
+        entries.map(([cat, sk]) => '<div class="insights-cat-bar"><div class="inline-actions" style="justify-content:space-between;margin-bottom:0.25rem;"><strong style="font-size:0.9rem;">'+cat+'</strong><span style="font-size:0.8rem;color:var(--text-muted);">'+sk.length+' skills</span></div><div class="bar"><span style="width:'+Math.round(sk.length/max*100)+'%;"></span></div><div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.4rem;">'+sk.map(s=>'<span class="chip">'+s+'</span>').join('')+'</div></div>').join('');
+      document.getElementById('stats-skills').textContent = d.skills?.count || 0;
+      document.getElementById('stats-categories').textContent = entries.length;
+      document.getElementById('insights-skills-count').textContent = (d.skills?.count||0)+' skills';
+      document.getElementById('insights-cat-count').textContent = entries.length;
+
+      // Resume analysis (contact, education, experience, projects, certs, achievements)
+      renderResumeAnalysis(d.parsed);
+
+      // Career paths
+      const paths = d.career_paths?.paths || [];
+      if (!paths.length) {
+        document.getElementById('insights-paths-container').innerHTML = '<div class="list-card"><div><strong>No matches</strong><p>Try adding more skills.</p></div></div>';
+      } else {
+        document.getElementById('insights-paths-container').innerHTML = paths.map(p => {
+          const sc = p.score >= 50 ? 'is-good' : p.score >= 25 ? 'is-warm' : '';
+          const skillsChips = (p.skills_needed || []).slice(0, 5).map(function(s) {
+            return '<span class="chip" style="font-size:0.72rem;">' + esc(s) + '</span>';
+          }).join('');
+          const kwPct = p.total_keywords ? Math.round((p.matched_keywords || 0) / p.total_keywords * 100) : 0;
+          return '<div class="insights-path-card"><div class="inline-actions" style="justify-content:space-between;align-items:start;gap:0.5rem;"><div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;"><strong>' + esc(p.role) + '</strong>' +
+            (p.growing ? '<span class="chip" style="background:rgba(34,197,94,0.12);color:#16a34a;font-size:0.72rem;">📈 Growing</span>' : '') +
+            '</div><div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.3rem 0;"><span class="chip">' + esc(p.category) + '</span><span class="chip">' + esc(p.demand) + ' demand</span><span class="chip">' + esc(p.avg_salary) + '</span></div><p style="margin:0.3rem 0 0;font-size:0.85rem;color:var(--text-muted);">' + esc(p.description) + '</p>' +
+            (skillsChips ? '<div class="path-card-skills"><div class="path-card-skills__label">Key skills</div><div style="display:flex;flex-wrap:wrap;gap:0.35rem;">' + skillsChips + '</div></div>' : '') +
+            '<div class="path-match-bar"><div class="path-match-bar__track"><div class="path-match-bar__fill" style="width:' + Math.max(0, Math.min(100, kwPct)) + '%;"></div></div><div class="path-match-bar__meta"><span>Keyword match</span><strong>' + kwPct + '% (' + (p.matched_keywords || 0) + '/' + (p.total_keywords || 0) + ')</strong></div></div></div><div class="insights-score-badge ' + sc + '">' + p.score + '%</div></div></div>';
+        }).join('');
+      }
+      document.getElementById('stats-paths').textContent = paths.length;
+      document.getElementById('insights-paths-count').textContent = paths.length+' matches';
+
+      // Learning roadmap (SAHAY_AI-inspired numbered timeline + progress sidebar)
+      const rm = d.learning_roadmap?.roadmap || [];
+      if (!rm.length) {
+        document.getElementById('insights-roadmap-container').innerHTML = '<div class="list-card"><div><strong>No roadmap</strong><p>Add more skill-specific content.</p></div></div>';
+      } else {
+        const totalStages = rm.reduce(function(n, a) { return n + (a.stages || []).length; }, 0);
+        document.getElementById('insights-roadmap-container').innerHTML =
+          '<div class="roadmap-layout">' +
+            '<div class="roadmap-timeline">' + rm.map(a => {
+              return '<div class="roadmap-section-card"><h3 style="margin:0 0 0.8rem;font-size:1.1rem;">' + esc(a.area) + '</h3><div class="roadmap-stages">' +
+                (a.stages || []).map(function(s, i) {
+                  return '<div class="roadmap-stage"><div class="roadmap-stage__num">' + (i + 1) + '</div><div class="roadmap-stage__content"><div class="inline-actions" style="justify-content:space-between;"><strong>' + esc(s.level) + '</strong><span class="chip" style="font-size:0.75rem;">' + esc(s.duration) + '</span></div><p style="margin:0.3rem 0 0;font-size:0.85rem;color:var(--text-muted);">' + esc(s.description) + '</p></div></div>';
+                }).join('') +
+                '</div></div>';
+            }).join('') + '</div>' +
+            '<aside class="roadmap-sidebar">' +
+              '<div class="glass-card roadmap-sidebar-card"><h3 class="section-title" style="font-size:1.05rem;">📊 Your progress</h3><div class="roadmap-progress-list"><div class="roadmap-progress-item"><strong>Skills detected</strong><span>' + (d.skills?.count || 0) + '</span></div><div class="roadmap-progress-item"><strong>Learning areas</strong><span>' + rm.length + '</span></div><div class="roadmap-progress-item"><strong>Roadmap stages</strong><span>' + totalStages + '</span></div><div class="roadmap-progress-item"><strong>Estimated time</strong><span>' + (d.learning_roadmap?.total_weeks || 0) + '+ wks</span></div></div></div>' +
+              '<div class="glass-card roadmap-sidebar-card"><h3 class="section-title" style="font-size:1.05rem;">💡 Tips for success</h3><ul class="roadmap-tips"><li>Focus on one learning path at a time</li><li>Build projects to apply new knowledge</li><li>Practice regularly with coding challenges</li><li>Track your progress and celebrate wins</li></ul></div>' +
+              '<div class="glass-card roadmap-sidebar-card"><h3 class="section-title" style="font-size:1.05rem;">🔗 Resources</h3><div class="roadmap-resources"><a href="https://leetcode.com" target="_blank" rel="noopener">💻 LeetCode — coding practice</a><a href="https://coursera.org" target="_blank" rel="noopener">🎓 Coursera — online courses</a><a href="https://github.com" target="_blank" rel="noopener">🐙 GitHub — open source</a><a href="https://stackoverflow.com" target="_blank" rel="noopener">❓ Stack Overflow — Q&A</a></div></div>' +
+            '</aside>' +
+          '</div>';
+      }
+      document.getElementById('insights-roadmap-weeks').textContent = (d.learning_roadmap?.total_weeks||0)+'+ weeks';
+
+      // Quality
+      const q = d.quality || {};
+      const grade = q.grade || 'N/A';
+      const gEl = document.getElementById('insights-quality-grade');
+      gEl.textContent = grade;
+      const gColors = {A:'#22c55e',B:'#16a34a',C:'#eab308',D:'#f97316',F:'#ef4444'};
+      gEl.style.background = gColors[grade] || 'var(--text-muted)';
+      const score = q.score || 0;
+      document.getElementById('stats-quality').textContent = score+'%';
+      const strengths = q.strengths || [];
+      const missing = q.missing || [];
+      const recs = q.recommendations || [];
+      document.getElementById('insights-quality-container').innerHTML =
+        '<div class="inline-actions" style="gap:2rem;flex-wrap:wrap;"><div class="score-ring" style="--score:'+Math.max(0.05,Math.min(0.95,score/100))+';width:8rem;"><div class="score-ring__content"><p class="score-ring__value">'+score+'%</p><p class="score-ring__label">Grade '+grade+'</p></div></div><div style="flex:1;min-width:200px;">'+
+        (strengths.length ? '<div style="margin-bottom:0.5rem;"><strong style="color:var(--success);font-size:0.9rem;">Strengths</strong><div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.3rem;">'+strengths.map(s=>'<span class="chip" style="background:rgba(34,197,94,0.12);color:var(--success);">'+s+'</span>').join('')+'</div></div>' : '') +
+        (missing.length ? '<div><strong style="color:var(--warning);font-size:0.9rem;">Missing</strong><div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.3rem;">'+missing.map(s=>'<span class="chip" style="background:rgba(234,179,8,0.12);color:var(--warning);">'+s+'</span>').join('')+'</div></div>' : '') +
+        '</div></div>' +
+        (recs.length ? '<div style="margin-top:1rem;"><strong style="font-size:0.9rem;">Recommendations</strong><ul style="margin:0.5rem 0 0;padding-left:1.2rem;">'+recs.map(r=>'<li style="margin-bottom:0.3rem;font-size:0.85rem;color:var(--text-muted);">'+r+'</li>').join('')+'</ul></div>' : '');
+
+      results.classList.remove('hidden');
+      status.textContent = 'Complete';
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch(e) { showError(e.message||'Analysis failed.'); status.textContent = 'Error'; }
+    finally { setBusy(false); }
+  });
+})();
+</script>
 {% endblock %}

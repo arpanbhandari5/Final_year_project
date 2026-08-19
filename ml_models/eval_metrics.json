@@ -1,0 +1,16 @@
+{
+  "target": "per-role mean automation risk (fold-local, no leakage)",
+  "cv_folds": 5,
+  "n_samples": 3000,
+  "n_roles": 20,
+  "occupation_level": {
+    "mae": 0.005126738107131454,
+    "rmse": 0.007081238714637336,
+    "r2": 0.916810274565333
+  },
+  "raw_labels": {
+    "mae": 0.24832912124045378,
+    "rmse": 0.28787799756684807,
+    "r2": -0.008500432746190612
+  }
+}

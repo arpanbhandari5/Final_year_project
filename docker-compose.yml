@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  prayash:
+    build: .
+    container_name: prayash
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-prayash-local-development-secret}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///app/instance/prayash.db}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@prayash.local}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-prayash-admin}
+      - PORT=5000
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3}
+      # OAuth — these can also be set via .env file
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID:-}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID:-}
+      - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET:-}
+      - LINKEDIN_OAUTH_CLIENT_ID=${LINKEDIN_OAUTH_CLIENT_ID:-}
+      - LINKEDIN_OAUTH_CLIENT_SECRET=${LINKEDIN_OAUTH_CLIENT_SECRET:-}
+      - MICROSOFT_OAUTH_CLIENT_ID=${MICROSOFT_OAUTH_CLIENT_ID:-}
+      - MICROSOFT_OAUTH_CLIENT_SECRET=${MICROSOFT_OAUTH_CLIENT_SECRET:-}
+    volumes:
+      - prayash_data:/app/ml_models
+      - prayash_db:/app/instance
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Python-based fallback healthcheck if curl is unavailable:
+  # test: ["CMD", "python", "-c", "import urllib.request; exit(0 if urllib.request.urlopen('http://localhost:5000/healthz').status == 200 else 1)"]
+
+volumes:
+  prayash_data:
+  prayash_db:

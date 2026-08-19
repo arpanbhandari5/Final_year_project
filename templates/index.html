@@ -1,221 +1,324 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<div class="dashboard-shell">
-  <aside class="dashboard-sidebar">
-    <div class="sidebar-brand">
-      <span class="brand-mark">PR</span>
-      <div>
-        <h1>Prayash</h1>
-        <p>AI Career Intelligence</p>
+<!-- ═══ HERO ═══ -->
+<section class="pr-hero" id="welcome">
+  <div class="container pr-hero__inner">
+    <div class="pr-hero__text">
+      <span class="pr-badge"><span aria-hidden="true">🎓</span> Career Path AI Recommender System</span>
+      <h1 class="pr-hero__title">Welcome to <em>Prayash</em></h1>
+      <p class="pr-hero__lead">This recommendation system assists university students in selecting the most suitable studies and courses based on their academic performance, interests, and career aspirations.</p>
+      <div class="pr-hero__actions">
+        <a class="pr-btn pr-btn--primary" href="#analysis">Get Recommendations <span aria-hidden="true">→</span></a>
+        <a class="pr-btn pr-btn--ghost" href="#start-here">Explore the platform</a>
+      </div>
+      <div class="pr-hero__chips">
+        <span class="chip">Local-first privacy</span>
+        <span class="chip">Dual-mode pipeline</span>
+        <span class="chip">Learning roadmap</span>
       </div>
     </div>
 
-    <nav class="sidebar-nav" aria-label="Primary navigation">
-      <a class="sidebar-link active" href="#hero">Overview</a>
-      <a class="sidebar-link" href="#analysis">Assessment</a>
-      <a class="sidebar-link" href="#risk-board">Risk Board</a>
-      <a class="sidebar-link" href="#insights">AI Insights</a>
-    </nav>
-
-    <div class="sidebar-panel">
-      <div class="panel-title">AI Pulse</div>
-      <div class="sidebar-metric">24%</div>
-      <p class="sidebar-note">Current career risk projection</p>
-      <div class="sidebar-chip-row">
-        <span class="chip">Realtime</span>
-        <span class="chip is-warm">Local-first</span>
+    <div class="pr-visual" data-tilt data-tilt-max="4">
+      <div class="pr-visual__card">
+        <div class="pr-visual__head">
+          <span class="pr-visual__label">Live report preview</span>
+          <span class="status-pill is-warm">Standard mode</span>
+        </div>
+        <div class="pr-visual__grid">
+          <div class="pr-ring" style="--score: 0.38;">
+            <div class="pr-ring__inner">
+              <span class="pr-ring__value">38%</span>
+              <span class="pr-ring__label">Risk</span>
+            </div>
+          </div>
+          <div class="pr-visual__rows">
+            <div class="pr-visual__row">
+              <strong>Role match</strong>
+              <div class="bar"><span style="width: 84%;"></span></div>
+            </div>
+            <div class="pr-visual__row">
+              <strong>Skills coverage</strong>
+              <div class="bar"><span style="width: 64%;"></span></div>
+            </div>
+            <div class="pr-visual__row">
+              <strong>Market demand</strong>
+              <div class="bar"><span style="width: 71%;"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pr-visual__foot">
+          <p>⚡ Instant local analysis</p>
+          <span class="status-pill">No cloud needed</span>
+        </div>
       </div>
     </div>
-  </aside>
+  </div>
+</section>
 
-  <main class="dashboard-main">
-    <header class="topbar">
-      <div class="topbar-brand">
+<!-- ═══ START HERE: CHOOSE YOUR PATH ═══ -->
+<section class="pr-section" id="start-here">
+  <div class="container">
+    <div class="section-card">
+      <div class="pr-panel__head">
         <div>
-          <span class="eyebrow top-eyebrow">Premium AI workspace</span>
-          <h2>Career risk, reskilling, and role alignment in one dashboard.</h2>
+          <span class="pr-eyebrow">Choose your journey</span>
+          <h2 class="pr-section__title">Start Here: Choose your path</h2>
+          <p class="pr-section__sub" style="text-align:left;">Pick the journey that best matches your current situation. We will tailor guidance and suggested actions around it.</p>
         </div>
-        <nav class="topbar-nav" aria-label="Dashboard navigation">
-          <a class="topbar-nav-link active" href="#hero">Overview</a>
-          <a class="topbar-nav-link" href="#analysis">Assessment</a>
-          <a class="topbar-nav-link" href="#risk-board">Risk Board</a>
-          <a class="topbar-nav-link" href="#insights">Insights</a>
-        </nav>
-      </div>
-      <div class="topbar-actions">
-        <span class="status-pill">Live mode</span>
-        <span class="status-pill is-warm">No permanent store</span>
-        <button class="button-outline" type="button">Export report</button>
-      </div>
-    </header>
-
-    <section id="hero" class="hero hero-grid">
-      <div class="panel hero-panel">
-        <span class="eyebrow">AI-powered career intelligence</span>
-        <h1>Turn resumes into a learning strategy with a futuristic dashboard.</h1>
-        <p class="lead">Prayash combines local ML, role-fit intelligence, and optional deep AI narrative generation to highlight automation risk and reskilling pathways.</p>
-        <div class="actions hero-actions">
-          <a class="button" href="#analysis">Start analysis</a>
-          <a class="button-outline" href="#insights">Explore insights</a>
-        </div>
-        <div class="mini-grid">
-          <div class="mini-card">
-            <span>Deployment</span>
-            <strong>Local-safe</strong>
-          </div>
-          <div class="mini-card">
-            <span>Mode</span>
-            <strong>Dual ML + AI</strong>
-          </div>
-          <div class="mini-card">
-            <span>Outcome</span>
-            <strong>Reskilling clarity</strong>
-          </div>
-        </div>
+        <span class="status-pill is-warm">Guided experience</span>
       </div>
 
-      <div class="panel hero-score-panel">
-        <div class="panel-header">
-          <div>
-            <span class="eyebrow">Risk summary</span>
-            <p class="small-note">Live assessment readiness for your next review.</p>
-          </div>
-          <span class="status-pill">Ready</span>
-        </div>
-        <div class="score-ring" style="--score: 0.24;">
-          <div class="score-ring__content">
-            <p class="score-ring__value">24%</p>
-            <p class="score-ring__label">Low risk</p>
-          </div>
-        </div>
-        <div class="panel-status">
-          <p>AI risk projection generated from the current model and automation dataset.</p>
-        </div>
-        <div class="pill-row panel-pills">
-          <span class="chip">Privacy-safe</span>
-          <span class="chip">SaaS-grade</span>
+      <div class="pr-path-grid" role="list" aria-label="Career path options">
+        <button class="pr-path-card is-active" type="button" data-path-option="student" role="listitem">
+          <span class="pr-path-card__icon" aria-hidden="true">🎓</span>
+          <strong>I'm a student</strong>
+          <p>Turn coursework and projects into career-ready signals.</p>
+        </button>
+        <button class="pr-path-card" type="button" data-path-option="job-seeker" role="listitem">
+          <span class="pr-path-card__icon" aria-hidden="true">💼</span>
+          <strong>I'm looking for work</strong>
+          <p>Align your profile to active roles and hiring language.</p>
+        </button>
+        <button class="pr-path-card" type="button" data-path-option="career-switcher" role="listitem">
+          <span class="pr-path-card__icon" aria-hidden="true">🔄</span>
+          <strong>I want to change careers</strong>
+          <p>Identify transferable skills and close priority gaps.</p>
+        </button>
+        <button class="pr-path-card" type="button" data-path-option="new-workforce" role="listitem">
+          <span class="pr-path-card__icon" aria-hidden="true">🚀</span>
+          <strong>I'm new to the workforce</strong>
+          <p>Build a confident first plan with practical next actions.</p>
+        </button>
+      </div>
+
+      <div class="pr-path-guidance" data-path-guidance>
+        <h3 class="pr-section__title" style="margin:0;font-size:1.15rem;" data-path-title>Student path selected</h3>
+        <p class="pr-section__sub" style="margin:0.45rem 0 0;text-align:left;" data-path-description>Start with a standard analysis, then use your top role matches to prioritize one learning goal and one internship-ready resume update.</p>
+        <div class="compact-list" style="margin-top:1.1rem;display:grid;gap:0.6rem;" data-path-actions>
+          <div class="list-card"><div><strong>Suggested action</strong><p>Run a standard analysis and review your top three role matches.</p></div></div>
+          <div class="list-card"><div><strong>Suggested action</strong><p>Pick one roadmap course and schedule weekly learning blocks.</p></div></div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <section class="stats-section">
-      <div class="section-header">
+<!-- ═══ ANALYZE ═══ -->
+<section class="pr-section" id="analysis">
+  <div class="container">
+    <div class="pr-panel">
+      <div class="pr-panel__head">
         <div>
-          <span class="eyebrow">Executive summary</span>
-          <h3>Career health metrics</h3>
-        </div>
-        <span class="status-pill is-warm">AI optimized</span>
-      </div>
-      <div class="stats-grid">
-        <article class="stats-card">
-          <span>Automation exposure</span>
-          <strong>24%</strong>
-          <p>Current risk score based on job fit and automation likelihood.</p>
-        </article>
-        <article class="stats-card">
-          <span>Talent match</span>
-          <strong>82%</strong>
-          <p>How well your resume aligns with recommended career paths.</p>
-        </article>
-        <article class="stats-card">
-          <span>Skill gap</span>
-          <strong>18%</strong>
-          <p>Amount of skill training needed to improve your market readiness.</p>
-        </article>
-        <article class="stats-card">
-          <span>Resume strength</span>
-          <strong>High</strong>
-          <p>AI inference based on clarity, skill signal, and role alignment.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="analysis" class="section-card analysis-section">
-      <div class="section-header">
-        <div>
-          <h3>Analyze your trajectory</h3>
-          <p class="section-subtitle">Upload a resume or paste text. The dashboard processes documents locally and returns instant career guidance.</p>
+          <span class="pr-eyebrow">Get your personalized report</span>
+          <h2 class="pr-section__title">Analyze your trajectory</h2>
+          <p class="pr-section__sub" style="text-align:left;" data-analysis-intro>Upload a resume or paste text. The platform stays local-first and keeps the resume in memory only for the current request.</p>
         </div>
         <span class="status-pill is-warm">No permanent SQL storage</span>
       </div>
 
-      <form class="analysis-form" data-analysis-form>
-        <input type="hidden" name="mode" value="standard" data-mode-input />
+      <form class="results-shell" data-analysis-form>
+        <input type="hidden" name="mode" value="standard" data-mode-input>
 
-        <div class="upload-zone" data-drop-zone>
-          <div class="upload-zone__badge">↥</div>
-          <h3>Drag & drop your resume</h3>
-          <p class="section-subtitle">PDF, DOCX, or plain text. Resume content is analyzed and discarded after the current request.</p>
-          <input type="file" name="resume_file" accept=".pdf,.docx,.txt" class="hidden" data-file-input />
-          <div class="actions" style="justify-content: center; margin-top: 1.25rem;">
-            <button class="button" type="button" data-browse-button>Browse files</button>
+        <div class="pr-analyze__grid">
+          <div class="pr-dropzone" data-drop-zone>
+            <span class="pr-dropzone__icon" aria-hidden="true">📄</span>
+            <strong>Drag and drop your resume</strong>
+            <p>PDF, DOCX, or plain text. The file is read, analyzed, and discarded after response generation.</p>
+            <input type="file" name="resume_file" accept=".pdf,.docx,.txt" class="hidden" data-file-input>
+            <button class="pr-btn pr-btn--soft" type="button" data-browse-button>Browse files</button>
+            <p class="small-note" data-upload-status style="margin:0;">No file selected yet.</p>
           </div>
-          <p class="small-note upload-note" data-upload-status>No file selected yet.</p>
+
+          <div class="pr-analyze__right">
+            <div class="field">
+              <label for="resume_text">Resume text</label>
+              <textarea id="resume_text" name="resume_text" placeholder="Paste your resume or a job-focused profile summary here." data-resume-text></textarea>
+            </div>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="resume_text">Resume text</label>
-          <textarea id="resume_text" name="resume_text" placeholder="Paste your resume or job summary here." data-resume-text></textarea>
+        <div class="pr-analyze__footer">
+          <div class="pr-mode" role="tablist" aria-label="Analysis mode">
+            <button class="pr-mode__btn is-active" type="button" data-mode="standard">Standard <small>(Local ML)</small></button>
+            <button class="pr-mode__btn" type="button" data-mode="advanced">Advanced <small>(Deep AI)</small></button>
+          </div>
+          <div class="pr-analyze__actions">
+            <button class="pr-btn pr-btn--primary" type="submit" data-assess-button>Run analysis</button>
+            <button class="pr-btn pr-btn--ghost" type="button" data-export-button>Export PDF</button>
+            <button class="pr-btn pr-btn--ghost compare-toggle" type="button" data-compare-toggle>Compare</button>
+          </div>
         </div>
 
-        <div class="form-footer">
-          <div class="mode-toggle" role="tablist" aria-label="Analysis mode duplicate">
-            <button class="mode-toggle__button is-active" type="button" data-mode="standard">Standard <small>(Local ML)</small></button>
-            <button class="mode-toggle__button" type="button" data-mode="advanced">Advanced <small>(Deep AI)</small></button>
+        <!-- Comparison Panel -->
+        <div class="pr-compare compare-panel" data-compare-panel>
+          <h3>Compare Two Resumes</h3>
+          <div class="compare-inputs">
+            <textarea placeholder="Paste Resume A text here..." data-compare-text-a></textarea>
+            <textarea placeholder="Paste Resume B text here..." data-compare-text-b></textarea>
           </div>
-          <button class="button-secondary" type="submit" data-assess-button>Run analysis</button>
+          <button class="pr-btn pr-btn--primary" type="button" data-compare-run>Compare</button>
+          <div class="compare-results hidden" data-compare-results></div>
         </div>
       </form>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <section id="risk-board" class="dashboard-grid risk-grid">
-      <div class="glass-card risk-card">
-        <div class="panel-header">
-          <div>
-            <span class="eyebrow">Risk Index</span>
-            <h4>Automation exposure</h4>
-          </div>
-          <span class="status-pill">Awaiting analysis</span>
+<!-- ═══ SKILLS GAP ANALYSIS ═══ -->
+<section class="pr-section" id="skills-gap">
+  <div class="container">
+    <div class="section-card" id="skills-gap-section">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">Close the gap</span>
+          <h2 class="pr-section__title">Skills Gap Analysis</h2>
+          <p class="pr-section__sub" style="text-align:left;">Compare your resume skills against a target role to find what you already have and what to learn next.</p>
         </div>
-        <div class="glass-inner">
-          <div class="score-ring score-ring--compact" data-risk-ring style="--score: 0.08;">
+        <span class="status-pill is-warm">New feature</span>
+      </div>
+
+      {% if is_authenticated %}
+      <form id="skills-gap-form" class="skills-gap-form" method="post" style="display:flex;gap:1rem;align-items:end;flex-wrap:wrap;">
+        <div class="field" style="flex:1;min-width:200px;">
+          <label for="skills-gap-role">Select target role</label>
+          <select id="skills-gap-role" style="padding:0.85rem 0.95rem;">
+            <option value="">Loading available roles...</option>
+          </select>
+        </div>
+        <button type="submit" id="skills-gap-submit" class="pr-btn pr-btn--primary" style="white-space:nowrap;">
+          Analyze Skills Gap
+        </button>
+      </form>
+
+      <div id="skills-gap-loading" class="hidden" style="text-align:center;padding:2rem 0;">
+        <div style="font-size:1.2rem;color:var(--primary);">🔍 Analyzing skills gap...</div>
+      </div>
+
+      <div id="skills-gap-error" class="auth-error hidden" role="alert" style="margin-top:1rem;"></div>
+
+      <div id="skills-gap-results" class="hidden" style="margin-top:1.5rem;"></div>
+      {% else %}
+      <div style="text-align:center;padding:1.5rem 1rem;">
+        <p class="pr-section__sub" style="text-align:center;margin-bottom:1.2rem;">Skills Gap Analysis is available after signing in. Log in or create an account to compare your resume skills against a target role.</p>
+        <div class="pr-analyze__actions" style="justify-content:center;">
+          <a class="pr-btn pr-btn--soft" href="{{ url_for('login') }}">Login</a>
+          <a class="pr-btn pr-btn--ghost" href="{{ url_for('signup') }}">Create account</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="pr-section">
+  <div class="container">
+    <div class="pr-section__head">
+      <span class="pr-eyebrow">How it works</span>
+      <h2 class="pr-section__title">Three steps to a clearer career direction</h2>
+      <p class="pr-section__sub">Upload or paste your resume, choose a mode, and receive role fit, automation risk, roadmap suggestions, and RIASEC guidance in one report.</p>
+    </div>
+    <div class="pr-features">
+      <article class="pr-feature feature-card">
+        <span class="pr-feature__icon" aria-hidden="true">🧭</span>
+        <h3>How this works</h3>
+        <p>Upload or paste your resume, choose standard or advanced mode, and receive role fit, automation risk, roadmap suggestions, and RIASEC guidance in one report.</p>
+      </article>
+      <article class="pr-feature feature-card">
+        <span class="pr-feature__icon" aria-hidden="true">📊</span>
+        <h3>What your report means</h3>
+        <p>Your report combines risk band, role similarity, and skill direction so you can decide where to focus next with confidence.</p>
+      </article>
+      <article class="pr-feature feature-card">
+        <span class="pr-feature__icon" aria-hidden="true">🎯</span>
+        <h3>What to do next</h3>
+        <p>Use your guided next steps to pick one learning action and one job action for the next 14 days.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MARKET INTELLIGENCE ═══ -->
+<section class="pr-section">
+  <div class="container">
+    <div class="pr-section__head">
+      <span class="pr-eyebrow">Powered by data</span>
+      <h2 class="pr-section__title">Deep market intelligence</h2>
+      <p class="pr-section__sub">Risk scoring and role matching are grounded in real datasets and explainable pipelines, not a generic prompt chain.</p>
+    </div>
+    <div class="pr-features">
+      <article class="pr-feature feature-card">
+        <span class="pr-feature__icon" aria-hidden="true">📈</span>
+        <h3>Automation risk scoring</h3>
+        <p>Risk scores derive from the automation risk dataset, giving every prediction a documented foundation.</p>
+        <div class="pr-feature__graph" aria-hidden="true">
+          <i style="height:58%;"></i>
+          <i style="height:76%;"></i>
+          <i style="height:42%;"></i>
+          <i style="height:82%;"></i>
+          <i style="height:50%;"></i>
+        </div>
+      </article>
+      <article class="pr-feature pr-feature--dark">
+        <span class="pr-feature__icon" aria-hidden="true">🧠</span>
+        <h3>Neural skill mapping</h3>
+        <p>The roadmap suggests Coursera learning paths aligned to the strongest skill intersections in the resume.</p>
+        <div class="pill-row" style="margin-top:0.6rem;">
+          <span class="chip" style="background:rgba(255,255,255,0.12);color:#fff;">Coursera</span>
+          <span class="chip" style="background:rgba(255,255,255,0.12);color:#fff;">O*NET</span>
+        </div>
+      </article>
+      <article class="pr-feature feature-card">
+        <span class="pr-feature__icon" aria-hidden="true">🔒</span>
+        <h3>Privacy-first defaults</h3>
+        <p>Resume data is never written to a permanent database. The API only processes in memory and returns structured JSON.</p>
+        <div class="pr-feature__graph" aria-hidden="true">
+          <i style="height:44%;"></i>
+          <i style="height:62%;"></i>
+          <i style="height:70%;"></i>
+          <i style="height:84%;"></i>
+          <i style="height:96%;"></i>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LIVE REPORT DASHBOARD ═══ -->
+<section class="pr-section">
+  <div class="container">
+    <div class="pr-section__head">
+      <span class="pr-eyebrow">Your live report</span>
+      <h2 class="pr-section__title">Results update automatically</h2>
+      <p class="pr-section__sub">The risk index, role-match bars, and reasoning cards refresh in place after every analysis.</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="glass-card span-4 pr-dash__card">
+        <div class="pr-dash__head">
+          <h3>Risk Index</h3>
+          <span class="status-pill is-warm">Awaiting analysis</span>
+        </div>
+        <div class="pr-dash__ring">
+          <div class="score-ring" data-risk-ring style="--score: 0.08;">
             <div class="score-ring__content">
               <p class="score-ring__value" data-risk-score-display>--</p>
               <p class="score-ring__label" data-risk-label-display>Awaiting analysis</p>
             </div>
           </div>
-          <p class="section-subtitle" data-risk-summary>Upload a resume to see the automation risk prediction.</p>
+          <p data-risk-summary>Upload a resume to see the automation risk prediction.</p>
         </div>
       </div>
 
-      <div class="glass-card chart-card">
-        <div class="panel-header">
-          <div>
-            <span class="eyebrow">Risk breakdown</span>
-            <h4>Career risk composition</h4>
-          </div>
+      <div class="glass-card span-8 pr-dash__card">
+        <div class="pr-dash__head">
+          <h3>Skill competency vs market demand</h3>
           <span class="status-pill" data-role-status>Awaiting analysis</span>
         </div>
-        <div class="pie-chart" data-pie-chart>
-          <div class="pie-label"><strong data-pie-label>24%</strong><span>Risk</span></div>
-        </div>
-        <div class="chart-legend">
-          <div><span class="legend-key high"></span>High risk <strong data-pie-high>24%</strong></div>
-          <div><span class="legend-key medium"></span>Medium risk <strong data-pie-medium>36%</strong></div>
-          <div><span class="legend-key low"></span>Low risk <strong data-pie-low>40%</strong></div>
-        </div>
-      </div>
-
-      <div class="glass-card market-card">
-        <div class="panel-header">
-          <div>
-            <span class="eyebrow">Skill gap</span>
-            <h4>Market ready roles</h4>
-          </div>
-        </div>
-        <div class="roles-list" data-role-bars>
-          <div class="list-card">
+        <p class="pr-section__sub" style="text-align:left;margin-bottom:1rem;">Live role-match bars derived from the local ML prediction.</p>
+        <div class="compact-list" data-role-bars>
+          <div class="list-card is-placeholder">
             <div>
               <strong>Awaiting analysis</strong>
               <p>Upload a resume to populate the live prediction.</p>
@@ -223,115 +326,191 @@
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <section class="recommendation-section">
-      <div class="section-header">
+<!-- ═══ RISK INSIGHTS ═══ -->
+<section class="pr-section">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
         <div>
-          <span class="eyebrow">Career path</span>
-          <h3>Recommended career moves</h3>
+          <span class="pr-eyebrow">Explainability</span>
+          <h3 class="pr-section__title">Risk Insights</h3>
+          <p class="pr-section__sub" style="text-align:left;">Explainability cards showing why the model produced the current risk score.</p>
         </div>
-        <span class="status-pill is-warm">Actionable</span>
+        <span class="status-pill is-warm">Reasoning</span>
       </div>
-      <div class="recommendation-grid">
-        <article class="recommend-card">
+      <div class="compact-list" data-risk-insights>
+        <div class="list-card is-placeholder">
           <div>
-            <span class="eyebrow">Top pivot</span>
-            <h4>Data Operations Specialist</h4>
-            <p>Move into roles that balance automation risk and current skill strengths.</p>
-          </div>
-          <div class="status-pill">80% match</div>
-        </article>
-
-        <article class="recommend-card">
-          <div>
-            <span class="eyebrow">Learning path</span>
-            <h4>AI-enabled process design</h4>
-            <p>Focus on workflow automation, data tooling, and business intelligence.</p>
-          </div>
-          <div class="status-pill is-warm">Recommended</div>
-        </article>
-
-        <article class="recommend-card">
-          <div>
-            <span class="eyebrow">Growth plan</span>
-            <h4>Cloud reskilling</h4>
-            <p>Strengthen your resume with cloud and analytics certifications.</p>
-          </div>
-          <div class="status-pill">High priority</div>
-        </article>
-      </div>
-    </section>
-
-    <section id="insights" class="content-section insights-section">
-      <div class="glass-card insights-card">
-        <div class="panel-header">
-          <div>
-            <span class="eyebrow">Risk Insights</span>
-            <h4>Explainability & next steps</h4>
-          </div>
-          <span class="status-pill is-warm">Reasoning</span>
-        </div>
-        <div class="compact-list" data-risk-insights>
-          <div class="list-card">
-            <div>
-              <strong>Awaiting analysis</strong>
-              <p>Run an assessment to see why the model produced this risk score.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="result-modal hidden" data-result-modal aria-hidden="true">
-      <div class="result-modal__backdrop" data-modal-close></div>
-      <div class="result-modal__panel glass-card" role="dialog" aria-modal="true" aria-labelledby="result-modal-title">
-        <div class="modal-header">
-          <div>
-            <p class="small-note">Assessment result</p>
-            <h3 class="section-title" id="result-modal-title" data-modal-title>Analysis output</h3>
-          </div>
-          <button class="button-ghost" type="button" data-modal-close>Close</button>
-        </div>
-
-        <div class="modal-kpis">
-          <div class="kpi">
-            <div class="kpi__label">Automation risk</div>
-            <div class="kpi__value" data-modal-risk-score>--</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi__label">Risk band</div>
-            <div class="kpi__value" data-modal-risk-label>Awaiting analysis</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi__label">Mode</div>
-            <div class="kpi__value" data-modal-mode>Standard</div>
-          </div>
-        </div>
-
-        <div class="result-banner" data-result-banner aria-live="polite">
-          <h3 class="result-banner__title" data-result-status>What users say</h3>
-          <p class="result-banner__text" data-narrative>“Prayash gave me a clear, practical learning roadmap based on my resume — I landed interviews within a month. The local-first pipeline preserved my privacy while surfacing exactly what to learn next.” — Arpan B.</p>
-        </div>
-
-        <div class="modal-grid">
-          <div class="summary-card">
-            <h3>Top role matches</h3>
-            <div class="compact-list" data-roles-list></div>
-          </div>
-
-          <div class="roadmap-card">
-            <h3>Learning roadmap</h3>
-            <div class="compact-list" data-roadmap-list></div>
-          </div>
-
-          <div class="summary-card">
-            <h3>RIASEC fit</h3>
-            <div class="compact-list" data-riasec-list></div>
+            <strong>Awaiting analysis</strong>
+            <p>Run an assessment to see the evidence used to explain the prediction.</p>
           </div>
         </div>
       </div>
     </div>
-  </main>
+  </div>
+</section>
+
+<!-- ═══ GUIDED NEXT STEPS ═══ -->
+<section class="pr-section" id="next-steps">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">What to do next</span>
+          <h3 class="pr-section__title">Guided next steps</h3>
+          <p class="pr-section__sub" style="text-align:left;">Practical actions generated from your current analysis results.</p>
+        </div>
+        <span class="status-pill" data-next-steps-status>Awaiting analysis</span>
+      </div>
+
+      <div class="pr-next-grid">
+        <div class="pr-next-card">
+          <h4><span aria-hidden="true">📚</span> Learning actions</h4>
+          <div class="compact-list" data-next-learning>
+            <div class="list-card is-placeholder"><div><strong>Run analysis first</strong><p>Your learning actions will appear here after assessment.</p></div></div>
+          </div>
+        </div>
+        <div class="pr-next-card">
+          <h4><span aria-hidden="true">💼</span> Job search actions</h4>
+          <div class="compact-list" data-next-jobs>
+            <div class="list-card is-placeholder"><div><strong>Run analysis first</strong><p>Your job search actions will appear here after assessment.</p></div></div>
+          </div>
+        </div>
+        <div class="pr-next-card">
+          <h4><span aria-hidden="true">🎓</span> Education and training</h4>
+          <div class="compact-list" data-next-education>
+            <div class="list-card is-placeholder"><div><strong>Run analysis first</strong><p>Your education suggestions will appear here after assessment.</p></div></div>
+          </div>
+        </div>
+        <div class="pr-next-card">
+          <h4><span aria-hidden="true">🤝</span> Support resources</h4>
+          <div class="compact-list" data-next-support>
+            <div class="list-card is-placeholder"><div><strong>Run analysis first</strong><p>Your support options will appear here after assessment.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RESOURCE HUB ═══ -->
+<section class="pr-section" id="resource-hub">
+  <div class="container">
+    <div class="section-card">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">Explore more</span>
+          <h3 class="pr-section__title">Resource hub</h3>
+          <p class="pr-section__sub" style="text-align:left;">A structured place to find learning, job, training, and support pathways.</p>
+        </div>
+        <span class="status-pill">Career support</span>
+      </div>
+
+      <div class="pr-resource-grid">
+        <article class="pr-resource">
+          <span class="pr-resource__icon" aria-hidden="true">📚</span>
+          <h4>Learning resources</h4>
+          <p>Review how skill matching and roadmap guidance are produced.</p>
+          <a class="pr-btn pr-btn--soft" href="{{ url_for('methodology') }}">Open methodology</a>
+        </article>
+        <article class="pr-resource">
+          <span class="pr-resource__icon" aria-hidden="true">💼</span>
+          <h4>Job search help</h4>
+          <p>Use insights and trend context to improve role targeting and applications.</p>
+          <a class="pr-btn pr-btn--soft" href="{{ url_for('insights') }}">Open insights</a>
+        </article>
+        <article class="pr-resource">
+          <span class="pr-resource__icon" aria-hidden="true">🎓</span>
+          <h4>Education and training paths</h4>
+          <p>Explore collaborations and pathways that can support upskilling decisions.</p>
+          <a class="pr-btn pr-btn--soft" href="{{ url_for('partnerships') }}">Open partnerships</a>
+        </article>
+        <article class="pr-resource">
+          <span class="pr-resource__icon" aria-hidden="true">🤝</span>
+          <h4>Need help?</h4>
+          <p>Read privacy commitments, then sign in to continue in the workspace.</p>
+          <div class="pr-analyze__actions">
+            <a class="pr-btn pr-btn--ghost" href="{{ url_for('privacy') }}">Privacy</a>
+            {% if is_authenticated %}
+            <a class="pr-btn pr-btn--ghost" href="{{ url_for('workspace') }}">Workspace</a>
+            {% else %}
+            <a class="pr-btn pr-btn--ghost" href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RESULT MODAL ═══ -->
+<div class="result-modal hidden" data-result-modal aria-hidden="true">
+  <div class="result-modal__backdrop" data-modal-close></div>
+  <div class="result-modal__panel glass-card" role="dialog" aria-modal="true" aria-labelledby="result-modal-title">
+    <div class="inline-actions" style="justify-content: space-between; margin-bottom: 1rem;">
+      <div>
+        <p class="small-note" style="margin: 0 0 0.4rem; text-transform: uppercase; letter-spacing: 0.12em;">Assessment result</p>
+        <h3 class="section-title" id="result-modal-title" data-modal-title style="margin: 0;">Analysis output</h3>
+      </div>
+      <button class="button-ghost" type="button" data-modal-close>Close</button>
+    </div>
+
+    <!-- SSE Progress Bar -->
+    <div class="progress-bar" data-progress-bar>
+      <div class="progress-bar__fill"></div>
+    </div>
+    <div class="progress-info">
+      <span class="progress-status" data-progress-status></span>
+      <span class="progress-percent" data-progress-percent></span>
+    </div>
+
+    <div class="modal-kpis">
+      <div class="kpi">
+        <div class="kpi__label">Automation risk</div>
+        <div class="kpi__value" data-modal-risk-score>--</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Risk band</div>
+        <div class="kpi__value" data-modal-risk-label>Awaiting analysis</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Mode</div>
+        <div class="kpi__value" data-modal-mode>Standard</div>
+      </div>
+    </div>
+
+    <div class="result-banner" data-result-banner aria-live="polite" style="margin-top: 1rem;">
+      <h3 class="result-banner__title" data-result-status>What users say</h3>
+      <p class="result-banner__text" data-narrative>“Prayash gave me a clear, practical learning roadmap based on my resume — I landed interviews within a month. The local-first pipeline preserved my privacy while surfacing exactly what to learn next.” — Arpan B.</p>
+    </div>
+
+    <div class="modal-grid" style="margin-top: 1rem;">
+      <div class="summary-card">
+        <h3 class="section-title" style="margin: 0 0 1rem;">Top role matches</h3>
+        <div class="compact-list" data-roles-list></div>
+      </div>
+
+      <div class="roadmap-card">
+        <h3 class="section-title" style="margin: 0 0 1rem;">Learning roadmap</h3>
+        <div class="compact-list" data-roadmap-list></div>
+      </div>
+
+      <div class="summary-card">
+        <h3 class="section-title" style="margin: 0 0 1rem;">RIASEC fit</h3>
+        <div class="compact-list" data-riasec-list></div>
+      </div>
+    </div>
+
+    <div class="summary-card" style="margin-top: 1rem;">
+      <h3 class="section-title" style="margin: 0 0 1rem;">What to do next</h3>
+      <div class="compact-list" data-modal-next-steps>
+        <div class="list-card is-placeholder"><div><strong>Run analysis</strong><p>Practical next actions will appear here.</p></div></div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

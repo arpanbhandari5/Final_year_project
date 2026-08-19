@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container" style="text-align: center; max-width: 32rem;">
+    <span class="eyebrow" style="margin: 0 auto;">Error 500</span>
+    <h1 style="margin-top: 1rem;">Something went wrong</h1>
+    <p class="lead" style="margin: 1rem auto 2rem;">
+      An unexpected error occurred. The team has been notified. Please try again in a few moments.
+    </p>
+    <div class="actions" style="justify-content: center;">
+      <a class="button" href="{{ url_for('index') }}">Go home</a>
+      <a class="button-outline" href="{{ url_for('methodology') }}">Methodology</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
