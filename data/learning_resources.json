@@ -1,0 +1,2313 @@
+{
+  "python": {
+    "skill": "Python",
+    "description": "A versatile, high-level programming language widely used in web development, data science, automation, and AI.",
+    "difficulty": "Beginner",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Variables and data types",
+      "Control flow (if/else, loops)",
+      "Functions and scope",
+      "Data structures (lists, dicts, sets, tuples)",
+      "File I/O",
+      "Error handling",
+      "Object-oriented programming",
+      "Modules and packages",
+      "Decorators and generators",
+      "Virtual environments"
+    ],
+    "practice": [
+      "Write 20 small scripts solving everyday problems",
+      "Build a CLI calculator",
+      "Build a file organizer script",
+      "Solve 30 problems on HackerRank Python track",
+      "Build a web scraper with requests and BeautifulSoup"
+    ],
+    "projects": [
+      "Build a REST API with Flask/FastAPI",
+      "Create an automation bot for repetitive tasks",
+      "Build a data pipeline processing CSV/JSON files"
+    ],
+    "resources": [
+      {
+        "title": "Python Official Tutorial",
+        "provider": "Python Software Foundation",
+        "type": "Documentation",
+        "level": "Beginner",
+        "url": "https://docs.python.org/3/tutorial/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Automate the Boring Stuff with Python",
+        "provider": "Al Sweigart",
+        "type": "Book",
+        "level": "Beginner",
+        "url": "https://automatetheboringstuff.com/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Python for Everybody Specialization",
+        "provider": "University of Michigan / Coursera",
+        "type": "Course",
+        "level": "Beginner",
+        "url": "https://www.coursera.org/specializations/python",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Real Python Tutorials",
+        "provider": "Real Python",
+        "type": "Tutorial",
+        "level": "Beginner to Advanced",
+        "url": "https://realpython.com/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "javascript": {
+    "skill": "JavaScript",
+    "description": "The primary language of the web, used for frontend interactivity, backend development (Node.js), and mobile apps.",
+    "difficulty": "Beginner",
+    "estimated_time": "4-6 weeks",
+    "prerequisites": ["HTML", "CSS"],
+    "topics": [
+      "Variables (let, const, var)",
+      "Functions and scope",
+      "Arrays and objects",
+      "DOM manipulation",
+      "Events and event handling",
+      "ES6+ features (arrow functions, template literals, destructuring)",
+      "Promises and async/await",
+      "Fetch API",
+      "Modules (import/export)",
+      "Error handling",
+      "Closures and prototypes",
+      "Local storage"
+    ],
+    "practice": [
+      "Build a counter app",
+      "Build a todo application",
+      "Build a weather app using fetch API",
+      "Solve 50 JavaScript challenges on freeCodeCamp",
+      "Build an interactive form with validation"
+    ],
+    "projects": [
+      "Build a single-page application with vanilla JS",
+      "Create a browser extension",
+      "Build a real-time chat interface"
+    ],
+    "resources": [
+      {
+        "title": "JavaScript Guide (MDN)",
+        "provider": "Mozilla",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "JavaScript.info",
+        "provider": "Ilya Kantor",
+        "type": "Tutorial",
+        "level": "Beginner to Advanced",
+        "url": "https://javascript.info/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "freeCodeCamp JavaScript Algorithms and Data Structures",
+        "provider": "freeCodeCamp",
+        "type": "Course",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures-v8/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Eloquent JavaScript",
+        "provider": "Marijn Haverbeke",
+        "type": "Book",
+        "level": "Beginner to Advanced",
+        "url": "https://eloquentjavascript.net/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "react": {
+    "skill": "React",
+    "description": "A JavaScript library for building user interfaces, maintained by Meta. Used for creating interactive, component-based UIs.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["JavaScript", "HTML", "CSS"],
+    "topics": [
+      "React fundamentals and JSX",
+      "Components (functional)",
+      "Props and state",
+      "Hooks (useState, useEffect, useContext, useRef)",
+      "Event handling",
+      "Conditional rendering",
+      "Lists and keys",
+      "Forms and controlled components",
+      "API integration with useEffect",
+      "React Router",
+      "Context API",
+      "useReducer",
+      "Performance optimization (memo, useMemo, useCallback)",
+      "Testing with React Testing Library"
+    ],
+    "practice": [
+      "Build a counter application",
+      "Build a todo application",
+      "Build a weather dashboard with API",
+      "Build a movie search app using OMDB API",
+      "Build a shopping cart"
+    ],
+    "projects": [
+      "Build a complete React dashboard connected to a REST API",
+      "Create a full-stack app with React + Node.js/Flask backend"
+    ],
+    "resources": [
+      {
+        "title": "React Official Learn",
+        "provider": "React Team",
+        "type": "Documentation",
+        "level": "Beginner to Intermediate",
+        "url": "https://react.dev/learn",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "MDN React Tutorials",
+        "provider": "Mozilla",
+        "type": "Tutorial",
+        "level": "Beginner",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/React_getting_started",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "freeCodeCamp React Course",
+        "provider": "freeCodeCamp",
+        "type": "Course",
+        "level": "Intermediate",
+        "url": "https://www.freecodecamp.org/learn/front-end-development-libraries/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "html": {
+    "skill": "HTML",
+    "description": "The standard markup language for creating web pages and web applications.",
+    "difficulty": "Beginner",
+    "estimated_time": "1-2 weeks",
+    "prerequisites": [],
+    "topics": [
+      "HTML5 semantic elements",
+      "Forms and input types",
+      "Tables",
+      "Multimedia (audio, video, images)",
+      "Links and navigation",
+      "Accessibility (ARIA)",
+      "SEO basics",
+      "HTML entities and special characters"
+    ],
+    "practice": [
+      "Build a personal portfolio page",
+      "Create a multi-page website",
+      "Build an accessible form"
+    ],
+    "projects": [
+      "Build a complete responsive website from a design mockup"
+    ],
+    "resources": [
+      {
+        "title": "HTML MDN Guide",
+        "provider": "Mozilla",
+        "type": "Documentation",
+        "level": "Beginner",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/HTML",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "HTML Tutorial",
+        "provider": "W3Schools",
+        "type": "Tutorial",
+        "level": "Beginner",
+        "url": "https://www.w3schools.com/html/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "css": {
+    "skill": "CSS",
+    "description": "The language used to style and layout web pages, controlling colors, fonts, spacing, and responsive design.",
+    "difficulty": "Beginner",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["HTML"],
+    "topics": [
+      "Selectors and specificity",
+      "Box model",
+      "Flexbox",
+      "CSS Grid",
+      "Responsive design and media queries",
+      "CSS variables (custom properties)",
+      "Transitions and animations",
+      "Typography",
+      "Colors and gradients",
+      "Positioning (relative, absolute, fixed, sticky)",
+      "Pseudo-classes and pseudo-elements"
+    ],
+    "practice": [
+      "Recreate a website layout from a screenshot",
+      "Build a responsive navbar",
+      "Create an animated landing page",
+      "Build a CSS Grid dashboard layout"
+    ],
+    "projects": [
+      "Build a complete responsive portfolio site"
+    ],
+    "resources": [
+      {
+        "title": "CSS MDN Guide",
+        "provider": "Mozilla",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn/CSS",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "CSS-Tricks Flexbox Guide",
+        "provider": "CSS-Tricks",
+        "type": "Tutorial",
+        "level": "Beginner to Intermediate",
+        "url": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "CSS Grid Garden",
+        "provider": "Codepip",
+        "type": "Practice",
+        "level": "Beginner to Intermediate",
+        "url": "https://cssgridgarden.com/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "sql": {
+    "skill": "SQL",
+    "description": "Structured Query Language for managing and querying relational databases.",
+    "difficulty": "Beginner",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": [],
+    "topics": [
+      "SELECT queries",
+      "WHERE clauses and filtering",
+      "JOINs (INNER, LEFT, RIGHT, FULL)",
+      "GROUP BY and HAVING",
+      "Aggregation functions (COUNT, SUM, AVG, MIN, MAX)",
+      "Subqueries",
+      "Window functions",
+      "Indexing and optimization",
+      "Database design and normalization",
+      "Transactions"
+    ],
+    "practice": [
+      "Write 50 SQL queries on LeetCode",
+      "Practice on Mode Analytics SQL Tutorial",
+      "Solve HackerRank SQL challenges",
+      "Design a database for an e-commerce site"
+    ],
+    "projects": [
+      "Build a reporting dashboard with complex queries",
+      "Design and populate a complete database schema"
+    ],
+    "resources": [
+      {
+        "title": "SQL Tutorial",
+        "provider": "W3Schools",
+        "type": "Tutorial",
+        "level": "Beginner",
+        "url": "https://www.w3schools.com/sql/",
+        "free": true,
+        "rating": 4
+      },
+      {
+        "title": "Mode Analytics SQL Tutorial",
+        "provider": "Mode",
+        "type": "Tutorial",
+        "level": "Beginner to Intermediate",
+        "url": "https://mode.com/sql-tutorial/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "PostgreSQL Tutorial",
+        "provider": "PostgreSQL Tutorial",
+        "type": "Tutorial",
+        "level": "Beginner to Advanced",
+        "url": "https://www.postgresqltutorial.com/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "git": {
+    "skill": "Git",
+    "description": "A distributed version control system for tracking changes in source code during development.",
+    "difficulty": "Beginner",
+    "estimated_time": "1-2 weeks",
+    "prerequisites": [],
+    "topics": [
+      "git init, add, commit",
+      "git push, pull, fetch",
+      "Branching and merging",
+      "Git stash",
+      "Pull requests",
+      "Git log and diff",
+      "Resolving merge conflicts",
+      "Git rebase",
+      "GitHub/GitLab workflows",
+      ".gitignore"
+    ],
+    "practice": [
+      "Complete Learn Git Branching interactive tutorial",
+      "Practice branching strategies on a sample repo",
+      "Contribute to an open-source project via PR"
+    ],
+    "projects": [
+      "Set up a complete Git workflow for a team project"
+    ],
+    "resources": [
+      {
+        "title": "Git Official Documentation",
+        "provider": "Git SCM",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://git-scm.com/doc",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Learn Git Branching",
+        "provider": "Learn Git Branching",
+        "type": "Practice",
+        "level": "Beginner to Intermediate",
+        "url": "https://learngitbranching.js.org/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "GitHub Skills",
+        "provider": "GitHub",
+        "type": "Practice",
+        "level": "Beginner to Intermediate",
+        "url": "https://skills.github.com/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "docker": {
+    "skill": "Docker",
+    "description": "A platform for developing, shipping, and running applications in lightweight, portable containers.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Linux basics", "Command line"],
+    "topics": [
+      "Containers vs virtual machines",
+      "Docker images and layers",
+      "Dockerfile creation",
+      "Docker Compose",
+      "Networking between containers",
+      "Volumes and data persistence",
+      "Docker Hub and registries",
+      "Multi-stage builds",
+      "Container security basics",
+      "Docker in CI/CD"
+    ],
+    "practice": [
+      "Containerize a simple web application",
+      "Set up a multi-container app with Docker Compose",
+      "Write optimized Dockerfiles for different apps"
+    ],
+    "projects": [
+      "Build a microservices architecture with Docker Compose",
+      "Deploy a containerized application to the cloud"
+    ],
+    "resources": [
+      {
+        "title": "Docker Official Getting Started",
+        "provider": "Docker",
+        "type": "Documentation",
+        "level": "Beginner",
+        "url": "https://docs.docker.com/get-started/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Docker Tutorial for Beginners",
+        "provider": "TechWorld with Nana",
+        "type": "Tutorial",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.youtube.com/watch?v=3c-iBn73dDE",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Docker Curriculum",
+        "provider": "Prakhar Srivastav",
+        "type": "Tutorial",
+        "level": "Beginner",
+        "url": "https://docker-curriculum.com/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "data structures": {
+    "skill": "Data Structures",
+    "description": "Fundamental data organization methods including arrays, linked lists, trees, graphs, hash tables, and stacks/queues.",
+    "difficulty": "Intermediate",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": ["Programming basics"],
+    "topics": [
+      "Arrays and strings",
+      "Linked lists (singly and doubly)",
+      "Stacks and queues",
+      "Hash tables / hash maps",
+      "Trees (binary trees, BST, heaps)",
+      "Graphs (BFS, DFS)",
+      "Tries",
+      "Priority queues",
+      "Time and space complexity (Big O)"
+    ],
+    "practice": [
+      "Solve 50 easy LeetCode problems",
+      "Solve 30 medium LeetCode problems",
+      "Implement each data structure from scratch",
+      "Practice on GeeksforGeeks"
+    ],
+    "projects": [
+      "Build a library management system using trees and hash maps",
+      "Implement a pathfinding visualizer using graphs"
+    ],
+    "resources": [
+      {
+        "title": "Data Structures (GeeksforGeeks)",
+        "provider": "GeeksforGeeks",
+        "type": "Tutorial",
+        "level": "Beginner to Advanced",
+        "url": "https://www.geeksforgeeks.org/data-structures/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Data Structures and Algorithms (freeCodeCamp)",
+        "provider": "freeCodeCamp",
+        "type": "Course",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.freecodecamp.org/learn/coding-interview-prep/",
+        "free": true,
+        "rating": 4
+      },
+      {
+        "title": "Visualgo",
+        "provider": "National University of Singapore",
+        "type": "Practice",
+        "level": "Beginner to Intermediate",
+        "url": "https://visualgo.net/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "algorithms": {
+    "skill": "Algorithms",
+    "description": "Step-by-step procedures for solving computational problems, including sorting, searching, graph algorithms, and dynamic programming.",
+    "difficulty": "Intermediate",
+    "estimated_time": "4-6 weeks",
+    "prerequisites": ["Data Structures", "Programming basics"],
+    "topics": [
+      "Sorting algorithms (bubble, merge, quick, heap)",
+      "Binary search",
+      "BFS and DFS",
+      "Dynamic programming",
+      "Greedy algorithms",
+      "Divide and conquer",
+      "Backtracking",
+      "Graph algorithms (Dijkstra, topological sort)",
+      "Recursion",
+      "Sliding window and two pointers"
+    ],
+    "practice": [
+      "Solve 100+ LeetCode problems systematically",
+      "Implement sorting algorithms from scratch",
+      "Solve 20 dynamic programming problems",
+      "Practice on HackerRank"
+    ],
+    "projects": [
+      "Build a pathfinding visualizer",
+      "Implement a sorting algorithm visualizer"
+    ],
+    "resources": [
+      {
+        "title": "Algorithms Specialization (Stanford/Coursera)",
+        "provider": "Stanford University / Coursera",
+        "type": "Course",
+        "level": "Intermediate to Advanced",
+        "url": "https://www.coursera.org/specializations/algorithms",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Introduction to Algorithms (MIT OCW)",
+        "provider": "MIT",
+        "type": "Course",
+        "level": "Intermediate to Advanced",
+        "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "LeetCode",
+        "provider": "LeetCode",
+        "type": "Practice",
+        "level": "Intermediate to Advanced",
+        "url": "https://leetcode.com/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "rest api": {
+    "skill": "REST APIs",
+    "description": "Representational State Transfer APIs for building scalable, stateless web services using HTTP methods.",
+    "difficulty": "Intermediate",
+    "estimated_time": "1-2 weeks",
+    "prerequisites": ["Programming basics", "HTTP fundamentals"],
+    "topics": [
+      "HTTP methods (GET, POST, PUT, PATCH, DELETE)",
+      "Status codes",
+      "Request/response cycle",
+      "JSON data format",
+      "Authentication (API keys, JWT, OAuth)",
+      "Rate limiting",
+      "Pagination",
+      "Error handling",
+      "RESTful design principles",
+      "API documentation (OpenAPI/Swagger)"
+    ],
+    "practice": [
+      "Build a CRUD API for a blog",
+      "Consume a public API (GitHub, Weather)",
+      "Implement JWT authentication",
+      "Build an API with proper error handling"
+    ],
+    "projects": [
+      "Build a complete REST API backend for a full-stack app"
+    ],
+    "resources": [
+      {
+        "title": "REST API Tutorial",
+        "provider": "restfulapi.net",
+        "type": "Tutorial",
+        "level": "Beginner to Intermediate",
+        "url": "https://restfulapi.net/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "MDN HTTP Overview",
+        "provider": "Mozilla",
+        "type": "Documentation",
+        "level": "Beginner",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "machine learning": {
+    "skill": "Machine Learning",
+    "description": "Algorithms and techniques that enable computers to learn patterns from data and make predictions.",
+    "difficulty": "Advanced",
+    "estimated_time": "6-8 weeks",
+    "prerequisites": ["Python", "Statistics", "Linear Algebra basics"],
+    "topics": [
+      "Supervised learning (regression, classification)",
+      "Unsupervised learning (clustering, dimensionality reduction)",
+      "Model evaluation and validation",
+      "Feature engineering",
+      "Cross-validation",
+      "Decision trees and random forests",
+      "Support vector machines",
+      "Neural networks basics",
+      "Gradient descent optimization",
+      "Bias-variance tradeoff"
+    ],
+    "practice": [
+      "Complete Andrew Ng's ML course on Coursera",
+      "Solve 10 Kaggle competitions",
+      "Build an end-to-end ML project",
+      "Implement algorithms from scratch"
+    ],
+    "projects": [
+      "Build a prediction model and deploy it as an API",
+      "Create a recommendation system"
+    ],
+    "resources": [
+      {
+        "title": "Machine Learning (Andrew Ng / Coursera)",
+        "provider": "Stanford / Coursera",
+        "type": "Course",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.coursera.org/learn/machine-learning",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Scikit-learn Documentation",
+        "provider": "scikit-learn",
+        "type": "Documentation",
+        "level": "Intermediate to Advanced",
+        "url": "https://scikit-learn.org/stable/tutorial/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Kaggle Learn",
+        "provider": "Kaggle",
+        "type": "Course",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.kaggle.com/learn",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "deep learning": {
+    "skill": "Deep Learning",
+    "description": "Subset of ML using neural networks with multiple layers for complex pattern recognition in data.",
+    "difficulty": "Advanced",
+    "estimated_time": "6-8 weeks",
+    "prerequisites": ["Python", "Machine Learning basics", "Linear Algebra"],
+    "topics": [
+      "Neural network architecture",
+      "Activation functions",
+      "Backpropagation",
+      "Convolutional Neural Networks (CNNs)",
+      "Recurrent Neural Networks (RNNs)",
+      "Transformers and attention mechanisms",
+      "Transfer learning",
+      "Regularization techniques",
+      "Optimization algorithms",
+      "GPU computing basics"
+    ],
+    "practice": [
+      "Complete fast.ai Practical Deep Learning course",
+      "Build image classifiers with CNNs",
+      "Implement an NLP project with transformers",
+      "Train models on GPU (Google Colab)"
+    ],
+    "projects": [
+      "Build an image classification system",
+      "Create a text generation model"
+    ],
+    "resources": [
+      {
+        "title": "Practical Deep Learning for Coders",
+        "provider": "fast.ai",
+        "type": "Course",
+        "level": "Intermediate",
+        "url": "https://course.fast.ai/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Deep Learning Specialization",
+        "provider": "DeepLearning.AI / Coursera",
+        "type": "Course",
+        "level": "Intermediate to Advanced",
+        "url": "https://www.coursera.org/specializations/deep-learning",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "PyTorch Tutorials",
+        "provider": "PyTorch",
+        "type": "Documentation",
+        "level": "Intermediate",
+        "url": "https://pytorch.org/tutorials/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "statistics": {
+    "skill": "Statistics",
+    "description": "The science of collecting, analyzing, and interpreting data, essential for data-driven decision making.",
+    "difficulty": "Beginner",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Descriptive statistics (mean, median, mode, std dev)",
+      "Probability distributions",
+      "Hypothesis testing",
+      "Confidence intervals",
+      "Correlation and causation",
+      "Regression analysis",
+      "Bayesian statistics basics",
+      "A/B testing",
+      "Statistical significance",
+      "Data sampling"
+    ],
+    "practice": [
+      "Complete Khan Academy Statistics course",
+      "Analyze real datasets with Python",
+      "Perform hypothesis tests on sample data",
+      "Build statistical reports"
+    ],
+    "projects": [
+      "Analyze a real-world dataset and present findings",
+      "Design and analyze an A/B test"
+    ],
+    "resources": [
+      {
+        "title": "Statistics and Probability (Khan Academy)",
+        "provider": "Khan Academy",
+        "type": "Course",
+        "level": "Beginner",
+        "url": "https://www.khanacademy.org/math/statistics-probability",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Introduction to Statistics (Stanford/edX)",
+        "provider": "Stanford University",
+        "type": "Course",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.edx.org/course/statistics",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "system design": {
+    "skill": "System Design",
+    "description": "The practice of designing large-scale distributed systems, covering architecture, scalability, and trade-offs.",
+    "difficulty": "Advanced",
+    "estimated_time": "4-6 weeks",
+    "prerequisites": ["Programming basics", "Databases", "Networking basics"],
+    "topics": [
+      "Scalability (horizontal vs vertical)",
+      "Load balancing",
+      "Caching strategies",
+      "Database sharding and replication",
+      "Message queues",
+      "Microservices architecture",
+      "API gateway patterns",
+      "CAP theorem",
+      "Consistent hashing",
+      "Rate limiting"
+    ],
+    "practice": [
+      "Design systems on paper (URL shortener, chat app)",
+      "Study system design interview questions",
+      "Read engineering blogs from tech companies"
+    ],
+    "projects": [
+      "Design and document a scalable chat system",
+      "Build a URL shortener with analytics"
+    ],
+    "resources": [
+      {
+        "title": "System Design Primer",
+        "provider": "GitHub / Donne Martin",
+        "type": "Tutorial",
+        "level": "Intermediate to Advanced",
+        "url": "https://github.com/donnemartin/system-design-primer",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "System Design Interview (Alex Xu)",
+        "provider": "Alex Xu",
+        "type": "Book",
+        "level": "Intermediate",
+        "url": "https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF",
+        "free": false,
+        "rating": 5
+      },
+      {
+        "title": "Grokking the System Design Interview",
+        "provider": "Educative",
+        "type": "Course",
+        "level": "Intermediate to Advanced",
+        "url": "https://www.educative.io/courses/grokking-the-system-design-interview",
+        "free": false,
+        "rating": 4
+      }
+    ]
+  },
+  "ci/cd": {
+    "skill": "CI/CD",
+    "description": "Continuous Integration and Continuous Delivery practices for automating software build, test, and deployment.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Git", "Programming basics"],
+    "topics": [
+      "Continuous Integration concepts",
+      "GitHub Actions",
+      "Jenkins basics",
+      "GitLab CI/CD",
+      "Automated testing in pipelines",
+      "Deployment strategies",
+      "Environment variables and secrets",
+      "Build artifacts",
+      "Rollback strategies",
+      "Pipeline as code"
+    ],
+    "practice": [
+      "Set up GitHub Actions for a project",
+      "Create a CI pipeline with automated tests",
+      "Deploy a project using CI/CD"
+    ],
+    "projects": [
+      "Set up a complete CI/CD pipeline for a web application"
+    ],
+    "resources": [
+      {
+        "title": "GitHub Actions Documentation",
+        "provider": "GitHub",
+        "type": "Documentation",
+        "level": "Beginner to Intermediate",
+        "url": "https://docs.github.com/en/actions",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Introduction to CI/CD (GitHub Skills)",
+        "provider": "GitHub",
+        "type": "Practice",
+        "level": "Beginner",
+        "url": "https://skills.github.com/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "node.js": {
+    "skill": "Node.js",
+    "description": "A JavaScript runtime built on Chrome's V8 engine for building scalable server-side applications.",
+    "difficulty": "Intermediate",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": ["JavaScript"],
+    "topics": [
+      "Node.js fundamentals",
+      "NPM (Node Package Manager)",
+      "Express.js framework",
+      "REST API development",
+      "Middleware",
+      "Template engines",
+      "File system operations",
+      "Event-driven architecture",
+      "Async programming",
+      "Database integration",
+      "Error handling",
+      "Security best practices"
+    ],
+    "practice": [
+      "Build a REST API with Express.js",
+      "Build a file upload service",
+      "Create a real-time chat server with Socket.io"
+    ],
+    "projects": [
+      "Build a full-stack application with Node.js backend"
+    ],
+    "resources": [
+      {
+        "title": "Node.js Official Guides",
+        "provider": "Node.js",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://nodejs.org/en/learn/getting-started/introduction-to-nodejs",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "The Node.js Handbook",
+        "provider": "freeCodeCamp / Flavio Copes",
+        "type": "Book",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.freecodecamp.org/news/the-node-js-handbook/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "flask": {
+    "skill": "Flask",
+    "description": "A lightweight Python web framework for building web applications and REST APIs.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Python", "HTML", "HTTP basics"],
+    "topics": [
+      "Flask routing and views",
+      "Templates with Jinja2",
+      "Forms and WTForms",
+      "Database integration (SQLAlchemy)",
+      "REST API development",
+      "Flask Blueprints",
+      "Authentication and authorization",
+      "Error handling",
+      "Flask extensions",
+      "Deployment"
+    ],
+    "practice": [
+      "Build a blog application",
+      "Create a REST API with Flask",
+      "Build a file upload service"
+    ],
+    "projects": [
+      "Build a full-stack web application with Flask"
+    ],
+    "resources": [
+      {
+        "title": "Flask Official Documentation",
+        "provider": "Pallets",
+        "type": "Documentation",
+        "level": "Beginner to Intermediate",
+        "url": "https://flask.palletsprojects.com/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Flask Mega-Tutorial",
+        "provider": "Miguel Grinberg",
+        "type": "Tutorial",
+        "level": "Beginner to Intermediate",
+        "url": "https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "java": {
+    "skill": "Java",
+    "description": "A class-based, object-oriented programming language widely used in enterprise applications and Android development.",
+    "difficulty": "Beginner",
+    "estimated_time": "4-6 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Syntax and data types",
+      "Object-oriented programming",
+      "Collections framework",
+      "Exception handling",
+      "File I/O",
+      "Multithreading basics",
+      "Generics",
+      "Lambda expressions",
+      "Streams API",
+      "Spring Boot basics"
+    ],
+    "practice": [
+      "Solve 50 HackerRank Java challenges",
+      "Build a calculator application",
+      "Create a student management system"
+    ],
+    "projects": [
+      "Build a Spring Boot REST API",
+      "Create a multi-threaded chat application"
+    ],
+    "resources": [
+      {
+        "title": "Java Tutorial (Oracle)",
+        "provider": "Oracle",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://docs.oracle.com/javase/tutorial/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Java Programming (Duke University/Coursera)",
+        "provider": "Duke University / Coursera",
+        "type": "Course",
+        "level": "Beginner",
+        "url": "https://www.coursera.org/specializations/java-programming",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "kubernetes": {
+    "skill": "Kubernetes",
+    "description": "An open-source container orchestration platform for automating deployment, scaling, and management of containerized applications.",
+    "difficulty": "Advanced",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": ["Docker", "Linux basics"],
+    "topics": [
+      "Kubernetes architecture (pods, nodes, clusters)",
+      "Deployments and ReplicaSets",
+      "Services and networking",
+      "ConfigMaps and Secrets",
+      "Persistent volumes",
+      "Ingress controllers",
+      "Horizontal pod autoscaling",
+      "Helm charts",
+      "Kubectl commands",
+      "Monitoring and logging"
+    ],
+    "practice": [
+      "Deploy applications on a local Minikube cluster",
+      "Set up a multi-service application",
+      "Implement rolling updates and rollbacks"
+    ],
+    "projects": [
+      "Deploy a microservices application on Kubernetes"
+    ],
+    "resources": [
+      {
+        "title": "Kubernetes Official Tutorials",
+        "provider": "Kubernetes",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://kubernetes.io/docs/tutorials/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Kubernetes for Beginners",
+        "provider": "KodeKloud",
+        "type": "Course",
+        "level": "Beginner",
+        "url": "https://kodekloud.com/courses/kubernetes-for-the-absolute-beginners/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "aws": {
+    "skill": "AWS",
+    "description": "Amazon Web Services — the leading cloud platform offering compute, storage, database, and AI/ML services.",
+    "difficulty": "Intermediate",
+    "estimated_time": "4-6 weeks",
+    "prerequisites": ["Networking basics", "Linux basics"],
+    "topics": [
+      "EC2 instances",
+      "S3 storage",
+      "RDS databases",
+      "Lambda serverless",
+      "VPC and networking",
+      "IAM (Identity and Access Management)",
+      "CloudFormation basics",
+      "ECS/EKS for containers",
+      "CloudWatch monitoring",
+      "Cost optimization"
+    ],
+    "practice": [
+      "Launch and configure EC2 instances",
+      "Set up S3 for static website hosting",
+      "Build a serverless API with Lambda and API Gateway"
+    ],
+    "projects": [
+      "Deploy a scalable web application on AWS"
+    ],
+    "resources": [
+      {
+        "title": "AWS Free Tier",
+        "provider": "Amazon Web Services",
+        "type": "Practice",
+        "level": "Beginner",
+        "url": "https://aws.amazon.com/free/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "AWS Well-Architected Labs",
+        "provider": "AWS",
+        "type": "Practice",
+        "level": "Intermediate",
+        "url": "https://wellarchitectedlabs.com/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "data visualization": {
+    "skill": "Data Visualization",
+    "description": "The graphical representation of data and information using charts, graphs, and maps.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Python or JavaScript basics", "Statistics basics"],
+    "topics": [
+      "Chart types (bar, line, scatter, heatmap)",
+      "Matplotlib and Seaborn (Python)",
+      "Plotly and Dash",
+      "D3.js basics",
+      "Tableau basics",
+      "Color theory for data",
+      "Interactive visualizations",
+      "Storytelling with data",
+      "Dashboard design principles",
+      "Exporting and embedding visualizations"
+    ],
+    "practice": [
+      "Create 10 different chart types with matplotlib",
+      "Build an interactive dashboard with Plotly",
+      "Recreate visualizations from news articles"
+    ],
+    "projects": [
+      "Build an interactive data dashboard",
+      "Create a data storytelling presentation"
+    ],
+    "resources": [
+      {
+        "title": "Matplotlib Documentation",
+        "provider": "Matplotlib",
+        "type": "Documentation",
+        "level": "Intermediate",
+        "url": "https://matplotlib.org/stable/tutorials/index.html",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Data Visualization (Kaggle Learn)",
+        "provider": "Kaggle",
+        "type": "Course",
+        "level": "Beginner",
+        "url": "https://www.kaggle.com/learn/data-visualization",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "typescript": {
+    "skill": "TypeScript",
+    "description": "A strongly-typed superset of JavaScript that adds static type checking and advanced OOP features.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["JavaScript"],
+    "topics": [
+      "Basic types and annotations",
+      "Interfaces and type aliases",
+      "Functions with types",
+      "Classes and OOP with types",
+      "Generics",
+      "Enums",
+      "Union and intersection types",
+      "Type guards",
+      "Utility types",
+      "TypeScript configuration",
+      "TypeScript with React/Node.js"
+    ],
+    "practice": [
+      "Convert a JavaScript project to TypeScript",
+      "Build a typed REST API",
+      "Create a type-safe React component library"
+    ],
+    "projects": [
+      "Build a full-stack TypeScript application"
+    ],
+    "resources": [
+      {
+        "title": "TypeScript Handbook",
+        "provider": "Microsoft",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://www.typescriptlang.org/docs/handbook/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "TypeScript Tutorial",
+        "provider": "TypeScript Tutorial",
+        "type": "Tutorial",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.typescripttutorial.net/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "testing": {
+    "skill": "Testing",
+    "description": "Software testing practices including unit testing, integration testing, and end-to-end testing.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Programming basics"],
+    "topics": [
+      "Unit testing",
+      "Integration testing",
+      "End-to-end testing",
+      "Test-driven development (TDD)",
+      "Pytest / Jest / Mocha",
+      "Mocking and stubbing",
+      "Code coverage",
+      "Regression testing",
+      "Performance testing basics",
+      "CI testing integration"
+    ],
+    "practice": [
+      "Write unit tests for an existing project",
+      "Practice TDD on a small feature",
+      "Achieve 80%+ test coverage on a project"
+    ],
+    "projects": [
+      "Build a complete test suite for a web application"
+    ],
+    "resources": [
+      {
+        "title": "pytest Documentation",
+        "provider": "pytest",
+        "type": "Documentation",
+        "level": "Beginner to Intermediate",
+        "url": "https://docs.pytest.org/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Jest Documentation",
+        "provider": "Meta",
+        "type": "Documentation",
+        "level": "Beginner to Intermediate",
+        "url": "https://jestjs.io/docs/getting-started",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "linux": {
+    "skill": "Linux",
+    "description": "An open-source operating system kernel, essential for server administration and DevOps.",
+    "difficulty": "Beginner",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Command line basics",
+      "File system navigation",
+      "File permissions",
+      "Process management",
+      "Shell scripting",
+      "Package management (apt, yum)",
+      "Networking commands",
+      "User and group management",
+      "System services (systemd)",
+      "Log management"
+    ],
+    "practice": [
+      "Complete Linux command line challenges daily",
+      "Write shell scripts for automation",
+      "Set up a Linux server environment"
+    ],
+    "projects": [
+      "Set up and configure a Linux server",
+      "Build a monitoring script with bash"
+    ],
+    "resources": [
+      {
+        "title": "Linux Journey",
+        "provider": "Linux Journey",
+        "type": "Tutorial",
+        "level": "Beginner",
+        "url": "https://linuxjourney.com/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "The Linux Command Line",
+        "provider": "William Shotts",
+        "type": "Book",
+        "level": "Beginner to Intermediate",
+        "url": "https://linuxcommand.org/tlcl.php",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "terraform": {
+    "skill": "Terraform",
+    "description": "An Infrastructure as Code (IaC) tool by HashiCorp for provisioning and managing cloud infrastructure.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Cloud basics (AWS/Azure/GCP)"],
+    "topics": [
+      "HCL syntax",
+      "Providers and resources",
+      "Variables and outputs",
+      "State management",
+      "Modules",
+      "Workspaces",
+      "Provisioners",
+      "Import and destroy",
+      "Remote backends",
+      "Best practices"
+    ],
+    "practice": [
+      "Provision an EC2 instance with Terraform",
+      "Create a reusable module for VPC setup",
+      "Manage multi-environment infrastructure"
+    ],
+    "projects": [
+      "Build a complete AWS infrastructure with Terraform"
+    ],
+    "resources": [
+      {
+        "title": "Terraform Tutorials",
+        "provider": "HashiCorp",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://developer.hashicorp.com/terraform/tutorials",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Terraform Up & Running",
+        "provider": "Yevgeniy Brikman",
+        "type": "Book",
+        "level": "Intermediate",
+        "url": "https://www.terraformupandrunning.com/",
+        "free": false,
+        "rating": 5
+      }
+    ]
+  },
+  "airflow": {
+    "skill": "Apache Airflow",
+    "description": "A platform for programmatically authoring, scheduling, and monitoring data pipelines.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Python", "SQL"],
+    "topics": [
+      "DAGs (Directed Acyclic Graphs)",
+      "Operators",
+      "Tasks and task flows",
+      "Scheduling",
+      "Hooks and connections",
+      "XComs for data passing",
+      "Sensors",
+      "Dynamic DAGs",
+      "Monitoring and logging",
+      "Best practices"
+    ],
+    "practice": [
+      "Create a simple ETL DAG",
+      "Build a data pipeline with multiple tasks",
+      "Schedule and monitor pipelines"
+    ],
+    "projects": [
+      "Build a complete data pipeline orchestrating multiple data sources"
+    ],
+    "resources": [
+      {
+        "title": "Apache Airflow Documentation",
+        "provider": "Apache",
+        "type": "Documentation",
+        "level": "Intermediate",
+        "url": "https://airflow.apache.org/docs/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "figma": {
+    "skill": "Figma",
+    "description": "A collaborative interface design tool for creating UI/UX designs, prototypes, and design systems.",
+    "difficulty": "Beginner",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Interface overview",
+      "Frames and artboards",
+      "Components and variants",
+      "Auto layout",
+      "Design systems",
+      "Prototyping",
+      "Constraints and responsive design",
+      "Plugins",
+      "Collaboration features",
+      "Export and developer handoff"
+    ],
+    "practice": [
+      "Redesign an existing app UI in Figma",
+      "Create a design system with components",
+      "Build an interactive prototype"
+    ],
+    "projects": [
+      "Design a complete mobile app from wireframe to prototype"
+    ],
+    "resources": [
+      {
+        "title": "Figma for Beginners",
+        "provider": "Figma",
+        "type": "Tutorial",
+        "level": "Beginner",
+        "url": "https://www.figma.com/resources/learn-design/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Figma Tutorial for Beginners",
+        "provider": "Figma (YouTube)",
+        "type": "Tutorial",
+        "level": "Beginner",
+        "url": "https://www.youtube.com/watch?v=jwCmIBJ8jtc",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "power bi": {
+    "skill": "Power BI",
+    "description": "A Microsoft business analytics service for creating interactive data visualizations and business intelligence reports.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["SQL basics", "Excel basics"],
+    "topics": [
+      "Power BI Desktop interface",
+      "Data import and transformation",
+      "Data modeling",
+      "DAX formulas",
+      "Visualizations and charts",
+      "Interactive dashboards",
+      "Power BI Service",
+      "Publishing and sharing",
+      "Row-level security",
+      "Performance optimization"
+    ],
+    "practice": [
+      "Build a sales dashboard from sample data",
+      "Create a report with DAX calculations",
+      "Connect to multiple data sources"
+    ],
+    "projects": [
+      "Build a complete business intelligence dashboard"
+    ],
+    "resources": [
+      {
+        "title": "Power BI Learning",
+        "provider": "Microsoft",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://learn.microsoft.com/en-us/power-bi/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Power BI Guided Learning",
+        "provider": "Microsoft",
+        "type": "Course",
+        "level": "Beginner",
+        "url": "https://learn.microsoft.com/en-us/power-bi/guided-learning/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "agile/scrum": {
+    "skill": "Agile/Scrum",
+    "description": "An iterative project management framework for delivering software in small, incremental cycles.",
+    "difficulty": "Beginner",
+    "estimated_time": "1-2 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Agile Manifesto and principles",
+      "Scrum framework (roles, events, artifacts)",
+      "Sprint planning and retrospectives",
+      "User stories and story points",
+      "Product backlog management",
+      "Kanban basics",
+      "Daily standups",
+      "Velocity tracking",
+      "JIRA/Trello tools",
+      "Scaled Agile (SAFe) basics"
+    ],
+    "practice": [
+      "Set up a Kanban board for a personal project",
+      "Simulate a sprint cycle",
+      "Write user stories for a feature"
+    ],
+    "projects": [
+      "Manage a team project using Scrum methodology"
+    ],
+    "resources": [
+      {
+        "title": "Scrum Guide",
+        "provider": "Scrum.org",
+        "type": "Documentation",
+        "level": "Beginner",
+        "url": "https://scrumguides.org/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Agile Crash Course (freeCodeCamp)",
+        "provider": "freeCodeCamp",
+        "type": "Course",
+        "level": "Beginner",
+        "url": "https://www.freecodecamp.org/news/agile-development-crash-course/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "kafka": {
+    "skill": "Apache Kafka",
+    "description": "A distributed event streaming platform for building real-time data pipelines and streaming applications.",
+    "difficulty": "Advanced",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Programming basics", "Distributed systems concepts"],
+    "topics": [
+      "Kafka architecture (brokers, topics, partitions)",
+      "Producers and consumers",
+      "Consumer groups",
+      "Kafka Streams",
+      "Kafka Connect",
+      "Schema registry",
+      "Exactly-once semantics",
+      "Monitoring and administration",
+      "Kafka with Python (confluent-kafka)",
+      "Kubernetes deployment"
+    ],
+    "practice": [
+      "Set up a local Kafka cluster",
+      "Build a producer-consumer application",
+      "Stream real-time data processing"
+    ],
+    "projects": [
+      "Build a real-time analytics pipeline with Kafka"
+    ],
+    "resources": [
+      {
+        "title": "Apache Kafka Documentation",
+        "provider": "Apache",
+        "type": "Documentation",
+        "level": "Intermediate to Advanced",
+        "url": "https://kafka.apache.org/documentation/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "spark": {
+    "skill": "Apache Spark",
+    "description": "A unified analytics engine for large-scale data processing with built-in modules for SQL, streaming, ML, and graph processing.",
+    "difficulty": "Advanced",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": ["Python", "SQL", "Data structures"],
+    "topics": [
+      "Spark architecture (driver, executors, cluster)",
+      "RDDs, DataFrames, and Datasets",
+      "Spark SQL",
+      "Spark Streaming",
+      "MLlib for machine learning",
+      "GraphX",
+      "Performance tuning",
+      "PySpark basics",
+      "Partitioning and caching",
+      "Integration with Hadoop/S3"
+    ],
+    "practice": [
+      "Process large CSV datasets with PySpark",
+      "Build a streaming data pipeline",
+      "Train an ML model with MLlib"
+    ],
+    "projects": [
+      "Build a big data analytics pipeline with Spark"
+    ],
+    "resources": [
+      {
+        "title": "Apache Spark Quick Start",
+        "provider": "Apache",
+        "type": "Documentation",
+        "level": "Intermediate",
+        "url": "https://spark.apache.org/docs/latest/quick-start.html",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Spark Programming in Python (Databricks)",
+        "provider": "Databricks",
+        "type": "Course",
+        "level": "Intermediate",
+        "url": "https://www.databricks.com/learn/training/apache-spark-fundamentals",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "etl": {
+    "skill": "ETL",
+    "description": "Extract, Transform, Load — the process of moving data from sources to data warehouses for analysis.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["SQL", "Python"],
+    "topics": [
+      "ETL concepts and pipeline design",
+      "Data extraction methods",
+      "Data transformation techniques",
+      "Data validation and quality",
+      "Loading strategies",
+      "Incremental vs full loads",
+      "Error handling in ETL",
+      "Monitoring and logging",
+      "Data warehousing concepts",
+      "ETL tools (Airflow, dbt, SSIS)"
+    ],
+    "practice": [
+      "Build a simple ETL pipeline with Python",
+      "Extract data from an API and load into a database",
+      "Transform and clean messy data"
+    ],
+    "projects": [
+      "Build a production ETL pipeline with Airflow"
+    ],
+    "resources": [
+      {
+        "title": "dbt Documentation",
+        "provider": "dbt Labs",
+        "type": "Documentation",
+        "level": "Intermediate",
+        "url": "https://docs.getdbt.com/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "data warehousing": {
+    "skill": "Data Warehousing",
+    "description": "The process of collecting and managing data from varied sources to provide meaningful business insights.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["SQL", "Database design basics"],
+    "topics": [
+      "Data warehouse concepts",
+      "Star schema and snowflake schema",
+      "Dimensional modeling",
+      "ETL into warehouses",
+      "OLAP vs OLTP",
+      "Slowly changing dimensions",
+      "Data marts",
+      "Cloud warehouses (BigQuery, Snowflake, Redshift)",
+      "Query optimization",
+      "Data governance"
+    ],
+    "practice": [
+      "Design a star schema for a business domain",
+      "Load data into BigQuery/Snowflake",
+      "Optimize queries for performance"
+    ],
+    "projects": [
+      "Build a data warehouse with dimensional modeling"
+    ],
+    "resources": [
+      {
+        "title": "Data Warehousing Fundamentals",
+        "provider": "AWS",
+        "type": "Documentation",
+        "level": "Intermediate",
+        "url": "https://docs.aws.amazon.com/quickstart/latest/data-warehousing/welcome.html",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "cybersecurity": {
+    "skill": "Cybersecurity",
+    "description": "The practice of protecting systems, networks, and data from digital attacks and unauthorized access.",
+    "difficulty": "Intermediate",
+    "estimated_time": "4-6 weeks",
+    "prerequisites": ["Networking basics", "Linux basics"],
+    "topics": [
+      "OWASP Top 10",
+      "Network security fundamentals",
+      "Cryptography basics",
+      "Vulnerability assessment",
+      "Penetration testing",
+      "SIEM tools",
+      "Incident response",
+      "Firewalls and IDS/IPS",
+      "Security compliance (GDPR, HIPAA)",
+      "Secure coding practices"
+    ],
+    "practice": [
+      "Complete TryHackMe rooms",
+      "Solve CTF challenges on HackTheBox",
+      "Perform a security audit on a sample app"
+    ],
+    "projects": [
+      "Build a vulnerability scanning tool",
+      "Set up a security monitoring system"
+    ],
+    "resources": [
+      {
+        "title": "TryHackMe",
+        "provider": "TryHackMe",
+        "type": "Practice",
+        "level": "Beginner to Advanced",
+        "url": "https://tryhackme.com/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "OWASP Top 10",
+        "provider": "OWASP",
+        "type": "Documentation",
+        "level": "Intermediate",
+        "url": "https://owasp.org/www-project-top-ten/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "flutter": {
+    "skill": "Flutter",
+    "description": "Google's UI toolkit for building natively compiled mobile, web, and desktop applications from a single codebase.",
+    "difficulty": "Intermediate",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": ["Programming basics"],
+    "topics": [
+      "Dart language basics",
+      "Widgets and widget trees",
+      "State management (Provider, Riverpod)",
+      "Navigation and routing",
+      "Forms and validation",
+      "Networking and APIs",
+      "Local storage",
+      "Animations",
+      "Platform channels",
+      "Testing and deployment"
+    ],
+    "practice": [
+      "Build a weather app with Flutter",
+      "Create a todo application with state management",
+      "Build a chat interface"
+    ],
+    "projects": [
+      "Build and publish a complete mobile app"
+    ],
+    "resources": [
+      {
+        "title": "Flutter Official Documentation",
+        "provider": "Google",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://docs.flutter.dev/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Flutter Codelabs",
+        "provider": "Google",
+        "type": "Practice",
+        "level": "Beginner",
+        "url": "https://docs.flutter.dev/codelabs",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "react native": {
+    "skill": "React Native",
+    "description": "A framework for building native mobile applications using React and JavaScript.",
+    "difficulty": "Intermediate",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": ["JavaScript", "React basics"],
+    "topics": [
+      "React Native components",
+      "Core components (View, Text, ScrollView)",
+      "Navigation (React Navigation)",
+      "State management",
+      "Networking and APIs",
+      "Styling with StyleSheet",
+      "Platform-specific code",
+      "Native modules",
+      "Testing",
+      "App publishing"
+    ],
+    "practice": [
+      "Build a mobile todo app",
+      "Create a news reader app with API",
+      "Build a camera-based application"
+    ],
+    "projects": [
+      "Build and publish a cross-platform mobile app"
+    ],
+    "resources": [
+      {
+        "title": "React Native Official Docs",
+        "provider": "Meta",
+        "type": "Documentation",
+        "level": "Beginner to Intermediate",
+        "url": "https://reactnative.dev/docs/getting-started",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "vue": {
+    "skill": "Vue.js",
+    "description": "A progressive JavaScript framework for building user interfaces and single-page applications.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["JavaScript", "HTML", "CSS"],
+    "topics": [
+      "Vue fundamentals and template syntax",
+      "Components and props",
+      "Reactive data and watchers",
+      "Methods and computed properties",
+      "Lifecycle hooks",
+      "Directives (v-if, v-for, v-model)",
+      "Vue Router",
+      "Vuex/Pinia state management",
+      "Composition API",
+      "Vue CLI and build tools"
+    ],
+    "practice": [
+      "Build a todo app with Vue",
+      "Create a weather dashboard",
+      "Build a real-time search interface"
+    ],
+    "projects": [
+      "Build a complete single-page application with Vue"
+    ],
+    "resources": [
+      {
+        "title": "Vue.js Official Guide",
+        "provider": "Vue.js",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://vuejs.org/guide/introduction.html",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "angular": {
+    "skill": "Angular",
+    "description": "A platform and framework for building single-page client applications using HTML and TypeScript.",
+    "difficulty": "Intermediate",
+    "estimated_time": "3-4 weeks",
+    "prerequisites": ["JavaScript", "TypeScript", "HTML", "CSS"],
+    "topics": [
+      "Angular architecture",
+      "Components and templates",
+      "Services and dependency injection",
+      "Routing",
+      "Reactive forms",
+      "HTTP client",
+      "RxJS observables",
+      "Angular CLI",
+      "Testing",
+      "Performance optimization"
+    ],
+    "practice": [
+      "Build a CRUD application with Angular",
+      "Create a dashboard with multiple components",
+      "Implement authentication flow"
+    ],
+    "projects": [
+      "Build a full-stack Angular application"
+    ],
+    "resources": [
+      {
+        "title": "Angular Official Tutorial",
+        "provider": "Google",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://angular.dev/tutorial",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "mongodb": {
+    "skill": "MongoDB",
+    "description": "A NoSQL document-oriented database that stores data in flexible, JSON-like documents.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Programming basics"],
+    "topics": [
+      "Document model vs relational model",
+      "CRUD operations",
+      "Mongoose ODM",
+      "Indexing and performance",
+      "Aggregation pipeline",
+      "Schema design",
+      "Replica sets",
+      "Sharding basics",
+      "MongoDB Atlas",
+      "Data validation"
+    ],
+    "practice": [
+      "Set up a MongoDB database",
+      "Build a CRUD API with Mongoose",
+      "Design a schema for an e-commerce app"
+    ],
+    "projects": [
+      "Build an application with MongoDB backend"
+    ],
+    "resources": [
+      {
+        "title": "MongoDB University",
+        "provider": "MongoDB",
+        "type": "Course",
+        "level": "Beginner to Advanced",
+        "url": "https://university.mongodb.com/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "MongoDB Documentation",
+        "provider": "MongoDB",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://www.mongodb.com/docs/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "redis": {
+    "skill": "Redis",
+    "description": "An open-source, in-memory data structure store used as a database, cache, and message broker.",
+    "difficulty": "Intermediate",
+    "estimated_time": "1-2 weeks",
+    "prerequisites": ["Programming basics"],
+    "topics": [
+      "Data types (strings, lists, sets, hashes)",
+      "Caching patterns",
+      "Pub/Sub messaging",
+      "Persistence (RDB, AOF)",
+      "Lua scripting",
+      "Cluster mode",
+      "Sentinel for HA",
+      "Redis with Python/Node.js",
+      "Rate limiting with Redis",
+      "Session management"
+    ],
+    "practice": [
+      "Implement a caching layer for an API",
+      "Build a real-time leaderboard",
+      "Set up a pub/sub notification system"
+    ],
+    "projects": [
+      "Add Redis caching to a web application"
+    ],
+    "resources": [
+      {
+        "title": "Redis Documentation",
+        "provider": "Redis",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://redis.io/docs/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Redis University",
+        "provider": "Redis",
+        "type": "Course",
+        "level": "Beginner to Advanced",
+        "url": "https://university.redis.com/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "typescript for react": {
+    "skill": "TypeScript for React",
+    "description": "Using TypeScript with React for type-safe component development.",
+    "difficulty": "Intermediate",
+    "estimated_time": "1-2 weeks",
+    "prerequisites": ["JavaScript", "React basics", "TypeScript basics"],
+    "topics": [
+      "Typing props and state",
+      "Typing event handlers",
+      "Generic components",
+      "Typing hooks (useState, useEffect, useRef)",
+      "Context typing",
+      "TypeScript with React Router",
+      "Form typing",
+      "API response typing",
+      "Utility types for components"
+    ],
+    "practice": [
+      "Convert a React project to TypeScript",
+      "Build a type-safe form component",
+      "Create typed API hooks"
+    ],
+    "projects": [
+      "Build a fully typed React application"
+    ],
+    "resources": [
+      {
+        "title": "React TypeScript Cheatsheet",
+        "provider": "react-typescript-cheatsheet",
+        "type": "Documentation",
+        "level": "Intermediate",
+        "url": "https://react-typescript-cheatsheet.netlify.app/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "tableau": {
+    "skill": "Tableau",
+    "description": "A visual analytics platform for transforming data into actionable insights through interactive dashboards.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["SQL basics"],
+    "topics": [
+      "Tableau interface and data connections",
+      "Worksheets and dashboards",
+      "Chart types and formatting",
+      "Calculated fields",
+      "Parameters and filters",
+      "LOD expressions",
+      "Data blending",
+      "Storytelling",
+      "Publishing to Tableau Server",
+      "Performance optimization"
+    ],
+    "practice": [
+      "Create a sales dashboard from sample data",
+      "Build an interactive financial report",
+      "Design a geographic visualization"
+    ],
+    "projects": [
+      "Build a complete business intelligence dashboard in Tableau"
+    ],
+    "resources": [
+      {
+        "title": "Tableau Public (Free)",
+        "provider": "Tableau",
+        "type": "Practice",
+        "level": "Beginner",
+        "url": "https://public.tableau.com/",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "Tableau Training Videos",
+        "provider": "Tableau",
+        "type": "Tutorial",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.tableau.com/learn/training/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "excel": {
+    "skill": "Excel",
+    "description": "Microsoft's spreadsheet application for data analysis, visualization, and business modeling.",
+    "difficulty": "Beginner",
+    "estimated_time": "1-2 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Formulas and functions (VLOOKUP, INDEX, MATCH)",
+      "Pivot tables",
+      "Data validation",
+      "Conditional formatting",
+      "Charts and graphs",
+      "Macros basics",
+      "Data analysis tools",
+      "Power Query",
+      "What-if analysis",
+      "Advanced formatting"
+    ],
+    "practice": [
+      "Build a financial model in Excel",
+      "Create a pivot table report",
+      "Automate a report with macros"
+    ],
+    "projects": [
+      "Build a complete business analytics workbook"
+    ],
+    "resources": [
+      {
+        "title": "Excel Training (Microsoft)",
+        "provider": "Microsoft",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://support.microsoft.com/en-us/office/excel-video-training-9bc05390-e94c-46af-a5b3-d7c22f6990bb",
+        "free": true,
+        "rating": 5
+      },
+      {
+        "title": "ExcelJet",
+        "provider": "ExcelJet",
+        "type": "Tutorial",
+        "level": "Beginner to Advanced",
+        "url": "https://exceljet.net/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "next.js": {
+    "skill": "Next.js",
+    "description": "A React framework for production with server-side rendering, static site generation, and API routes.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["React", "JavaScript"],
+    "topics": [
+      "Pages and routing",
+      "Server-side rendering (SSR)",
+      "Static site generation (SSG)",
+      "API routes",
+      "Data fetching",
+      "Image optimization",
+      "Middleware",
+      "Authentication",
+      "Deployment (Vercel)",
+      "Performance optimization"
+    ],
+    "practice": [
+      "Build a blog with Next.js",
+      "Create an e-commerce frontend",
+      "Implement authentication with NextAuth"
+    ],
+    "projects": [
+      "Build a full-stack application with Next.js"
+    ],
+    "resources": [
+      {
+        "title": "Next.js Official Tutorial",
+        "provider": "Vercel",
+        "type": "Documentation",
+        "level": "Beginner to Intermediate",
+        "url": "https://nextjs.org/learn",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "selenium": {
+    "skill": "Selenium",
+    "description": "A portable framework for testing web applications across different browsers and platforms.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": ["Programming basics"],
+    "topics": [
+      "WebDriver setup",
+      "Element locators",
+      "Actions and interactions",
+      "Waits (implicit, explicit, fluent)",
+      "Page Object Model",
+      "TestNG/Test frameworks",
+      "Cross-browser testing",
+      "Grid setup",
+      "CI/CD integration",
+      "Parallel testing"
+    ],
+    "practice": [
+      "Write automated tests for a web application",
+      "Implement a Page Object Model pattern",
+      "Set up cross-browser testing"
+    ],
+    "projects": [
+      "Build a complete test automation suite"
+    ],
+    "resources": [
+      {
+        "title": "Selenium Official Documentation",
+        "provider": "Selenium",
+        "type": "Documentation",
+        "level": "Beginner to Advanced",
+        "url": "https://www.selenium.dev/documentation/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  },
+  "product strategy": {
+    "skill": "Product Strategy",
+    "description": "The art and science of defining a product vision, roadmap, and features to achieve business goals.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Product vision and mission",
+      "Market analysis",
+      "Competitive analysis",
+      "User personas",
+      "Product roadmap",
+      "OKRs and KPIs",
+      "Go-to-market strategy",
+      "Pricing strategy",
+      "Product lifecycle",
+      "Growth frameworks"
+    ],
+    "practice": [
+      "Write a product requirements document (PRD)",
+      "Create a competitive analysis matrix",
+      "Define OKRs for a product"
+    ],
+    "projects": [
+      "Develop a complete product strategy for a new feature"
+    ],
+    "resources": [
+      {
+        "title": "Product Management Resources",
+        "provider": "Product School",
+        "type": "Course",
+        "level": "Beginner to Intermediate",
+        "url": "https://www.productschool.com/resources/",
+        "free": true,
+        "rating": 4
+      }
+    ]
+  },
+  "user research": {
+    "skill": "User Research",
+    "description": "The practice of understanding user behaviors, needs, and motivations through various research methods.",
+    "difficulty": "Intermediate",
+    "estimated_time": "2-3 weeks",
+    "prerequisites": [],
+    "topics": [
+      "Qualitative vs quantitative research",
+      "User interviews",
+      "Surveys and questionnaires",
+      "Usability testing",
+      "A/B testing",
+      "Personas and journey mapping",
+      "Card sorting",
+      "Contextual inquiry",
+      "Affinity diagramming",
+      "Research synthesis"
+    ],
+    "practice": [
+      "Conduct 5 user interviews",
+      "Design and run a usability test",
+      "Create user personas from research data"
+    ],
+    "projects": [
+      "Conduct a complete user research study"
+    ],
+    "resources": [
+      {
+        "title": "UX Research Guide (NN/g)",
+        "provider": "Nielsen Norman Group",
+        "type": "Tutorial",
+        "level": "Beginner to Advanced",
+        "url": "https://www.nngroup.com/articles/which-ux-research-methods/",
+        "free": true,
+        "rating": 5
+      }
+    ]
+  }
+}

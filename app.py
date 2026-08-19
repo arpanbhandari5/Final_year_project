@@ -587,6 +587,124 @@ def api_analyze():
     return _handle_upload_request()
 
 
+@app.get("/career")
+def career_analysis() -> str:
+    return render_template("career.html", active_page="career", title="Career Analysis | Prayash")
+
+
+@app.get("/api/skills-gap/roles")
+def api_skills_gap_roles():
+    from risk_assessor import get_available_roles
+    return jsonify({"success": True, "roles": get_available_roles()})
+
+
+@app.post("/api/skills-gap/analyze")
+def api_skills_gap_analyze():
+    from risk_assessor import analyze_skills_gap
+    data = request.get_json(silent=True) if request.is_json else {}
+    resume_text = (request.form.get("resume_text") or data.get("resume_text", "")).strip()
+    target_role = (request.form.get("target_role") or data.get("target_role", "")).strip()
+    if not resume_text or len(resume_text) < 20:
+        return jsonify({"success": False, "error": "Resume text is required (min 20 characters)."}), 400
+    if not target_role:
+        return jsonify({"success": False, "error": "Target role is required."}), 400
+    result = analyze_skills_gap(_clean_text(resume_text), target_role)
+    if "error" in result:
+        return jsonify({"success": False, "error": result["error"], "available_roles": result.get("available_roles", [])}), 400
+    return jsonify({"success": True, "analysis": result})
+
+
+@app.post("/api/career-paths")
+def api_career_paths():
+    from risk_assessor import suggest_career_paths
+    data = request.get_json(silent=True) if request.is_json else {}
+    resume_text = (request.form.get("resume_text") or data.get("resume_text", "")).strip()
+    if not resume_text or len(resume_text) < 20:
+        return jsonify({"success": False, "error": "Please provide at least 20 characters of resume text."}), 400
+    paths = suggest_career_paths(resume_text)
+    return jsonify({"success": True, "paths": paths, "total": len(paths)})
+
+
+@app.post("/api/learning-roadmap")
+def api_learning_roadmap():
+    from risk_assessor import generate_learning_roadmap
+    data = request.get_json(silent=True) if request.is_json else {}
+    resume_text = (request.form.get("resume_text") or data.get("resume_text", "")).strip()
+    if not resume_text or len(resume_text) < 20:
+        return jsonify({"success": False, "error": "Please provide at least 20 characters of resume text."}), 400
+    roadmap = generate_learning_roadmap(resume_text)
+    total_weeks = sum(int(s.get("duration", "0").split("-")[0] or "0") for area in roadmap for s in area.get("stages", []))
+    return jsonify({"success": True, "roadmap": roadmap, "areas": len(roadmap), "total_weeks": total_weeks})
+
+
+@app.post("/api/personalized-roadmap")
+def api_personalized_roadmap():
+    from personalized_roadmap import generate_personalized_roadmap
+    data = request.get_json(silent=True) if request.is_json else {}
+    resume_text = (request.form.get("resume_text") or data.get("resume_text", "")).strip()
+    target_role = (request.form.get("target_role") or data.get("target_role", "")).strip()
+    if not resume_text or len(resume_text) < 20:
+        return jsonify({"success": False, "error": "Please provide at least 20 characters of resume text."}), 400
+    if not target_role:
+        return jsonify({"success": False, "error": "Target role is required."}), 400
+    weekly_hours = data.get("weekly_hours", 8)
+    try:
+        weekly_hours = max(1, min(40, int(weekly_hours)))
+    except (ValueError, TypeError):
+        weekly_hours = 8
+    roadmap = generate_personalized_roadmap(
+        resume_text=resume_text, target_role=target_role,
+        user_skills=data.get("user_skills", []), missing_skills=data.get("missing_skills", []),
+        matched_skills=data.get("matched_skills", []), high_priority=data.get("high_priority", []),
+        medium_priority=data.get("medium_priority", []), low_priority=data.get("low_priority", []),
+        weekly_hours=weekly_hours,
+    )
+    if "error" in roadmap:
+        return jsonify({"success": False, "error": roadmap["error"]}), 400
+    return jsonify({"success": True, "roadmap": roadmap})
+
+
+@app.post("/api/reskilling-roadmap")
+def api_reskilling_roadmap():
+    from personalized_roadmap import generate_reskilling_roadmap
+    data = request.get_json(silent=True) if request.is_json else {}
+    resume_text = (request.form.get("resume_text") or data.get("resume_text", "")).strip()
+    current_career = (request.form.get("current_career") or data.get("current_career", "")).strip()
+    automation_risk = (request.form.get("automation_risk") or data.get("automation_risk", "Moderate")).strip()
+    recommended_transition = (request.form.get("recommended_transition") or data.get("recommended_transition", "")).strip()
+    if not resume_text or len(resume_text) < 20:
+        return jsonify({"success": False, "error": "Please provide at least 20 characters of resume text."}), 400
+    if not recommended_transition:
+        return jsonify({"success": False, "error": "Recommended transition career is required."}), 400
+    weekly_hours = data.get("weekly_hours", 8)
+    try:
+        weekly_hours = max(1, min(40, int(weekly_hours)))
+    except (ValueError, TypeError):
+        weekly_hours = 8
+    roadmap = generate_reskilling_roadmap(
+        resume_text=resume_text, current_career=current_career,
+        automation_risk=automation_risk, recommended_transition=recommended_transition,
+        weekly_hours=weekly_hours,
+    )
+    if "error" in roadmap:
+        return jsonify({"success": False, "error": roadmap["error"]}), 400
+    return jsonify({"success": True, "roadmap": roadmap})
+
+
+@app.post("/api/career-chat")
+def api_career_chat():
+    data = request.get_json(silent=True) or {}
+    question = (data.get("message") or "").strip()
+    resume_text = (data.get("resume_text") or "").strip()
+    if not question:
+        return jsonify({"success": False, "error": "Please enter a question."}), 400
+    answer = f"Based on your resume, here is my career advice regarding: {question}\n\nI recommend focusing on developing your skills in the areas identified by the skill gap analysis. Start with high-priority skills and work your way through the learning roadmap."
+    if resume_text:
+        skills = _split_keywords(resume_text)
+        answer += f"\n\nI detected these skills in your resume: {', '.join(skills[:8])}. Use these as your foundation when building new skills."
+    return jsonify({"success": True, "reply": answer, "answer": answer})
+
+
 if __name__ == "__main__":
     ensure_model_artifacts()
     app.run(debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", "5000")))

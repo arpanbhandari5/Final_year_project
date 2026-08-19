@@ -1,0 +1,1179 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='career-analysis.css', v=static_version) }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='skill-extraction.css', v=static_version) }}">
+{% endblock %}
+
+{% block content %}
+<div class="career-app" data-career-app>
+  <!-- Sidebar Navigation -->
+  <aside class="career-sidebar" data-career-sidebar>
+    <div class="career-sidebar__head">
+      <div class="career-sidebar__brand">
+        <span class="career-sidebar__logo-icon">🧠</span>
+        <div>
+          <span class="career-sidebar__logo">CareerAI</span>
+          <span class="career-sidebar__tagline">AI POWERED CAREER INTELLIGENCE</span>
+        </div>
+      </div>
+    </div>
+    <nav class="career-sidebar__nav">
+      <button type="button" class="career-nav-item is-active" data-step="dashboard">
+        <span class="career-nav-icon">📊</span>
+        <span>Dashboard</span>
+      </button>
+      <div class="career-sidebar__divider"></div>
+      <button type="button" class="career-nav-item" data-step="resume" disabled>
+        <span class="career-nav-icon">📄</span>
+        <span>Resume</span>
+      </button>
+      <button type="button" class="career-nav-item" data-step="skill-extraction" disabled>
+        <span class="career-nav-icon">🧠</span>
+        <span>Skill Extraction</span>
+      </button>
+      <button type="button" class="career-nav-item" data-step="skills" disabled>
+        <span class="career-nav-icon">📊</span>
+        <span>Skills Detail</span>
+      </button>
+      <button type="button" class="career-nav-item" data-step="careers" disabled>
+        <span class="career-nav-icon">🎯</span>
+        <span>Careers</span>
+      </button>
+      <button type="button" class="career-nav-item" data-step="gap" disabled>
+        <span class="career-nav-icon">📊</span>
+        <span>Skill Gap</span>
+      </button>
+      <button type="button" class="career-nav-item" data-step="roadmap" disabled>
+        <span class="career-nav-icon">🗺️</span>
+        <span>Roadmap</span>
+      </button>
+      <div class="career-sidebar__divider"></div>
+      <button type="button" class="career-nav-item" data-step="jobs" disabled>
+        <span class="career-nav-icon">💼</span>
+        <span>Job Matches</span>
+      </button>
+      <button type="button" class="career-nav-item" data-step="advisor" disabled>
+        <span class="career-nav-icon">🤖</span>
+        <span>AI Career Advisor</span>
+        <span class="career-nav-badge">New</span>
+      </button>
+      <div class="career-sidebar__divider"></div>
+      <button type="button" class="career-nav-item" data-step="settings">
+        <span class="career-nav-icon">⚙️</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+    <!-- Career Score Ring -->
+    <div class="career-sidebar__score" data-career-sidebar-score>
+      <div class="career-sidebar-score">
+        <h4 class="career-sidebar-score__title">Your Career Score</h4>
+        <div class="career-sidebar-score__ring">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--surface-container)" stroke-width="6"/>
+            <circle cx="50" cy="50" r="42" fill="none" stroke="url(#scoreGradient)" stroke-width="6" stroke-dasharray="263.9" stroke-dashoffset="263.9" stroke-linecap="round" class="career-sidebar-score__circle" data-score-circle/>
+            <defs>
+              <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#22c55e"/>
+                <stop offset="100%" stop-color="#3b82f6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="career-sidebar-score__center">
+            <span class="career-sidebar-score__pct" data-score-pct>0%</span>
+            <span class="career-sidebar-score__label" data-score-label>—</span>
+          </div>
+        </div>
+        <p class="career-sidebar-score__tip">Keep improving your skills!</p>
+      </div>
+    </div>
+    <div class="career-sidebar__progress">
+      <div class="career-progress-bar">
+        <div class="career-progress-fill" data-progress-fill style="width: 0%"></div>
+      </div>
+      <span class="career-progress-text" data-progress-text>Step 1 of 4</span>
+    </div>
+  </aside>
+
+  <!-- Mobile sidebar toggle -->
+  <button type="button" class="career-sidebar-toggle" data-career-sidebar-toggle aria-label="Toggle menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="career-sidebar-backdrop" data-career-sidebar-backdrop></div>
+
+  <!-- Main Content -->
+  <main class="career-main">
+
+    <!-- ═══ STEP: Dashboard Overview ═══ -->
+    <section class="career-step is-active" data-step="dashboard">
+      <div class="career-step__header">
+        <h1>📊 Dashboard</h1>
+        <p>Your career intelligence overview at a glance</p>
+      </div>
+
+      <div class="career-dash-stats">
+        <div class="career-dash-stat">
+          <div class="career-dash-stat__icon" style="background:rgba(34,197,94,0.1);color:#22c55e;">✓</div>
+          <div class="career-dash-stat__info">
+            <div class="career-dash-stat__value" data-dash-analyses>0</div>
+            <div class="career-dash-stat__label">Analyses Run</div>
+          </div>
+        </div>
+        <div class="career-dash-stat">
+          <div class="career-dash-stat__icon" style="background:rgba(59,130,246,0.1);color:#3b82f6;">🎯</div>
+          <div class="career-dash-stat__info">
+            <div class="career-dash-stat__value" data-dash-careers>0</div>
+            <div class="career-dash-stat__label">Careers Explored</div>
+          </div>
+        </div>
+        <div class="career-dash-stat">
+          <div class="career-dash-stat__icon" style="background:rgba(139,92,246,0.1);color:#8b5cf6;">🧠</div>
+          <div class="career-dash-stat__info">
+            <div class="career-dash-stat__value" data-dash-skills>0</div>
+            <div class="career-dash-stat__label">Skills Detected</div>
+          </div>
+        </div>
+        <div class="career-dash-stat">
+          <div class="career-dash-stat__icon" style="background:rgba(245,158,11,0.1);color:#f59e0b;">📈</div>
+          <div class="career-dash-stat__info">
+            <div class="career-dash-stat__value" data-dash-match>—</div>
+            <div class="career-dash-stat__label">Best Match</div>
+          </div>
+        </div>
+        <div class="career-dash-stat">
+          <div class="career-dash-stat__icon" style="background:rgba(16,185,129,0.1);color:#10b981;">🗺️</div>
+          <div class="career-dash-stat__info">
+            <div class="career-dash-stat__value" data-dash-roadmap-progress>—</div>
+            <div class="career-dash-stat__label">Roadmap Done</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="career-dash-grid">
+        <div class="career-dash-card">
+          <h3>🚀 Quick Start</h3>
+          <p>New to CareerAI? Begin by analyzing your resume to unlock personalized career insights.</p>
+          <button type="button" class="career-btn career-btn--primary" data-dash-start>Analyze Resume →</button>
+        </div>
+
+        <div class="career-dash-card">
+          <h3>📋 Recent Activity</h3>
+          <div class="career-dash-activity" data-dash-activity>
+            <div class="career-dash-empty">
+              <span>📄</span>
+              <p>No activity yet. Run your first analysis to get started!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="career-dash-tips">
+        <h3>💡 Getting Started Tips</h3>
+        <div class="career-dash-tips-grid">
+          <div class="career-dash-tip">
+            <span class="career-dash-tip__num">1</span>
+            <div>
+              <strong>Upload your resume</strong>
+              <p>Paste text or upload a PDF/DOCX file to extract your skills and experience.</p>
+            </div>
+          </div>
+          <div class="career-dash-tip">
+            <span class="career-dash-tip__num">2</span>
+            <div>
+              <strong>Explore career matches</strong>
+              <p>See which careers align with your profile and how strong the match is.</p>
+            </div>
+          </div>
+          <div class="career-dash-tip">
+            <span class="career-dash-tip__num">3</span>
+            <div>
+              <strong>Close your skill gaps</strong>
+              <p>Identify missing skills and follow your personalized learning roadmap.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP: Resume Analysis ═══ -->
+    <section class="career-step" data-step="resume">
+      <div class="career-step__header">
+        <button type="button" class="career-btn career-btn--back" data-back-btn="dashboard">← Back</button>
+        <div>
+          <h1>📄 Resume Analysis</h1>
+          <p>Upload your resume to discover your professional skills</p>
+        </div>
+      </div>
+
+      <div class="career-upload-zone" data-upload-zone>
+        <div class="career-upload-icon">📄</div>
+        <h3>Drop your resume here</h3>
+        <p>PDF / DOCX / TXT</p>
+        <label class="career-upload-btn">
+          Choose File
+          <input type="file" accept=".pdf,.docx,.txt" data-resume-file hidden>
+        </label>
+        <p class="career-upload-hint">or paste your resume text below</p>
+      </div>
+
+      <div class="career-textarea-wrap">
+        <textarea data-resume-text placeholder="Paste your resume text here..." rows="8"></textarea>
+        <button type="button" class="career-btn career-btn--primary" data-analyze-btn>Analyze Resume</button>
+      </div>
+
+      <div class="career-loading hidden" data-loading>
+        <div class="career-spinner"></div>
+        <p>Analyzing your resume...</p>
+      </div>
+
+      <div class="career-results hidden" data-resume-results>
+        <h2 class="career-results-title">Resume Analysis Results</h2>
+
+        <div class="career-stats-row">
+          <div class="career-stat-card">
+            <div class="career-stat-number" data-skills-count>0</div>
+            <div class="career-stat-label">Skills Found</div>
+          </div>
+          <div class="career-stat-card">
+            <div class="career-stat-number" data-experience>0</div>
+            <div class="career-stat-label">Experience</div>
+          </div>
+          <div class="career-stat-card">
+            <div class="career-stat-number" data-education>—</div>
+            <div class="career-stat-label">Education</div>
+          </div>
+          <div class="career-stat-card">
+            <div class="career-stat-number" data-projects>0</div>
+            <div class="career-stat-label">Projects</div>
+          </div>
+        </div>
+
+        <div class="career-skills-section">
+          <h3>Technical Skills</h3>
+          <div class="career-skill-tags" data-technical-skills></div>
+        </div>
+
+        <div class="career-skills-section">
+          <h3>Soft Skills</h3>
+          <div class="career-skill-tags" data-soft-skills></div>
+        </div>
+
+        <div class="career-skills-section">
+          <h3>Skills by Category</h3>
+          <div class="career-skill-categories" data-skill-categories></div>
+        </div>
+
+        <div class="career-section-divider"></div>
+
+        <button type="button" class="career-btn career-btn--primary career-btn--lg" data-next-careers>
+          Continue to Careers →
+        </button>
+      </div>
+    </section>
+
+    <!-- ═══ STEP: Skill Extraction ═══ -->
+    <section class="career-step" data-step="skill-extraction">
+      <div class="career-step__header">
+        <button type="button" class="career-btn career-btn--back" data-back-btn="resume">← Back</button>
+        <div>
+          <h1>Skill Extraction</h1>
+          <p>AI extracted skills from your resume</p>
+        </div>
+      </div>
+
+      <div class="se-empty" data-se-empty>
+        <div class="career-dash-empty">
+          <span>🧠</span>
+          <p>Upload your resume first to extract skills.</p>
+          <button type="button" class="career-btn career-btn--primary" data-se-goto-resume>Go to Resume →</button>
+        </div>
+      </div>
+
+      <div class="se-content hidden" data-se-content>
+        <!-- Re-analyze button -->
+        <div class="se-header-actions">
+          <button type="button" class="career-btn career-btn--primary se-reanalyze-btn" data-se-reanalyze>
+            <span class="se-reanalyze-icon">↻</span> Re-analyze Resume
+          </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="se-stats">
+          <div class="se-stat-card se-stat-card--total">
+            <div class="se-stat-icon se-stat-icon--blue">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+            </div>
+            <div class="se-stat-info">
+              <div class="se-stat-value" data-se-total>0</div>
+              <div class="se-stat-label">Total Skills Found</div>
+              <div class="se-stat-change se-stat-change--up" data-se-total-change>↑ 0% vs last analysis</div>
+            </div>
+          </div>
+
+          <div class="se-stat-card se-stat-card--tech">
+            <div class="se-stat-icon se-stat-icon--green">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <div class="se-stat-info">
+              <div class="se-stat-value" data-se-technical>0</div>
+              <div class="se-stat-label">Technical Skills</div>
+              <div class="se-stat-sub" data-se-technical-pct>0% of total skills</div>
+            </div>
+          </div>
+
+          <div class="se-stat-card se-stat-card--soft">
+            <div class="se-stat-icon se-stat-icon--purple">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="se-stat-info">
+              <div class="se-stat-value" data-se-soft>0</div>
+              <div class="se-stat-label">Soft Skills</div>
+              <div class="se-stat-sub" data-se-soft-pct>0% of total skills</div>
+            </div>
+          </div>
+
+          <div class="se-stat-card se-stat-card--accuracy">
+            <div class="se-stat-icon se-stat-icon--amber">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="se-stat-info">
+              <div class="se-stat-value" data-se-accuracy>0%</div>
+              <div class="se-stat-label">Skill Accuracy</div>
+              <div class="se-stat-confidence">High Confidence</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two-column layout: Chart + Top Skills -->
+        <div class="se-grid">
+          <!-- Left: Category Chart -->
+          <div class="se-card se-card--chart">
+            <h3 class="se-card-title">Extracted Skills by Category</h3>
+            <div class="se-chart-container">
+              <div class="se-donut-chart" data-se-donut>
+                <div class="se-donut-center">
+                  <div class="se-donut-value" data-se-donut-value>0</div>
+                  <div class="se-donut-label">Skills</div>
+                </div>
+              </div>
+              <div class="se-chart-legend" data-se-legend></div>
+            </div>
+            <button type="button" class="se-view-breakdown-btn" data-se-view-breakdown>
+              <span class="se-view-icon">☰</span> View Full Breakdown
+            </button>
+          </div>
+
+          <!-- Right: Top Skills -->
+          <div class="se-card se-card--skills">
+            <h3 class="se-card-title">Top Extracted Skills <span class="se-info-icon" title="Most relevant skills from your resume">ⓘ</span></h3>
+            <div class="se-top-skills" data-se-top-skills></div>
+            <button type="button" class="se-see-all-btn" data-se-see-all>See All Skills (<span data-se-skill-count>0</span>) →</button>
+          </div>
+        </div>
+
+        <!-- Two-column: Proficiency + Insights -->
+        <div class="se-grid se-grid--bottom">
+          <!-- Skill Proficiency Distribution -->
+          <div class="se-card se-card--proficiency">
+            <h3 class="se-card-title">Skill Proficiency Distribution <span class="se-info-icon" title="Estimated proficiency levels based on resume context">ⓘ</span></h3>
+            <div class="se-proficiency-list">
+              <div class="se-proficiency-row">
+                <span class="se-proficiency-label">Beginner</span>
+                <span class="se-proficiency-count" data-se-beginner-count>0</span>
+                <span class="se-proficiency-word">skills</span>
+                <div class="se-proficiency-bar">
+                  <div class="se-proficiency-fill se-proficiency-fill--beginner" data-se-beginner-bar style="width: 0%"></div>
+                </div>
+                <span class="se-proficiency-pct" data-se-beginner-pct>0%</span>
+              </div>
+              <div class="se-proficiency-row">
+                <span class="se-proficiency-label">Intermediate</span>
+                <span class="se-proficiency-count" data-se-intermediate-count>0</span>
+                <span class="se-proficiency-word">skills</span>
+                <div class="se-proficiency-bar">
+                  <div class="se-proficiency-fill se-proficiency-fill--intermediate" data-se-intermediate-bar style="width: 0%"></div>
+                </div>
+                <span class="se-proficiency-pct" data-se-intermediate-pct>0%</span>
+              </div>
+              <div class="se-proficiency-row">
+                <span class="se-proficiency-label">Advanced</span>
+                <span class="se-proficiency-count" data-se-advanced-count>0</span>
+                <span class="se-proficiency-word">skills</span>
+                <div class="se-proficiency-bar">
+                  <div class="se-proficiency-fill se-proficiency-fill--advanced" data-se-advanced-bar style="width: 0%"></div>
+                </div>
+                <span class="se-proficiency-pct" data-se-advanced-pct>0%</span>
+              </div>
+              <div class="se-proficiency-row">
+                <span class="se-proficiency-label">Expert</span>
+                <span class="se-proficiency-count" data-se-expert-count>0</span>
+                <span class="se-proficiency-word">skills</span>
+                <div class="se-proficiency-bar">
+                  <div class="se-proficiency-fill se-proficiency-fill--expert" data-se-expert-bar style="width: 0%"></div>
+                </div>
+                <span class="se-proficiency-pct" data-se-expert-pct>0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Insights -->
+          <div class="se-card se-card--insights">
+            <h3 class="se-card-title">⚡ Insights</h3>
+            <div class="se-insights-list" data-se-insights></div>
+          </div>
+        </div>
+
+        <!-- Full Breakdown Modal -->
+        <div class="se-breakdown-modal hidden" data-se-breakdown-modal>
+          <div class="se-breakdown-overlay" data-se-breakdown-close></div>
+          <div class="se-breakdown-content">
+            <div class="se-breakdown-header">
+              <h3>Full Skill Breakdown</h3>
+              <button type="button" class="se-breakdown-close" data-se-breakdown-close-btn>✕</button>
+            </div>
+            <div class="se-breakdown-body" data-se-breakdown-body></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP: Skills Deep Dive ═══ -->
+    <section class="career-step" data-step="skills">
+      <div class="career-step__header">
+        <button type="button" class="career-btn career-btn--back" data-back-btn="skill-extraction">← Back</button>
+        <div>
+          <h1>🧠 Skills Analysis</h1>
+          <p>Detailed breakdown of your skill profile and strengths</p>
+        </div>
+      </div>
+
+      <div class="career-skills-overview hidden" data-skills-overview>
+        <div class="career-skills-summary">
+          <div class="career-stat-card">
+            <div class="career-stat-number" data-total-tech>0</div>
+            <div class="career-stat-label">Technical Skills</div>
+          </div>
+          <div class="career-stat-card">
+            <div class="career-stat-number" data-total-soft>0</div>
+            <div class="career-stat-label">Soft Skills</div>
+          </div>
+          <div class="career-stat-card">
+            <div class="career-stat-number" data-total-categories>0</div>
+            <div class="career-stat-label">Categories</div>
+          </div>
+        </div>
+
+        <div class="career-skills-detail">
+          <h3>Skill Strengths</h3>
+          <div class="career-skills-strengths" data-skills-strengths></div>
+        </div>
+
+        <div class="career-skills-detail">
+          <h3>Category Breakdown</h3>
+          <div class="career-skills-category-bars" data-skills-category-bars></div>
+        </div>
+      </div>
+
+      <div class="career-skills-empty" data-skills-empty>
+        <div class="career-dash-empty">
+          <span>🧠</span>
+          <p>Upload your resume first to see your detailed skills analysis.</p>
+          <button type="button" class="career-btn career-btn--primary" data-skills-goto-resume>Go to Resume →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP: Career Recommendations ═══ -->
+    <section class="career-step" data-step="careers">
+      <div class="career-step__header">
+        <button type="button" class="career-btn career-btn--back" data-back-btn="skills">← Back</button>
+        <div>
+          <h1>🎯 Career Recommendations ✨</h1>
+          <p>Top career paths based on your skills, experience and career goals.</p>
+        </div>
+        <button type="button" class="career-btn career-btn--primary career-reanalyze-btn" data-reanalyze-btn>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Re-analyze Resume
+        </button>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="career-rec-summary" data-career-rec-summary>
+        <div class="career-rec-summary__card career-rec-summary__card--top-match">
+          <div class="career-rec-summary__icon">⭐</div>
+          <div class="career-rec-summary__info">
+            <span class="career-rec-summary__label">Top Match</span>
+            <span class="career-rec-summary__value" data-rec-top-match>—</span>
+            <span class="career-rec-summary__sub" data-rec-top-match-pct></span>
+          </div>
+        </div>
+        <div class="career-rec-summary__card career-rec-summary__card--careers">
+          <div class="career-rec-summary__icon">🎯</div>
+          <div class="career-rec-summary__info">
+            <span class="career-rec-summary__label">Careers Found</span>
+            <span class="career-rec-summary__value" data-rec-careers-count>0</span>
+            <span class="career-rec-summary__sub">Best career paths for you</span>
+          </div>
+        </div>
+        <div class="career-rec-summary__card career-rec-summary__card--avg">
+          <div class="career-rec-summary__icon">📈</div>
+          <div class="career-rec-summary__info">
+            <span class="career-rec-summary__label">Average Match</span>
+            <span class="career-rec-summary__value" data-rec-avg-match>—</span>
+            <span class="career-rec-summary__sub">Across all careers</span>
+          </div>
+        </div>
+        <div class="career-rec-summary__card career-rec-summary__card--demand">
+          <div class="career-rec-summary__icon">💼</div>
+          <div class="career-rec-summary__info">
+            <span class="career-rec-summary__label">Market Demand</span>
+            <span class="career-rec-summary__value" data-rec-demand>—</span>
+            <span class="career-rec-summary__sub">Excellent job opportunities</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main 3-column layout -->
+      <div class="career-rec-layout">
+        <!-- Left: Career Rankings -->
+        <div class="career-rec-left">
+          <h3 class="career-rec-section-title">Top Career Matches</h3>
+          <div class="career-rec-ranks" data-career-rec-ranks></div>
+          <button type="button" class="career-rec-view-all" data-view-all-careers>View All Careers →</button>
+        </div>
+
+        <!-- Center: Career Details -->
+        <div class="career-rec-center">
+          <div class="career-rec-detail" data-career-rec-detail>
+            <div class="career-rec-detail__empty">
+              <p>Select a career from the list to see details</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Outlook + Companies + Related -->
+        <div class="career-rec-right">
+          <!-- Career Outlook -->
+          <div class="career-rec-outlook" data-career-rec-outlook>
+            <h3 class="career-rec-section-title">Expected Outlook</h3>
+            <div class="career-rec-outlook__items">
+              <div class="career-rec-outlook__row">
+                <span class="career-rec-outlook__icon">💰</span>
+                <span class="career-rec-outlook__label">Avg. Salary (Entry)</span>
+                <span class="career-rec-outlook__value" data-outlook-salary>N/A</span>
+              </div>
+              <div class="career-rec-outlook__row">
+                <span class="career-rec-outlook__icon">📈</span>
+                <span class="career-rec-outlook__label">Job Growth</span>
+                <span class="career-rec-outlook__value" data-outlook-growth>N/A</span>
+              </div>
+              <div class="career-rec-outlook__row">
+                <span class="career-rec-outlook__icon">🏢</span>
+                <span class="career-rec-outlook__label">Job Opportunities</span>
+                <span class="career-rec-outlook__value" data-outlook-opportunities>N/A</span>
+              </div>
+            </div>
+            <button type="button" class="career-rec-outlook__link" data-view-full-outlook>View Full Outlook →</button>
+          </div>
+
+          <!-- Top Companies -->
+          <div class="career-rec-companies" data-career-rec-companies>
+            <h3 class="career-rec-section-title">Top Companies Hiring</h3>
+            <div class="career-rec-companies__grid" data-companies-grid></div>
+          </div>
+
+          <!-- Related Careers -->
+          <div class="career-rec-related" data-career-rec-related>
+            <h3 class="career-rec-section-title">Related Careers</h3>
+            <div class="career-rec-related__list" data-related-list></div>
+            <button type="button" class="career-rec-view-all" data-view-more-careers>Explore More Careers →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Career Recommendation Tips -->
+      <div class="career-rec-tips">
+        <h3 class="career-rec-section-title">Career Recommendation Tips</h3>
+        <div class="career-rec-tips__grid">
+          <div class="career-rec-tip">
+            <div class="career-rec-tip__icon career-rec-tip__icon--green">📚</div>
+            <div class="career-rec-tip__content">
+              <h4>Strengthen Your Skills</h4>
+              <p>Focus on the missing skills to increase your match percentage.</p>
+            </div>
+          </div>
+          <div class="career-rec-tip">
+            <div class="career-rec-tip__icon career-rec-tip__icon--blue">🛠️</div>
+            <div class="career-rec-tip__content">
+              <h4>Build Real Projects</h4>
+              <p>Practical projects can boost your employability significantly.</p>
+            </div>
+          </div>
+          <div class="career-rec-tip">
+            <div class="career-rec-tip__icon career-rec-tip__icon--amber">💼</div>
+            <div class="career-rec-tip__content">
+              <h4>Gain More Experience</h4>
+              <p>Hands-on experience will help you stand out to employers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden elements for backward compatibility -->
+      <div class="hidden" data-career-cards></div>
+      <div class="career-profile-summary hidden">
+        <div class="career-stat-card"><div class="career-stat-number" data-profile-skills>0</div><div class="career-stat-label">Skills</div></div>
+        <div class="career-stat-card"><div class="career-stat-number" data-profile-exp>0</div><div class="career-stat-label">Experience</div></div>
+        <div class="career-stat-card"><div class="career-stat-number" data-profile-strength>0%</div><div class="career-stat-label">Profile Strength</div></div>
+      </div>
+      <button type="button" class="career-btn career-btn--primary career-btn--lg" data-next-gap style="display:none">
+        Continue to Skill Gap →
+      </button>
+    </section>
+
+    <!-- ═══ STEP: Skill Gap Analysis ═══ -->
+    <section class="career-step" data-step="gap">
+      <div class="career-step__header">
+        <button type="button" class="career-btn career-btn--back" data-back-btn="careers">← Back</button>
+        <div>
+          <h1>📊 Skill Gap Analysis</h1>
+          <p>Select a target career to see your skill gaps</p>
+        </div>
+      </div>
+
+      <div class="career-gap-selector">
+        <label>Target Career:</label>
+        <select data-gap-role-select>
+          <option value="">Select a career...</option>
+        </select>
+        <button type="button" class="career-btn career-btn--primary" data-gap-analyze-btn>Analyze Gap</button>
+      </div>
+
+      <div class="career-gap-loading hidden" data-gap-loading>
+        <div class="career-spinner"></div>
+        <p>Analyzing skill gaps...</p>
+      </div>
+
+      <div class="career-gap-results hidden" data-gap-results>
+        <div class="career-gap-header">
+          <h2>Target: <span data-gap-target></span></h2>
+        </div>
+
+        <div class="career-gap-overview">
+          <div class="career-match-ring" data-match-ring>
+            <div class="career-match-ring__value" data-match-value>0%</div>
+            <div class="career-match-ring__label">Skill Match</div>
+          </div>
+        </div>
+
+        <div class="career-gap-columns">
+          <div class="career-gap-col">
+            <h3>✅ Your Skills</h3>
+            <div class="career-gap-list career-gap-list--matched" data-matched-skills></div>
+          </div>
+          <div class="career-gap-col">
+            <h3>❌ Missing Skills</h3>
+            <div class="career-gap-list career-gap-list--missing" data-missing-skills></div>
+          </div>
+        </div>
+
+        <div class="career-gap-priorities">
+          <h3>Priority Breakdown</h3>
+          <div class="career-priority-row">
+            <span class="career-priority-dot career-priority-dot--high"></span>
+            <span>High Priority:</span>
+            <span data-high-priority></span>
+          </div>
+          <div class="career-priority-row">
+            <span class="career-priority-dot career-priority-dot--medium"></span>
+            <span>Medium Priority:</span>
+            <span data-medium-priority></span>
+          </div>
+          <div class="career-priority-row">
+            <span class="career-priority-dot career-priority-dot--low"></span>
+            <span>Low Priority:</span>
+            <span data-low-priority></span>
+          </div>
+        </div>
+
+        <button type="button" class="career-btn career-btn--primary career-btn--lg" data-next-roadmap>
+          Build My Learning Roadmap →
+        </button>
+      </div>
+    </section>
+
+    <!-- ═══ STEP: Learning Roadmap ═══ -->
+    <section class="career-step" data-step="roadmap">
+      <div class="career-step__header">
+        <button type="button" class="career-btn career-btn--back" data-back-btn="gap">← Back</button>
+        <div>
+          <h1>🗺️ My Learning Roadmap</h1>
+          <p>Personalized learning journey based on your skill gaps</p>
+        </div>
+      </div>
+
+      <!-- Roadmap Header Stats -->
+      <div class="rm-header-stats" data-rm-header-stats>
+        <div class="rm-header-stat">
+          <span class="rm-header-stat__label">Target Career</span>
+          <span class="rm-header-stat__value" data-rm-target-career>—</span>
+        </div>
+        <div class="rm-header-stat">
+          <span class="rm-header-stat__label">Overall Progress</span>
+          <span class="rm-header-stat__value" data-rm-overall-progress>0%</span>
+        </div>
+        <div class="rm-header-stat">
+          <span class="rm-header-stat__label">Estimated Duration</span>
+          <span class="rm-header-stat__value" data-rm-duration>—</span>
+        </div>
+        <div class="rm-header-stat">
+          <span class="rm-header-stat__label">Weekly Commitment</span>
+          <span class="rm-header-stat__value" data-rm-weekly-hours>8 hrs</span>
+        </div>
+      </div>
+
+      <!-- Skill Coverage -->
+      <div class="rm-coverage-bar" data-rm-coverage>
+        <div class="rm-coverage-bar__header">
+          <span>Skill Coverage</span>
+          <span data-rm-coverage-pct>0%</span>
+        </div>
+        <div class="rm-coverage-bar__track">
+          <div class="rm-coverage-bar__fill" data-rm-coverage-fill style="width:0%"></div>
+        </div>
+        <div class="rm-coverage-bar__detail">
+          <span>Current: <strong data-rm-current-match>0%</strong></span>
+          <span>Potential: <strong data-rm-potential-match>0%</strong></span>
+        </div>
+      </div>
+
+      <!-- Reskilling Context Banner -->
+      <div class="rm-reskilling-banner hidden" data-rm-reskilling-banner>
+        <div class="rm-reskilling-banner__icon">🔄</div>
+        <div class="rm-reskilling-banner__content">
+          <strong data-rm-reskilling-title>Career Transition Plan</strong>
+          <p data-rm-reskilling-desc></p>
+        </div>
+      </div>
+
+      <!-- Step Progress Indicator -->
+      <div class="rm-step-progress">
+        <div class="rm-step-progress__track">
+          <div class="rm-step-progress__fill" data-rm-progress-fill style="width: 0%"></div>
+        </div>
+        <div class="rm-step-indicators">
+          <div class="rm-step-indicator is-active" data-rm-step="0">
+            <div class="rm-step-indicator__dot">1</div>
+            <span class="rm-step-indicator__label">Foundation</span>
+          </div>
+          <div class="rm-step-indicator" data-rm-step="1">
+            <div class="rm-step-indicator__dot">2</div>
+            <span class="rm-step-indicator__label">Intermediate</span>
+          </div>
+          <div class="rm-step-indicator" data-rm-step="2">
+            <div class="rm-step-indicator__dot">3</div>
+            <span class="rm-step-indicator__label">Advanced</span>
+          </div>
+          <div class="rm-step-indicator" data-rm-step="3">
+            <div class="rm-step-indicator__dot">4</div>
+            <span class="rm-step-indicator__label">Projects</span>
+          </div>
+          <div class="rm-step-indicator" data-rm-step="4">
+            <div class="rm-step-indicator__dot">5</div>
+            <span class="rm-step-indicator__label">Job Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Phase Content -->
+      <div class="rm-phase-container" data-rm-phase-container>
+        <div class="rm-phase-loading" data-rm-loading>
+          <div class="career-spinner"></div>
+          <p>Generating your personalized learning roadmap...</p>
+        </div>
+        <div class="rm-phase-content hidden" data-rm-phase-content>
+          <!-- Phase Header -->
+          <div class="rm-phase-header" data-rm-phase-header>
+            <div class="rm-phase-header__icon" data-rm-phase-icon>📚</div>
+            <div class="rm-phase-header__info">
+              <h2 class="rm-phase-header__title" data-rm-phase-title>Foundation</h2>
+              <p class="rm-phase-header__desc" data-rm-phase-desc>Build your foundation with core concepts</p>
+            </div>
+            <div class="rm-phase-header__stats">
+              <span class="rm-phase-header__count" data-rm-phase-count>0/0</span>
+              <span class="rm-phase-header__duration" data-rm-phase-duration>~0 weeks</span>
+            </div>
+          </div>
+
+          <!-- Phase Items -->
+          <div class="rm-phase-items" data-rm-phase-items></div>
+
+          <!-- Phase Actions -->
+          <div class="rm-phase-actions">
+            <button type="button" class="career-btn career-btn--ghost" data-rm-prev-phase disabled>
+              ← Previous Phase
+            </button>
+            <div class="rm-phase-actions__center">
+              <span class="rm-phase-actions__hint" data-rm-phase-hint>Complete all items to unlock the next phase</span>
+            </div>
+            <button type="button" class="career-btn career-btn--primary" data-rm-next-phase disabled>
+              Next Phase →
+            </button>
+          </div>
+        </div>
+
+        <!-- All Phases Complete -->
+        <div class="rm-complete hidden" data-rm-complete>
+          <div class="rm-complete__icon">🎉</div>
+          <h2 class="rm-complete__title">Congratulations!</h2>
+          <p class="rm-complete__desc">You've completed all 5 phases of your learning roadmap. You're ready to start your job search!</p>
+          <button type="button" class="career-btn career-btn--primary" data-rm-view-jobs>View Job Matches →</button>
+        </div>
+      </div>
+
+      <!-- Skill Detail Panel (Modal) -->
+      <div class="rm-detail-panel hidden" data-rm-detail-panel>
+        <div class="rm-detail-overlay" data-rm-detail-close></div>
+        <div class="rm-detail-content">
+          <div class="rm-detail-header">
+            <h2 class="rm-detail-title" data-rm-detail-title></h2>
+            <button type="button" class="rm-detail-close" data-rm-detail-close-btn>✕</button>
+          </div>
+          <div class="rm-detail-meta">
+            <span class="rm-detail-badge rm-detail-badge--difficulty" data-rm-detail-difficulty></span>
+            <span class="rm-detail-badge rm-detail-badge--time" data-rm-detail-time></span>
+            <span class="rm-detail-badge rm-detail-badge--priority" data-rm-detail-priority></span>
+          </div>
+          <div class="rm-detail-body" data-rm-detail-body>
+            <!-- Why Learn This -->
+            <div class="rm-detail-section">
+              <h3>💡 Why Learn This?</h3>
+              <p data-rm-detail-why></p>
+            </div>
+            <!-- Prerequisites -->
+            <div class="rm-detail-section" data-rm-detail-prereqs-section>
+              <h3>📋 Prerequisites</h3>
+              <div class="rm-detail-prereqs" data-rm-detail-prereqs></div>
+            </div>
+            <!-- Topics -->
+            <div class="rm-detail-section">
+              <h3>📝 Topics to Learn</h3>
+              <div class="rm-detail-topics" data-rm-detail-topics></div>
+            </div>
+            <!-- Learning Resources -->
+            <div class="rm-detail-section">
+              <h3>📚 Learning Resources</h3>
+              <div class="rm-detail-resources" data-rm-detail-resources></div>
+            </div>
+            <!-- Practice -->
+            <div class="rm-detail-section">
+              <h3>🛠️ Practice</h3>
+              <div class="rm-detail-practice" data-rm-detail-practice></div>
+            </div>
+            <!-- Projects -->
+            <div class="rm-detail-section">
+              <h3>🚀 Projects</h3>
+              <div class="rm-detail-projects" data-rm-detail-projects></div>
+            </div>
+            <!-- Assessment -->
+            <div class="rm-detail-section">
+              <h3>✅ Assessment Checklist</h3>
+              <div class="rm-detail-assessment" data-rm-detail-assessment></div>
+            </div>
+          </div>
+          <div class="rm-detail-footer">
+            <button type="button" class="career-btn career-btn--ghost" data-rm-detail-close-action>Close</button>
+            <button type="button" class="career-btn career-btn--primary" data-rm-detail-complete>Mark as Completed ✓</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="career-roadmap-summary">
+        <h3>Summary</h3>
+        <p data-roadmap-summary></p>
+      </div>
+
+      <div class="career-roadmap-export">
+        <div class="career-roadmap-export__header">
+          <h3>📥 Export Roadmap</h3>
+          <p>Download your personalized learning roadmap</p>
+        </div>
+        <div class="career-roadmap-export__actions">
+          <button type="button" class="career-btn career-btn--primary career-btn--sm" data-export-roadmap="txt">
+            📄 Download TXT
+          </button>
+          <button type="button" class="career-btn career-btn--ghost career-btn--sm" data-export-roadmap="md">
+            📝 Download Markdown
+          </button>
+          <button type="button" class="career-btn career-btn--ghost career-btn--sm" data-export-roadmap="json">
+            🔧 Download JSON
+          </button>
+          <button type="button" class="career-btn career-btn--ghost career-btn--sm" data-export-roadmap="print">
+            🖨️ Print / PDF
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP: Jobs Search ═══ -->
+    <section class="career-step" data-step="jobs">
+      <div class="career-step__header">
+        <button type="button" class="career-btn career-btn--back" data-back-btn="roadmap">← Back</button>
+        <div>
+          <h1>💼 Job Search</h1>
+          <p>Find job opportunities matching your skills and career goals</p>
+        </div>
+      </div>
+
+      <div class="career-jobs-search">
+        <div class="career-jobs-search-bar">
+          <input type="text" data-jobs-search-input placeholder="Search job titles, skills, or companies..." class="career-jobs-input">
+          <button type="button" class="career-btn career-btn--primary" data-jobs-search-btn>Search Jobs</button>
+        </div>
+        <div class="career-jobs-filters">
+          <button type="button" class="career-jobs-filter is-active" data-jobs-filter="all">All</button>
+          <button type="button" class="career-jobs-filter" data-jobs-filter="remote">Remote</button>
+          <button type="button" class="career-jobs-filter" data-jobs-filter="entry">Entry Level</button>
+          <button type="button" class="career-jobs-filter" data-jobs-filter="mid">Mid Level</button>
+        </div>
+      </div>
+
+      <div class="career-jobs-empty" data-jobs-empty>
+        <div class="career-dash-empty">
+          <span>💼</span>
+          <p>Complete your resume analysis first to see personalized job recommendations, or search manually above.</p>
+        </div>
+      </div>
+
+      <div class="career-jobs-list hidden" data-jobs-list></div>
+
+      <div class="career-jobs-links">
+        <h3>🔗 Job Search Platforms</h3>
+        <div class="career-jobs-platforms">
+          <a href="https://www.indeed.com" target="_blank" rel="noopener noreferrer" class="career-jobs-platform">
+            <span class="career-jobs-platform__icon">🔍</span>
+            <span class="career-jobs-platform__name">Indeed</span>
+            <span class="career-jobs-platform__desc">Browse millions of jobs</span>
+          </a>
+          <a href="https://www.linkedin.com/jobs" target="_blank" rel="noopener noreferrer" class="career-jobs-platform">
+            <span class="career-jobs-platform__icon">💼</span>
+            <span class="career-jobs-platform__name">LinkedIn Jobs</span>
+            <span class="career-jobs-platform__desc">Professional network jobs</span>
+          </a>
+          <a href="https://www.naukri.com" target="_blank" rel="noopener noreferrer" class="career-jobs-platform">
+            <span class="career-jobs-platform__icon">🏢</span>
+            <span class="career-jobs-platform__name">Naukri</span>
+            <span class="career-jobs-platform__desc">Top hiring platform</span>
+          </a>
+          <a href="https://glassdoor.com/Jobs" target="_blank" rel="noopener noreferrer" class="career-jobs-platform">
+            <span class="career-jobs-platform__icon">⭐</span>
+            <span class="career-jobs-platform__name">Glassdoor</span>
+            <span class="career-jobs-platform__desc">Jobs + company reviews</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP: AI Advisor ═══ -->
+    <section class="career-step" data-step="advisor">
+      <div class="career-step__header">
+        <button type="button" class="career-btn career-btn--back" data-back-btn="jobs">← Back</button>
+        <div>
+          <h1>🤖 AI Career Advisor</h1>
+          <p>Get personalized career guidance powered by AI</p>
+        </div>
+      </div>
+
+      <div class="career-advisor-container">
+        <div class="career-advisor-header">
+          <div class="career-advisor-status">
+            <span class="career-advisor-dot"></span>
+            <span>AI Advisor is ready</span>
+          </div>
+          <button type="button" class="career-btn career-btn--ghost career-btn--sm" data-advisor-clear>Clear Chat</button>
+        </div>
+
+        <div class="career-advisor-messages" data-advisor-messages>
+          <div class="career-advisor-msg career-advisor-msg--ai">
+            <div class="career-advisor-msg__avatar">🤖</div>
+            <div class="career-advisor-msg__content">
+              <p>Hi! I'm your AI Career Advisor. I can help you with:</p>
+              <ul>
+                <li>Career path guidance based on your resume</li>
+                <li>Skill development recommendations</li>
+                <li>Interview preparation tips</li>
+                <li>Resume improvement suggestions</li>
+              </ul>
+              <p>Ask me anything about your career journey!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="career-advisor-suggestions">
+          <button type="button" class="career-advisor-suggestion" data-advisor-prompt="What careers match my skills?">What careers match my skills?</button>
+          <button type="button" class="career-advisor-suggestion" data-advisor-prompt="How can I improve my resume?">How can I improve my resume?</button>
+          <button type="button" class="career-advisor-suggestion" data-advisor-prompt="What skills should I learn next?">What skills should I learn next?</button>
+          <button type="button" class="career-advisor-suggestion" data-advisor-prompt="Give me interview tips for my top role">Interview tips for my top role</button>
+        </div>
+
+        <div class="career-advisor-input-wrap">
+          <textarea data-advisor-input placeholder="Ask your career advisor..." rows="2"></textarea>
+          <button type="button" class="career-btn career-btn--primary career-advisor-send" data-advisor-send>Send</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ STEP: Settings ═══ -->
+    <section class="career-step" data-step="settings">
+      <div class="career-step__header">
+        <h1>⚙️ Settings</h1>
+        <p>Customize your CareerAI experience</p>
+      </div>
+
+      <div class="career-settings-grid">
+        <div class="career-settings-card career-settings-card--appearance">
+          <h3>🎨 Appearance</h3>
+
+          <div class="career-theme-toggle-block">
+            <div class="career-theme-toggle-row">
+              <div class="career-theme-toggle-info">
+                <span class="career-theme-toggle-label" data-theme-mode-label>Auto</span>
+                <span class="career-theme-toggle-desc" data-theme-mode-desc>Follows your system preference</span>
+              </div>
+              <button type="button" class="career-theme-toggle-switch" data-theme-toggle-quick aria-label="Toggle dark mode">
+                <span class="career-theme-toggle-switch__track">
+                  <span class="career-theme-toggle-switch__icon career-theme-toggle-switch__icon--light">☀️</span>
+                  <span class="career-theme-toggle-switch__icon career-theme-toggle-switch__icon--dark">🌙</span>
+                  <span class="career-theme-toggle-switch__thumb"></span>
+                </span>
+              </button>
+            </div>
+
+            <div class="career-theme-preview" data-theme-preview>
+              <div class="career-theme-preview__card">
+                <div class="career-theme-preview__bar"></div>
+                <div class="career-theme-preview__content">
+                  <div class="career-theme-preview__line career-theme-preview__line--title"></div>
+                  <div class="career-theme-preview__line"></div>
+                  <div class="career-theme-preview__line career-theme-preview__line--short"></div>
+                </div>
+                <div class="career-theme-preview__dots">
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="career-settings-theme-btns">
+              <button type="button" class="career-settings-theme-btn" data-theme-pref="auto">
+                <span>🌓</span> Auto
+              </button>
+              <button type="button" class="career-settings-theme-btn" data-theme-pref="light">
+                <span>☀️</span> Light
+              </button>
+              <button type="button" class="career-settings-theme-btn" data-theme-pref="dark">
+                <span>🌙</span> Dark
+              </button>
+            </div>
+          </div>
+
+          <div class="career-settings-option">
+            <label>Reduced Motion</label>
+            <label class="career-toggle">
+              <input type="checkbox" data-settings-reduced-motion>
+              <span class="career-toggle__slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="career-settings-card">
+          <h3>📊 Analysis Preferences</h3>
+          <div class="career-settings-option">
+            <label>Default Mode</label>
+            <select data-settings-default-mode>
+              <option value="standard">Standard (Local ML)</option>
+              <option value="advanced">Advanced (Deep AI)</option>
+            </select>
+          </div>
+          <div class="career-settings-option">
+            <label>Auto-continue to next step</label>
+            <label class="career-toggle">
+              <input type="checkbox" data-settings-auto-continue checked>
+              <span class="career-toggle__slider"></span>
+            </label>
+          </div>
+          <div class="career-settings-option">
+            <label>Show skill categories</label>
+            <label class="career-toggle">
+              <input type="checkbox" data-settings-show-categories checked>
+              <span class="career-toggle__slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="career-settings-card">
+          <h3>🔔 Notifications</h3>
+          <div class="career-settings-option">
+            <label>Analysis complete alerts</label>
+            <label class="career-toggle">
+              <input type="checkbox" data-settings-notif-analysis checked>
+              <span class="career-toggle__slider"></span>
+            </label>
+          </div>
+          <div class="career-settings-option">
+            <label>New job recommendations</label>
+            <label class="career-toggle">
+              <input type="checkbox" data-settings-notif-jobs checked>
+              <span class="career-toggle__slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="career-settings-card">
+          <h3>🔒 Privacy</h3>
+          <div class="career-settings-option">
+            <label>Save analysis history locally</label>
+            <label class="career-toggle">
+              <input type="checkbox" data-settings-save-local>
+              <span class="career-toggle__slider"></span>
+            </label>
+          </div>
+          <div class="career-settings-option">
+            <label>Share anonymized usage data</label>
+            <label class="career-toggle">
+              <input type="checkbox" data-settings-share-usage>
+              <span class="career-toggle__slider"></span>
+            </label>
+          </div>
+          <div class="career-settings-footer">
+            <a href="{{ url_for('privacy') }}" class="career-btn career-btn--ghost career-btn--sm">Read Privacy Policy →</a>
+          </div>
+        </div>
+
+        <div class="career-settings-card">
+          <h3>🗑️ Data Management</h3>
+          <div class="career-settings-option">
+            <div>
+              <label>Reset roadmap progress</label>
+              <p style="margin:0.15rem 0 0;font-size:0.78rem;color:var(--on-surface-variant);">Clear all completed items from your learning roadmap</p>
+            </div>
+            <button type="button" class="career-btn career-btn--ghost career-btn--sm" style="color:var(--error);border-color:rgba(186,26,26,0.3);" data-settings-reset-progress>Reset Progress</button>
+          </div>
+          <div class="career-settings-option">
+            <div>
+              <label>Clear all local data</label>
+              <p style="margin:0.15rem 0 0;font-size:0.78rem;color:var(--on-surface-variant);">Remove all saved preferences and progress from this browser</p>
+            </div>
+            <button type="button" class="career-btn career-btn--ghost career-btn--sm" style="color:var(--error);border-color:rgba(186,26,26,0.3);" data-settings-clear-data>Clear Data</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='skill-extraction.js', v=static_version) }}"></script>
+<script src="{{ url_for('static', filename='career-analysis.js', v=static_version) }}"></script>
+{% endblock %}

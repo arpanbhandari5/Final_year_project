@@ -371,3 +371,184 @@ def analyze_resume(resume_text: str, mode: str = "standard") -> dict[str, Any]:
         )
 
     return analysis
+
+
+# ── Role Skills Database ──────────────────────────────────────────
+_ROLE_SKILLS_DATABASE: dict[str, list[str]] = {
+    "Data Scientist": ["Python", "R", "SQL", "Machine Learning", "Statistics", "Data Visualization", "Deep Learning", "Feature Engineering", "A/B Testing", "Big Data Tools", "TensorFlow", "PyTorch"],
+    "Data Analyst": ["SQL", "Python", "Excel", "Data Visualization", "Statistical Analysis", "Tableau", "Power BI", "Data Cleaning", "Reporting", "Dashboarding"],
+    "Software Engineer": ["Programming", "Data Structures", "Algorithms", "System Design", "Version Control", "Testing", "CI/CD", "API Design", "Problem Solving", "Object-Oriented Programming"],
+    "Machine Learning Engineer": ["Python", "Machine Learning", "Deep Learning", "MLOps", "Data Engineering", "TensorFlow", "PyTorch", "Docker", "Kubernetes", "Feature Engineering", "Model Deployment"],
+    "Frontend Developer": ["HTML", "CSS", "JavaScript", "React", "TypeScript", "Responsive Design", "Web Performance", "Testing", "Version Control", "REST APIs"],
+    "Backend Developer": ["Python", "Node.js", "Java", "SQL", "NoSQL", "API Design", "Docker", "Cloud Services", "CI/CD", "Authentication", "Database Design"],
+    "Full Stack Developer": ["JavaScript", "HTML", "CSS", "React", "Node.js", "SQL", "NoSQL", "REST APIs", "Version Control", "Docker", "Cloud Services", "Testing"],
+    "DevOps Engineer": ["Linux", "Docker", "Kubernetes", "CI/CD", "Cloud Services", "Terraform", "Ansible", "Monitoring", "Scripting", "Networking", "Security", "Git"],
+    "Product Manager": ["Product Strategy", "User Research", "Data Analysis", "Leadership", "Agile/Scrum", "Communication", "Roadmapping", "Stakeholder Management", "A/B Testing", "Market Analysis"],
+    "UX Designer": ["User Research", "Wireframing", "Prototyping", "Figma", "Information Architecture", "Usability Testing", "Visual Design", "Interaction Design", "Design Systems"],
+    "Data Engineer": ["Python", "SQL", "ETL", "Data Warehousing", "Spark", "Airflow", "Cloud Services", "NoSQL", "Docker", "Data Modeling", "Big Data Tools"],
+    "AI Research Scientist": ["Python", "Machine Learning", "Deep Learning", "NLP", "Computer Vision", "Reinforcement Learning", "PyTorch", "TensorFlow", "Research", "Mathematics", "Statistics"],
+    "Business Intelligence Developer": ["SQL", "Data Warehousing", "ETL", "Tableau", "Power BI", "Data Modeling", "Reporting", "Dashboarding", "Python", "Analytics"],
+    "Cybersecurity Analyst": ["Network Security", "Vulnerability Assessment", "SIEM", "Security Tools", "Incident Response", "Risk Management", "Python", "Scripting", "Compliance", "Firewalls"],
+    "Cloud Architect": ["Cloud Services", "AWS", "Azure", "GCP", "Docker", "Kubernetes", "Networking", "Security", "Terraform", "Microservices", "System Design"],
+    "Mobile Developer": ["Kotlin", "Swift", "React Native", "Flutter", "Mobile UI", "REST APIs", "Version Control", "App Architecture", "Testing", "Performance Optimization"],
+    "Technical Writer": ["Technical Communication", "Documentation", "API Documentation", "Markdown", "Content Management", "Information Architecture", "Editing", "Research", "Subject Matter Expertise"],
+    "QA Engineer": ["Testing", "Automation", "Selenium", "Test Planning", "Python", "CI/CD", "Bug Tracking", "Performance Testing", "API Testing", "Agile/Scrum"],
+    "Project Manager": ["Agile/Scrum", "Project Planning", "Risk Management", "Stakeholder Management", "Budgeting", "Communication", "Leadership", "JIRA", "MS Project", "Team Management"],
+    "Database Administrator": ["SQL", "Database Design", "Performance Tuning", "Backup & Recovery", "Security", "NoSQL", "Cloud Databases", "Scripting", "Monitoring", "Migration"],
+}
+
+
+def get_available_roles() -> list[str]:
+    return sorted(_ROLE_SKILLS_DATABASE.keys())
+
+
+def get_role_skills(role: str) -> list[str]:
+    return _ROLE_SKILLS_DATABASE.get(role, [])
+
+
+def _normalize_skill(skill: str) -> str:
+    return skill.strip().lower()
+
+
+def analyze_skills_gap(resume_text: str, target_role: str) -> dict[str, Any]:
+    required_skills = _ROLE_SKILLS_DATABASE.get(target_role, [])
+    if not required_skills:
+        return {"error": f"Unknown target role: {target_role}", "available_roles": get_available_roles()}
+
+    detected_keywords = set(_split_keywords(resume_text))
+    detected_skills = set()
+    for kw in detected_keywords:
+        normalized = _normalize_skill(kw)
+        detected_skills.add(normalized)
+        detected_skills.add(kw.title())
+        detected_skills.add(kw.upper())
+
+    matched_skills: list[str] = []
+    missing_skills: list[str] = []
+    for skill in required_skills:
+        skill_normalized = _normalize_skill(skill)
+        skill_variations = {skill_normalized, skill.lower(), skill.title()}
+        if any(v in detected_keywords or v in detected_skills for v in skill_variations):
+            matched_skills.append(skill)
+        else:
+            missing_skills.append(skill)
+
+    match_percentage = round((len(matched_skills) / len(required_skills)) * 100, 1) if required_skills else 0.0
+
+    _HIGH_PRIORITY = {
+        "python", "sql", "programming", "data structures", "algorithms",
+        "version control", "testing", "html", "css", "javascript",
+        "api design", "problem solving", "object-oriented programming",
+        "machine learning", "deep learning", "statistics", "docker", "linux", "git",
+    }
+    _MEDIUM_PRIORITY = {
+        "system design", "ci/cd", "cloud services", "no sql", "nosql",
+        "authentication", "database design", "react", "node.js",
+        "java", "typescript", "kubernetes", "terraform",
+        "data visualization", "etl", "data warehousing",
+        "spark", "airflow", "figma", "user research",
+        "agile/scrum", "project planning",
+    }
+
+    high_priority: list[str] = []
+    medium_priority: list[str] = []
+    low_priority: list[str] = []
+    for skill in missing_skills:
+        sl = skill.lower().strip()
+        if sl in _HIGH_PRIORITY:
+            high_priority.append(skill)
+        elif sl in _MEDIUM_PRIORITY:
+            medium_priority.append(skill)
+        else:
+            low_priority.append(skill)
+
+    return {
+        "target_role": target_role,
+        "total_required": len(required_skills),
+        "matched_skills": sorted(matched_skills),
+        "matched_count": len(matched_skills),
+        "missing_skills": sorted(missing_skills),
+        "missing_count": len(missing_skills),
+        "match_percentage": match_percentage,
+        "high_priority": sorted(high_priority),
+        "medium_priority": sorted(medium_priority),
+        "low_priority": sorted(low_priority),
+    }
+
+
+def suggest_career_paths(resume_text: str) -> list[dict[str, Any]]:
+    if not resume_text or len(resume_text.strip()) < 10:
+        return []
+    lower_text = resume_text.lower()
+    import re as _re
+    words_in_text = set(_re.findall(r"[a-z][a-z0-9+#.]+", lower_text))
+
+    _CAREER_PATH_MAPPING: dict[str, dict[str, Any]] = {
+        "Software Engineer": {"keywords": ["python", "java", "javascript", "c++", "programming", "algorithms", "data structures", "api", "backend", "frontend"], "category": "Software Development", "growing": True, "avg_salary": "$100K-$150K", "demand": "High", "description": "Design, build, and maintain software systems", "skills_needed": ["Programming", "Data Structures", "Algorithms", "System Design", "Version Control"]},
+        "Data Scientist": {"keywords": ["python", "machine learning", "deep learning", "statistics", "sql", "tensorflow", "pytorch", "data", "nlp", "analytics", "ai"], "category": "Data & Analytics", "growing": True, "avg_salary": "$120K-$160K", "demand": "High", "description": "Use statistical methods and ML to extract insights from data", "skills_needed": ["Python", "Machine Learning", "SQL", "Statistics", "Data Visualization"]},
+        "Data Analyst": {"keywords": ["sql", "excel", "tableau", "power bi", "analytics", "data", "python", "statistics", "reporting", "dashboard"], "category": "Data & Analytics", "growing": True, "avg_salary": "$65K-$95K", "demand": "High", "description": "Transform raw data into actionable business insights", "skills_needed": ["SQL", "Excel", "Data Visualization", "Statistics", "Python"]},
+        "Frontend Developer": {"keywords": ["html", "css", "javascript", "typescript", "react", "angular", "vue", "frontend", "web", "ui", "responsive"], "category": "Software Development", "growing": True, "avg_salary": "$90K-$135K", "demand": "High", "description": "Create responsive, accessible user interfaces", "skills_needed": ["HTML", "CSS", "JavaScript", "React", "TypeScript"]},
+        "Backend Developer": {"keywords": ["python", "java", "node.js", "sql", "nosql", "api", "docker", "backend", "server", "database", "rest"], "category": "Software Development", "growing": True, "avg_salary": "$95K-$140K", "demand": "High", "description": "Build scalable server-side logic, APIs, and databases", "skills_needed": ["Python", "Java", "SQL", "API Design", "Docker"]},
+        "Full Stack Developer": {"keywords": ["javascript", "html", "css", "react", "node.js", "python", "sql", "mongodb", "full stack", "web", "api"], "category": "Software Development", "growing": True, "avg_salary": "$100K-$150K", "demand": "High", "description": "Work across both frontend and backend layers", "skills_needed": ["JavaScript", "HTML", "CSS", "React", "Node.js"]},
+        "DevOps Engineer": {"keywords": ["docker", "kubernetes", "aws", "azure", "gcp", "ci/cd", "linux", "terraform", "ansible", "jenkins", "cloud", "devops"], "category": "Infrastructure & Cloud", "growing": True, "avg_salary": "$110K-$160K", "demand": "High", "description": "Bridge development and operations with automation", "skills_needed": ["Docker", "Kubernetes", "CI/CD", "Cloud", "Linux"]},
+        "Machine Learning Engineer": {"keywords": ["python", "machine learning", "deep learning", "tensorflow", "pytorch", "mlops", "docker", "kubernetes", "data", "model", "deployment"], "category": "Data & Analytics", "growing": True, "avg_salary": "$130K-$180K", "demand": "Very High", "description": "Build and deploy ML models into production", "skills_needed": ["Python", "Machine Learning", "Deep Learning", "MLOps", "Docker"]},
+    }
+
+    scored: list[dict[str, Any]] = []
+    for role, info in _CAREER_PATH_MAPPING.items():
+        keywords = info["keywords"]
+        matched_kws = [kw for kw in keywords if kw in lower_text or any(kw in w for w in words_in_text)]
+        matches = len(matched_kws)
+        if matches == 0:
+            continue
+        score = round(matches / len(keywords) * 100, 1)
+        reasons = [f"Strong {kw.title()} skills detected" for kw in keywords if kw in lower_text][:6]
+        missing = [kw.title() for kw in keywords if kw not in lower_text][:6]
+        skills_analysis = [{"skill": skill, "status": "matched" if any(skill.lower() in kw or kw in skill.lower() for kw in matched_kws) else "missing"} for skill in info["skills_needed"]]
+        scored.append({"role": role, "score": score, "category": info["category"], "growing": info["growing"], "avg_salary": info["avg_salary"], "demand": info["demand"], "description": info["description"], "skills_needed": info["skills_needed"], "matched_keywords": matches, "total_keywords": len(keywords), "reasons": reasons, "missing_for_role": missing, "skills_analysis": skills_analysis})
+
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    return scored[:8]
+
+
+def generate_learning_roadmap(resume_text: str) -> list[dict[str, Any]]:
+    if not resume_text or len(resume_text.strip()) < 10:
+        return []
+    lower_text = resume_text.lower()
+    detected: list[str] = []
+    skill_areas = {
+        "Python": ["python", "django", "flask", "fastapi", "pandas", "numpy"],
+        "JavaScript": ["javascript", "js", "node.js", "react", "angular", "vue", "typescript"],
+        "Web Development": ["html", "css", "sass", "scss", "bootstrap", "tailwind", "webpack", "frontend", "backend"],
+        "Data Science": ["machine learning", "deep learning", "nlp", "computer vision", "tensorflow", "pytorch", "scikit-learn", "data science"],
+        "Databases": ["sql", "mysql", "postgresql", "mongodb", "redis", "elasticsearch", "nosql"],
+        "Cloud & DevOps": ["aws", "azure", "gcp", "docker", "kubernetes", "terraform", "ansible", "ci/cd", "jenkins", "cloud"],
+    }
+    for area, keywords in skill_areas.items():
+        if any(kw in lower_text for kw in keywords):
+            detected.append(area)
+    if not detected:
+        return []
+    roadmap: list[dict[str, Any]] = []
+    roadmap_templates = {
+        "Python": {"icon": "\U0001f40d", "beginner": "Learn Python basics", "intermediate": "Master OOP, decorators, generators", "advanced": "Build projects with Django/Flask"},
+        "JavaScript": {"icon": "\U0001f310", "beginner": "Learn JS fundamentals", "intermediate": "Master async JS, React", "advanced": "TypeScript, testing, architecture"},
+        "Web Development": {"icon": "\U0001f578\ufe0f", "beginner": "HTML5, CSS3, responsive design", "intermediate": "Frontend frameworks", "advanced": "Full-stack apps, PWAs"},
+        "Data Science": {"icon": "\U0001f4ca", "beginner": "Python for data analysis", "intermediate": "ML with scikit-learn", "advanced": "Deep learning, NLP"},
+        "Databases": {"icon": "\U0001f5c4\ufe0f", "beginner": "SQL fundamentals", "intermediate": "Database design, ORM", "advanced": "NoSQL, optimization"},
+        "Cloud & DevOps": {"icon": "\u2601\ufe0f", "beginner": "Linux, Git", "intermediate": "Docker, CI/CD", "advanced": "Kubernetes, cloud architecture"},
+    }
+    seen_areas: set[str] = set()
+    for area in detected:
+        if area in seen_areas or area not in roadmap_templates:
+            continue
+        seen_areas.add(area)
+        tmpl = roadmap_templates[area]
+        roadmap.append({"area": area, "icon": tmpl["icon"], "stages": [
+            {"level": "Beginner", "description": tmpl["beginner"], "duration": "2-4 weeks", "phase": 1},
+            {"level": "Intermediate", "description": tmpl["intermediate"], "duration": "4-8 weeks", "phase": 2},
+            {"level": "Advanced", "description": tmpl["advanced"], "duration": "8-12 weeks", "phase": 3},
+            {"level": "Practical Project", "description": f"Build a portfolio project with {area}", "duration": "2-4 weeks", "phase": 4},
+            {"level": "Job Ready", "description": f"Polish portfolio and apply for {area} roles", "duration": "1-2 weeks", "phase": 5},
+        ]})
+    return roadmap
