@@ -31,6 +31,8 @@
   const dashboardRiskScore = document.querySelector("[data-risk-score-display]");
   const dashboardRiskLabel = document.querySelector("[data-risk-label-display]");
   const dashboardRiskSummary = document.querySelector("[data-risk-summary]");
+  const uncertaintyBanner = document.querySelector("[data-uncertainty-banner]");
+  const modalUncertaintyBanner = document.querySelector("[data-modal-uncertainty]");
   const dashboardRoleStatus = document.querySelector("[data-role-status]");
   const dashboardRoleBars = document.querySelector("[data-role-bars]");
   const riskInsights = document.querySelector("[data-risk-insights]");
@@ -49,6 +51,14 @@
   const nextStepsEducation = document.querySelector("[data-next-education]");
   const nextStepsSupport = document.querySelector("[data-next-support]");
   const modalNextSteps = document.querySelector("[data-modal-next-steps]");
+  const jdMatch = document.querySelector("[data-jd-match]");
+  const feedbackForm = document.querySelector("[data-feedback-form]");
+  const feedbackStatus = document.querySelector("[data-feedback-status]");
+  const feedbackUploadId = document.querySelector("[data-feedback-upload-id]");
+  const discoveryForm = document.querySelector("[data-discovery-form]");
+  const discoverySummary = document.querySelector("[data-discovery-summary]");
+  const discoverySummaryText = document.querySelector("[data-discovery-summary-text]");
+  let selectedRating = null;
 
   if (!form || !fileInput || !submitButton) {
     return;
@@ -59,6 +69,23 @@
   let selectedFile = null;
   const originalSubmitLabel = submitButton.textContent.trim();
   let loadingSkeletonTimer = null;
+  const escapeHtml = (value) => String(value || "").replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]);
+  const createElement = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined && text !== null) element.textContent = String(text);
+    return element;
+  };
+  const replaceChildren = (container, children) => {
+    if (container) container.replaceChildren(...children.filter(Boolean));
+  };
+  const makeListCard = (title, description, className = "list-card") => {
+    const card = createElement("div", className);
+    const content = createElement("div");
+    content.append(createElement("strong", null, title), createElement("p", null, description));
+    card.append(content);
+    return card;
+  };
 
   const PATHWAY_CONTENT = {
     student: {
@@ -263,24 +290,17 @@
 
   const renderList = (container, items, renderer) => {
     if (!container) return;
-    container.innerHTML = items.map(renderer).join("");
+    replaceChildren(container, items.map(renderer));
   };
 
   const renderSimpleSteps = (container, items, heading) => {
     if (!container) return;
     const safeItems = (items || []).filter(Boolean);
     if (!safeItems.length) {
-      container.innerHTML = `<div class="list-card"><div><strong>No actions yet</strong><p>Run analysis to generate practical next steps.</p></div></div>`;
+      replaceChildren(container, [makeListCard("No actions yet", "Run analysis to generate practical next steps.")]);
       return;
     }
-    container.innerHTML = safeItems.map((item) => `
-      <div class="list-card motion-fade-up">
-        <div>
-          <strong>${heading}</strong>
-          <p>${item}</p>
-        </div>
-      </div>
-    `).join("");
+    replaceChildren(container, safeItems.map((item) => makeListCard(heading, item, "list-card motion-fade-up")));
   };
 
   const buildFallbackNextSteps = (payload) => {
@@ -360,18 +380,11 @@
     if (heroPrimaryLink) heroPrimaryLink.textContent = content.ctaLabel;
 
     if (heroActions) {
-      heroActions.innerHTML = (content.chips || []).map((chip) => `<span class="chip">${chip}</span>`).join("");
+      replaceChildren(heroActions, (content.chips || []).map((chip) => createElement("span", "chip", chip)));
     }
 
     if (pathActions) {
-      pathActions.innerHTML = (content.actions || []).map((action) => `
-        <div class="list-card">
-          <div>
-            <strong>Suggested action</strong>
-            <p>${action}</p>
-          </div>
-        </div>
-      `).join("");
+      replaceChildren(pathActions, (content.actions || []).map((action) => makeListCard("Suggested action", action)));
     }
 
     pathButtons.forEach((button) => {
@@ -388,6 +401,8 @@
 
   const updateDashboardResults = (payload) => {
     const uniqueRoles = dedupeRoles(payload.top_roles || []);
+    const confidence = payload.confidence || {};
+    const uncertaintyText = `Uncertainty: ${confidence.label || "Limited"} confidence (${Math.round((confidence.score || 0) * 100)}%). This is an educational estimate, not a forecast.`;
     if (dashboardRiskRing) {
       dashboardRiskRing.style.setProperty("--score", `${Math.max(0.05, Math.min(0.95, payload.risk_score || 0))}`);
     }
@@ -400,19 +415,28 @@
     if (dashboardRiskSummary) {
       dashboardRiskSummary.textContent = payload.cognitive_career_narrative || "Local ML prediction ready.";
     }
+    if (uncertaintyBanner) uncertaintyBanner.textContent = uncertaintyText;
+    if (modalUncertaintyBanner) modalUncertaintyBanner.textContent = uncertaintyText;
     if (dashboardRoleStatus) {
       dashboardRoleStatus.textContent = uniqueRoles.length ? "Live prediction" : "No matches";
     }
     if (dashboardRoleBars) {
-      dashboardRoleBars.innerHTML = uniqueRoles.slice(0, 3).map((role, index) => `
-        <div class="motion-fade-up motion-stagger-${Math.min(index + 1, 5)}">
-          <div class="inline-actions" style="justify-content: space-between;">
-            <strong>${role.job_role}</strong><strong class="muted">${Math.round((role.similarity || 0) * 100)}%</strong>
-          </div>
-          <div class="bar"><span style="width: ${Math.round((role.similarity || 0) * 100)}%;"></span></div>
-          <p class="small-note" style="margin: 0.45rem 0 0;">${role.industry} · Risk ${Math.round((role.risk_score || 0) * 100)}%</p>
-        </div>
-      `).join("");
+      const roleNodes = uniqueRoles.slice(0, 3).map((role, index) => {
+        const similarity = Math.round((role.similarity || 0) * 100);
+        const wrapper = createElement("div", `motion-fade-up motion-stagger-${Math.min(index + 1, 5)}`);
+        const header = createElement("div", "inline-actions");
+        header.style.justifyContent = "space-between";
+        header.append(createElement("strong", null, role.job_role), createElement("strong", "muted", `${similarity}%`));
+        const bar = createElement("div", "bar");
+        const barFill = createElement("span");
+        barFill.style.width = `${similarity}%`;
+        bar.append(barFill);
+        const detail = createElement("p", "small-note", `${role.industry || "Unknown industry"} · Risk ${Math.round((role.risk_score || 0) * 100)}%`);
+        detail.style.margin = "0.45rem 0 0";
+        wrapper.append(header, bar, detail);
+        return wrapper;
+      });
+      replaceChildren(dashboardRoleBars, roleNodes);
     }
   };
 
@@ -422,70 +446,28 @@
     const cards = [];
 
     if (reasoning.summary) {
-      cards.push(`
-        <div class="list-card pivot-card motion-fade-up">
-          <div>
-            <strong>Why this score</strong>
-            <p>${reasoning.summary}</p>
-          </div>
-        </div>
-      `);
+      cards.push(makeListCard("Why this score", reasoning.summary, "list-card pivot-card motion-fade-up"));
     }
 
     (reasoning.risk_drivers || []).forEach((driver, index) => {
-      cards.push(`
-        <div class="list-card motion-fade-up motion-stagger-${Math.min(index + 1, 5)}">
-          <div>
-            <strong>Risk driver ${index + 1}</strong>
-            <p>${driver}</p>
-          </div>
-        </div>
-      `);
+      cards.push(makeListCard(`Risk driver ${index + 1}`, driver, `list-card motion-fade-up motion-stagger-${Math.min(index + 1, 5)}`));
     });
 
     if (reasoning.skills_detected?.length) {
-      cards.push(`
-        <div class="list-card motion-fade-up">
-          <div>
-            <strong>Detected skills</strong>
-            <p>${reasoning.skills_detected.join(", ")}</p>
-          </div>
-        </div>
-      `);
+      cards.push(makeListCard("Detected skills", reasoning.skills_detected.join(", "), "list-card motion-fade-up"));
     }
 
     if (reasoning.next_steps?.length) {
-      cards.push(`
-        <div class="list-card motion-fade-up">
-          <div>
-            <strong>Recommended next steps</strong>
-            <p>${reasoning.next_steps.join(" · ")}</p>
-          </div>
-        </div>
-      `);
+      cards.push(makeListCard("Recommended next steps", reasoning.next_steps.join(" · "), "list-card motion-fade-up"));
     }
 
     if (reasoning.evidence?.length) {
-      cards.push(`
-        <div class="list-card motion-fade-up">
-          <div>
-            <strong>Evidence trail</strong>
-            <p>${reasoning.evidence.map((item) => `${item.label}: ${item.value}`).join(" · ")}</p>
-          </div>
-        </div>
-      `);
+      cards.push(makeListCard("Evidence trail", reasoning.evidence.map((item) => `${item.label}: ${item.value}`).join(" · "), "list-card motion-fade-up"));
     }
 
-    cards.push(`
-      <div class="list-card motion-fade-up">
-        <div>
-          <strong>Confidence note</strong>
-          <p>${reasoning.confidence_note || "Explainability is grounded in the local feature trace."}</p>
-        </div>
-      </div>
-    `);
+    cards.push(makeListCard("Confidence note", reasoning.confidence_note || "Explainability is grounded in the local feature trace.", "list-card motion-fade-up"));
 
-    riskInsights.innerHTML = cards.join("");
+    replaceChildren(riskInsights, cards);
   };
 
   const renderModal = (payload) => {
@@ -512,42 +494,68 @@
     updateDashboardResults(payload);
     renderReasoningInsights(payload);
     renderGuidedNextSteps(payload);
+    if (feedbackUploadId) feedbackUploadId.value = payload.upload_id || "";
+    if (jdMatch) {
+      const match = payload.jd_match;
+      if (!match) {
+        replaceChildren(jdMatch, [makeListCard("No target job added", "Paste a job description in the form to compare it with your resume.")]);
+      } else {
+        const matchCard = createElement("div", "list-card");
+        const matchContent = createElement("div");
+        matchContent.append(
+          createElement("strong", null, `${match.match_percent}% identified skill overlap`),
+          createElement("p", null, `Matched: ${(match.matched_skills || []).join(", ") || "None identified"}`),
+          createElement("p", null, `Missing: ${(match.missing_skills || []).join(", ") || "None identified"}`),
+        );
+        matchCard.append(matchContent);
+        const evidenceCards = (match.evidence || []).map((item) => makeListCard(item.skill, item.context));
+        const actionCards = (match.action_plan || []).map((item) => makeListCard("Next action", item));
+        replaceChildren(jdMatch, [matchCard, ...evidenceCards, ...actionCards]);
+      }
+    }
 
     renderList(rolesList, uniqueRoles, (role) => {
       const openingLinks = buildRoleLinks(role);
-      return `
-      <div class="list-card pivot-card motion-fade-up">
-        <div>
-          <strong>${role.job_role}</strong>
-          <p>${role.industry} · Risk ${Math.round((role.risk_score || 0) * 100)}%</p>
-          <div class="pill-row" style="margin-top: 0.75rem;">
-            ${openingLinks.map((link) => `<a class="button-ghost" href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}
-          </div>
-        </div>
-        <span class="status-pill">${Math.round((role.similarity || 0) * 100)}% match</span>
-      </div>
-    `;
+      const card = createElement("div", "list-card pivot-card motion-fade-up");
+      const content = createElement("div");
+      content.append(
+        createElement("strong", null, role.job_role),
+        createElement("p", null, `${role.industry || "Unknown industry"} · Risk ${Math.round((role.risk_score || 0) * 100)}%`),
+      );
+      const links = createElement("div", "pill-row");
+      links.style.marginTop = "0.75rem";
+      openingLinks.forEach((link) => {
+        const anchor = createElement("a", "button-ghost", link.label);
+        anchor.href = link.url;
+        anchor.target = "_blank";
+        anchor.rel = "noreferrer";
+        links.append(anchor);
+      });
+      content.append(links);
+      card.append(content, createElement("span", "status-pill", `${Math.round((role.similarity || 0) * 100)}% match`));
+      return card;
     });
 
-    renderList(roadmapList, payload.roadmap || [], (course) => `
-      <div class="roadmap-item motion-fade-up">
-        <div>
-          <strong>${course.course}</strong>
-          <p>${course.skill} · ${course.reason}</p>
-        </div>
-        ${course.url ? `<a class="button-ghost" href="${course.url}" target="_blank" rel="noreferrer">Open</a>` : ""}
-      </div>
-    `);
+    renderList(roadmapList, payload.roadmap || [], (course) => {
+      const item = createElement("div", "roadmap-item motion-fade-up");
+      const content = createElement("div");
+      content.append(createElement("strong", null, course.course), createElement("p", null, `${course.skill} · ${course.reason}`));
+      item.append(content);
+      if (course.url) {
+        const link = createElement("a", "button-ghost", "Open");
+        link.href = course.url;
+        link.target = "_blank";
+        link.rel = "noreferrer";
+        item.append(link);
+      }
+      return item;
+    });
 
-    renderList(riasecList, Object.entries(payload.riasec?.scores || {}), ([name, score]) => `
-      <div class="list-card motion-fade-up">
-        <div>
-          <strong>${name}</strong>
-          <p>Career preference alignment</p>
-        </div>
-        <span class="status-pill">${score}</span>
-      </div>
-    `);
+    renderList(riasecList, Object.entries(payload.riasec?.scores || {}), ([name, score]) => {
+      const card = makeListCard(name, "Career preference alignment", "list-card motion-fade-up");
+      card.append(createElement("span", "status-pill", score));
+      return card;
+    });
   };
 
   const renderError = (message) => {
@@ -576,9 +584,7 @@
     if (narrative) {
       narrative.textContent = message;
     }
-    if (rolesList) rolesList.innerHTML = "";
-    if (roadmapList) roadmapList.innerHTML = "";
-    if (riasecList) riasecList.innerHTML = "";
+    [rolesList, roadmapList, riasecList].forEach((container) => replaceChildren(container, []));
     if (dashboardRiskSummary) {
       dashboardRiskSummary.textContent = message;
     }
@@ -586,33 +592,46 @@
       dashboardRoleStatus.textContent = "Error";
     }
     if (riskInsights) {
-      riskInsights.innerHTML = `
-        <div class="list-card">
-          <div>
-            <strong>Analysis unavailable</strong>
-            <p>${message}</p>
-          </div>
-        </div>
-      `;
+      replaceChildren(riskInsights, [makeListCard("Analysis unavailable", message)]);
     }
     if (nextStepsStatus) {
       nextStepsStatus.textContent = "Unavailable";
     }
     [nextStepsLearning, nextStepsJobs, nextStepsEducation, nextStepsSupport, modalNextSteps].forEach((container) => {
       if (!container) return;
-      container.innerHTML = `
-        <div class="list-card">
-          <div>
-            <strong>Guidance unavailable</strong>
-            <p>${message}</p>
-          </div>
-        </div>
-      `;
+      replaceChildren(container, [makeListCard("Guidance unavailable", message)]);
     });
   };
 
   modeButtons.forEach((button) => {
     button.addEventListener("click", () => setMode(button.dataset.mode));
+  });
+
+  document.querySelectorAll("[data-feedback-rating]").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedRating = Number(button.dataset.feedbackRating);
+      document.querySelectorAll("[data-feedback-rating]").forEach((item) => item.classList.toggle("is-selected", item === button));
+    });
+  });
+
+  feedbackForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const formData = new FormData(feedbackForm);
+    if (selectedRating !== null) formData.set("rating", String(selectedRating));
+    if (!(formData.get("message") || "").toString().trim()) formData.set("message", selectedRating === 1 ? "Recommendation marked helpful." : "Recommendation marked not helpful.");
+    const response = await fetch("/api/feedback", { method: "POST", body: formData });
+    const payload = await response.json();
+    if (feedbackStatus) feedbackStatus.textContent = payload.success ? "Thanks — your feedback was saved." : (payload.error || "Feedback could not be saved.");
+  });
+
+  discoveryForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const answers = new FormData(discoveryForm);
+    const value = (name) => String(answers.get(name) || "");
+    const summary = `You are focused on ${value("direction").toLowerCase()}, with ${value("priority").toLowerCase()} as your main priority. Your vision is: “${value("vision")}” When facing a skill gap, you would ${value("gap_response").toLowerCase()}; you value ${value("decision_style").toLowerCase()} when choosing opportunities and prefer to ${value("work_style").toLowerCase()}.`;
+    if (discoverySummaryText) discoverySummaryText.textContent = summary;
+    discoverySummary?.classList.remove("hidden");
+    discoverySummary?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
 
   pathButtons.forEach((button) => {

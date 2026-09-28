@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -9,13 +11,16 @@ import joblib
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import RidgeCV
+from sklearn.pipeline import Pipeline
 
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 MODEL_DIR = BASE_DIR / "ml_models"
 MODEL_DIR.mkdir(exist_ok=True)
+MODEL_VERSION = "risk-v2.0"
+RIDGE_ALPHAS = np.logspace(-2, 3, 20)
 
 
 def read_csv_any(*relative_paths: str) -> pd.DataFrame:
@@ -162,6 +167,23 @@ def build_courses_index(coursera_df: pd.DataFrame) -> dict[str, list[dict[str, A
     return course_index
 
 
+def build_risk_pipeline() -> Pipeline:
+    return Pipeline(
+        [
+            ("tfidf", TfidfVectorizer(max_features=7000, ngram_range=(1, 2), stop_words="english")),
+            ("ridge", RidgeCV(alphas=RIDGE_ALPHAS, cv=5)),
+        ]
+    )
+
+
+def dataset_hash(paths: list[Path]) -> str:
+    digest = hashlib.sha256()
+    for path in sorted(paths):
+        digest.update(path.name.encode("utf-8"))
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
 def main() -> None:
     automation = read_csv_any("automation_risk.csv")
     resumes = read_csv_any("resume_corpus.csv")
@@ -175,19 +197,33 @@ def main() -> None:
     onet_profiles = build_onet_texts(onet_skills, onet_interests, onet_keywords)
     onet_texts = [profile["text"] for profile in onet_profiles]
 
-    corpus = [*job_texts, *resume_texts, *onet_texts]
-    vectorizer = TfidfVectorizer(max_features=7000, ngram_range=(1, 2), stop_words="english")
-    vectorizer.fit(corpus)
-
+    risk_targets = automation["automation_risk_score"].astype(float).clip(0.0, 1.0).to_numpy()
+    risk_pipeline = build_risk_pipeline()
+    risk_pipeline.fit(job_texts, risk_targets)
+    vectorizer = risk_pipeline.named_steps["tfidf"]
     job_vectors = vectorizer.transform(job_texts)
     cluster_vectors = vectorizer.transform(onet_texts)
-    risk_targets = automation["automation_risk_score"].astype(float).clip(0.0, 1.0).to_numpy()
-    risk_model = Ridge(alpha=1.2)
-    risk_model.fit(job_vectors, risk_targets)
+    risk_model = risk_pipeline.named_steps["ridge"]
+    source_paths = [
+        DATA_DIR / "automation_risk.csv",
+        DATA_DIR / "resume_corpus.csv",
+        DATA_DIR / "coursera_catalog.csv",
+        DATA_DIR / "onet_skils.csv",
+        DATA_DIR / "onet_interests.csv",
+        DATA_DIR / "onet_interest_keywords.csv",
+    ]
+    metadata = {
+        "dataset_hash": dataset_hash(source_paths),
+        "training_timestamp": datetime.now(timezone.utc).isoformat(),
+        "selected_alpha": float(risk_model.alpha_),
+        "vectorizer_feature_count": int(len(vectorizer.vocabulary_)),
+        "model_version": MODEL_VERSION,
+    }
 
     bundle = {
         "vectorizer": vectorizer,
         "risk_model": risk_model,
+        "risk_pipeline": risk_pipeline,
         "job_vectors": job_vectors,
         "job_profiles": [
             {
@@ -207,11 +243,15 @@ def main() -> None:
         ],
         "cluster_vectors": cluster_vectors,
         "cluster_profiles": onet_profiles,
+        "metadata": metadata,
+        **metadata,
     }
 
+    joblib.dump(bundle, MODEL_DIR / "automation_model.pkl")
     joblib.dump(bundle, MODEL_DIR / "model.pkl")
     joblib.dump(build_courses_index(coursera), MODEL_DIR / "courses.pkl")
-    print(f"Saved model bundle to {MODEL_DIR / 'model.pkl'}")
+    print(f"Saved model bundle to {MODEL_DIR / 'automation_model.pkl'}")
+    print(f"Model version: {metadata['model_version']}; selected alpha: {metadata['selected_alpha']:.6g}")
 
 
 if __name__ == "__main__":

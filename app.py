@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
+import smtplib
 from functools import lru_cache
 from io import BytesIO
 from pathlib import Path
@@ -13,10 +15,15 @@ import numpy as np
 import requests
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from bootstrap import ensure_model_artifacts
+from bootstrap import ensure_model_artifacts, runtime_security_settings
 from risk_assessor import analyze_resume as assess_resume
 from resume_parser import extract_resume_text as parse_resume_file
-from storage import User, authenticate_user, create_user, dashboard_metrics, get_user_by_email, init_database, record_feedback, record_upload
+from storage import (
+    Upload, User, authenticate_user, create_partnership_request, create_user, dashboard_metrics,
+    get_career_profile, get_user_by_email, init_database, record_feedback,
+    record_partnership_response, record_upload, save_career_profile,
+)
+from utils import install_log_redaction
 
 try:
     from docx import Document
@@ -35,15 +42,21 @@ MODEL_DIR = BASE_DIR / "ml_models"
 MODEL_PATH = MODEL_DIR / "model.pkl"
 COURSES_PATH = MODEL_DIR / "courses.pkl"
 
+security_settings = runtime_security_settings()
+
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config.update(
-    SECRET_KEY=os.environ.get("FLASK_SECRET_KEY", "prayash-local-development-secret"),
+    SECRET_KEY=security_settings["flask_secret_key"],
+    ADMIN_EMAIL=security_settings["admin_email"],
+    ADMIN_PASSWORD=security_settings["admin_password"],
+    DEBUG=security_settings["debug"],
     SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", f"sqlite:///{(BASE_DIR / 'prayash.db').as_posix()}"),
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     MAX_CONTENT_LENGTH=8 * 1024 * 1024,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
 )
+install_log_redaction([app.logger, logging.getLogger("werkzeug")])
 
 
 login_manager = LoginManager()
@@ -307,7 +320,7 @@ You are generating a concise career intelligence narrative for Prayash.
 Resume:
 {resume_text}
 
-Local ML risk score: {analysis['risk_score']:.2f}
+Local task exposure estimate: {analysis['risk_score']:.2f}
 Top matching roles: {json.dumps(analysis['top_roles'], ensure_ascii=False)}
 RIASEC fit: {json.dumps(analysis['riasec'], ensure_ascii=False)}
 Recommended learning roadmap: {json.dumps(analysis['roadmap'], ensure_ascii=False)}
@@ -369,7 +382,7 @@ def analyze_resume(resume_text: str, mode: str = "standard") -> dict[str, Any]:
             )
     else:
         analysis["cognitive_career_narrative"] = (
-            f"Local ML identifies a {analysis['risk_label'].lower()} automation risk profile with immediate room to sharpen adjacent skills."
+            f"Local ML identifies a {analysis['risk_label'].lower()} task exposure estimate with immediate room to sharpen adjacent skills."
         )
 
     return analysis
@@ -441,7 +454,48 @@ def logout() -> Any:
 @app.get("/workspace")
 @login_required
 def workspace() -> str:
-    return render_template("workspace.html", active_page="workspace", title="Workspace | Prayash")
+    profile = get_career_profile(current_user.id)
+    return render_template("workspace.html", active_page="workspace", title="Workspace | Prayash", career_profile=profile)
+
+
+@app.get("/api/career-profile")
+@login_required
+def api_get_career_profile():
+    profile = get_career_profile(current_user.id)
+    return jsonify({
+        "success": True,
+        "profile": {
+            "intent": profile.intent,
+            "target_role": profile.target_role,
+            "target_role_source": profile.target_role_source,
+            "confidence": profile.confidence,
+        } if profile else None,
+    })
+
+
+@app.put("/api/career-profile")
+@login_required
+def api_save_career_profile():
+    payload = request.get_json(silent=True) or {}
+    intent = _clean_text(payload.get("intent"))
+    target_role = _clean_text(payload.get("target_role"))
+    if not intent or not target_role:
+        return jsonify({"success": False, "error": "Intent and target role are required."}), 400
+    if len(intent) > 80 or len(target_role) > 160:
+        return jsonify({"success": False, "error": "Intent or target role is too long."}), 400
+    try:
+        profile = save_career_profile(user_id=current_user.id, intent=intent, target_role=target_role)
+    except Exception:
+        return jsonify({"success": False, "error": "Could not save career profile."}), 500
+    return jsonify({
+        "success": True,
+        "profile": {
+            "intent": profile.intent,
+            "target_role": profile.target_role,
+            "target_role_source": profile.target_role_source,
+            "confidence": profile.confidence,
+        },
+    })
 
 
 @app.get("/methodology")
@@ -459,9 +513,19 @@ def insights() -> str:
     return render_template("insights.html", active_page="insights", title="Insights | Prayash")
 
 
-@app.get("/partnerships")
+@app.route("/partnerships", methods=["GET", "POST"])
 def partnerships() -> str:
-    return render_template("partnerships.html", active_page="partnerships", title="Partnerships | Prayash")
+    status = None
+    if request.method == "POST":
+        organization = _clean_text(request.form.get("organization"))
+        contact_email = _clean_text(request.form.get("contact_email")).lower()
+        use_case = _clean_text(request.form.get("use_case"))
+        if organization and "@" in contact_email and use_case:
+            status = "Thanks — your request has been sent to the Prayash team."
+            create_partnership_request(organization=organization, contact_email=contact_email, use_case=use_case)
+        else:
+            status = "Please provide your organisation, contact email, and use case."
+    return render_template("partnerships.html", active_page="partnerships", title="Partnerships | Prayash", status=status)
 
 
 @app.route("/admin", methods=["GET"])
@@ -484,6 +548,53 @@ def admin_dashboard() -> str:
         metrics=metrics,
         chart_data=chart_data,
     )
+
+
+@app.get("/admin/evaluation-access")
+def admin_evaluation_access():
+    """Opt-in reviewer shortcut; deliberately disabled unless explicitly configured."""
+    if not (app.config.get("TESTING") or os.environ.get("PRAYASH_EVALUATION_BYPASS") == "1"):
+        return jsonify({"success": False, "error": "Evaluation access is disabled."}), 403
+    admin_email, _ = os.environ.get("ADMIN_EMAIL", "admin123@prayash"), os.environ.get("ADMIN_PASSWORD", "admin123")
+    user = get_user_by_email(admin_email)
+    if user is None:
+        return jsonify({"success": False, "error": "Admin account is unavailable."}), 500
+    login_user(user, remember=False)
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.post("/admin/partnerships/<int:request_id>/reply")
+@login_required
+def admin_reply_to_partnership(request_id: int):
+    if not getattr(current_user, "is_admin_email", False):
+        return jsonify({"success": False, "error": "Administrator access required."}), 403
+    message = _clean_text(request.form.get("message") or (request.get_json(silent=True) or {}).get("message"))
+    if not message:
+        return jsonify({"success": False, "error": "A response message is required."}), 400
+    item = record_partnership_response(request_id, message)
+    if item is None:
+        return jsonify({"success": False, "error": "Partnership request not found."}), 404
+    delivered = _send_partner_email(item.contact_email, message)
+    return jsonify({"success": True, "email_sent": delivered})
+
+
+def _send_partner_email(recipient: str, message: str) -> bool:
+    """Use configured SMTP; local review runs still save the reply when SMTP is absent."""
+    host = os.environ.get("SMTP_HOST")
+    if not host:
+        return False
+    sender = os.environ.get("SMTP_FROM", "no-reply@prayash.local")
+    try:
+        with smtplib.SMTP(host, int(os.environ.get("SMTP_PORT", "587")), timeout=8) as server:
+            if os.environ.get("SMTP_STARTTLS", "true").lower() == "true":
+                server.starttls()
+            username, password = os.environ.get("SMTP_USERNAME"), os.environ.get("SMTP_PASSWORD")
+            if username and password:
+                server.login(username, password)
+            server.sendmail(sender, [recipient], f"Subject: Reply from Prayash\nFrom: {sender}\nTo: {recipient}\n\n{message}")
+        return True
+    except (OSError, smtplib.SMTPException):
+        return False
 
 
 @app.post("/admin/logout")
@@ -517,6 +628,13 @@ def api_feedback():
         upload_id = int(upload_id_raw) if upload_id_raw is not None and upload_id_raw != "" else None
     except Exception:
         upload_id = None
+
+    if upload_id is not None:
+        if not current_user.is_authenticated:
+            return jsonify({"success": False, "error": "Authentication required for upload feedback."}), 401
+        owned_upload = Upload.query.filter_by(id=upload_id, user_id=current_user.id).first()
+        if owned_upload is None:
+            return jsonify({"success": False, "error": "Upload not found for the current user."}), 404
 
     feedback = record_feedback(message=message, rating=rating, upload_id=upload_id, user_id=current_user.id if current_user.is_authenticated else None)
     if feedback is None:
@@ -641,6 +759,8 @@ def _handle_upload_request():
     payload = request.get_json(silent=True) if request.is_json else {}
     resume_text = request.form.get("resume_text") or (payload or {}).get("resume_text", "")
     mode = request.form.get("mode") or (payload or {}).get("mode", "standard")
+    job_description = request.form.get("job_description") or (payload or {}).get("job_description", "")
+    raw_skills = request.form.get("confirmed_skills") or (payload or {}).get("confirmed_skills", [])
     uploaded_file = request.files.get("resume_file")
 
     if uploaded_file and uploaded_file.filename:
@@ -654,38 +774,53 @@ def _handle_upload_request():
 
     if mode not in {"standard", "advanced"}:
         mode = "standard"
+    if isinstance(raw_skills, str):
+        confirmed_skills = [item.strip() for item in raw_skills.split(",") if item.strip()]
+    else:
+        confirmed_skills = [str(item).strip() for item in raw_skills if str(item).strip()]
 
     try:
         ensure_model_artifacts()
-        analysis = assess_resume(resume_text, mode=mode)
+        analysis = assess_resume(resume_text, mode=mode, job_description=job_description, confirmed_skills=confirmed_skills)
         analysis.setdefault("guided_next_steps", _build_guided_next_steps(analysis))
         analysis.setdefault("support_resources", _build_support_resources())
         analysis.setdefault("report_guide", _build_report_guide(analysis))
-        record_upload(
+        upload = record_upload(
             filename=uploaded_file.filename if uploaded_file and uploaded_file.filename else "pasted_resume.txt",
             file_type=(uploaded_file.filename.rsplit(".", 1)[-1].lower() if uploaded_file and uploaded_file.filename and "." in uploaded_file.filename else "text"),
-            mode=analysis.get("mode", mode),
-            risk_score=analysis.get("risk_score", 0.0),
-            risk_label=analysis.get("risk_label", "Low"),
-            reasoning=analysis.get("reasoning", {}),
+            mode=analysis.get("mode", mode), risk_score=analysis.get("risk_score", 0.0),
+            risk_label=analysis.get("risk_label", "Low"), reasoning=analysis.get("reasoning", {}),
             user_id=current_user.id if current_user.is_authenticated else None,
         )
-        analysis.update({"success": True})
+        analysis.update({"success": True, "upload_id": upload.id if upload else None})
         return jsonify(analysis)
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 500
 
 
 @app.post("/api/upload")
+@login_required
 def api_upload():
     return _handle_upload_request()
 
 
 @app.post("/api/analyze")
+@login_required
 def api_analyze():
+    return _handle_upload_request()
+
+
+@app.post("/api/analyze-stream")
+@login_required
+def api_analyze_stream():
+    """Return the structured analysis contract for stream-capable clients."""
     return _handle_upload_request()
 
 
 if __name__ == "__main__":
     ensure_model_artifacts()
-    app.run(debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", "5000")))
+    app.run(
+        debug=app.config["DEBUG"],
+        host="127.0.0.1",
+        port=int(os.environ.get("PORT", "5000")),
+    )
