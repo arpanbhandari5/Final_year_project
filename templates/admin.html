@@ -57,10 +57,12 @@
 
     <div class="span-6 glass-card motion-fade-up">
       <h3 class="section-title">Prediction counts</h3>
+      <p class="small-note">Number of saved analyses by local processing mode.</p>
       <canvas id="modeChart" height="220"></canvas>
     </div>
     <div class="span-6 glass-card motion-fade-up motion-stagger-1">
       <h3 class="section-title">Risk distribution</h3>
+      <p class="small-note">Proportion of uploads mapping to low, moderate, or elevated historical task-automation exposure bands in this local dataset.</p>
       <canvas id="riskChart" height="220"></canvas>
     </div>
 
@@ -78,6 +80,25 @@
         {% else %}
         <div class="list-card"><div><strong>No uploads yet</strong><p>Run a resume analysis to populate the admin metrics.</p></div></div>
         {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container dashboard-grid">
+    <div class="span-12 glass-card">
+      <h3 class="section-title">Partnership requests</h3>
+      <div class="compact-list" style="margin-top: 1rem;">
+        {% for item in metrics.partnership_requests %}
+        <div class="list-card">
+          <div><strong>{{ item.organization }}</strong><p>{{ item.contact_email }} · {{ item.use_case }}</p>{% if item.response_message %}<p class="small-note">Saved reply: {{ item.response_message }}</p>{% endif %}</div>
+          <form class="field" data-partnership-reply data-request-id="{{ item.id }}">
+            <label>Reply</label><textarea name="message" placeholder="Draft a response to this partner."></textarea>
+            <button class="button-ghost" type="submit">Save and send</button><p class="small-note" data-reply-status></p>
+          </form>
+        </div>
+        {% else %}<div class="list-card"><div><strong>No partnership requests yet</strong><p>New requests will appear here.</p></div></div>{% endfor %}
       </div>
     </div>
   </div>
@@ -110,7 +131,7 @@
   const modeCtx = document.getElementById('modeChart');
   const riskCtx = document.getElementById('riskChart');
 
-  if (modeCtx) {
+  if (modeCtx && window.Chart) {
     new Chart(modeCtx, {
       type: 'doughnut',
       data: {
@@ -129,7 +150,7 @@
     });
   }
 
-  if (riskCtx) {
+  if (riskCtx && window.Chart) {
     new Chart(riskCtx, {
       type: 'bar',
       data: {
@@ -150,6 +171,17 @@
       },
     });
   }
+  if (!window.Chart) {
+    if (modeCtx) modeCtx.replaceWith(Object.assign(document.createElement('p'), { className: 'small-note', textContent: `Standard: ${chartData.modeValues[0]} · Advanced: ${chartData.modeValues[1]}` }));
+    if (riskCtx) riskCtx.replaceWith(Object.assign(document.createElement('p'), { className: 'small-note', textContent: `Low: ${chartData.riskValues[0]} · Moderate: ${chartData.riskValues[1]} · Elevated: ${chartData.riskValues[2]}` }));
+  }
+</script>
+<script>
+  document.querySelectorAll('[data-partnership-reply]').forEach((form) => form.addEventListener('submit', async (event) => {
+    event.preventDefault(); const status = form.querySelector('[data-reply-status]');
+    const response = await fetch(`/admin/partnerships/${form.dataset.requestId}/reply`, { method: 'POST', body: new FormData(form) });
+    const result = await response.json(); status.textContent = result.success ? (result.email_sent ? 'Reply emailed and saved.' : 'Reply saved. Configure SMTP_HOST to deliver email.') : result.error;
+  }));
 </script>
 {% endif %}
 {% endblock %}

@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "target_name": "adjudicated_exposure_score",
+  "target_definition": "Human-reviewed contextual task-exposure estimate on a 0.0-1.0 scale. Not personal job-loss probability and not a Frey-Osborne occupation probability.",
+  "score_bands": [
+    { "min": 0.0, "max": 0.2, "label": "minimal exposure" },
+    { "min": 0.21, "max": 0.4, "label": "low exposure" },
+    { "min": 0.41, "max": 0.6, "label": "moderate exposure" },
+    { "min": 0.61, "max": 0.8, "label": "high exposure" },
+    { "min": 0.81, "max": 1.0, "label": "very high exposure" }
+  ],
+  "required_identity_fields": [
+    "occupation_code",
+    "task_id",
+    "task_statement"
+  ],
+  "reviewer_score_fields": [
+    "reviewer_1_score",
+    "reviewer_2_score",
+    "adjudicated_exposure_score"
+  ],
+  "required_completed_fields": [
+    "reviewer_1_score",
+    "reviewer_2_score",
+    "adjudicated_exposure_score",
+    "label_source",
+    "label_version",
+    "occupation_code",
+    "task_id"
+  ],
+  "rules": {
+    "score_range": [0.0, 1.0],
+    "missing_scores_must_not_become_zero": true,
+    "invented_labels_forbidden": true,
+    "automation_risk_score_forbidden_as_source": true,
+    "frey_osborne_forbidden_as_task_label": true,
+    "fuzzy_occupation_match_forbidden": true
+  }
+}

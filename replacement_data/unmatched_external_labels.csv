@@ -1,0 +1,85 @@
+source_soc,mapped_onet_soc_code,source_occupation,onet_title,prob,label_type,label_source,label_year,source_artifact,not_current_task_ground_truth,unmatched_reason
+53-1031,53-1031.00,First-Line Supervisors of Transportation and Material-Moving Machine and Vehicle Operators,,0.029,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1179,15-1179.00,"Information Security Analysts, Web Developers and Computer Network Architects",,0.21,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+51-4012,51-4012.00,"Computer Numerically Controlled Machine Tool Programmers, Metal and Plastic",,0.36,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+51-9121,51-9121.00,"Coating, Painting and Spraying Machine Setters, Operators and Tenders",,0.91,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-1021,53-1021.00,"First-Line Supervisors of Helpers, Laborers and Material Movers, Hand",,0.42,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+13-1078,13-1078.00,"Human Resources, Training and Labor Relations Specialists, All Other",,0.31,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+35-3021,35-3021.00,"Combined Food Preparation and Serving Workers, Including Fast Food",,0.92,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+19-4091,19-4091.00,"Environmental Science and Protection Technicians, Including Health",,0.77,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+39-4831,39-4831.00,"Funeral Service Managers, Directors, Morticians and Undertakers",,0.2,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+35-3022,35-3022.00,"Counter Attendants, Cafeteria, Food Concession and Coffee Shop",,0.96,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+51-4011,51-4011.00,"Computer-Controlled Machine Tool Operators, Metal and Plastic",,0.86,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+47-5031,47-5031.00,"ExplosivesWorkers, Ordnance Handling Experts and Blasters",,0.48,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-9799,29-9799.00,"Healthcare Practitioners and Technical Workers, All Other",,0.055,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-1199,29-1199.00,"Health Diagnosing and Treating Practitioners, All Other",,0.02,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+49-9799,49-9799.00,"Installation, Maintenance and Repair Workers, All Other",,0.5,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-7032,53-7032.00,Excavating and Loading Machine and Dragline Operators,,0.94,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+25-9011,25-9011.00,Audio-Visual and Multimedia Collections Specialists,,0.39,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+39-1021,39-1021.00,First-Line Supervisors of Personal Service Workers,,0.076,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-2071,29-2071.00,Medical Records and Health Information Technicians,,0.91,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-2799,29-2799.00,"Health Technologists and Technicians, All Other",,0.4,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+19-3031,19-3031.00,"Clinical, Counseling and School Psychologists",,0.0047,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-7033,53-7033.00,"Loading Machine Operators, Underground Mining",,0.5,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+47-5042,47-5042.00,Mine Cutting and Channeling Machine Operators,,0.59,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1111,15-1111.00,Computer and Information Research Scientists,,0.015,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-2041,29-2041.00,Emergency Medical Technicians and Paramedics,,0.049,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+25-2054,25-2054.00,"Special Education Teachers, Secondary School",,0.0077,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+47-4799,47-4799.00,"Construction and Related Workers, All Other",,0.71,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1142,15-1142.00,Network and Computer Systems Administrators,,0.03,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-4021,53-4021.00,"Railroad Brake, Signal and Switch Operators",,0.83,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-9011,29-9011.00,Occupational Health and Safety Specialists,,0.17,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-9012,29-9012.00,Occupational Health and Safety Technicians,,0.25,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+27-3012,27-3012.00,Public Address System and Other Announcers,,0.72,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+19-4011,19-4011.00,Agricultural and Food Science Technicians,,0.97,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+11-2031,11-2031.00,Public Relations and Fundraising Managers,,0.015,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+25-2053,25-2053.00,"Special Education Teachers, Middle School",,0.016,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-2037,29-2037.00,Ambulance Drivers and Attendants,,0.23,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+13-2021,13-2021.00,Appraisers and Assessors of Real Estate,,0.9,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+51-2093,51-2093.00,Timing Device Assemblers and Adjusters,,0.98,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-3022,53-3022.00,"Bus Drivers, School or Special Client",,0.89,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+51-2091,51-2091.00,Fiberglass Laminators and Fabricators,,0.93,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+31-9799,31-9799.00,"Healthcare Support Workers, All Other",,0.63,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1133,15-1133.00,"Software Developers, Systems Software",,0.13,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+19-4041,19-4041.00,Geological and Petroleum Technicians,,0.91,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-1011,53-1011.00,Aircraft Cargo Handling Supervisors,,0.066,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+45-3011,45-3011.00,Fishers and Related Fishing Workers,,0.83,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+19-4093,19-4093.00,Forest and Conservation Technicians,,0.42,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+25-3999,25-3999.00,"Teachers and Instructors, All Other",,0.0095,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-3021,53-3021.00,"Bus Drivers, Transit and Intercity",,0.67,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+47-5021,47-5021.00,"Earth Drillers, Except Oil and Gas",,0.85,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+45-2090,45-2090.00,Miscellaneous Agricultural Workers,,0.87,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+51-9122,51-9122.00,"Painters, Transportation Equipment",,0.69,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1132,15-1132.00,"Software Developers, Applications",,0.042,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+11-3011,11-3011.00,Administrative Services Managers,,0.73,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1799,15-1799.00,"Computer Occupations, All Other",,0.22,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-2054,29-2054.00,Respiratory Therapy Technicians,,0.1,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+49-9093,49-9093.00,"Fabric Menders, Except Garment",,0.96,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+43-5081,43-5081.00,Stock Clerks and Order Fillers,,0.64,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+51-9399,51-9399.00,"Production Workers, All Other",,0.92,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1150,15-1150.00,Computer Support Specialists,,0.65,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+27-3022,27-3022.00,Reporters and Correspondents,,0.11,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-3041,53-3041.00,Taxi Drivers and Chauffeurs,,0.89,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-7111,53-7111.00,Mine Shuttle Car Operators,,0.37,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1121,15-1121.00,Computer Systems Analysts,,0.0065,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-2091,15-2091.00,Mathematical Technicians,,0.99,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+27-3021,27-3021.00,Broadcast News Analysts,,0.067,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1141,15-1141.00,Database Administrators,,0.03,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-1060,29-1060.00,Physicians and Surgeons,,0.0042,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+25-1000,25-1000.00,Postsecondary Teachers,,0.032,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+15-1131,15-1131.00,Computer Programmers,,0.48,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+45-3021,45-3021.00,Hunters and Trappers,,0.77,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+47-5061,47-5061.00,"Roof Bolters, Mining",,0.49,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+39-9021,39-9021.00,Personal Care Aides,,0.74,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+43-9011,43-9011.00,Computer Operators,,0.78,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+39-1011,39-1011.00,Gaming Supervisors,,0.28,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+25-9041,25-9041.00,Teacher Assistants,,0.56,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-2021,29-2021.00,Dental Hygienists,,0.68,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+31-1011,31-1011.00,Home Health Aides,,0.39,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+53-4012,53-4012.00,Locomotive Firers,,0.93,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+31-1013,31-1013.00,Psychiatric Aides,,0.47,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+29-1111,29-1111.00,Registered Nurses,,0.009,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+39-1012,39-1012.00,Slot Supervisors,,0.54,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+23-2091,23-2091.00,Court Reporters,,0.5,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+27-4013,27-4013.00,Radio Operators,,0.98,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match
+25-4021,25-4021.00,Librarians,,0.65,historical_occupation_computerisation_probability,Frey_Osborne,2013/2017,plotly_public_mirror,True,no_exact_onet_soc_match

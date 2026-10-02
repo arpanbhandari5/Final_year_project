@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import logging
 import os
 import re
 import smtplib
+from datetime import date, datetime
 from functools import lru_cache
 from io import BytesIO
 from pathlib import Path
@@ -17,13 +19,20 @@ from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from bootstrap import ensure_model_artifacts, runtime_security_settings
 from risk_assessor import analyze_resume as assess_resume
+from risk_assessor import _extract_skills
 from resume_parser import extract_resume_text as parse_resume_file
 from storage import (
-    Upload, User, authenticate_user, create_partnership_request, create_user, dashboard_metrics,
-    get_career_profile, get_user_by_email, init_database, record_feedback,
-    record_partnership_response, record_upload, save_career_profile,
+    AnalysisSnapshot, Application, CanonicalSkill, CareerGoal, JobPosting, OnetInterest, OnetOccupation, OnetSkill, OnetTask, OnetTechnology, ResumeVersion, Upload, User, authenticate_user, application_payload,
+    career_goal_payload, correct_resume_skill, create_analysis_snapshot, create_application,
+    create_job_posting, create_partnership_request, create_resume_version, create_user, db,
+    dashboard_metrics, get_career_goal, get_career_profile, get_owned_application,
+    get_owned_job, get_owned_resume_version, get_resume_profile, get_user_by_email,
+    init_database, job_posting_payload, list_owned_applications, record_feedback,
+    record_partnership_response, record_upload, resume_profile_payload, resume_version_payload,
+    save_career_goal, save_career_profile, snapshot_payload,
 )
 from utils import install_log_redaction
+from skill_registry import seed_skill_registry, resolve_skill_names
 
 try:
     from docx import Document
@@ -84,6 +93,8 @@ def initialize_database() -> None:
 
 
 initialize_database()
+with app.app_context():
+    seed_skill_registry()
 
 
 def _safe_load_bundle() -> dict[str, Any]:
@@ -498,9 +509,341 @@ def api_save_career_profile():
     })
 
 
+def _optional_number(value: Any, *, minimum: float = 0.0, maximum: float = 1000000.0) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        raise ValueError("Numeric fields must contain numbers.")
+    if not minimum <= number <= maximum:
+        raise ValueError("Numeric fields are outside the allowed range.")
+    return number
+
+
+@app.get("/api/career-goal")
+@login_required
+def api_get_career_goal():
+    return jsonify({"success": True, "goal": career_goal_payload(get_career_goal(current_user.id))})
+
+
+@app.post("/api/career-goal")
+@login_required
+def api_save_career_goal():
+    payload = request.get_json(silent=True) or {}
+    target_role = _clean_text(payload.get("target_role"))
+    if not target_role or len(target_role) > 160:
+        return jsonify({"success": False, "error": "A target role is required."}), 400
+    alternative_roles = payload.get("alternative_roles", [])
+    if isinstance(alternative_roles, str):
+        alternative_roles = [item.strip() for item in alternative_roles.split(",") if item.strip()]
+    if not isinstance(alternative_roles, list) or len(alternative_roles) > 10:
+        return jsonify({"success": False, "error": "Alternative roles must be a list of up to 10 roles."}), 400
+    try:
+        values = {
+            "target_role": target_role,
+            "alternative_roles": [_clean_text(item)[:160] for item in alternative_roles if _clean_text(item)],
+            "geography": _clean_text(payload.get("geography"))[:120],
+            "seniority": _clean_text(payload.get("seniority"))[:60],
+            "time_per_week": _optional_number(payload.get("time_per_week"), maximum=168),
+            "learning_budget": _optional_number(payload.get("learning_budget")),
+        }
+        goal = save_career_goal(user_id=current_user.id, values=values)
+    except ValueError as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
+    return jsonify({"success": True, "goal": career_goal_payload(goal)})
+
+
+@app.get("/api/evidence-profile")
+@login_required
+def api_get_evidence_profile():
+    return jsonify({"success": True, "profile": resume_profile_payload(get_resume_profile(current_user.id))})
+
+
+@app.patch("/api/evidence-profile/correct")
+@login_required
+def api_correct_evidence_profile():
+    payload = request.get_json(silent=True) or {}
+    action = _clean_text(payload.get("action")).lower()
+    if action not in {"add", "edit", "delete"}:
+        return jsonify({"success": False, "error": "Action must be add, edit, or delete."}), 400
+    skill_id = _clean_text(payload.get("skill_id")) or None
+    skill = _clean_text(payload.get("skill")) or None
+    if skill and len(skill) > 120:
+        return jsonify({"success": False, "error": "Skill mention is too long."}), 400
+    try:
+        confidence = _optional_number(payload.get("confidence"), maximum=1)
+    except ValueError as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
+    profile = correct_resume_skill(
+        user_id=current_user.id,
+        action=action,
+        skill_id=skill_id,
+        skill=skill,
+        evidence_span=_clean_text(payload.get("evidence_span"))[:280] or None,
+        confidence=confidence,
+    )
+    if profile is None:
+        return jsonify({"success": False, "error": "Skill mention was not found or is invalid."}), 404
+    return jsonify({"success": True, "profile": resume_profile_payload(profile)})
+
+
+def _onet_provenance(occupation: OnetOccupation) -> dict[str, str]:
+    return {"source": f"O*NET {occupation.release_version} Database", "release_version": occupation.release_version, "release_date": occupation.release_date, "imported_at": occupation.imported_at.isoformat()}
+
+
+def _onet_detail(occupation: OnetOccupation) -> dict[str, Any]:
+    skills = OnetSkill.query.filter_by(occupation_id=occupation.id).order_by(OnetSkill.name.asc()).all()
+    tasks = OnetTask.query.filter_by(occupation_id=occupation.id).order_by(OnetTask.id.asc()).all()
+    technologies = OnetTechnology.query.filter_by(occupation_id=occupation.id).order_by(OnetTechnology.name.asc()).all()
+    interests = OnetInterest.query.filter_by(occupation_id=occupation.id).order_by(OnetInterest.score.desc()).all()
+    skill_names = sorted({skill.name for skill in skills if skill.name})
+    related = []
+    if skill_names:
+        related = OnetOccupation.query.join(OnetSkill, OnetSkill.occupation_id == OnetOccupation.id).filter(OnetOccupation.id != occupation.id, OnetSkill.name.in_(skill_names[:5])).distinct().limit(5).all()
+    return {
+        "onet_soc_code": occupation.onet_soc_code,
+        "title": occupation.title,
+        "description": occupation.description or "Occupation description is not available in the imported release.",
+        "job_zone": occupation.job_zone or "Not available",
+        "tasks": [{"task_id": task.task_id, "statement": task.statement} for task in tasks] or [{"task_id": "unavailable", "statement": "Task data is not available in the imported release."}],
+        "skills": [{"element_id": skill.element_id, "name": skill.name, "scale_id": skill.scale_id, "value": skill.value} for skill in skills],
+        "technology": [{"name": item.name, "category": item.category} for item in technologies] or [{"name": "Technology data unavailable", "category": "Not imported"}],
+        "interests_riasec": [{"name": item.name, "score": item.score} for item in interests] or [{"name": "RIASEC data unavailable", "score": None}],
+        "related_careers": [{"onet_soc_code": item.onet_soc_code, "title": item.title} for item in related] or [{"onet_soc_code": "", "title": "Related career data unavailable"}],
+        "provenance": _onet_provenance(occupation),
+    }
+
+
+@app.get("/api/occupations/search")
+def api_search_occupations():
+    query = _clean_text(request.args.get("q"))
+    limit = min(max(int(request.args.get("limit", 20)), 1), 50) if request.args.get("limit", "").isdigit() else 20
+    statement = OnetOccupation.query
+    if query:
+        statement = statement.filter((OnetOccupation.title.ilike(f"%{query}%")) | (OnetOccupation.onet_soc_code.ilike(f"%{query}%")))
+    occupations = statement.order_by(OnetOccupation.title.asc()).limit(limit).all()
+    return jsonify({"success": True, "query": query, "occupations": [{"onet_soc_code": item.onet_soc_code, "title": item.title, "provenance": _onet_provenance(item)} for item in occupations], "fallback": not occupations})
+
+
+@app.get("/api/occupations/<onet_soc_code>")
+def api_occupation_detail(onet_soc_code: str):
+    occupation = OnetOccupation.query.filter_by(onet_soc_code=onet_soc_code).first()
+    if occupation is None:
+        return jsonify({"success": False, "error": "Occupation not found.", "fallback": True}), 404
+    return jsonify({"success": True, "occupation": _onet_detail(occupation)})
+
+
+@app.get("/api/occupations/<onet_soc_code>/compare")
+def api_compare_occupations(onet_soc_code: str):
+    other_code = _clean_text(request.args.get("compare_to") or request.args.get("other"))
+    if not other_code:
+        return jsonify({"success": False, "error": "compare_to is required."}), 400
+    left = OnetOccupation.query.filter_by(onet_soc_code=onet_soc_code).first()
+    right = OnetOccupation.query.filter_by(onet_soc_code=other_code).first()
+    if left is None or right is None:
+        return jsonify({"success": False, "error": "One or both occupations were not found.", "fallback": True}), 404
+    left_skills = {item.name for item in OnetSkill.query.filter_by(occupation_id=left.id).all()}
+    right_skills = {item.name for item in OnetSkill.query.filter_by(occupation_id=right.id).all()}
+    return jsonify({"success": True, "left": {"onet_soc_code": left.onet_soc_code, "title": left.title}, "right": {"onet_soc_code": right.onet_soc_code, "title": right.title}, "shared_skills": sorted(left_skills & right_skills), "left_only_skills": sorted(left_skills - right_skills), "right_only_skills": sorted(right_skills - left_skills), "provenance": _onet_provenance(left)})
+
+
+def _job_skill_breakdown(description: str, resume_text: str) -> dict[str, Any]:
+    normalized_description = description.lower()
+    preferred_markers = ("preferred", "nice to have", "bonus", "desired", "plus")
+    required_markers = ("required", "must have", "minimum qualifications", "qualifications")
+    preferred_text = " ".join(line for line in description.splitlines() if any(marker in line.lower() for marker in preferred_markers))
+    required_text = " ".join(line for line in description.splitlines() if any(marker in line.lower() for marker in required_markers))
+    all_skills = _extract_skills(description)
+    preferred_skills = set(_extract_skills(preferred_text))
+    required_skills = set(_extract_skills(required_text)) or set(all_skills) - preferred_skills
+    if not required_skills and all_skills:
+        required_skills = set(all_skills)
+    resume_skills = set(_extract_skills(resume_text))
+    aliases = {"js": "javascript", "py": "python", "postgres": "sql", "postgresql": "sql", "powerbi": "power bi"}
+    semantic_matches = []
+    exact_matches = []
+    for required_skill in sorted(required_skills | preferred_skills):
+        normalized = aliases.get(required_skill.replace(" ", ""), required_skill)
+        if required_skill in resume_skills:
+            exact_matches.append(required_skill)
+        elif normalized in {aliases.get(skill.replace(" ", ""), skill) for skill in resume_skills}:
+            semantic_matches.append({"job_skill": required_skill, "resume_skill": normalized})
+    sentences = re.split(r"(?<=[.!?])\s+|\n+", resume_text)
+    evidence = []
+    for skill in exact_matches + [item["resume_skill"] for item in semantic_matches]:
+        quote = next((sentence.strip() for sentence in sentences if skill.lower() in sentence.lower()), "")
+        if quote:
+            evidence.append({"skill": skill, "quote": quote[:280]})
+    matched = set(exact_matches) | {item["job_skill"] for item in semantic_matches}
+    return {
+        "required": {"skills": sorted(required_skills), "matched": sorted(matched & required_skills), "missing": sorted(required_skills - matched)},
+        "preferred": {"skills": sorted(preferred_skills), "matched": sorted(matched & preferred_skills), "missing": sorted(preferred_skills - matched)},
+        "exact_matches": exact_matches,
+        "semantic_matches": semantic_matches,
+        "resume_evidence_quotes": evidence,
+        "missing_skill_requirements": sorted((required_skills | preferred_skills) - matched),
+    }
+
+
+@app.post("/api/jobs")
+@login_required
+def api_create_job():
+    payload = request.get_json(silent=True) or {}
+    title = _clean_text(payload.get("title"))
+    description = _clean_text(payload.get("description_raw") or payload.get("description"))
+    if not title or not description:
+        return jsonify({"success": False, "error": "Job title and pasted job description are required."}), 400
+    if len(description) > 50000:
+        return jsonify({"success": False, "error": "Job description is too long."}), 400
+    job = create_job_posting(user_id=current_user.id, title=title[:200], company=_clean_text(payload.get("company"))[:160], description_raw=description, source_url=_clean_text(payload.get("source_url"))[:1000])
+    application = create_application(user_id=current_user.id, job_posting_id=job.id, status="Bookmarked")
+    return jsonify({"success": True, "job": job_posting_payload(job), "application": application_payload(application)}), 201
+
+
+@app.get("/api/jobs")
+@login_required
+def api_list_jobs():
+    jobs = JobPosting.query.filter_by(user_id=current_user.id).order_by(JobPosting.created_at.desc()).all()
+    return jsonify({"success": True, "jobs": [job_posting_payload(job) for job in jobs]})
+
+
+@app.post("/api/resume-versions")
+@login_required
+def api_create_resume_version():
+    payload = request.get_json(silent=True) or {}
+    name = _clean_text(payload.get("name")) or "Resume version"
+    content = _clean_text(payload.get("content_text") or payload.get("resume_text"))
+    if not content:
+        return jsonify({"success": False, "error": "Resume content is required."}), 400
+    version = create_resume_version(user_id=current_user.id, name=name[:160], content_text=content)
+    return jsonify({"success": True, "resume_version": resume_version_payload(version)}), 201
+
+
+@app.get("/api/resume-versions")
+@login_required
+def api_list_resume_versions():
+    versions = ResumeVersion.query.filter_by(user_id=current_user.id).order_by(ResumeVersion.created_at.desc()).all()
+    return jsonify({"success": True, "resume_versions": [resume_version_payload(version) for version in versions]})
+
+
+@app.get("/api/applications")
+@login_required
+def api_list_applications():
+    return jsonify({"success": True, "applications": [application_payload(item) for item in list_owned_applications(current_user.id)]})
+
+
+@app.post("/api/applications")
+@login_required
+def api_create_application():
+    payload = request.get_json(silent=True) or {}
+    try:
+        job_id = int(payload.get("job_posting_id"))
+    except (TypeError, ValueError):
+        return jsonify({"success": False, "error": "A job posting is required."}), 400
+    if get_owned_job(current_user.id, job_id) is None:
+        return jsonify({"success": False, "error": "Job posting not found for the current user."}), 404
+    resume_version_id = payload.get("resume_version_id")
+    if resume_version_id is not None:
+        try:
+            resume_version_id = int(resume_version_id)
+        except (TypeError, ValueError):
+            return jsonify({"success": False, "error": "Resume version is invalid."}), 400
+        if get_owned_resume_version(current_user.id, resume_version_id) is None:
+            return jsonify({"success": False, "error": "Resume version not found for the current user."}), 404
+    status = _clean_text(payload.get("status")) or "Bookmarked"
+    if status not in Application.STATUSES:
+        return jsonify({"success": False, "error": "Invalid application status."}), 400
+    application = create_application(user_id=current_user.id, job_posting_id=job_id, resume_version_id=resume_version_id, status=status, notes=_clean_text(payload.get("notes")))
+    return jsonify({"success": True, "application": application_payload(application)}), 201
+
+
+@app.patch("/api/applications/<int:application_id>")
+@login_required
+def api_update_application(application_id: int):
+    application = get_owned_application(current_user.id, application_id)
+    if application is None:
+        return jsonify({"success": False, "error": "Application not found for the current user."}), 404
+    payload = request.get_json(silent=True) or {}
+    status = _clean_text(payload.get("status"))
+    if status and status not in Application.STATUSES:
+        return jsonify({"success": False, "error": "Invalid application status."}), 400
+    if status:
+        application.status = status
+    if "notes" in payload:
+        application.notes = _clean_text(payload.get("notes"))
+    if "follow_up_date" in payload:
+        try:
+            application.follow_up_date = date.fromisoformat(payload.get("follow_up_date")) if payload.get("follow_up_date") else None
+        except (TypeError, ValueError):
+            return jsonify({"success": False, "error": "Follow-up date must be YYYY-MM-DD."}), 400
+    db.session.commit()
+    return jsonify({"success": True, "application": application_payload(application)})
+
+
+@app.post("/api/jobs/analyze")
+@login_required
+def api_analyze_job():
+    payload = request.get_json(silent=True) or {}
+    try:
+        job_id = int(payload.get("job_posting_id"))
+        version_id = int(payload.get("resume_version_id"))
+    except (TypeError, ValueError):
+        return jsonify({"success": False, "error": "A job posting and resume version are required."}), 400
+    job = get_owned_job(current_user.id, job_id)
+    version = get_owned_resume_version(current_user.id, version_id)
+    if job is None or version is None:
+        return jsonify({"success": False, "error": "Job posting or resume version not found for the current user."}), 404
+    result = _job_skill_breakdown(job.description_raw, version.content_text)
+    result["job_posting_id"] = job.id
+    result["resume_version_id"] = version.id
+    result["comparison_timestamp"] = datetime.utcnow().isoformat() + "Z"
+    snapshot_hash = hashlib.sha256(json.dumps({"job": job.content_hash, "resume": version.content_hash, "result": result}, sort_keys=True).encode("utf-8")).hexdigest()
+    result["snapshot_hash"] = snapshot_hash
+    snapshot = AnalysisSnapshot.query.filter_by(user_id=current_user.id, snapshot_hash=snapshot_hash).first()
+    if snapshot is None:
+        snapshot = create_analysis_snapshot(user_id=current_user.id, job_posting_id=job.id, resume_version_id=version.id, result=result, snapshot_hash=snapshot_hash)
+    application = Application.query.filter_by(user_id=current_user.id, job_posting_id=job.id).order_by(Application.updated_at.desc()).first()
+    if application is not None:
+        application.analysis_snapshot_id = snapshot.id
+        application.resume_version_id = version.id
+        db.session.commit()
+    return jsonify({"success": True, "analysis": result, "snapshot": snapshot_payload(snapshot)})
+
+
+@app.post("/api/applications/<int:application_id>/export-apply")
+@login_required
+def api_export_and_mark_applied(application_id: int):
+    application = get_owned_application(current_user.id, application_id)
+    if application is None:
+        return jsonify({"success": False, "error": "Application not found for the current user."}), 404
+    payload = request.get_json(silent=True) or {}
+    snapshot_id = payload.get("analysis_snapshot_id") or application.analysis_snapshot_id
+    try:
+        snapshot_id = int(snapshot_id)
+    except (TypeError, ValueError):
+        return jsonify({"success": False, "error": "Analyze the job before marking it applied."}), 400
+    snapshot = AnalysisSnapshot.query.filter_by(id=snapshot_id, user_id=current_user.id).first()
+    if snapshot is None or snapshot.job_posting_id != application.job_posting_id:
+        return jsonify({"success": False, "error": "Analysis snapshot is not valid for this application."}), 400
+    application.analysis_snapshot_id = snapshot.id
+    application.resume_version_id = snapshot.resume_version_id
+    application.status = "Applied"
+    db.session.commit()
+    return jsonify({"success": True, "export_format": "pdf", "snapshot_locked": True, "application": application_payload(application), "snapshot": snapshot_payload(snapshot)})
+
+
 @app.get("/methodology")
 def methodology() -> str:
     return render_template("methodology.html", active_page="methodology", title="Methodology | Prayash")
+
+
+@app.get("/occupations/<onet_soc_code>")
+def occupation_detail_page(onet_soc_code: str) -> str:
+    occupation = OnetOccupation.query.filter_by(onet_soc_code=onet_soc_code).first()
+    if occupation is None:
+        return render_template("occupation.html", active_page="insights", title="Occupation unavailable | Prayash", occupation=None), 404
+    return render_template("occupation.html", active_page="insights", title=f"{occupation.title} | Prayash", occupation=_onet_detail(occupation))
 
 
 @app.get("/privacy")

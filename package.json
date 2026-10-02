@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "@formkit/auto-animate": "^0.10.0",
+    "lucide": "^1.48.0",
+    "lucide-react": "^1.48.0",
+    "motion": "^13.4.4"
+  },
+  "name": "4th-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arpanbhandari5/Final_year_project.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arpanbhandari5/Final_year_project/issues"
+  },
+  "homepage": "https://github.com/arpanbhandari5/Final_year_project#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

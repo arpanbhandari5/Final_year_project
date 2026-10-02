@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container">
+    {% if not occupation %}
+    <span class="eyebrow">O*NET Occupation</span>
+    <h1>Occupation data unavailable.</h1>
+    <p class="lead">This SOC code is not present in the imported O*NET release.</p>
+    {% else %}
+    <div class="occupation-heading">
+      <div>
+        <span class="eyebrow">O*NET Occupation · {{ occupation.onet_soc_code }}</span>
+        <h1>{{ occupation.title }}</h1>
+        <p class="lead">{{ occupation.description }}</p>
+      </div>
+      <div class="provenance-badges" aria-label="Data provenance">
+        <span class="status-pill"><i data-lucide="award" aria-hidden="true"></i> Source: {{ occupation.provenance.source }}</span>
+        <span class="status-pill">Release Date: {{ occupation.provenance.release_date }}</span>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if occupation %}
+<section class="content-section">
+  <div class="container">
+    <div class="occupation-tabs" role="tablist" aria-label="Occupation detail sections">
+      <button class="is-active" type="button" role="tab" aria-selected="true" data-occupation-tab="tasks"><i data-lucide="check-circle" aria-hidden="true"></i> Tasks</button>
+      <button type="button" role="tab" aria-selected="false" data-occupation-tab="skills"><i data-lucide="award" aria-hidden="true"></i> Skills &amp; Knowledge</button>
+      <button type="button" role="tab" aria-selected="false" data-occupation-tab="technology"><i data-lucide="cpu" aria-hidden="true"></i> Technology Tools</button>
+      <button type="button" role="tab" aria-selected="false" data-occupation-tab="interests"><i data-lucide="compass" aria-hidden="true"></i> Interest Profile RIASEC</button>
+      <button type="button" role="tab" aria-selected="false" data-occupation-tab="related"><i data-lucide="briefcase" aria-hidden="true"></i> Related Careers</button>
+    </div>
+    <div class="occupation-panel" data-occupation-panel>
+      <section data-occupation-content="tasks" role="tabpanel">
+        <h2 class="section-title"><i data-lucide="check-circle" aria-hidden="true"></i> Tasks</h2>
+        <div class="occupation-list">{% for item in occupation.tasks %}<article class="occupation-item"><strong>{{ item.task_id }}</strong><p>{{ item.statement }}</p></article>{% endfor %}</div>
+      </section>
+      <section class="hidden" data-occupation-content="skills" role="tabpanel">
+        <h2 class="section-title"><i data-lucide="award" aria-hidden="true"></i> Skills &amp; Knowledge</h2>
+        <div class="occupation-table"><div class="occupation-table__header"><strong>Element</strong><strong>Scale</strong><strong>Value</strong></div>{% for item in occupation.skills %}<div class="occupation-table__row"><span>{{ item.name }}</span><span>{{ item.scale_id or "Not available" }}</span><span>{{ item.value if item.value is not none else "Not available" }}</span></div>{% else %}<div class="occupation-item">Skill data is not available in the imported release.</div>{% endfor %}</div>
+      </section>
+      <section class="hidden" data-occupation-content="technology" role="tabpanel">
+        <h2 class="section-title"><i data-lucide="cpu" aria-hidden="true"></i> Technology Tools</h2>
+        <div class="occupation-list">{% for item in occupation.technology %}<article class="occupation-item"><strong>{{ item.name }}</strong><p>{{ item.category or "Technology category not available." }}</p></article>{% endfor %}</div>
+      </section>
+      <section class="hidden" data-occupation-content="interests" role="tabpanel">
+        <h2 class="section-title"><i data-lucide="compass" aria-hidden="true"></i> Interest Profile RIASEC</h2>
+        {% for item in occupation.interests_riasec %}<div class="riasec-row"><div class="inline-actions" style="justify-content: space-between;"><strong>{{ item.name }}</strong><span>{{ item.score if item.score is not none else "Not available" }}</span></div><div class="riasec-bar"><span style="width: {{ ((item.score or 0) / 5 * 100) if item.score is not none else 0 }}%;"></span></div></div>{% endfor %}
+      </section>
+      <section class="hidden" data-occupation-content="related" role="tabpanel">
+        <h2 class="section-title"><i data-lucide="briefcase" aria-hidden="true"></i> Related Careers</h2>
+        <p class="section-subtitle">Related careers are inferred from shared imported skill elements.</p>
+        <div class="occupation-list">{% for item in occupation.related_careers %}{% if item.onet_soc_code %}<a class="occupation-item" href="{{ url_for('occupation_detail_page', onet_soc_code=item.onet_soc_code) }}"><strong>{{ item.title }}</strong><span>{{ item.onet_soc_code }}</span></a>{% else %}<article class="occupation-item">{{ item.title }}</article>{% endif %}{% endfor %}</div>
+      </section>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.querySelectorAll('[data-occupation-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const current = document.querySelector('[data-occupation-content]:not(.hidden)');
+      const next = document.querySelector(`[data-occupation-content="${button.dataset.occupationTab}"]`);
+      if (!next || next === current) return;
+      document.querySelectorAll('[data-occupation-tab]').forEach((item) => { item.classList.toggle('is-active', item === button); item.setAttribute('aria-selected', String(item === button)); });
+      const show = () => { current?.classList.add('hidden'); next.classList.remove('hidden'); const targetHeight = next.scrollHeight; if (window.Motion?.animate) window.Motion.animate(next, { opacity: [0, 1], height: [0, targetHeight] }, { duration: 0.24, easing: 'ease-out' }); else next.animate({ opacity: [0, 1], height: ['0px', `${targetHeight}px`] }, { duration: 240 }); };
+      if (window.Motion?.animate && current) window.Motion.animate(current, { opacity: [1, 0] }, { duration: 0.14 }).finished.then(show); else show();
+    });
+  });
+</script>
+{% endblock %}

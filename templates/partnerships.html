@@ -24,20 +24,21 @@
     <article class="form-card">
       <h3 class="section-title">Start a pilot</h3>
       <p class="section-subtitle">Use Prayash with a cohort, a department, or a talent team.</p>
-      <form class="field" style="margin-top: 1rem; gap: 1rem;">
+      {% if status %}<p class="small-note" aria-live="polite">{{ status }}</p>{% endif %}
+      <form method="post" class="field" style="margin-top: 1rem; gap: 1rem;">
         <label>
           Organization
-          <input type="text" placeholder="Organization name">
+          <input name="organization" type="text" placeholder="Organization name" required>
         </label>
         <label>
           Contact email
-          <input type="email" placeholder="name@company.com">
+          <input name="contact_email" type="email" placeholder="name@company.com" required>
         </label>
         <label>
           Use case
-          <textarea placeholder="Tell us what you want to achieve."></textarea>
+          <textarea name="use_case" placeholder="Tell us what you want to achieve." required></textarea>
         </label>
-        <button class="button" type="button">Request a walkthrough</button>
+        <button class="button" type="submit">Request a walkthrough</button>
       </form>
     </article>
     <article class="form-card">

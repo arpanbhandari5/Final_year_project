@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-10-02T04:40:27.794236+00:00",
+  "onet_occupation_rows": 1016,
+  "historical_source_rows": 702,
+  "exact_mappings": 618,
+  "unmapped_rows": 84,
+  "fuzzy_matching": false,
+  "mapping_rule": "append .00 to bare ##-#### SOC codes and require an exact O*NET-SOC Code match",
+  "not_current_task_ground_truth": true,
+  "files": {
+    "occupation_master": "replacement_data\\occupation_master.csv",
+    "external_occupation_labels": "replacement_data\\external_occupation_labels.csv",
+    "unmatched_external_labels": "replacement_data\\unmatched_external_labels.csv"
+  },
+  "task_statement_rows": 18838,
+  "annotation_template": "replacement_data\\task_exposure_annotation_template.csv",
+  "raw_hashes": {
+    "onet_31_0_text.zip": "6883548adf5fde64cf6f801b35d15519c9225f2732c3cab0e281c652d16b23a9",
+    "frey_osborne_historical_702_occupations.csv": "5f4a78996cc5e5856c7277085a10a7ff3bea376435b7da4d7d9d3d7c3a7d474c"
+  }
+}
