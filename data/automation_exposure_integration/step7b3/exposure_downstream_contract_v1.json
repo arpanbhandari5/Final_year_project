@@ -1,0 +1,1312 @@
+{
+  "RF_production_role": "NONE",
+  "application_implementation": false,
+  "automatic_candidate_resolution_allowed": false,
+  "contract_version": "historical-exposure-downstream-v1.0",
+  "crosswalk_version": "v4.0",
+  "display_state_rules": [
+    {
+      "allowed_UI_behavior": "Show all permitted candidates and attributed sources with limitations; identify shared source groups; optionally offer clarification without automatic resolution.",
+      "allowed_numeric_fields": "Valid unchanged values ONLY within identified historical source records; evidence scores/ranks are audit metadata only; availability counts are not confidence.",
+      "any_historical_exposure_available": "TRUE",
+      "automatic_selection_allowed": "FALSE",
+      "candidate_list_behavior": "Retain inferred SOC/title and all source records; never represent inference as verified current employment.",
+      "clarification_may_be_requested": "FALSE",
+      "coverage_denominator_behavior": "Selected TOP SOC count 1",
+      "historical_exposure_availability": "ALL_SELECTED_SOC",
+      "human_safe_interpretation": "One frozen inferred occupation has an available historical source value; interpretation depends on its relationship.",
+      "limitation_disclosure_behavior": "Retain inference uncertainty, source age, scope, US-origin evidence and unverified local lineage; coverage is availability, not accuracy.",
+      "occupation_availability": "TRUE_INFERRED_NOT_CONFIRMED",
+      "profile_numeric_summary_allowed": "FALSE",
+      "prohibited_UI_behavior": "RF/nearest/default fallback; rank-1 answer for MULTIPLE; averaging/min/max/median/profile scoring; hidden unmapped SOCs; shared-source independent confirmation; personal-risk wording.",
+      "prohibited_numeric_fields": "Profile exposure summary; personal risk or job-loss probability; transformed/weighted/aggregated exposure; default or fabricated values.",
+      "relationship_disclosure_behavior": "Expose each edge relationship type, interpretation and recorded limitations. Broader and overlap values are historical source-category references, not exact modern-SOC measurements.",
+      "source_trace_behavior": "Retain every source path with identity, raw/value validity and full provenance; unavailable values remain null. Shared values retain identity; multi-source SOCs retain every source.",
+      "state_code": "TOP_MAPPED"
+    },
+    {
+      "allowed_UI_behavior": "Show all permitted candidates and attributed sources with limitations; identify shared source groups; optionally offer clarification without automatic resolution.",
+      "allowed_numeric_fields": "Audit counts only; historical exposure fields null.",
+      "any_historical_exposure_available": "FALSE",
+      "automatic_selection_allowed": "FALSE",
+      "candidate_list_behavior": "Retain inferred SOC/title, explicit unavailable reason and any invalid/missing-source trace metadata.",
+      "clarification_may_be_requested": "TRUE",
+      "coverage_denominator_behavior": "Selected TOP SOC count 1",
+      "historical_exposure_availability": "NONE",
+      "human_safe_interpretation": "An occupation is inferred, but no valid historical exposure value is available.",
+      "limitation_disclosure_behavior": "Retain inference uncertainty, source age, scope, US-origin evidence and unverified local lineage; coverage is availability, not accuracy.",
+      "occupation_availability": "TRUE_INFERRED_NOT_CONFIRMED",
+      "profile_numeric_summary_allowed": "FALSE",
+      "prohibited_UI_behavior": "RF/nearest/default fallback; rank-1 answer for MULTIPLE; averaging/min/max/median/profile scoring; hidden unmapped SOCs; shared-source independent confirmation; personal-risk wording.",
+      "prohibited_numeric_fields": "Profile exposure summary; personal risk or job-loss probability; transformed/weighted/aggregated exposure; default or fabricated values.",
+      "relationship_disclosure_behavior": "Expose each edge relationship type, interpretation and recorded limitations. Broader and overlap values are historical source-category references, not exact modern-SOC measurements.",
+      "source_trace_behavior": "Retain every source path with identity, raw/value validity and full provenance; unavailable values remain null. Shared values retain identity; multi-source SOCs retain every source.",
+      "state_code": "TOP_UNMAPPED"
+    },
+    {
+      "allowed_UI_behavior": "Show all permitted candidates and attributed sources with limitations; identify shared source groups; optionally offer clarification without automatic resolution.",
+      "allowed_numeric_fields": "Valid unchanged values ONLY within identified historical source records; evidence scores/ranks are audit metadata only; availability counts are not confidence.",
+      "any_historical_exposure_available": "TRUE",
+      "automatic_selection_allowed": "FALSE",
+      "candidate_list_behavior": "Preserve every eligible SOC and every source path; no selected answer or profile number.",
+      "clarification_may_be_requested": "TRUE",
+      "coverage_denominator_behavior": "Every eligible SOC, including unavailable SOCs",
+      "historical_exposure_availability": "ALL_ELIGIBLE_SOCS",
+      "human_safe_interpretation": "All eligible occupation candidates have historical paths; the occupation remains unresolved.",
+      "limitation_disclosure_behavior": "Retain inference uncertainty, source age, scope, US-origin evidence and unverified local lineage; coverage is availability, not accuracy.",
+      "occupation_availability": "CANDIDATES_ONLY_NO_SINGLE_SELECTION",
+      "profile_numeric_summary_allowed": "FALSE",
+      "prohibited_UI_behavior": "RF/nearest/default fallback; rank-1 answer for MULTIPLE; averaging/min/max/median/profile scoring; hidden unmapped SOCs; shared-source independent confirmation; personal-risk wording.",
+      "prohibited_numeric_fields": "Profile exposure summary; personal risk or job-loss probability; transformed/weighted/aggregated exposure; default or fabricated values.",
+      "relationship_disclosure_behavior": "Expose each edge relationship type, interpretation and recorded limitations. Broader and overlap values are historical source-category references, not exact modern-SOC measurements.",
+      "source_trace_behavior": "Retain every source path with identity, raw/value validity and full provenance; unavailable values remain null. Shared values retain identity; multi-source SOCs retain every source.",
+      "state_code": "MULTIPLE_ALL_MAPPED"
+    },
+    {
+      "allowed_UI_behavior": "Show all permitted candidates and attributed sources with limitations; identify shared source groups; optionally offer clarification without automatic resolution.",
+      "allowed_numeric_fields": "Valid unchanged values ONLY within identified historical source records; evidence scores/ranks are audit metadata only; availability counts are not confidence.",
+      "any_historical_exposure_available": "TRUE",
+      "automatic_selection_allowed": "FALSE",
+      "candidate_list_behavior": "Preserve mapped and unavailable SOCs; numerator=mapped count, denominator=all eligible SOCs.",
+      "clarification_may_be_requested": "TRUE",
+      "coverage_denominator_behavior": "Every eligible SOC, including unavailable SOCs",
+      "historical_exposure_availability": "SOME_ELIGIBLE_SOCS",
+      "human_safe_interpretation": "Some eligible occupation candidates have historical paths; others remain unavailable. Coverage is data availability only.",
+      "limitation_disclosure_behavior": "Retain inference uncertainty, source age, scope, US-origin evidence and unverified local lineage; coverage is availability, not accuracy.",
+      "occupation_availability": "CANDIDATES_ONLY_NO_SINGLE_SELECTION",
+      "profile_numeric_summary_allowed": "FALSE",
+      "prohibited_UI_behavior": "RF/nearest/default fallback; rank-1 answer for MULTIPLE; averaging/min/max/median/profile scoring; hidden unmapped SOCs; shared-source independent confirmation; personal-risk wording.",
+      "prohibited_numeric_fields": "Profile exposure summary; personal risk or job-loss probability; transformed/weighted/aggregated exposure; default or fabricated values.",
+      "relationship_disclosure_behavior": "Expose each edge relationship type, interpretation and recorded limitations. Broader and overlap values are historical source-category references, not exact modern-SOC measurements.",
+      "source_trace_behavior": "Retain every source path with identity, raw/value validity and full provenance; unavailable values remain null. Shared values retain identity; multi-source SOCs retain every source.",
+      "state_code": "MULTIPLE_PARTIAL"
+    },
+    {
+      "allowed_UI_behavior": "Show all permitted candidates and attributed sources with limitations; identify shared source groups; optionally offer clarification without automatic resolution.",
+      "allowed_numeric_fields": "Audit counts only; historical exposure fields null.",
+      "any_historical_exposure_available": "FALSE",
+      "automatic_selection_allowed": "FALSE",
+      "candidate_list_behavior": "Preserve all eligible SOCs, audit evidence/rank and unavailable reasons.",
+      "clarification_may_be_requested": "TRUE",
+      "coverage_denominator_behavior": "Every eligible SOC, including unavailable SOCs",
+      "historical_exposure_availability": "NONE",
+      "human_safe_interpretation": "Occupation remains unresolved; historical exposure is unavailable for every eligible candidate.",
+      "limitation_disclosure_behavior": "Retain inference uncertainty, source age, scope, US-origin evidence and unverified local lineage; coverage is availability, not accuracy.",
+      "occupation_availability": "CANDIDATES_ONLY_NO_SINGLE_SELECTION",
+      "profile_numeric_summary_allowed": "FALSE",
+      "prohibited_UI_behavior": "RF/nearest/default fallback; rank-1 answer for MULTIPLE; averaging/min/max/median/profile scoring; hidden unmapped SOCs; shared-source independent confirmation; personal-risk wording.",
+      "prohibited_numeric_fields": "Profile exposure summary; personal risk or job-loss probability; transformed/weighted/aggregated exposure; default or fabricated values.",
+      "relationship_disclosure_behavior": "Expose each edge relationship type, interpretation and recorded limitations. Broader and overlap values are historical source-category references, not exact modern-SOC measurements.",
+      "source_trace_behavior": "Retain every source path with identity, raw/value validity and full provenance; unavailable values remain null. Shared values retain identity; multi-source SOCs retain every source.",
+      "state_code": "MULTIPLE_NONE_MAPPED"
+    },
+    {
+      "allowed_UI_behavior": "Explain abstention and request occupation evidence; any later confirmation creates a new context.",
+      "allowed_numeric_fields": "Audit counts only; historical exposure fields null.",
+      "any_historical_exposure_available": "FALSE",
+      "automatic_selection_allowed": "FALSE",
+      "candidate_list_behavior": "No exposure candidate list or source trace; diagnostic/rejected SOCs cannot propagate exposure.",
+      "clarification_may_be_requested": "TRUE",
+      "coverage_denominator_behavior": "NULL: no lookup",
+      "historical_exposure_availability": "NO_LOOKUP",
+      "human_safe_interpretation": "Occupation evidence is insufficient; historical exposure lookup was not performed.",
+      "limitation_disclosure_behavior": "Retain inference uncertainty, source age, scope, US-origin evidence and unverified local lineage; coverage is availability, not accuracy.",
+      "occupation_availability": "FALSE_ABSTENTION",
+      "profile_numeric_summary_allowed": "FALSE",
+      "prohibited_UI_behavior": "RF/nearest/default fallback; rank-1 answer for MULTIPLE; averaging/min/max/median/profile scoring; hidden unmapped SOCs; shared-source independent confirmation; personal-risk wording.",
+      "prohibited_numeric_fields": "Profile exposure summary; personal risk or job-loss probability; transformed/weighted/aggregated exposure; default or fabricated values.",
+      "relationship_disclosure_behavior": "Not applicable: no exposure lookup.",
+      "source_trace_behavior": "No lookup, no trace and no numeric exposure.",
+      "state_code": "INSUFFICIENT"
+    }
+  ],
+  "engine_version": "historical-exposure-integration-v1.0",
+  "failure_contract": [
+    {
+      "field_or_rule": "validation_status",
+      "meaning": "Fail closed; do not render a successful exposure panel.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "ERROR",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "failure_reason",
+      "meaning": "Stable frozen validation terminology, not numerical fallback.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "ARTIFACT_VALIDATION_FAILURE",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "validation_errors",
+      "meaning": "Retain check_id, error_code, error_type, message and safely available context.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "NONEMPTY_ARRAY",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "coverage_state",
+      "meaning": "No successful primary state when validation fails.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "NULL",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "exposure_state",
+      "meaning": "No TOP/MULTIPLE/INSUFFICIENT success response substituted for artifact failure.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "NULL",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "profile_exposure_summary",
+      "meaning": "No profile scalar.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "NULL",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "exposure",
+      "meaning": "No numerical exposure or default.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "NULL",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "UI_behavior",
+      "meaning": "Show safe unavailable/validation message; retain error details for diagnostics; no RF/legacy/default fallback.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "EXPLICIT_UNAVAILABLE_ERROR",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "API_behavior",
+      "meaning": "Preserve failure envelope; transport status may be defined later, but never signal successful exposure data.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "STRUCTURED_FAILURE",
+      "successful_exposure_allowed": "FALSE"
+    },
+    {
+      "field_or_rule": "unexpected_programmer_errors",
+      "meaning": "Never silently produce success; internal helpers may raise and the documented validation_boundary standardizes expected artifact failures.",
+      "numerical_fallback_allowed": "FALSE",
+      "required_value": "PROPAGATE_OR_EXPLICIT_SERVER_ERROR",
+      "successful_exposure_allowed": "FALSE"
+    }
+  ],
+  "failure_envelope": {
+    "coverage_state": null,
+    "exposure": null,
+    "exposure_state": null,
+    "failure_reason": "ARTIFACT_VALIDATION_FAILURE",
+    "profile_exposure_summary": null,
+    "validation_errors": [
+      {
+        "check_id": "FAILED_CHECK_IDENTIFIER",
+        "context": null,
+        "error_code": "ARTIFACT_VALIDATION_FAILURE",
+        "error_type": "EXCEPTION_TYPE",
+        "message": "SAFE_DIAGNOSTIC_MESSAGE"
+      }
+    ],
+    "validation_status": "ERROR"
+  },
+  "freeze_usage": "Frozen byte copy loaded with explicit repository root via load_engine(root). No business-logic refactor; source CLI root inference depends on file location, so pass --root explicitly if invoking frozen CLI.",
+  "frozen_engine_path": "scripts/frozen/automation_exposure_integration_v1_0.py",
+  "legacy_risk_score_fallback_allowed": false,
+  "limitations": [
+    "Historical source-taxonomy correspondence and exact inclusion boundaries have limitations.",
+    "Modern O*NET mapping does not make a historical value current.",
+    "Complete local source/Wocke extraction lineage has not been independently reproduced; reference code/title verification is a separate claim.",
+    "Historical occupation-level exposure is not current generative-AI risk, personal automation probability or probability of losing a job.",
+    "US-origin reference evidence may not generalize to other labor markets.",
+    "Coverage is data availability, not accuracy, semantic equivalence or inference confidence.",
+    "TOP inference does not verify current employment; CV role chronology may remain unresolved.",
+    "EQUIVALENT retains recorded scope/current-historical limitations; broader and overlap values are contextual source references."
+  ],
+  "manual_confirmation_policy": {
+    "fields": [
+      "user_selected",
+      "user_confirmed",
+      "selected_soc",
+      "selected_title",
+      "confirmation_taxonomy_version",
+      "confirmation_timestamp",
+      "role_context",
+      "original_analysis_context_id"
+    ],
+    "implemented": false,
+    "may_create_new_analysis_context": true,
+    "original_frozen_result_mutation_allowed": false,
+    "original_status_preserved": true,
+    "reserved_only": true,
+    "role_context_values": [
+      "current",
+      "past",
+      "desired",
+      "unspecified"
+    ],
+    "selection_origin_values": [
+      "FROZEN_INFERENCE",
+      "USER_SELECTED",
+      "USER_CONFIRMED"
+    ],
+    "timestamp_rule": "Actual future action time only; null before an action; never backfill."
+  },
+  "methodology_contract": "historical-exposure-methodology-v1.0",
+  "missing_exposure_blocks_independently_valid_skill_analysis": false,
+  "nullable_rank_ordering": "If any candidate rank is null, retain authoritative candidate row order as audit ordering; never synthesize a semantic rank.",
+  "preserve_null_metadata": true,
+  "primary_states": [
+    "TOP_MAPPED",
+    "TOP_UNMAPPED",
+    "MULTIPLE_ALL_MAPPED",
+    "MULTIPLE_PARTIAL",
+    "MULTIPLE_NONE_MAPPED",
+    "INSUFFICIENT"
+  ],
+  "profile_numeric_summary_allowed": false,
+  "provenance_fields": [
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "profile_input_id",
+      "level": "profile",
+      "meaning": "Original profile_group_id or separately identified new input context.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Frozen inference profile_group_id"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "analysis_context_id",
+      "level": "profile",
+      "meaning": "Result context identifier; future confirmation uses a new identifier linked to original.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Future engine must assign; no runtime context created in Step 7B.1"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "inference_engine",
+      "level": "profile",
+      "meaning": "Frozen deterministic engine identity, not RF.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "occupation_inference_freeze_manifest.json frozen_engine"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "inference_version",
+      "level": "profile",
+      "meaning": "occupation-inference-v1.0.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Inference freeze manifest freeze_version"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "original_frozen_inference_status",
+      "level": "profile",
+      "meaning": "Preserve TOP_CANDIDATE/MULTIPLE_CANDIDATES/INSUFFICIENT_EVIDENCE.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Frozen inference inference_status"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "selection_origin",
+      "level": "profile",
+      "meaning": "FROZEN_INFERENCE for automatic result; future USER_SELECTED or USER_CONFIRMED only with provenance.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "State rule; future explicit action"
+    },
+    {
+      "data_type": "integer",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "complete_eligible_candidate_count",
+      "level": "profile",
+      "meaning": "Count every eligible audit SOC including diagnostics for INSUFFICIENT; does not authorize lookup.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Candidate audit candidate_eligible=TRUE, cross-check frozen eligible_candidate_count"
+    },
+    {
+      "data_type": "integer",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "evaluated_candidate_count",
+      "level": "profile",
+      "meaning": "TOP selected SOC count 1; MULTIPLE all eligible SOC count; INSUFFICIENT 0.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Inference gate and candidate-preservation rule"
+    },
+    {
+      "data_type": "integer",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "mapped_candidate_count",
+      "level": "profile",
+      "meaning": "Evaluated SOC count with at least one valid valued frozen path; INSUFFICIENT 0.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Future validated per-SOC lookup"
+    },
+    {
+      "data_type": "integer",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "coverage_numerator",
+      "level": "profile",
+      "meaning": "Mapped count; availability only.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "mapped_candidate_count"
+    },
+    {
+      "data_type": "integer",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "coverage_denominator",
+      "level": "profile",
+      "meaning": "MULTIPLE all eligible SOCs; TOP evaluated count 1; null for INSUFFICIENT, never diagnostic denominator as lookup.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "State rules"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "coverage_state",
+      "level": "profile",
+      "meaning": "Exactly six primary states on valid result; null on artifact validation error.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "State contract"
+    },
+    {
+      "data_type": "boolean",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "clarification_recommended",
+      "level": "profile",
+      "meaning": "Advisory only; never silently resolves occupation.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "State contract"
+    },
+    {
+      "data_type": "null",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "profile_exposure_summary",
+      "level": "profile",
+      "meaning": "Always JSON null in this policy, including TOP; numeric exposure remains in source records.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "No profile aggregate policy"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "unavailable_reason",
+      "level": "profile",
+      "meaning": "Reason for profile abstention/unmapped result or artifact error; null for successful all-path availability.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Stable reason-code contract"
+    },
+    {
+      "data_type": "array",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "validation_errors",
+      "level": "profile",
+      "meaning": "Empty on valid result; structured failed checks on artifact failure.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Future artifact validation"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "crosswalk_version",
+      "level": "profile",
+      "meaning": "Pinned container v4.0; independent from original row introduction version.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "V4 freeze manifest"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "crosswalk_sha256",
+      "level": "profile",
+      "meaning": "Hash identifying complete V4 graph actually used.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "V4 artifact hash"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "interpretation_policy_version",
+      "level": "profile",
+      "meaning": "historical-exposure-methodology-v1.0.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "This frozen methodology contract"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "modern_soc",
+      "level": "candidate",
+      "meaning": "Modern SOC identifier preserved verbatim.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "TOP inference or every eligible candidate audit row"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "modern_title",
+      "level": "candidate",
+      "meaning": "Recorded modern occupational title.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Frozen inference/audit title, matched crosswalk when mapped"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "modern_taxonomy",
+      "level": "candidate",
+      "meaning": "O*NET-SOC label when documented.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Documented artifact provenance only"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "modern_taxonomy_version",
+      "level": "candidate",
+      "meaning": "Exact taxonomy release if directly documented; otherwise null, never inferred from SOC formatting.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Recorded evidence_provenance or freeze provenance if available"
+    },
+    {
+      "data_type": "integer",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "candidate_rank",
+      "level": "candidate",
+      "meaning": "Original audit ordering, never occupation probability; null if absent.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Candidate audit candidate_rank"
+    },
+    {
+      "data_type": "number",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "evidence_score",
+      "level": "candidate",
+      "meaning": "Unchanged engineering evidence score; not probability or exposure weight.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Candidate audit evidence_score"
+    },
+    {
+      "data_type": "object",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "evidence_support",
+      "level": "candidate",
+      "meaning": "Retain title/objective/skill/domain scores, penalties, strong evidence counts, matched terms/titles/types, eligibility reason, domain/role evidence and review flags.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "All relevant candidate audit columns, not a regenerated score"
+    },
+    {
+      "data_type": "object_or_string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "evidence_provenance",
+      "level": "candidate",
+      "meaning": "Original recorded lexical/evidence provenance, without invented sources.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Candidate audit evidence_provenance and eligibility_provenance"
+    },
+    {
+      "data_type": "boolean",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "mapping_available",
+      "level": "candidate",
+      "meaning": "At least one valid valued frozen source path; separate from applicability.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Validated complete frozen V4 graph and source row"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "unavailable_reason",
+      "level": "candidate",
+      "meaning": "No mapping or no valid source value; null when at least one valid source available.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reason contract"
+    },
+    {
+      "data_type": "array",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_records",
+      "level": "candidate",
+      "meaning": "All accepted source relationships, including individually unavailable source values; empty when unmapped.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Complete FROZEN V4 rows for this SOC"
+    },
+    {
+      "data_type": "boolean",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_ambiguity",
+      "level": "candidate",
+      "meaning": "More than one historical source record for same SOC; never silently choose.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Source identity collection"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "historical_source_id",
+      "level": "source",
+      "meaning": "Source record_id/automation_record_id; preserved for deduplication.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Crosswalk and automation_probability_labels.csv"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "historical_source_title",
+      "level": "source",
+      "meaning": "Exact source occupation label.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "automation_probability_labels.csv occupation"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "relationship_type",
+      "level": "source",
+      "meaning": "EQUIVALENT, SOURCE_BROADER_THAN_ONET or OVERLAP; belongs to this SOC-source edge.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Crosswalk relationship_type"
+    },
+    {
+      "data_type": "string_or_object",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "relationship_limitation",
+      "level": "source",
+      "meaning": "Retain adjudication_reason, evidence_source scope limits and historical provenance limitations.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Crosswalk plus source_taxonomy_provenance.csv"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "applicability",
+      "level": "source",
+      "meaning": "OPERATIONAL_HISTORICAL_COUNTERPART or CONTEXTUAL_BROADER_SOURCE or CONTEXTUAL_PARTIAL_OVERLAP.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Relationship semantics"
+    },
+    {
+      "data_type": "number",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "historical_exposure_value",
+      "level": "source",
+      "meaning": "Exact numerical source value, zero valid; null if unavailable. No weighting, calibration or conversion.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Source automation_probability cell"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "historical_exposure_raw",
+      "level": "source",
+      "meaning": "Original CSV cell retained to reconstruct exact representation; null if unavailable.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "automation_probability_labels.csv automation_probability"
+    },
+    {
+      "data_type": "boolean",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "value_available",
+      "level": "source",
+      "meaning": "Finite valid numeric value on local 0..1 scale.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Strict source-value validation; no truthiness test"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "value_scale",
+      "level": "source",
+      "meaning": "Local stored scalar 0..1, unchanged; observed domain does not establish calibration or exact modern measurement.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Validated pinned local source values"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "semantic_label",
+      "level": "source",
+      "meaning": "Historical occupation-level automation exposure or Historical source-category reference by edge relationship.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Relationship semantics"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_dataset",
+      "level": "source",
+      "meaning": "Recorded Wocke Probability of Automation of Occupations 2036 dataset identity only when documented.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Source provenance references; no independent reconstruction claim"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_dataset_version",
+      "level": "source",
+      "meaning": "Recorded Wocke V1 reference, DOI 10.17632/czbvhmzwm3.1; does not prove local extraction identity.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "source_taxonomy_provenance.csv notes"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_dataset_date",
+      "level": "source",
+      "meaning": "Publication/as-of date only when supported; preserve type/date provenance, otherwise null. Not current date or access date.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Not recorded as structured date in current source CSV; null unless supporting recorded evidence"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "lineage_verification_status",
+      "level": "source",
+      "meaning": "Local extraction lineage unresolved; label reference verification distinct from source boundaries.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "source_taxonomy_provenance.csv wocke_taxonomy_status and notes"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "historical_reference_system",
+      "level": "source",
+      "meaning": "Reference taxonomy label only, not proven Wocke canonical system.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "historical_system"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "historical_reference_code",
+      "level": "source",
+      "meaning": "Reference code, not asserted source-assigned code.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "historical_code"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "label_verification_status",
+      "level": "source",
+      "meaning": "Historical code/title verification only; never promote to lineage verification.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "source_verification_status"
+    },
+    {
+      "data_type": "integer",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "crosswalk_row_number",
+      "level": "source",
+      "meaning": "CSV row number identifies exact edge.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Pinned V4 CSV"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "crosswalk_row_introduction_version",
+      "level": "source",
+      "meaning": "Original row crosswalk_version; may be v1.0-v4.0. Not a selection filter.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Crosswalk row crosswalk_version"
+    },
+    {
+      "data_type": "integer",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_csv_row_number",
+      "level": "source",
+      "meaning": "Exact source-value row position.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Pinned automation_probability_labels.csv"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_value_file_sha256",
+      "level": "source",
+      "meaning": "Hash of source values used.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Pinned local CSV"
+    },
+    {
+      "data_type": "object_or_string",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "crosswalk_evidence",
+      "level": "source",
+      "meaning": "Full recorded evidence_source and adjudication_reason for reconstructability.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Pinned crosswalk row"
+    },
+    {
+      "data_type": "object",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_provenance",
+      "level": "source",
+      "meaning": "Original full provenance row and reference locations; limits retained.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Pinned source_taxonomy_provenance.csv"
+    },
+    {
+      "data_type": "array",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "shared_with_modern_socs",
+      "level": "source",
+      "meaning": "All other modern SOCs reaching same historical record; not independent measurements.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Full FROZEN bipartite graph"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain internally for reconstruction; disclose source identity, relationship and material limitations with every displayed historical value.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "unavailable_reason",
+      "level": "source",
+      "meaning": "UNAVAILABLE_SOURCE_EXPOSURE_VALUE if invalid/missing; otherwise null.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Source-value validation"
+    },
+    {
+      "data_type": "object",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "artifact_paths_and_hashes",
+      "level": "system",
+      "meaning": "All runtime authoritative inference/candidate/crosswalk/source/contract artifacts; pin and validate before dependent lookup.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Freeze manifests and actual input SHA-256"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "validation_status",
+      "level": "system",
+      "meaning": "PASS or ERROR; failure has no numeric fallback.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Artifact/schema/relationship/eligibility checks"
+    },
+    {
+      "data_type": "array",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "source_age_and_geography_limitations",
+      "level": "system",
+      "meaning": "Historical, US-origin reference evidence; not current generative-AI risk or universally applicable labor-market measurement.",
+      "nullable": "FALSE",
+      "required": "TRUE",
+      "supported_by": "Frozen methodology limitations"
+    },
+    {
+      "data_type": "boolean",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "user_selected",
+      "level": "profile_future_confirmation",
+      "meaning": "Future explicit user selection; not verification of employment.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "data_type": "boolean",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "user_confirmed",
+      "level": "profile_future_confirmation",
+      "meaning": "Future explicit confirmation action; not validated ground truth.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "selected_soc",
+      "level": "profile_future_confirmation",
+      "meaning": "Explicitly selected modern SOC in NEW context.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "selected_title",
+      "level": "profile_future_confirmation",
+      "meaning": "Selected recorded modern title.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "confirmation_taxonomy_version",
+      "level": "profile_future_confirmation",
+      "meaning": "Documented taxonomy release for selected SOC.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "confirmation_timestamp",
+      "level": "profile_future_confirmation",
+      "meaning": "Actual future action timestamp, never invented or backfilled.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "data_type": "enum",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "role_context",
+      "level": "profile_future_confirmation",
+      "meaning": "current / past / desired / unspecified; explicit context, no inferred recency.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "data_type": "string",
+      "display_requirement": "Retain for audit/API reconstruction; inference is not confirmed current employment.",
+      "downstream_retention_rule": "Preserve supported fields and nullability verbatim; never invent missing lineage, dates, rank, taxonomy release or confirmation.",
+      "field_name": "original_analysis_context_id",
+      "level": "profile_future_confirmation",
+      "meaning": "Reference original immutable inference context.",
+      "nullable": "TRUE",
+      "required": "TRUE",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    }
+  ],
+  "relationship_applicability": {
+    "EQUIVALENT": "OPERATIONAL_HISTORICAL_COUNTERPART",
+    "OVERLAP": "CONTEXTUAL_PARTIAL_OVERLAP",
+    "SOURCE_BROADER_THAN_ONET": "CONTEXTUAL_BROADER_SOURCE"
+  },
+  "relationship_semantics": [
+    {
+      "exact_modern_soc_measurement_claim_allowed": "FALSE",
+      "frozen_v4_relationship_count": 16,
+      "individual_job_loss_interpretation_allowed": "FALSE",
+      "operational_interpretation": "Operational historical counterpart; may display unchanged historical SOURCE value with its source attribution.",
+      "preferred_display_term": "Historical occupation-level automation exposure",
+      "present_in_frozen_v4": "TRUE",
+      "provenance_requirement": "Retain crosswalk row evidence_source, adjudication_reason and source_taxonomy_provenance; preserve crosswalk hash and source row/hash.",
+      "relationship_type": "EQUIVALENT",
+      "scope_limitations": "Operational equivalence does not remove historical/current scope differences or unresolved local lineage; no exact current-SOC measurement claim.",
+      "source_attribution_required": "TRUE",
+      "unchanged_source_value_display_allowed": "TRUE",
+      "value_owner": "HISTORICAL_SOURCE_OCCUPATION"
+    },
+    {
+      "exact_modern_soc_measurement_claim_allowed": "FALSE",
+      "frozen_v4_relationship_count": 23,
+      "individual_job_loss_interpretation_allowed": "FALSE",
+      "operational_interpretation": "Value belongs to a broader historical source category; contextual reference only.",
+      "preferred_display_term": "Historical source-category reference",
+      "present_in_frozen_v4": "TRUE",
+      "provenance_requirement": "Retain crosswalk row evidence_source, adjudication_reason and source_taxonomy_provenance; preserve crosswalk hash and source row/hash.",
+      "relationship_type": "SOURCE_BROADER_THAN_ONET",
+      "scope_limitations": "Never claim the scalar is an exact measured value for the narrower modern SOC; preserve inclusion limits and sharing.",
+      "source_attribution_required": "TRUE",
+      "unchanged_source_value_display_allowed": "TRUE",
+      "value_owner": "HISTORICAL_SOURCE_OCCUPATION"
+    },
+    {
+      "exact_modern_soc_measurement_claim_allowed": "FALSE",
+      "frozen_v4_relationship_count": 2,
+      "individual_job_loss_interpretation_allowed": "FALSE",
+      "operational_interpretation": "Value belongs to a related historical source category with partial occupational scope correspondence; contextual reference only.",
+      "preferred_display_term": "Historical source-category reference",
+      "present_in_frozen_v4": "TRUE",
+      "provenance_requirement": "Retain crosswalk row evidence_source, adjudication_reason and source_taxonomy_provenance; preserve crosswalk hash and source row/hash.",
+      "relationship_type": "OVERLAP",
+      "scope_limitations": "Never assign scalar as exact measurement of the whole modern SOC; preserve overlap and excluded duties.",
+      "source_attribution_required": "TRUE",
+      "unchanged_source_value_display_allowed": "TRUE",
+      "value_owner": "HISTORICAL_SOURCE_OCCUPATION"
+    }
+  ],
+  "required_TOP_mapped_fields": [
+    "modern_soc",
+    "modern_title",
+    "historical_source_id",
+    "historical_source_title",
+    "historical_exposure_value",
+    "relationship_type",
+    "relationship_interpretation",
+    "relationship_limitation",
+    "source_provenance",
+    "crosswalk_sha256"
+  ],
+  "scope": "Future API/UI representation boundary only; no application integration or methodology changes.",
+  "shared_source_group_fields": [
+    {
+      "data_type": "string",
+      "derivation_rule": "Profile result profile_input_id/profile_id",
+      "field_name": "profile_id",
+      "meaning": "Scope grouping to one profile/result context.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "string",
+      "derivation_rule": "Source trace historical_source_id",
+      "field_name": "historical_source_id",
+      "meaning": "Group key; one historical record identity, not a modern SOC.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "string",
+      "derivation_rule": "Source trace historical_source_title",
+      "field_name": "historical_source_title",
+      "meaning": "Exact source label; never replace with modern title.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "array<string>",
+      "derivation_rule": "Group all source traces by (profile_id,historical_source_id); preserve all candidate rows separately.",
+      "field_name": "modern_socs",
+      "meaning": "Every modern SOC using this source within the profile, unique in stable candidate order.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "array<object>",
+      "derivation_rule": "Candidate results plus source trace",
+      "field_name": "candidate_references",
+      "meaning": "References to candidate SOC/title/audit rank; null ranks remain null.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "array<object>",
+      "derivation_rule": "Nested source_records; do not flatten edge-specific semantics into one group relationship.",
+      "field_name": "relationship_edges",
+      "meaning": "Retain relationship type/interpretation/limitation separately for EACH modern SOC-source edge.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "number_or_null",
+      "derivation_rule": "All records for same source must agree; mismatch is validation failure, never choose/average.",
+      "field_name": "historical_exposure_value",
+      "meaning": "One unchanged source-owned value; valid zero preserved; null if invalid.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "array<object>",
+      "derivation_rule": "Source trace row index and artifact hash",
+      "field_name": "source_trace_references",
+      "meaning": "All original trace row references for reconstructability.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "boolean",
+      "derivation_rule": "len(modern_socs)>1",
+      "field_name": "shared_within_profile",
+      "meaning": "True if at least two modern SOCs in this profile use this source; not independent confirmations.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "array<string>",
+      "derivation_rule": "Source shared_with_modern_socs plus current SOC, from full V4 graph",
+      "field_name": "shared_across_frozen_graph",
+      "meaning": "Additional cross-graph SOC sharing is a separate concept from within-profile sharing.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "object",
+      "derivation_rule": "Source trace and candidate source_records",
+      "field_name": "provenance_and_limitations",
+      "meaning": "Preserve source version/date only when supported, raw cell, local lineage limitations and all edge scope restrictions.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    },
+    {
+      "data_type": "boolean",
+      "derivation_rule": "Source value validity; missing != zero",
+      "field_name": "value_available",
+      "meaning": "Availability only, not applicability or certainty.",
+      "prohibited_behavior": "Never aggregate, select a preferred SOC, imply independent evidence or reduce the eligible-SOC denominator.",
+      "required": "TRUE"
+    }
+  ],
+  "shared_source_policy": {
+    "derive_from": "Existing candidate source_records and historical_exposure_source_trace_v1.csv; no source-value modification.",
+    "eligible_denominator_unchanged": true,
+    "group_key": [
+      "profile_id",
+      "historical_source_id"
+    ],
+    "group_relationships_per_edge": true,
+    "implemented_adapter": false,
+    "mismatched_repeated_source_value": "ARTIFACT_VALIDATION_FAILURE",
+    "modern_SOC_count_is_independent_measurement_count": false,
+    "numeric_source_zero_valid": true,
+    "preserve_all_candidates": true,
+    "source_identity_is_measurement_identity": true,
+    "unavailable_groups_retain_null": true
+  },
+  "skill_gap_exposure_weighting_allowed": false,
+  "skill_proficiency_inferred_from_requirements": false,
+  "status": "FROZEN",
+  "success_transport_schema": "Six-state semantics and provenance are fixed; HTTP endpoints, rendering, persistence and authentication are not implemented or selected in this step.",
+  "task": "STEP_7B_3",
+  "terminology_rules": [
+    {
+      "application_display_allowed": "TRUE",
+      "meaning": "Use for operational EQUIVALENT historical counterpart, with source attribution and age/scope limitations.",
+      "source_attribution_required": "TRUE",
+      "term": "Historical occupation-level automation exposure",
+      "usage_scope": "PREFERRED_APPLICATION_CONCEPT"
+    },
+    {
+      "application_display_allowed": "TRUE",
+      "meaning": "Use for SOURCE_BROADER_THAN_ONET and OVERLAP values; not exact modern-SOC measurement.",
+      "source_attribution_required": "TRUE",
+      "term": "Historical source-category reference",
+      "usage_scope": "PREFERRED_CONTEXTUAL_CONCEPT"
+    },
+    {
+      "application_display_allowed": "TRUE",
+      "meaning": "No valid valued frozen path; never zero/default or personal-risk estimate.",
+      "source_attribution_required": "TRUE",
+      "term": "Historical exposure unavailable",
+      "usage_scope": "ALLOWED_UNAVAILABLE_MESSAGE"
+    },
+    {
+      "application_display_allowed": "TRUE",
+      "meaning": "INSUFFICIENT: no exposure lookup; clarification may be requested.",
+      "source_attribution_required": "TRUE",
+      "term": "Occupation evidence insufficient",
+      "usage_scope": "ALLOWED_ABSTENTION_MESSAGE"
+    },
+    {
+      "application_display_allowed": "TRUE",
+      "meaning": "Availability fraction only; retain full MULTIPLE denominator; never confidence percentage.",
+      "source_attribution_required": "TRUE",
+      "term": "Mapped candidates / eligible candidates",
+      "usage_scope": "ALLOWED_AVAILABILITY_DESCRIPTION"
+    },
+    {
+      "application_display_allowed": "PROVENANCE_ONLY",
+      "meaning": "Original authoritative source field/terminology may be retained for faithful attribution; not a personal/current-risk application label.",
+      "source_attribution_required": "TRUE",
+      "term": "automation_probability",
+      "usage_scope": "SOURCE_PROVENANCE_ONLY"
+    },
+    {
+      "application_display_allowed": "FALSE",
+      "meaning": "Historical occupation/category evidence cannot establish this individual probability.",
+      "source_attribution_required": "TRUE",
+      "term": "your probability of losing your job",
+      "usage_scope": "PROHIBITED_APPLICATION_INTERPRETATION"
+    },
+    {
+      "application_display_allowed": "FALSE",
+      "meaning": "No individual or current generative-AI replacement prediction.",
+      "source_attribution_required": "TRUE",
+      "term": "your AI replacement probability",
+      "usage_scope": "PROHIBITED_APPLICATION_INTERPRETATION"
+    },
+    {
+      "application_display_allowed": "FALSE",
+      "meaning": "Do not individualize a historical source scalar.",
+      "source_attribution_required": "TRUE",
+      "term": "your personal job-loss risk",
+      "usage_scope": "PROHIBITED_APPLICATION_INTERPRETATION"
+    },
+    {
+      "application_display_allowed": "FALSE",
+      "meaning": "Do not convert source evidence into individual AI-displacement probability.",
+      "source_attribution_required": "TRUE",
+      "term": "probability AI will replace you",
+      "usage_scope": "PROHIBITED_APPLICATION_INTERPRETATION"
+    },
+    {
+      "application_display_allowed": "FALSE",
+      "meaning": "No personalized probability or model fallback.",
+      "source_attribution_required": "TRUE",
+      "term": "individualized displacement probability",
+      "usage_scope": "PROHIBITED_APPLICATION_INTERPRETATION"
+    },
+    {
+      "application_display_allowed": "FALSE",
+      "meaning": "Skill/reskilling evidence is separate; no historical-exposure reduction claim.",
+      "source_attribution_required": "TRUE",
+      "term": "Completing a course reduces historical exposure by X%",
+      "usage_scope": "PROHIBITED_APPLICATION_INTERPRETATION"
+    }
+  ],
+  "unavailability_reasons": [
+    {
+      "level": "candidate",
+      "meaning": "No authorized historical linkage is available; this does not prove no historical counterpart exists.",
+      "numerical_fallback_allowed": "FALSE",
+      "reason_code": "UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING",
+      "recovery": "Retain unavailable; broad expansion stopped. New evidence requires separately authorized reopening.",
+      "trigger": "No valid FROZEN relationship for the modern SOC in the complete pinned V4 artifact.",
+      "value_behavior": "NULL"
+    },
+    {
+      "level": "source; candidate if no valid valued source remains",
+      "meaning": "Historical source value is unavailable or invalid; missing is not zero.",
+      "numerical_fallback_allowed": "FALSE",
+      "reason_code": "UNAVAILABLE_SOURCE_EXPOSURE_VALUE",
+      "recovery": "Resolve source-data validity with explicit provenance and authorization; no prediction or imputation.",
+      "trigger": "Frozen relationship exists but its source automation_probability cell is missing, nonnumeric, nonfinite or outside the pinned local 0..1 scale.",
+      "value_behavior": "NULL for invalid source only; retain other valid sources separately"
+    },
+    {
+      "level": "profile",
+      "meaning": "Exposure lookup is prohibited, even with diagnostic SOCs or audit candidates.",
+      "numerical_fallback_allowed": "FALSE",
+      "reason_code": "LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE",
+      "recovery": "Clarification/manual confirmation may create a new analysis context without rewriting frozen inference.",
+      "trigger": "Frozen inference status is INSUFFICIENT_EVIDENCE.",
+      "value_behavior": "NULL; no source lookup"
+    },
+    {
+      "level": "system; affected result",
+      "meaning": "Cannot safely reconstruct a trustworthy result; fail closed.",
+      "numerical_fallback_allowed": "FALSE",
+      "reason_code": "ARTIFACT_VALIDATION_FAILURE",
+      "recovery": "Return structured validation errors and stop dependent exposure evaluation until artifacts are validated.",
+      "trigger": "Pinned artifact/hash/schema failure, invalid identifiers/title links, duplicate conflicting rows, unsupported relationship/status, malformed inference contract, or inconsistent required counts/eligibility.",
+      "value_behavior": "NULL; no partially successful response on untrusted artifacts"
+    }
+  ]
+}

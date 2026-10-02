@@ -1,0 +1,11 @@
+field_or_rule,required_value,meaning,numerical_fallback_allowed,successful_exposure_allowed
+validation_status,ERROR,Fail closed; do not render a successful exposure panel.,FALSE,FALSE
+failure_reason,ARTIFACT_VALIDATION_FAILURE,"Stable frozen validation terminology, not numerical fallback.",FALSE,FALSE
+validation_errors,NONEMPTY_ARRAY,"Retain check_id, error_code, error_type, message and safely available context.",FALSE,FALSE
+coverage_state,NULL,No successful primary state when validation fails.,FALSE,FALSE
+exposure_state,NULL,No TOP/MULTIPLE/INSUFFICIENT success response substituted for artifact failure.,FALSE,FALSE
+profile_exposure_summary,NULL,No profile scalar.,FALSE,FALSE
+exposure,NULL,No numerical exposure or default.,FALSE,FALSE
+UI_behavior,EXPLICIT_UNAVAILABLE_ERROR,Show safe unavailable/validation message; retain error details for diagnostics; no RF/legacy/default fallback.,FALSE,FALSE
+API_behavior,STRUCTURED_FAILURE,"Preserve failure envelope; transport status may be defined later, but never signal successful exposure data.",FALSE,FALSE
+unexpected_programmer_errors,PROPAGATE_OR_EXPLICIT_SERVER_ERROR,Never silently produce success; internal helpers may raise and the documented validation_boundary standardizes expected artifact failures.,FALSE,FALSE

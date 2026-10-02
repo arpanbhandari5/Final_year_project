@@ -1,0 +1,13 @@
+term,usage_scope,meaning,source_attribution_required,application_display_allowed
+Historical occupation-level automation exposure,PREFERRED_APPLICATION_CONCEPT,"Use for operational EQUIVALENT historical counterpart, with source attribution and age/scope limitations.",TRUE,TRUE
+Historical source-category reference,PREFERRED_CONTEXTUAL_CONCEPT,Use for SOURCE_BROADER_THAN_ONET and OVERLAP values; not exact modern-SOC measurement.,TRUE,TRUE
+Historical exposure unavailable,ALLOWED_UNAVAILABLE_MESSAGE,No valid valued frozen path; never zero/default or personal-risk estimate.,TRUE,TRUE
+Occupation evidence insufficient,ALLOWED_ABSTENTION_MESSAGE,INSUFFICIENT: no exposure lookup; clarification may be requested.,TRUE,TRUE
+Mapped candidates / eligible candidates,ALLOWED_AVAILABILITY_DESCRIPTION,Availability fraction only; retain full MULTIPLE denominator; never confidence percentage.,TRUE,TRUE
+automation_probability,SOURCE_PROVENANCE_ONLY,Original authoritative source field/terminology may be retained for faithful attribution; not a personal/current-risk application label.,TRUE,PROVENANCE_ONLY
+your probability of losing your job,PROHIBITED_APPLICATION_INTERPRETATION,Historical occupation/category evidence cannot establish this individual probability.,TRUE,FALSE
+your AI replacement probability,PROHIBITED_APPLICATION_INTERPRETATION,No individual or current generative-AI replacement prediction.,TRUE,FALSE
+your personal job-loss risk,PROHIBITED_APPLICATION_INTERPRETATION,Do not individualize a historical source scalar.,TRUE,FALSE
+probability AI will replace you,PROHIBITED_APPLICATION_INTERPRETATION,Do not convert source evidence into individual AI-displacement probability.,TRUE,FALSE
+individualized displacement probability,PROHIBITED_APPLICATION_INTERPRETATION,No personalized probability or model fallback.,TRUE,FALSE
+Completing a course reduces historical exposure by X%,PROHIBITED_APPLICATION_INTERPRETATION,Skill/reskilling evidence is separate; no historical-exposure reduction claim.,TRUE,FALSE
