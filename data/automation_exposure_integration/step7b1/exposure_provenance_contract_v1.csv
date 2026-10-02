@@ -1,0 +1,68 @@
+level,field_name,data_type,required,nullable,meaning,supported_by
+profile,profile_input_id,string,TRUE,FALSE,Original profile_group_id or separately identified new input context.,Frozen inference profile_group_id
+profile,analysis_context_id,string,TRUE,FALSE,Result context identifier; future confirmation uses a new identifier linked to original.,Future engine must assign; no runtime context created in Step 7B.1
+profile,inference_engine,string,TRUE,FALSE,"Frozen deterministic engine identity, not RF.",occupation_inference_freeze_manifest.json frozen_engine
+profile,inference_version,string,TRUE,FALSE,occupation-inference-v1.0.,Inference freeze manifest freeze_version
+profile,original_frozen_inference_status,enum,TRUE,FALSE,Preserve TOP_CANDIDATE/MULTIPLE_CANDIDATES/INSUFFICIENT_EVIDENCE.,Frozen inference inference_status
+profile,selection_origin,enum,TRUE,FALSE,FROZEN_INFERENCE for automatic result; future USER_SELECTED or USER_CONFIRMED only with provenance.,State rule; future explicit action
+profile,complete_eligible_candidate_count,integer,TRUE,FALSE,Count every eligible audit SOC including diagnostics for INSUFFICIENT; does not authorize lookup.,"Candidate audit candidate_eligible=TRUE, cross-check frozen eligible_candidate_count"
+profile,evaluated_candidate_count,integer,TRUE,FALSE,TOP selected SOC count 1; MULTIPLE all eligible SOC count; INSUFFICIENT 0.,Inference gate and candidate-preservation rule
+profile,mapped_candidate_count,integer,TRUE,FALSE,Evaluated SOC count with at least one valid valued frozen path; INSUFFICIENT 0.,Future validated per-SOC lookup
+profile,coverage_numerator,integer,TRUE,FALSE,Mapped count; availability only.,mapped_candidate_count
+profile,coverage_denominator,integer,TRUE,TRUE,"MULTIPLE all eligible SOCs; TOP evaluated count 1; null for INSUFFICIENT, never diagnostic denominator as lookup.",State rules
+profile,coverage_state,enum,TRUE,TRUE,Exactly six primary states on valid result; null on artifact validation error.,State contract
+profile,clarification_recommended,boolean,TRUE,FALSE,Advisory only; never silently resolves occupation.,State contract
+profile,profile_exposure_summary,null,TRUE,TRUE,"Always JSON null in this policy, including TOP; numeric exposure remains in source records.",No profile aggregate policy
+profile,unavailable_reason,enum,TRUE,TRUE,Reason for profile abstention/unmapped result or artifact error; null for successful all-path availability.,Stable reason-code contract
+profile,validation_errors,array,TRUE,FALSE,Empty on valid result; structured failed checks on artifact failure.,Future artifact validation
+profile,crosswalk_version,string,TRUE,FALSE,Pinned container v4.0; independent from original row introduction version.,V4 freeze manifest
+profile,crosswalk_sha256,string,TRUE,FALSE,Hash identifying complete V4 graph actually used.,V4 artifact hash
+profile,interpretation_policy_version,string,TRUE,FALSE,historical-exposure-methodology-v1.0.,This frozen methodology contract
+candidate,modern_soc,string,TRUE,FALSE,Modern SOC identifier preserved verbatim.,TOP inference or every eligible candidate audit row
+candidate,modern_title,string,TRUE,FALSE,Recorded modern occupational title.,"Frozen inference/audit title, matched crosswalk when mapped"
+candidate,modern_taxonomy,string,TRUE,TRUE,O*NET-SOC label when documented.,Documented artifact provenance only
+candidate,modern_taxonomy_version,string,TRUE,TRUE,"Exact taxonomy release if directly documented; otherwise null, never inferred from SOC formatting.",Recorded evidence_provenance or freeze provenance if available
+candidate,candidate_rank,integer,TRUE,TRUE,"Original audit ordering, never occupation probability; null if absent.",Candidate audit candidate_rank
+candidate,evidence_score,number,TRUE,TRUE,Unchanged engineering evidence score; not probability or exposure weight.,Candidate audit evidence_score
+candidate,evidence_support,object,TRUE,FALSE,"Retain title/objective/skill/domain scores, penalties, strong evidence counts, matched terms/titles/types, eligibility reason, domain/role evidence and review flags.","All relevant candidate audit columns, not a regenerated score"
+candidate,evidence_provenance,object_or_string,TRUE,TRUE,"Original recorded lexical/evidence provenance, without invented sources.",Candidate audit evidence_provenance and eligibility_provenance
+candidate,mapping_available,boolean,TRUE,FALSE,At least one valid valued frozen source path; separate from applicability.,Validated complete frozen V4 graph and source row
+candidate,unavailable_reason,enum,TRUE,TRUE,No mapping or no valid source value; null when at least one valid source available.,Reason contract
+candidate,source_records,array,TRUE,FALSE,"All accepted source relationships, including individually unavailable source values; empty when unmapped.",Complete FROZEN V4 rows for this SOC
+candidate,source_ambiguity,boolean,TRUE,FALSE,More than one historical source record for same SOC; never silently choose.,Source identity collection
+source,historical_source_id,string,TRUE,FALSE,Source record_id/automation_record_id; preserved for deduplication.,Crosswalk and automation_probability_labels.csv
+source,historical_source_title,string,TRUE,FALSE,Exact source occupation label.,automation_probability_labels.csv occupation
+source,relationship_type,enum,TRUE,FALSE,"EQUIVALENT, SOURCE_BROADER_THAN_ONET or OVERLAP; belongs to this SOC-source edge.",Crosswalk relationship_type
+source,relationship_limitation,string_or_object,TRUE,FALSE,"Retain adjudication_reason, evidence_source scope limits and historical provenance limitations.",Crosswalk plus source_taxonomy_provenance.csv
+source,applicability,enum,TRUE,FALSE,OPERATIONAL_HISTORICAL_COUNTERPART or CONTEXTUAL_BROADER_SOURCE or CONTEXTUAL_PARTIAL_OVERLAP.,Relationship semantics
+source,historical_exposure_value,number,TRUE,TRUE,"Exact numerical source value, zero valid; null if unavailable. No weighting, calibration or conversion.",Source automation_probability cell
+source,historical_exposure_raw,string,TRUE,TRUE,Original CSV cell retained to reconstruct exact representation; null if unavailable.,automation_probability_labels.csv automation_probability
+source,value_available,boolean,TRUE,FALSE,Finite valid numeric value on local 0..1 scale.,Strict source-value validation; no truthiness test
+source,value_scale,string,TRUE,FALSE,"Local stored scalar 0..1, unchanged; observed domain does not establish calibration or exact modern measurement.",Validated pinned local source values
+source,semantic_label,string,TRUE,FALSE,Historical occupation-level automation exposure or Historical source-category reference by edge relationship.,Relationship semantics
+source,source_dataset,string,TRUE,TRUE,Recorded Wocke Probability of Automation of Occupations 2036 dataset identity only when documented.,Source provenance references; no independent reconstruction claim
+source,source_dataset_version,string,TRUE,TRUE,"Recorded Wocke V1 reference, DOI 10.17632/czbvhmzwm3.1; does not prove local extraction identity.",source_taxonomy_provenance.csv notes
+source,source_dataset_date,string,TRUE,TRUE,"Publication/as-of date only when supported; preserve type/date provenance, otherwise null. Not current date or access date.",Not recorded as structured date in current source CSV; null unless supporting recorded evidence
+source,lineage_verification_status,string,TRUE,FALSE,Local extraction lineage unresolved; label reference verification distinct from source boundaries.,source_taxonomy_provenance.csv wocke_taxonomy_status and notes
+source,historical_reference_system,string,TRUE,TRUE,"Reference taxonomy label only, not proven Wocke canonical system.",historical_system
+source,historical_reference_code,string,TRUE,TRUE,"Reference code, not asserted source-assigned code.",historical_code
+source,label_verification_status,string,TRUE,TRUE,Historical code/title verification only; never promote to lineage verification.,source_verification_status
+source,crosswalk_row_number,integer,TRUE,FALSE,CSV row number identifies exact edge.,Pinned V4 CSV
+source,crosswalk_row_introduction_version,string,TRUE,FALSE,Original row crosswalk_version; may be v1.0-v4.0. Not a selection filter.,Crosswalk row crosswalk_version
+source,source_csv_row_number,integer,TRUE,FALSE,Exact source-value row position.,Pinned automation_probability_labels.csv
+source,source_value_file_sha256,string,TRUE,FALSE,Hash of source values used.,Pinned local CSV
+source,crosswalk_evidence,object_or_string,TRUE,FALSE,Full recorded evidence_source and adjudication_reason for reconstructability.,Pinned crosswalk row
+source,source_provenance,object,TRUE,FALSE,Original full provenance row and reference locations; limits retained.,Pinned source_taxonomy_provenance.csv
+source,shared_with_modern_socs,array,TRUE,FALSE,All other modern SOCs reaching same historical record; not independent measurements.,Full FROZEN bipartite graph
+source,unavailable_reason,enum,TRUE,TRUE,UNAVAILABLE_SOURCE_EXPOSURE_VALUE if invalid/missing; otherwise null.,Source-value validation
+system,artifact_paths_and_hashes,object,TRUE,FALSE,All runtime authoritative inference/candidate/crosswalk/source/contract artifacts; pin and validate before dependent lookup.,Freeze manifests and actual input SHA-256
+system,validation_status,enum,TRUE,FALSE,PASS or ERROR; failure has no numeric fallback.,Artifact/schema/relationship/eligibility checks
+system,source_age_and_geography_limitations,array,TRUE,FALSE,"Historical, US-origin reference evidence; not current generative-AI risk or universally applicable labor-market measurement.",Frozen methodology limitations
+profile_future_confirmation,user_selected,boolean,TRUE,TRUE,Future explicit user selection; not verification of employment.,Reserved future contract only; null/not applicable now; manual confirmation not implemented
+profile_future_confirmation,user_confirmed,boolean,TRUE,TRUE,Future explicit confirmation action; not validated ground truth.,Reserved future contract only; null/not applicable now; manual confirmation not implemented
+profile_future_confirmation,selected_soc,string,TRUE,TRUE,Explicitly selected modern SOC in NEW context.,Reserved future contract only; null/not applicable now; manual confirmation not implemented
+profile_future_confirmation,selected_title,string,TRUE,TRUE,Selected recorded modern title.,Reserved future contract only; null/not applicable now; manual confirmation not implemented
+profile_future_confirmation,confirmation_taxonomy_version,string,TRUE,TRUE,Documented taxonomy release for selected SOC.,Reserved future contract only; null/not applicable now; manual confirmation not implemented
+profile_future_confirmation,confirmation_timestamp,string,TRUE,TRUE,"Actual future action timestamp, never invented or backfilled.",Reserved future contract only; null/not applicable now; manual confirmation not implemented
+profile_future_confirmation,role_context,enum,TRUE,TRUE,"current / past / desired / unspecified; explicit context, no inferred recency.",Reserved future contract only; null/not applicable now; manual confirmation not implemented
+profile_future_confirmation,original_analysis_context_id,string,TRUE,TRUE,Reference original immutable inference context.,Reserved future contract only; null/not applicable now; manual confirmation not implemented

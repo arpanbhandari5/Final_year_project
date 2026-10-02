@@ -1,0 +1,9 @@
+rule_id,inference_status_or_concept,downstream_handling,required_preservation,prohibited_interpretation
+C01,TOP_CANDIDATE,May use selected SOC as inferred occupation.,"Status, version and evidence provenance.",Verified employment or ground truth.
+C02,MULTIPLE_CANDIDATES,Preserve all eligible plausible SOCs; future exposure logic must explicitly handle multiple SOCs.,All eligible candidates and ambiguity.,Arbitrarily selecting rank 1.
+C03,INSUFFICIENT_EVIDENCE,Return occupation/exposure unavailable or request clarification; audit SOCs are not selections.,Abstention and supporting audit.,Inventing or forcing an SOC.
+C04,evidence_score,Use as engineering evidence only.,Component scores and provenance.,Probability or calibrated confidence.
+C05,candidate_rank,Use as audit ordering only.,Eligibility and inference status.,Certainty or correctness.
+C06,automation_exposure,Future integration must keep exposure a separate concept.,Occupation uncertainty and exposure methodology.,Propagating occupation scores as automation probabilities.
+C07,individual_job_loss,Do not infer individual job-loss probability.,Limits of occupation-level information.,Personal job-loss predictions.
+C08,user_proficiency,Keep O*NET requirements separate from observed user skills.,Source of requirements and CV evidence.,Treating occupational requirements as user proficiency.

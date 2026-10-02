@@ -1,0 +1,31 @@
+check_id,expected,actual,status,notes
+PROFILE_COUNT_344,344,344,PASS,
+STATE_TOTAL_344,344,344,PASS,
+TOP_COUNT_35,35,35,PASS,
+MULTIPLE_COUNT_146,146,146,PASS,
+INSUFFICIENT_COUNT_163,163,163,PASS,
+INSUFFICIENT_LOOKUP_COUNT_ZERO,0,0,PASS,
+MULTIPLE_PROFILE_SUMMARY_NON_NULL_COUNT_ZERO,0,0,PASS,
+MULTIPLE_RANK1_SELECTION_COUNT_ZERO,0,0,PASS,
+NON_STDLIB_DEPENDENCY_IMPORT_COUNT_ZERO,0,0,PASS,"Static AST import allowlist only, not universal runtime-reference detection; computational isolation remains required and regression-tested."
+SOURCE_VALUE_TRANSFORMATION_COUNT_ZERO,0,0,PASS,
+UNMAPPED_NUMERIC_FALLBACK_COUNT_ZERO,0,0,PASS,
+INVALID_SOURCE_NUMERIC_FALLBACK_COUNT_ZERO,0,0,PASS,
+V4_ROW_COUNT_323,323,323,PASS,
+COVERAGE_REPRODUCTION,true,true,PASS,
+EXACT_SOURCE_PATH_REPRODUCTION,165,165,PASS,
+SHARED_SOURCE_IDENTITY_PRESERVED,true,true,PASS,
+MULTI_SOURCE_SOC_NOT_SILENTLY_COLLAPSED,true,true,PASS,
+RELATIONSHIP_SEMANTICS_PRESENT,true,true,PASS,
+STATIC_LEGACY_RISK_DEPENDENCY_ABSENT,true,true,PASS,"Static AST import allowlist only, not universal runtime-reference detection; computational isolation remains required and regression-tested."
+STATIC_SKILL_GAP_DEPENDENCY_ABSENT,true,true,PASS,"Static AST import allowlist only, not universal runtime-reference detection; computational isolation remains required and regression-tested."
+INPUT_HASH_INTEGRITY,UNCHANGED,UNCHANGED,PASS,
+CANDIDATE_RANK_DOMAIN_AND_UNIQUENESS,True,True,PASS,Tests reject negative/zero/malformed/duplicate ranks. Present positive integer; no renumbering.
+CANDIDATE_EVIDENCE_FINITE,True,True,PASS,Tests reject NaN and +/-Infinity; no evidence score range invented.
+NULLABLE_METADATA_PRESERVED,True,True,PASS,"Absent, None, blank and literal null preserved; score zero numeric; mixed null ranks retain authoritative row order."
+TOP_ELIGIBLE_SET_INVARIANT,True,True,PASS,"Exactly one eligible SOC, matching frozen selected identity."
+STRUCTURED_FAILURE_BOUNDARY,True,True,PASS,Malformed CSV/schema/JSON and expected exceptions tested; validation_errors present; null state/exposure; no fallback.
+DERIVED_INSUFFICIENT_LOOKUP_COUNT_ZERO,0,0,PASS,Derived from actual result candidate lookup_performed flags.
+DERIVED_PROFILE_SUMMARY_NON_NULL_COUNT_ZERO,0,0,PASS,Derived from actual summary values; numeric zero is non-null.
+PINNED_RESULT_CSV_BYTE_STABILITY,3,3,PASS,Regenerated all three CSVs in memory; exact byte match; files not overwritten.
+REGRESSION_TESTS_PASSED,43,43,PASS,43/43 unittest tests pass; zero failures/errors.

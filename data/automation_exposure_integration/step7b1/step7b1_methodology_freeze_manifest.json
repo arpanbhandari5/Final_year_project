@@ -1,0 +1,220 @@
+{
+  "task": "STEP_7B_1",
+  "version": "v1.0",
+  "status": "FROZEN",
+  "interpretation_policy_version": "historical-exposure-methodology-v1.0",
+  "git_branch": "ml-pipeline-v2",
+  "git_status_before": "?? branch/\n?? \"data/Job Titles.xlsx\"\n?? \"data/Occupation Data.xlsx\"\n?? \"data/Sample of Reported Titles.xlsx\"\n?? data/automation_exposure_integration/\n?? data/automation_onet_crosswalk_candidates.csv\n?? data/automation_onet_crosswalk_v1.csv\n?? data/automation_onet_crosswalk_v2.csv\n?? data/automation_onet_crosswalk_v3.csv\n?? data/automation_onet_crosswalk_v4.csv\n?? data/automation_probability_labels.csv\n?? data/crosswalk_aliases.csv\n?? data/crosswalk_disputed_verification.csv\n?? data/crosswalk_review_priority.csv\n?? data/crosswalk_review_priority_provenance.csv\n?? data/cv_occupation_mapping/\n?? data/ml_methodology_audit.csv\n?? data/onet_31_audit.csv\n?? data/onet_normalized/\n?? data/onet_raw/\n?? data/skill_mapping/\n?? data/source_taxonomy_provenance.csv\n?? models/\n?? scripts/\n",
+  "git_provenance_only": true,
+  "authoritative_input_paths": [
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_freeze_manifest.json",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv",
+    "data/automation_onet_crosswalk_v4.csv",
+    "data/automation_probability_labels.csv",
+    "data/source_taxonomy_provenance.csv",
+    "data/automation_exposure_integration/step7a7/crosswalk_v4_freeze_manifest.json",
+    "data/automation_exposure_integration/step7a7/exposure_coverage_summary_v4.json",
+    "data/automation_exposure_integration/step7a7/crosswalk_expansion_stopping_rule_v1.json",
+    "data/automation_exposure_integration/step7a7/crosswalk_phase_final_summary.json",
+    "data/automation_exposure_integration/step7a7/final_targeted_unresolved_register.csv",
+    "data/automation_exposure_integration/step7a7/profile_exposure_coverage_audit_v4.csv",
+    "data/automation_exposure_integration/step7a7/soc_exposure_path_audit_v4.csv",
+    "data/automation_exposure_integration/step7a7/unique_soc_exposure_coverage_v4.csv",
+    "C:/Users/Nitro5/.codex/attachments/2526ca9c-638c-464b-b759-7c174fb62255/Pasted text.txt"
+  ],
+  "input_sha256_before": {
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv": "fdb7de7b6bee992be127ab535ad46f0214766015e8d79fc4b079828527a55633",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_freeze_manifest.json": "8eff580e3eb0f6b27c3c5de767d8fa266cf8cded0e93fe2a99cc929cbbb83e1c",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+    "data/automation_onet_crosswalk_v4.csv": "eeb19305b727e4dc33a3a3dae0c2bab6fd6af575a0563eb8ebda9fad02b5459f",
+    "data/automation_probability_labels.csv": "0b388464310a627a1e67e7364e559a0ebff9f494bf1f0287564d3c7b39b42b4f",
+    "data/source_taxonomy_provenance.csv": "b829f1f7a8491224d03187b6584fbd2b6afbc2ab99d1b77d746e63a7d40e2659",
+    "data/automation_exposure_integration/step7a7/crosswalk_v4_freeze_manifest.json": "bb337635388bc6c0b9aacf2a66aec6f8bce62f7f6fa56279f29cf287f95780f3",
+    "data/automation_exposure_integration/step7a7/exposure_coverage_summary_v4.json": "96e7f187714f8afc3856456fe21ddb5927aade869d75b1be2fcc6ff8d8dff399",
+    "data/automation_exposure_integration/step7a7/crosswalk_expansion_stopping_rule_v1.json": "9d3a87d100b99cd7bdd0ab242a68d31e02b613e241310795d292cdfa12c619c0",
+    "data/automation_exposure_integration/step7a7/crosswalk_phase_final_summary.json": "e83a64c8b01fb227aee3c6975142025363d3989e6e4f631be6a548615a576ad8",
+    "data/automation_exposure_integration/step7a7/final_targeted_unresolved_register.csv": "e3cef2948e11d6fd051f05375c105c2c4937ccf80521db61e526aaff6254cea6",
+    "data/automation_exposure_integration/step7a7/profile_exposure_coverage_audit_v4.csv": "ea26728d1c6947695a7b11a1d5613bf2890721a1574f3309dbd698ca3e239330",
+    "data/automation_exposure_integration/step7a7/soc_exposure_path_audit_v4.csv": "0875a08ceb232c7ccd2cfb3414f47e192ad5b6671ca98ea611c15e3bd7a99ce7",
+    "data/automation_exposure_integration/step7a7/unique_soc_exposure_coverage_v4.csv": "4956e2a3d34d395c6a0da6e6663b8157ee944aee29fe77c0423b6f0e583b0a21",
+    "C:/Users/Nitro5/.codex/attachments/2526ca9c-638c-464b-b759-7c174fb62255/Pasted text.txt": "73d0f0a3dacecf1335b74f190057d2817bf7e52ef3d3729cf1d1e039a1446d34"
+  },
+  "input_sha256_after": {
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv": "fdb7de7b6bee992be127ab535ad46f0214766015e8d79fc4b079828527a55633",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_freeze_manifest.json": "8eff580e3eb0f6b27c3c5de767d8fa266cf8cded0e93fe2a99cc929cbbb83e1c",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+    "data/automation_onet_crosswalk_v4.csv": "eeb19305b727e4dc33a3a3dae0c2bab6fd6af575a0563eb8ebda9fad02b5459f",
+    "data/automation_probability_labels.csv": "0b388464310a627a1e67e7364e559a0ebff9f494bf1f0287564d3c7b39b42b4f",
+    "data/source_taxonomy_provenance.csv": "b829f1f7a8491224d03187b6584fbd2b6afbc2ab99d1b77d746e63a7d40e2659",
+    "data/automation_exposure_integration/step7a7/crosswalk_v4_freeze_manifest.json": "bb337635388bc6c0b9aacf2a66aec6f8bce62f7f6fa56279f29cf287f95780f3",
+    "data/automation_exposure_integration/step7a7/exposure_coverage_summary_v4.json": "96e7f187714f8afc3856456fe21ddb5927aade869d75b1be2fcc6ff8d8dff399",
+    "data/automation_exposure_integration/step7a7/crosswalk_expansion_stopping_rule_v1.json": "9d3a87d100b99cd7bdd0ab242a68d31e02b613e241310795d292cdfa12c619c0",
+    "data/automation_exposure_integration/step7a7/crosswalk_phase_final_summary.json": "e83a64c8b01fb227aee3c6975142025363d3989e6e4f631be6a548615a576ad8",
+    "data/automation_exposure_integration/step7a7/final_targeted_unresolved_register.csv": "e3cef2948e11d6fd051f05375c105c2c4937ccf80521db61e526aaff6254cea6",
+    "data/automation_exposure_integration/step7a7/profile_exposure_coverage_audit_v4.csv": "ea26728d1c6947695a7b11a1d5613bf2890721a1574f3309dbd698ca3e239330",
+    "data/automation_exposure_integration/step7a7/soc_exposure_path_audit_v4.csv": "0875a08ceb232c7ccd2cfb3414f47e192ad5b6671ca98ea611c15e3bd7a99ce7",
+    "data/automation_exposure_integration/step7a7/unique_soc_exposure_coverage_v4.csv": "4956e2a3d34d395c6a0da6e6663b8157ee944aee29fe77c0423b6f0e583b0a21",
+    "C:/Users/Nitro5/.codex/attachments/2526ca9c-638c-464b-b759-7c174fb62255/Pasted text.txt": "73d0f0a3dacecf1335b74f190057d2817bf7e52ef3d3729cf1d1e039a1446d34"
+  },
+  "output_sha256": {
+    "data/automation_exposure_integration/step7b1/exposure_integration_methodology_contract_v1.json": "756cc6b264e3c4ff983ea430dcd3d6094835bf0c4fd0338be65a85c0204319aa",
+    "data/automation_exposure_integration/step7b1/exposure_integration_state_contract_v1.csv": "8eebf2c0c01c604c53c85ad0862bd8c56814fb709413a22987f58a27a5b9c1f7",
+    "data/automation_exposure_integration/step7b1/exposure_relationship_semantics_v1.csv": "b6112d4d4e6d0bab8acacd8313bb5f37a71fd9ed954ab09c2d713e64ef971eb1",
+    "data/automation_exposure_integration/step7b1/exposure_unavailability_reason_codes_v1.csv": "37596b40f936f1b2f7b6e32fa853b3ac6ed35d07ed1364ab65addf9b3ab265d9",
+    "data/automation_exposure_integration/step7b1/exposure_provenance_contract_v1.csv": "1ec839bd485d10feac5bd2d5caba54ea6a98d4272d39f2b899bc6388b54906ce"
+  },
+  "output_hash_scope": "All five companion artifacts; manifest self-hash omitted to avoid a circular digest.",
+  "expected_created_file_count": 6,
+  "validation": {
+    "inference_counts_preserved": true,
+    "v4_row_count": 323,
+    "all_41_frozen_source_relationships_have_valid_values": true,
+    "complete_v4_graph_used": true,
+    "actual_frozen_relationships": {
+      "EQUIVALENT": 16,
+      "SOURCE_BROADER_THAN_ONET": 23,
+      "OVERLAP": 2
+    },
+    "coverage_reproduced": {
+      "total_profiles": 344,
+      "inference_counts": {
+        "INSUFFICIENT_EVIDENCE": 163,
+        "MULTIPLE_CANDIDATES": 146,
+        "TOP_CANDIDATE": 35
+      },
+      "crosswalk_rows": 323,
+      "frozen_relationship_rows": 41,
+      "actual_frozen_relationship_types": {
+        "EQUIVALENT": 16,
+        "SOURCE_BROADER_THAN_ONET": 23,
+        "OVERLAP": 2
+      },
+      "audit_inventory_distinct_eligible_SOCs": 179,
+      "active_lookup_distinct_SOCs": 170,
+      "insufficient_only_inventory_SOCs": 9,
+      "complete_SOC_paths": 27,
+      "audit_inventory_coverage": {
+        "numerator": 27,
+        "denominator": 179,
+        "percentage": 15.083798882681565
+      },
+      "active_lookup_SOC_coverage": {
+        "numerator": 27,
+        "denominator": 170,
+        "percentage": 15.882352941176471
+      },
+      "TOP": {
+        "mapped": 23,
+        "unmapped": 12,
+        "total": 35
+      },
+      "MULTIPLE": {
+        "all_mapped": 11,
+        "partial": 82,
+        "none_mapped": 53,
+        "total": 146
+      },
+      "overall": {
+        "full": 34,
+        "partial": 82,
+        "unmapped": 65,
+        "insufficient_no_lookup": 163
+      },
+      "remaining_active_missing_SOCs": 143,
+      "accuracy_claim": false,
+      "denominator_rule": "179 is audit inventory; 170 enters active lookup; nine insufficient-only SOCs do not enter lookup. Never describe both denominators as active SOCs."
+    },
+    "insufficient_existing_path_audit_no_lookup": true,
+    "all_generated_files_reread": true,
+    "primary_state_rows": 6,
+    "relationship_semantics_rows": 3,
+    "unavailability_reason_rows": 4,
+    "provenance_field_rows": 67,
+    "reason_codes_unique": true,
+    "all_state_RF_fallback_forbidden": true,
+    "multiple_aggregation_forbidden": true,
+    "INSUFFICIENT_lookup_forbidden": true,
+    "TOP_UNMAPPED_numeric_fallback_forbidden": true,
+    "broader_overlap_source_attribution_required": true,
+    "skill_gap_separation_explicit": true,
+    "legacy_risk_score_separation_explicit": true,
+    "input_sha256_integrity": "PASS"
+  },
+  "frozen_primary_states": [
+    "TOP_MAPPED",
+    "TOP_UNMAPPED",
+    "MULTIPLE_ALL_MAPPED",
+    "MULTIPLE_PARTIAL",
+    "MULTIPLE_NONE_MAPPED",
+    "INSUFFICIENT"
+  ],
+  "prohibited_behaviors": [
+    "RF fallback or model loading/training/refitting",
+    "Nearest-occupation fallback or forced/new crosswalk",
+    "Numerical defaults for unavailable exposure, including zero",
+    "Profile exposure averaging, weighting, median, min/max scoring or other aggregation",
+    "Rank-1 selection for MULTIPLE or discarding unmapped eligible SOCs",
+    "Treating inference scores, rank, mapping confidence or coverage fractions as probabilities",
+    "Transforming source values by CV skills, user characteristics, score or confidence",
+    "INSUFFICIENT historical lookup, including diagnostic TOP and eligible/rejected audit candidates",
+    "Individual job-loss or current generative-AI displacement probability",
+    "Legacy risk_score fallback or silent population",
+    "Skill-gap scoring or reskilling implementation in this step"
+  ],
+  "RF_separation": {
+    "production_role": "NONE",
+    "academic_experiment_separate": true,
+    "loading_allowed": false,
+    "training_refit_allowed": false,
+    "missing_crosswalk_imputation_allowed": false,
+    "missing_source_value_imputation_allowed": false,
+    "individual_risk_generation_allowed": false,
+    "source_value_modification_allowed": false,
+    "multiple_candidate_selection_allowed": false,
+    "skill_gap_influence_allowed": false
+  },
+  "legacy_application_separation": {
+    "existing_legacy_risk_behavior_authoritative": false,
+    "step7b1_app_changes_allowed": false,
+    "new_result_populates_legacy_risk_score": false,
+    "legacy_fallback_allowed": false,
+    "required_before_application_integration": "Isolate or retire legacy CV-text risk predictor/fallback logic; new Step 7B results must never silently populate, fall back to or be conflated with risk_score.",
+    "audit_basis": "User supplied independent Astra read-only audit finding; legacy application code was not executed or modified in this contract step."
+  },
+  "skill_gap_separation": {
+    "chain_A": [
+      "occupation",
+      "historical crosswalk",
+      "historical exposure context"
+    ],
+    "chain_B": [
+      "user skill evidence + chosen occupation requirements",
+      "evidence gaps",
+      "reskilling recommendations"
+    ],
+    "exposure_weights_skill_gap": false,
+    "course_completion_reduces_historical_exposure_claim_allowed": false,
+    "missing_exposure_blocks_otherwise_valid_skill_gap": false,
+    "computation_or_recommendations_implemented": false,
+    "requirements_are_user_proficiency": false
+  },
+  "known_limitations": [
+    "Historical source-taxonomy correspondence and exact inclusion boundaries have limitations.",
+    "Modern O*NET mapping does not make a historical value current.",
+    "Complete local source/Wocke extraction lineage has not been independently reproduced; reference code/title verification is a separate claim.",
+    "Historical occupation-level exposure is not current generative-AI risk, personal automation probability or probability of losing a job.",
+    "US-origin reference evidence may not generalize to other labor markets.",
+    "Coverage is data availability, not accuracy, semantic equivalence or inference confidence.",
+    "TOP inference does not verify current employment; CV role chronology may remain unresolved.",
+    "EQUIVALENT retains recorded scope/current-historical limitations; broader and overlap values are contextual source references."
+  ],
+  "authoritative_input_inconsistencies": [],
+  "implementation_created": false,
+  "manual_confirmation_implemented": false,
+  "next_phase_started": false,
+  "readiness": "READY_FOR_STEP_7B_2"
+}

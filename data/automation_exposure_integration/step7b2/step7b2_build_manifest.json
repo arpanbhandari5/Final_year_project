@@ -1,0 +1,301 @@
+{
+  "ML_or_RF_used": false,
+  "aggregation": false,
+  "candidate_schema": "One row per evaluated eligible SOC; nested source_records JSON retains all source edges. Convenience source scalar columns are null when multiple sources. Source trace has one row per frozen candidate-source path.",
+  "coverage_reproduction": "PASS",
+  "csv_null_encoding": "Literal JSON null; booleans and nested objects/arrays serialized as JSON.",
+  "deterministic_lookup_only": true,
+  "engine_path": "scripts/automation_exposure_integration.py",
+  "engine_sha256": "e689a3e80c485b7d5e4681854e536d41bcaa196291f16acf13cc0bb65947a1b3",
+  "flask_integration": false,
+  "hardening_round": "STEP_7B_2_1",
+  "input_integrity": "PASS",
+  "input_sha256_after": {
+    "app.py": "f619f5c4ee80feb9299e75aa184f90f7c6f984c51ac082e32e726956001aa578",
+    "data/automation_exposure_integration/step7a7/crosswalk_expansion_stopping_rule_v1.json": "9d3a87d100b99cd7bdd0ab242a68d31e02b613e241310795d292cdfa12c619c0",
+    "data/automation_exposure_integration/step7a7/crosswalk_phase_final_summary.json": "e83a64c8b01fb227aee3c6975142025363d3989e6e4f631be6a548615a576ad8",
+    "data/automation_exposure_integration/step7a7/crosswalk_v4_freeze_manifest.json": "bb337635388bc6c0b9aacf2a66aec6f8bce62f7f6fa56279f29cf287f95780f3",
+    "data/automation_exposure_integration/step7a7/exposure_coverage_summary_v4.json": "96e7f187714f8afc3856456fe21ddb5927aade869d75b1be2fcc6ff8d8dff399",
+    "data/automation_exposure_integration/step7a7/final_targeted_unresolved_register.csv": "e3cef2948e11d6fd051f05375c105c2c4937ccf80521db61e526aaff6254cea6",
+    "data/automation_exposure_integration/step7a7/profile_exposure_coverage_audit_v4.csv": "ea26728d1c6947695a7b11a1d5613bf2890721a1574f3309dbd698ca3e239330",
+    "data/automation_exposure_integration/step7a7/soc_exposure_path_audit_v4.csv": "0875a08ceb232c7ccd2cfb3414f47e192ad5b6671ca98ea611c15e3bd7a99ce7",
+    "data/automation_exposure_integration/step7a7/unique_soc_exposure_coverage_v4.csv": "4956e2a3d34d395c6a0da6e6663b8157ee944aee29fe77c0423b6f0e583b0a21",
+    "data/automation_exposure_integration/step7b1/exposure_integration_methodology_contract_v1.json": "756cc6b264e3c4ff983ea430dcd3d6094835bf0c4fd0338be65a85c0204319aa",
+    "data/automation_exposure_integration/step7b1/exposure_integration_state_contract_v1.csv": "8eebf2c0c01c604c53c85ad0862bd8c56814fb709413a22987f58a27a5b9c1f7",
+    "data/automation_exposure_integration/step7b1/exposure_provenance_contract_v1.csv": "1ec839bd485d10feac5bd2d5caba54ea6a98d4272d39f2b899bc6388b54906ce",
+    "data/automation_exposure_integration/step7b1/exposure_relationship_semantics_v1.csv": "b6112d4d4e6d0bab8acacd8313bb5f37a71fd9ed954ab09c2d713e64ef971eb1",
+    "data/automation_exposure_integration/step7b1/exposure_unavailability_reason_codes_v1.csv": "37596b40f936f1b2f7b6e32fa853b3ac6ed35d07ed1364ab65addf9b3ab265d9",
+    "data/automation_exposure_integration/step7b1/step7b1_methodology_freeze_manifest.json": "79b73f02bd857f2129132497654feb7d89d574654d99208ab1649778e2ba7555",
+    "data/automation_onet_crosswalk_v4.csv": "eeb19305b727e4dc33a3a3dae0c2bab6fd6af575a0563eb8ebda9fad02b5459f",
+    "data/automation_probability_labels.csv": "0b388464310a627a1e67e7364e559a0ebff9f494bf1f0287564d3c7b39b42b4f",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv": "fdb7de7b6bee992be127ab535ad46f0214766015e8d79fc4b079828527a55633",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_freeze_manifest.json": "8eff580e3eb0f6b27c3c5de767d8fa266cf8cded0e93fe2a99cc929cbbb83e1c",
+    "data/source_taxonomy_provenance.csv": "b829f1f7a8491224d03187b6584fbd2b6afbc2ab99d1b77d746e63a7d40e2659",
+    "models/experimental_automation/error_analysis.csv": "60b0406a4c3299630b0d115cd9c58fa773d24f77c4f4a9a2707a0cb5a1c5e1c2",
+    "models/experimental_automation/model.joblib": "8a0525d157fdd7621b7afa07534ae9db6025356c7f672d44d967d65c39e8250d",
+    "models/experimental_automation/model_comparison.csv": "8b2d11c82ab32eb98eec67698530c473a061f40f41ed0b77a73a22ae328ca20e",
+    "models/experimental_automation/oof_predictions.csv": "26919ed4c04ba8f0505123f73ff385a89a94d408423da99a8abab017c1725071",
+    "models/experimental_automation/training_metadata.json": "018084478564b8e8197fd0f1f81890c9c4a46cff08838d9d83e425f70ed266c0",
+    "risk_assessor.py": "1ebc3ea9afde7bdd2b54029803f1ffba1ea4f865ebe1fc96cd214c0d5430aff2"
+  },
+  "input_sha256_before": {
+    "app.py": "f619f5c4ee80feb9299e75aa184f90f7c6f984c51ac082e32e726956001aa578",
+    "data/automation_exposure_integration/step7a7/crosswalk_expansion_stopping_rule_v1.json": "9d3a87d100b99cd7bdd0ab242a68d31e02b613e241310795d292cdfa12c619c0",
+    "data/automation_exposure_integration/step7a7/crosswalk_phase_final_summary.json": "e83a64c8b01fb227aee3c6975142025363d3989e6e4f631be6a548615a576ad8",
+    "data/automation_exposure_integration/step7a7/crosswalk_v4_freeze_manifest.json": "bb337635388bc6c0b9aacf2a66aec6f8bce62f7f6fa56279f29cf287f95780f3",
+    "data/automation_exposure_integration/step7a7/exposure_coverage_summary_v4.json": "96e7f187714f8afc3856456fe21ddb5927aade869d75b1be2fcc6ff8d8dff399",
+    "data/automation_exposure_integration/step7a7/final_targeted_unresolved_register.csv": "e3cef2948e11d6fd051f05375c105c2c4937ccf80521db61e526aaff6254cea6",
+    "data/automation_exposure_integration/step7a7/profile_exposure_coverage_audit_v4.csv": "ea26728d1c6947695a7b11a1d5613bf2890721a1574f3309dbd698ca3e239330",
+    "data/automation_exposure_integration/step7a7/soc_exposure_path_audit_v4.csv": "0875a08ceb232c7ccd2cfb3414f47e192ad5b6671ca98ea611c15e3bd7a99ce7",
+    "data/automation_exposure_integration/step7a7/unique_soc_exposure_coverage_v4.csv": "4956e2a3d34d395c6a0da6e6663b8157ee944aee29fe77c0423b6f0e583b0a21",
+    "data/automation_exposure_integration/step7b1/exposure_integration_methodology_contract_v1.json": "756cc6b264e3c4ff983ea430dcd3d6094835bf0c4fd0338be65a85c0204319aa",
+    "data/automation_exposure_integration/step7b1/exposure_integration_state_contract_v1.csv": "8eebf2c0c01c604c53c85ad0862bd8c56814fb709413a22987f58a27a5b9c1f7",
+    "data/automation_exposure_integration/step7b1/exposure_provenance_contract_v1.csv": "1ec839bd485d10feac5bd2d5caba54ea6a98d4272d39f2b899bc6388b54906ce",
+    "data/automation_exposure_integration/step7b1/exposure_relationship_semantics_v1.csv": "b6112d4d4e6d0bab8acacd8313bb5f37a71fd9ed954ab09c2d713e64ef971eb1",
+    "data/automation_exposure_integration/step7b1/exposure_unavailability_reason_codes_v1.csv": "37596b40f936f1b2f7b6e32fa853b3ac6ed35d07ed1364ab65addf9b3ab265d9",
+    "data/automation_exposure_integration/step7b1/step7b1_methodology_freeze_manifest.json": "79b73f02bd857f2129132497654feb7d89d574654d99208ab1649778e2ba7555",
+    "data/automation_onet_crosswalk_v4.csv": "eeb19305b727e4dc33a3a3dae0c2bab6fd6af575a0563eb8ebda9fad02b5459f",
+    "data/automation_probability_labels.csv": "0b388464310a627a1e67e7364e559a0ebff9f494bf1f0287564d3c7b39b42b4f",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv": "fdb7de7b6bee992be127ab535ad46f0214766015e8d79fc4b079828527a55633",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_freeze_manifest.json": "8eff580e3eb0f6b27c3c5de767d8fa266cf8cded0e93fe2a99cc929cbbb83e1c",
+    "data/source_taxonomy_provenance.csv": "b829f1f7a8491224d03187b6584fbd2b6afbc2ab99d1b77d746e63a7d40e2659",
+    "models/experimental_automation/error_analysis.csv": "60b0406a4c3299630b0d115cd9c58fa773d24f77c4f4a9a2707a0cb5a1c5e1c2",
+    "models/experimental_automation/model.joblib": "8a0525d157fdd7621b7afa07534ae9db6025356c7f672d44d967d65c39e8250d",
+    "models/experimental_automation/model_comparison.csv": "8b2d11c82ab32eb98eec67698530c473a061f40f41ed0b77a73a22ae328ca20e",
+    "models/experimental_automation/oof_predictions.csv": "26919ed4c04ba8f0505123f73ff385a89a94d408423da99a8abab017c1725071",
+    "models/experimental_automation/training_metadata.json": "018084478564b8e8197fd0f1f81890c9c4a46cff08838d9d83e425f70ed266c0",
+    "risk_assessor.py": "1ebc3ea9afde7bdd2b54029803f1ffba1ea4f865ebe1fc96cd214c0d5430aff2"
+  },
+  "known_limitations": [
+    "Historical source-taxonomy correspondence and exact inclusion boundaries have limitations.",
+    "Modern O*NET mapping does not make a historical value current.",
+    "Complete local source/Wocke extraction lineage has not been independently reproduced; reference code/title verification is a separate claim.",
+    "Historical occupation-level exposure is not current generative-AI risk, personal automation probability or probability of losing a job.",
+    "US-origin reference evidence may not generalize to other labor markets.",
+    "Coverage is data availability, not accuracy, semantic equivalence or inference confidence.",
+    "TOP inference does not verify current employment; CV role chronology may remain unresolved.",
+    "EQUIVALENT retains recorded scope/current-historical limitations; broader and overlap values are contextual source references."
+  ],
+  "legacy_risk_used": false,
+  "methodology_changed": false,
+  "output_hash_scope": "Six companion files including inventory; manifest self-hash excluded. Inventory excludes manifest digest to avoid circular hashing.",
+  "output_row_counts": {
+    "candidate_historical_exposure_results_v1.csv": 542,
+    "historical_exposure_source_trace_v1.csv": 165,
+    "historical_exposure_validation_audit_v1.csv": 30,
+    "profile_historical_exposure_results_v1.csv": 344
+  },
+  "output_sha256": {
+    "candidate_historical_exposure_results_v1.csv": "6177d57fa713f19a691d587519e7028b4b5cd030ecb2fc55d4631c483a2c1f38",
+    "historical_exposure_source_trace_v1.csv": "3ffc3e5ac92393ad7264ad2e80104eea5f5ea04dda6d18b9b9d83ee6f7655132",
+    "historical_exposure_state_summary_v1.json": "5024e845b548901de1f4b8ca97d62b5f30044d6d98bd9b8544c12f62b50af62a",
+    "historical_exposure_validation_audit_v1.csv": "98a8b70567c31fb5500fb39f5e9b393ef9a58b4b1f0af773eab1b4173cb47218",
+    "profile_historical_exposure_results_v1.csv": "ac7b8314f40f9337db51a85b5da844060944f687fe19626a19329aad46494d28",
+    "step7b2_release_bundle_inventory.json": "99169b81b3d9ae4ceefbcd8a4adc741a1b57edc1b3e26f480ae5cbc82c723936"
+  },
+  "personal_job_loss_probability": false,
+  "pinned_corpus_non_regression": {
+    "result": "PASS",
+    "results": {
+      "candidate_historical_exposure_results_v1.csv": {
+        "byte_identical": true,
+        "changed_fields": [],
+        "changed_rows": [],
+        "sha256_after": "6177d57fa713f19a691d587519e7028b4b5cd030ecb2fc55d4631c483a2c1f38",
+        "sha256_before": "6177d57fa713f19a691d587519e7028b4b5cd030ecb2fc55d4631c483a2c1f38"
+      },
+      "historical_exposure_source_trace_v1.csv": {
+        "byte_identical": true,
+        "changed_fields": [],
+        "changed_rows": [],
+        "sha256_after": "3ffc3e5ac92393ad7264ad2e80104eea5f5ea04dda6d18b9b9d83ee6f7655132",
+        "sha256_before": "3ffc3e5ac92393ad7264ad2e80104eea5f5ea04dda6d18b9b9d83ee6f7655132"
+      },
+      "profile_historical_exposure_results_v1.csv": {
+        "byte_identical": true,
+        "changed_fields": [],
+        "changed_rows": [],
+        "sha256_after": "ac7b8314f40f9337db51a85b5da844060944f687fe19626a19329aad46494d28",
+        "sha256_before": "ac7b8314f40f9337db51a85b5da844060944f687fe19626a19329aad46494d28"
+      }
+    },
+    "summary_unchanged": true
+  },
+  "post_fix_independent_audit_performed": false,
+  "prior_independent_audit_verdict": "PASS_WITH_REQUIRED_FIXES_BEFORE_FREEZE",
+  "published_output_changes": {
+    "historical_exposure_state_summary_v1.json": "BYTE_IDENTICAL_NOT_REWRITTEN",
+    "historical_exposure_validation_audit_v1.csv": {
+      "added_check_ids": [
+        "CANDIDATE_RANK_DOMAIN_AND_UNIQUENESS",
+        "CANDIDATE_EVIDENCE_FINITE",
+        "NULLABLE_METADATA_PRESERVED",
+        "TOP_ELIGIBLE_SET_INVARIANT",
+        "STRUCTURED_FAILURE_BOUNDARY",
+        "DERIVED_INSUFFICIENT_LOOKUP_COUNT_ZERO",
+        "DERIVED_PROFILE_SUMMARY_NON_NULL_COUNT_ZERO",
+        "PINNED_RESULT_CSV_BYTE_STABILITY",
+        "REGRESSION_TESTS_PASSED"
+      ],
+      "change_type": "VALIDATION_ONLY",
+      "modified_rows": [
+        {
+          "change_type": "VALIDATION_ONLY",
+          "csv_row": 10,
+          "fields_changed": [
+            "check_id",
+            "notes"
+          ],
+          "new_check_id": "NON_STDLIB_DEPENDENCY_IMPORT_COUNT_ZERO",
+          "old_check_id": "RF_REFERENCE_OR_LOAD_COUNT_ZERO"
+        },
+        {
+          "change_type": "VALIDATION_ONLY",
+          "csv_row": 20,
+          "fields_changed": [
+            "check_id",
+            "notes"
+          ],
+          "new_check_id": "STATIC_LEGACY_RISK_DEPENDENCY_ABSENT",
+          "old_check_id": "LEGACY_RISK_NOT_USED"
+        },
+        {
+          "change_type": "VALIDATION_ONLY",
+          "csv_row": 21,
+          "fields_changed": [
+            "check_id",
+            "notes"
+          ],
+          "new_check_id": "STATIC_SKILL_GAP_DEPENDENCY_ABSENT",
+          "old_check_id": "SKILL_GAP_NOT_USED"
+        }
+      ]
+    },
+    "main_result_CSVs": {
+      "candidate_historical_exposure_results_v1.csv": {
+        "byte_identical": true,
+        "changed_fields": [],
+        "changed_rows": [],
+        "sha256_after": "6177d57fa713f19a691d587519e7028b4b5cd030ecb2fc55d4631c483a2c1f38",
+        "sha256_before": "6177d57fa713f19a691d587519e7028b4b5cd030ecb2fc55d4631c483a2c1f38"
+      },
+      "historical_exposure_source_trace_v1.csv": {
+        "byte_identical": true,
+        "changed_fields": [],
+        "changed_rows": [],
+        "sha256_after": "3ffc3e5ac92393ad7264ad2e80104eea5f5ea04dda6d18b9b9d83ee6f7655132",
+        "sha256_before": "3ffc3e5ac92393ad7264ad2e80104eea5f5ea04dda6d18b9b9d83ee6f7655132"
+      },
+      "profile_historical_exposure_results_v1.csv": {
+        "byte_identical": true,
+        "changed_fields": [],
+        "changed_rows": [],
+        "sha256_after": "ac7b8314f40f9337db51a85b5da844060944f687fe19626a19329aad46494d28",
+        "sha256_before": "ac7b8314f40f9337db51a85b5da844060944f687fe19626a19329aad46494d28"
+      }
+    },
+    "step7b2_build_manifest.json": "Hardening, tests, hashes and release metadata only."
+  },
+  "readiness": "READY_FOR_STEP_7B_2_FREEZE_REVIEW",
+  "regression_tests": {
+    "command": "python -B -m unittest discover -s tests -p test_automation_exposure_integration.py -v",
+    "count": 43,
+    "errors": 0,
+    "failed": 0,
+    "passed": 43
+  },
+  "release_bundle_inventory": {
+    "entry_count": 15,
+    "path": "data/automation_exposure_integration/step7b2/step7b2_release_bundle_inventory.json",
+    "sha256": "99169b81b3d9ae4ceefbcd8a4adc741a1b57edc1b3e26f480ae5cbc82c723936"
+  },
+  "runtime": {
+    "dependencies": "Python standard library only",
+    "python": "3.13.5"
+  },
+  "skill_gap_scoring": false,
+  "step7b1_contract_hashes": {
+    "data/automation_exposure_integration/step7b1/exposure_integration_methodology_contract_v1.json": "756cc6b264e3c4ff983ea430dcd3d6094835bf0c4fd0338be65a85c0204319aa",
+    "data/automation_exposure_integration/step7b1/exposure_integration_state_contract_v1.csv": "8eebf2c0c01c604c53c85ad0862bd8c56814fb709413a22987f58a27a5b9c1f7",
+    "data/automation_exposure_integration/step7b1/exposure_provenance_contract_v1.csv": "1ec839bd485d10feac5bd2d5caba54ea6a98d4272d39f2b899bc6388b54906ce",
+    "data/automation_exposure_integration/step7b1/exposure_relationship_semantics_v1.csv": "b6112d4d4e6d0bab8acacd8313bb5f37a71fd9ed954ab09c2d713e64ef971eb1",
+    "data/automation_exposure_integration/step7b1/exposure_unavailability_reason_codes_v1.csv": "37596b40f936f1b2f7b6e32fa853b3ac6ed35d07ed1364ab65addf9b3ab265d9",
+    "data/automation_exposure_integration/step7b1/step7b1_methodology_freeze_manifest.json": "79b73f02bd857f2129132497654feb7d89d574654d99208ab1649778e2ba7555"
+  },
+  "summary": {
+    "accuracy_claim": false,
+    "all_profiles_eligible_audit_candidate_count": 597,
+    "deterministic_lookup_only": true,
+    "distinct_active_lookup_SOCs": 170,
+    "distinct_historical_sources_reached": 22,
+    "distinct_mapped_modern_SOCs": 27,
+    "evaluated_eligible_candidate_count": 542,
+    "insufficient_lookup_count": 0,
+    "mapped_candidate_count": 165,
+    "personal_risk_metric": false,
+    "profile_numeric_summary_non_null_count": 0,
+    "relationship_type_counts_candidate_source_rows": {
+      "EQUIVALENT": 105,
+      "OVERLAP": 7,
+      "SOURCE_BROADER_THAN_ONET": 53
+    },
+    "relationship_type_counts_distinct_active_edges": {
+      "EQUIVALENT": 13,
+      "OVERLAP": 2,
+      "SOURCE_BROADER_THAN_ONET": 12
+    },
+    "shared_source_count": 3,
+    "shared_sources": {
+      "31": [
+        "15-1211.00",
+        "15-1221.00"
+      ],
+      "4": [
+        "11-2011.00",
+        "11-2021.00",
+        "13-1161.00",
+        "27-3031.00"
+      ],
+      "5": [
+        "11-9032.00",
+        "11-9033.00"
+      ]
+    },
+    "source_ambiguity_candidate_count": 0,
+    "source_ambiguity_distinct_SOC_count": 0,
+    "state_counts": {
+      "INSUFFICIENT": 163,
+      "MULTIPLE_ALL_MAPPED": 11,
+      "MULTIPLE_NONE_MAPPED": 53,
+      "MULTIPLE_PARTIAL": 82,
+      "TOP_MAPPED": 23,
+      "TOP_UNMAPPED": 12
+    },
+    "total_profiles": 344,
+    "unavailability_count_unit": "Candidate reasons plus profile INSUFFICIENT reasons; no double-counted TOP profile reason.",
+    "unavailability_reason_counts": {
+      "LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE": 163,
+      "UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING": 377
+    },
+    "unavailable_candidate_count": 377
+  },
+  "task": "STEP_7B_2",
+  "test_path": "tests/test_automation_exposure_integration.py",
+  "test_sha256": "6340da35b214cdfaa8eef2bb4dc8a2fac548cc3aa450494bfdeb798ed7ea9060",
+  "tests_command": "python -B -m unittest discover -s tests -p test_automation_exposure_integration.py -v",
+  "tests_execution": "43/43 regression tests executed successfully before this manifest update.",
+  "validation_hardening": {
+    "TOP": "Exactly one eligible SOC matching selected identity.",
+    "assurance_counters": "Derived from evaluated results.",
+    "candidate_rank": "Nullable; positive integer when present; conflicting ranks fail; no renumbering.",
+    "dependency_checks": "Labels limited to static import/dependency assurance; no universal runtime-reference claim.",
+    "evidence_score": "Nullable; finite when present; no invented range; zero preserved.",
+    "external_boundary": "validation_boundary returns ERROR / ARTIFACT_VALIDATION_FAILURE / validation_errors for expected artifact failures. State/exposure null. Unexpected RuntimeError/AssertionError propagate.",
+    "nullable_ordering": "Any null rank: preserve authoritative row order as audit ordering only; no replacement rank."
+  },
+  "version": "historical-exposure-integration-v1.0"
+}

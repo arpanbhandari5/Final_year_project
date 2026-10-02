@@ -1,0 +1,133 @@
+{
+  "bundle_scope": "Complete Step 7B.1 + Step 7B.2 + engine/tests; prerequisites pinned in build manifest.",
+  "entries": [
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "scripts/automation_exposure_integration.py",
+      "role_category": "engine",
+      "sha256": "e689a3e80c485b7d5e4681854e536d41bcaa196291f16acf13cc0bb65947a1b3"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "tests/test_automation_exposure_integration.py",
+      "role_category": "tests",
+      "sha256": "6340da35b214cdfaa8eef2bb4dc8a2fac548cc3aa450494bfdeb798ed7ea9060"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b1/exposure_integration_methodology_contract_v1.json",
+      "role_category": "frozen_step7b1_contract",
+      "sha256": "756cc6b264e3c4ff983ea430dcd3d6094835bf0c4fd0338be65a85c0204319aa"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b1/exposure_integration_state_contract_v1.csv",
+      "role_category": "frozen_step7b1_contract",
+      "sha256": "8eebf2c0c01c604c53c85ad0862bd8c56814fb709413a22987f58a27a5b9c1f7"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b1/exposure_provenance_contract_v1.csv",
+      "role_category": "frozen_step7b1_contract",
+      "sha256": "1ec839bd485d10feac5bd2d5caba54ea6a98d4272d39f2b899bc6388b54906ce"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b1/exposure_relationship_semantics_v1.csv",
+      "role_category": "frozen_step7b1_contract",
+      "sha256": "b6112d4d4e6d0bab8acacd8313bb5f37a71fd9ed954ab09c2d713e64ef971eb1"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b1/exposure_unavailability_reason_codes_v1.csv",
+      "role_category": "frozen_step7b1_contract",
+      "sha256": "37596b40f936f1b2f7b6e32fa853b3ac6ed35d07ed1364ab65addf9b3ab265d9"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b1/step7b1_methodology_freeze_manifest.json",
+      "role_category": "frozen_step7b1_contract",
+      "sha256": "79b73f02bd857f2129132497654feb7d89d574654d99208ab1649778e2ba7555"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b2/candidate_historical_exposure_results_v1.csv",
+      "role_category": "step7b2_build_and_validation",
+      "sha256": "6177d57fa713f19a691d587519e7028b4b5cd030ecb2fc55d4631c483a2c1f38"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b2/historical_exposure_source_trace_v1.csv",
+      "role_category": "step7b2_build_and_validation",
+      "sha256": "3ffc3e5ac92393ad7264ad2e80104eea5f5ea04dda6d18b9b9d83ee6f7655132"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b2/historical_exposure_state_summary_v1.json",
+      "role_category": "step7b2_build_and_validation",
+      "sha256": "5024e845b548901de1f4b8ca97d62b5f30044d6d98bd9b8544c12f62b50af62a"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b2/historical_exposure_validation_audit_v1.csv",
+      "role_category": "step7b2_build_and_validation",
+      "sha256": "98a8b70567c31fb5500fb39f5e9b393ef9a58b4b1f0af773eab1b4173cb47218"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "SHA-256 of exact file bytes",
+      "relative_path": "data/automation_exposure_integration/step7b2/profile_historical_exposure_results_v1.csv",
+      "role_category": "step7b2_build_and_validation",
+      "sha256": "ac7b8314f40f9337db51a85b5da844060944f687fe19626a19329aad46494d28"
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "Null digest avoids manifest/inventory/self circular hashing; all companion artifact digests provided.",
+      "relative_path": "data/automation_exposure_integration/step7b2/step7b2_build_manifest.json",
+      "role_category": "step7b2_build_and_validation",
+      "sha256": null
+    },
+    {
+      "git_status": "untracked",
+      "hash_note": "Null digest avoids manifest/inventory/self circular hashing; all companion artifact digests provided.",
+      "relative_path": "data/automation_exposure_integration/step7b2/step7b2_release_bundle_inventory.json",
+      "role_category": "step7b2_build_and_validation",
+      "sha256": null
+    }
+  ],
+  "entry_count": 15,
+  "git_branch": "ml-pipeline-v2",
+  "git_changes_performed": false,
+  "git_status_bundle": "?? data/automation_exposure_integration/step7b1/exposure_integration_methodology_contract_v1.json\n?? data/automation_exposure_integration/step7b1/exposure_integration_state_contract_v1.csv\n?? data/automation_exposure_integration/step7b1/exposure_provenance_contract_v1.csv\n?? data/automation_exposure_integration/step7b1/exposure_relationship_semantics_v1.csv\n?? data/automation_exposure_integration/step7b1/exposure_unavailability_reason_codes_v1.csv\n?? data/automation_exposure_integration/step7b1/step7b1_methodology_freeze_manifest.json\n?? data/automation_exposure_integration/step7b2/candidate_historical_exposure_results_v1.csv\n?? data/automation_exposure_integration/step7b2/historical_exposure_source_trace_v1.csv\n?? data/automation_exposure_integration/step7b2/historical_exposure_state_summary_v1.json\n?? data/automation_exposure_integration/step7b2/historical_exposure_validation_audit_v1.csv\n?? data/automation_exposure_integration/step7b2/profile_historical_exposure_results_v1.csv\n?? data/automation_exposure_integration/step7b2/step7b2_build_manifest.json\n?? scripts/automation_exposure_integration.py\n?? tests/test_automation_exposure_integration.py\n",
+  "hash_cycle_policy": "Inventory and build manifest digests are null in inventory to avoid circular hashing; all other 13 entries have exact hashes; build manifest pins full inventory file.",
+  "recommended_git_add_scope": [
+    "scripts/automation_exposure_integration.py",
+    "tests/test_automation_exposure_integration.py",
+    "data/automation_exposure_integration/step7b1/exposure_integration_methodology_contract_v1.json",
+    "data/automation_exposure_integration/step7b1/exposure_integration_state_contract_v1.csv",
+    "data/automation_exposure_integration/step7b1/exposure_provenance_contract_v1.csv",
+    "data/automation_exposure_integration/step7b1/exposure_relationship_semantics_v1.csv",
+    "data/automation_exposure_integration/step7b1/exposure_unavailability_reason_codes_v1.csv",
+    "data/automation_exposure_integration/step7b1/step7b1_methodology_freeze_manifest.json",
+    "data/automation_exposure_integration/step7b2/candidate_historical_exposure_results_v1.csv",
+    "data/automation_exposure_integration/step7b2/historical_exposure_source_trace_v1.csv",
+    "data/automation_exposure_integration/step7b2/historical_exposure_state_summary_v1.json",
+    "data/automation_exposure_integration/step7b2/historical_exposure_validation_audit_v1.csv",
+    "data/automation_exposure_integration/step7b2/profile_historical_exposure_results_v1.csv",
+    "data/automation_exposure_integration/step7b2/step7b2_build_manifest.json",
+    "data/automation_exposure_integration/step7b2/step7b2_release_bundle_inventory.json"
+  ],
+  "task": "STEP_7B_2_1"
+}

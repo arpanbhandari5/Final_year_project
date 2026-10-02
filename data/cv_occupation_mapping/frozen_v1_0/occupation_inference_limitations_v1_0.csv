@@ -1,0 +1,19 @@
+limitation_id,category,description,impact,system_behavior,downstream_handling,status
+L01,methodology,Deterministic rule-based inference; no trained classifier.,No measured classifier accuracy.,Fixed lexical rules.,Preserve methodology version.,KNOWN_LIMITATION
+L02,scores,"Evidence scores are engineering scores, not probabilities.",Cannot interpret scores as confidence percentages.,Fixed additive evidence scoring.,Never calibrate implicitly.,KNOWN_LIMITATION
+L03,top,"TOP_CANDIDATE is an inferred occupation, not ground truth.",Possible incorrect matches remain.,Conservative strong-evidence gate.,Retain provenance and status.,KNOWN_LIMITATION
+L04,multiple,MULTIPLE_CANDIDATES retains unresolved plausible occupations.,No single selected occupation.,All eligible candidates retained.,Handle every eligible SOC explicitly.,KNOWN_LIMITATION
+L05,abstention,"INSUFFICIENT_EVIDENCE represents abstention, even with a sole eligible audit candidate.",Occupation unavailable.,Does not force assignment.,Return unavailable or request clarification.,KNOWN_LIMITATION
+L06,chronology,"CV chronology may be missing, redacted, misaligned or historical.",Cannot verify current employment.,No current/past role selection or recency weighting.,Do not describe inference as current employment.,KNOWN_LIMITATION
+L07,broad_titles,Generic and broad official aliases remain difficult.,False alternatives or abstention remain possible.,Eligibility and corroboration gates.,Preserve candidate ambiguity.,KNOWN_LIMITATION
+L08,qualified_titles,Qualified titles may lack direct O*NET equivalents.,Literal core matching may miss nuance.,Recorded qualifier and compound handling.,Review underlying evidence.,KNOWN_LIMITATION
+L09,it_support,IT Support / IT Intern remains a known review risk.,Useful support alternatives may be lost.,Frozen lexical family and eligibility gates.,Request duties when needed.,KNOWN_LIMITATION
+L10,engineering,Some useful engineering alternatives may be over-pruned.,Candidate recall may be incomplete.,Frozen domain-family gates.,Do not treat rejection as verified exclusion.,KNOWN_LIMITATION
+L11,deep_learning,Deep Learning Engineer Intern may abstain.,No guaranteed inferred occupation.,No invented deep-learning/machine-learning equivalence.,Request additional occupation evidence.,KNOWN_LIMITATION
+L12,data_managerial,Data Managerial Intern may abstain.,No guaranteed inferred occupation.,No invented semantic expansion.,Request duties or clarification.,KNOWN_LIMITATION
+L13,pending_alias,SDE alias remains pending and is not applied.,Abbreviation is not approved occupation evidence.,Only approved aliases may apply; none currently approved.,Preserve pending status.,KNOWN_LIMITATION
+L14,semantic_models,No external semantic or embedding model is used.,Lexical recall limitations remain.,Deterministic local evidence only.,Do not claim semantic model validation.,KNOWN_LIMITATION
+L15,cv_skills,CV skills support inference but do not prove occupation.,Tools can occur across occupations.,Skill overlap alone is insufficient strong employment evidence.,Retain source context.,KNOWN_LIMITATION
+L16,proficiency,O*NET occupational requirements do not represent user proficiency.,Requirements cannot establish personal skill levels.,No proficiency estimation implemented.,Keep occupational requirements separate from user evidence.,KNOWN_LIMITATION
+L17,multi_role,Mixed role histories can produce singleton-risk abstention.,A retained candidate may describe only one historical role.,Multi-role singleton risk can downgrade TOP to abstention.,Do not silently choose a historical role.,KNOWN_LIMITATION
+L18,review_labels,Reviewer fields are blank and are not validated ground truth.,344 profiles are not an accuracy benchmark.,No review labels consumed as training targets.,Do not report accuracy from this replay.,KNOWN_LIMITATION

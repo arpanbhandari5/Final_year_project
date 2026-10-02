@@ -1,0 +1,292 @@
+record_id,occupation,automation_probability,routineness,complexity,stratum
+1,"Chief executives, public administrators, and legislators",0.015,0.161,0.979,5
+2,Financial managers,0.069,0.744,0.961,3
+3,Human resources and labour relations managers,0.006,0.355,0.913,3
+4,"Managers and specialists in marketing, advert., PR",0.023,0.531,0.813,3
+5,Managers in education and related fields,0.006,0.340,0.825,3
+6,Managers of medicine and health occupations,0.007,0.255,0.933,3
+7,Managers of properties and real estate,0.810,0.072,0.662,3
+8,Funeral directors,0.200,0.018,0.572,3
+9,"Managers and administrators, n.e.c.",0.250,0.151,0.908,3
+10,Accountants and auditors,0.940,0.924,0.790,3
+11,Insurance underwriters,0.990,0.930,0.653,3
+12,Other financial specialists,0.330,0.674,0.753,3
+13,Management analysts,0.130,0.261,0.910,3
+14,"Personnel, HR, training, and labour rel. specialists",0.310,0.361,0.820,3
+15,Purchasing agents and buyers of farm products,0.870,0.987,0.654,3
+16,"Buyers, wholesale and retail trade",0.290,0.632,0.706,3
+17,"Purchasing managers, agents, and buyers, n.e.c.",0.030,0.501,0.799,3
+18,Business and promotion agents,0.240,0.094,0.556,3
+19,Construction inspectors,0.630,0.136,0.680,3
+20,"Inspectors and compliance officers, outside",0.080,0.322,0.931,3
+21,Architects,0.018,0.708,0.969,3
+22,Aerospace engineers,0.017,0.142,0.998,3
+23,Metallurgical and materials engineers,0.021,0.282,0.996,3
+24,"Petroleum, mining, and geological engineers",0.150,0.428,0.970,3
+25,Chemical engineers,0.017,0.528,1.000,3
+26,Civil engineers,0.019,0.106,0.996,3
+27,Electrical engineers,0.100,0.082,0.941,3
+28,Industrial engineers,0.029,0.185,0.965,3
+29,Mechanical engineers,0.011,0.595,0.983,3
+30,"Engineers and other professionals, n.e.c.",0.014,0.243,0.979,3
+31,Computer systems analysts and computer scientists,0.011,0.100,0.929,3
+32,Operations and systems researchers and analysts,0.035,0.112,0.956,3
+33,Actuaries,0.210,0.188,0.998,3
+34,Mathematicians and statisticians,0.134,0.547,0.913,3
+35,Physicists and astronomists,0.071,0.659,1.000,3
+36,Chemists,0.100,0.516,0.973,3
+37,Atmospheric and space scientists,0.670,0.024,0.966,3
+38,Geologists,0.630,0.133,0.972,3
+39,"Physical scientists, n.e.c.",0.430,0.194,0.966,3
+40,Agricultural and food scientists,0.053,0.231,0.971,3
+41,Biological scientists,0.113,0.303,0.999,3
+42,Foresters and conservation scientists,0.012,0.021,0.821,3
+43,Medical scientists,0.005,0.276,0.998,3
+44,Physicians,0.004,0.091,0.992,3
+45,Dentists,0.004,0.109,0.943,3
+46,Veterinarians,0.038,0.787,0.926,3
+47,Optometrists,0.140,0.164,0.966,3
+48,Podiatrists,0.005,0.449,0.966,3
+49,Registered nurses,0.009,0.258,0.936,3
+50,Pharmacists,0.012,0.431,0.946,3
+51,Dieticians and nutritionists,0.004,0.039,0.932,3
+52,Respiratory therapists,0.066,0.212,0.759,3
+53,Occupational therapists,0.004,0.212,0.744,3
+54,Physical therapists,0.021,0.212,0.826,3
+55,Speech therapists,0.006,0.212,0.926,3
+56,Physicians' assistants,0.300,0.212,0.933,2
+57,Kindergarten and earlier school teachers,0.150,0.036,0.531,2
+58,Primary school teachers,0.170,0.048,0.715,2
+59,Secondary school teachers,0.008,0.075,0.740,2
+60,Special education teachers,0.012,0.103,0.731,2
+61,"Teachers, n.e.c.",0.010,0.085,0.722,2
+62,Vocational and educational counselors,0.134,0.410,0.762,2
+63,Librarians,0.650,0.373,0.678,2
+64,Archivists and curators,0.383,0.042,0.740,2
+65,"Economists, market and survey researchers",0.330,0.592,0.967,3
+66,Psychologists,0.007,0.638,0.971,3
+67,"Social scientists and sociologists, n.e.c.",0.059,0.066,0.954,3
+68,Urban and regional planners,0.130,0.182,0.971,3
+69,Social workers,0.012,0.486,0.778,2
+70,Clergy and religious workers,0.008,0.644,0.759,3
+71,Welfare service workers,0.028,0.097,0.620,2
+72,Lawyers and judges,0.218,0.981,0.954,3
+73,Writers and authors,0.038,0.179,0.639,2
+74,Technical writers,0.890,0.197,0.535,3
+75,Designers,0.042,0.507,0.626,2
+76,Musicians and composers,0.045,0.088,0.430,2
+77,"Actors, directors, and producers",0.196,0.057,0.679,3
+78,"Painters, sculptors, craft-artists, and print-makers",0.039,0.811,0.571,3
+79,Photographers,0.021,0.875,0.533,2
+80,Dancers,0.130,0.209,0.372,2
+81,Editors and reporters,0.083,0.775,0.641,3
+82,Announcers,0.720,0.513,0.522,2
+83,"Athletes, sports instructors, and officials",0.147,0.003,0.534,2
+84,Clinical laboratory technologies and technicians,0.685,0.650,0.732,2
+85,Dental hygienists,0.680,0.863,0.535,2
+86,Health record technologists and technicians,0.910,0.370,0.346,2
+87,Radiologic technologists and technicians,0.230,0.291,0.663,2
+88,Licensed practical nurses,0.058,0.349,0.719,2
+89,"Health technologists and technicians, n.e.c.",0.400,0.425,0.734,2
+90,Engineering technicians,0.240,0.419,0.775,2
+91,Drafters,0.670,0.848,0.646,2
+92,"Surveyors, cartographers, mapping scientists/techs",0.630,0.054,0.761,2
+93,Biological technicians,0.300,0.586,0.733,2
+94,Chemical technicians,0.570,0.437,0.776,2
+95,Other science technicians,0.610,0.480,0.627,2
+96,Airplane pilots and navigators,0.180,0.051,0.935,2
+97,Air traffic controllers,0.110,0.310,0.914,2
+98,Broadcast equipment operators,0.740,0.580,0.574,2
+99,Computer software developers,0.086,0.288,0.918,2
+100,Programmers of numerically controlled machine tools,0.360,0.458,0.678,2
+101,Legal assistants and paralegals,0.940,0.741,0.431,2
+102,Sales supervisors and proprietors,0.178,0.127,0.704,2
+103,Insurance sales occupations,0.920,0.948,0.636,2
+104,Real estate sales occupations,0.860,0.805,0.660,2
+105,Financial service sales occupations,0.016,0.881,0.766,2
+106,Advertising and related sales jobs,0.540,0.996,0.628,2
+107,Sales engineers,0.004,0.343,0.962,2
+108,Retail salespersons and sales clerks,0.920,0.522,0.497,2
+109,Cashiers,0.970,0.975,0.168,1
+110,"Door-to-door sales, street sales, and news vendors",0.940,0.167,0.064,1
+111,"Sales demonstrators, promoters, and models",0.745,0.422,0.034,1
+112,Office supervisors,0.014,0.750,0.653,2
+113,Computer and peripheral equipment operators,0.780,0.452,0.744,1
+114,Secretaries and stenographers,0.903,0.993,0.419,1
+115,Typists,0.810,0.972,0.114,1
+116,"Interviewers, enumerators, and surveyors",0.940,0.911,0.371,1
+117,Hotel clerks,0.940,0.668,0.304,1
+118,Transportation ticket and reservation agents,0.610,0.762,0.502,1
+119,Receptionists and other information clerks,0.960,0.942,0.336,1
+120,Correspondence and order clerks,0.860,0.753,0.345,1
+121,"Human resources clerks, excl payroll and timekeeping",0.900,0.908,0.435,1
+122,Library assistants,0.950,0.589,0.338,1
+123,File clerks,0.970,0.984,0.339,1
+124,Bookkeepers and accounting and auditing clerks,0.980,0.966,0.522,1
+125,Payroll and timekeeping clerks,0.970,0.620,0.340,1
+126,Billing clerks and related financial records processing,0.950,0.936,0.346,1
+127,Mail and paper handlers,0.940,0.756,0.053,1
+128,"Office machine operators, n.e.c.",0.920,0.854,0.324,1
+129,Telephone operators,0.970,0.951,0.130,1
+130,"Postal clerks, exluding mail carriers",0.950,0.960,0.303,1
+131,Mail carriers for postal service,0.680,0.626,0.052,1
+132,"Mail clerks, outside of post office",0.940,0.957,0.115,1
+133,Messengers,0.940,0.781,0.130,1
+134,Dispatchers,0.960,0.826,0.573,1
+135,Shipping and receiving clerks,0.980,0.796,0.445,1
+136,Stock and inventory clerks,0.640,0.696,0.071,1
+137,Meter readers,0.850,0.647,0.325,1
+138,"Weighers, measurers, and checkers",0.950,0.869,0.326,1
+139,"Material recording, sched., prod., plan., expediting cl.",0.880,0.772,0.719,1
+140,"Insurance adjusters, examiners, and investigators",0.980,0.866,0.534,1
+141,"Customer service reps, invest., adjusters, excl. insur.",0.550,0.814,0.620,1
+142,"Eligibility clerks for government prog., social welfare",0.700,0.920,0.448,1
+143,Bill and account collectors,0.950,0.978,0.448,1
+144,General office clerks,0.960,0.927,0.249,1
+145,Bank tellers,0.980,1.000,0.372,1
+146,Proofreaders,0.840,0.817,0.172,1
+147,Data entry keyers,0.990,0.838,0.324,1
+148,Statistical clerks,0.660,0.905,0.932,1
+149,Teacher's aides,0.560,0.471,0.338,1
+150,"Housekeepers, maids, butlers, and cleaners",0.675,0.270,0.028,1
+151,Laundry and dry cleaning workers,0.710,0.841,0.034,1
+152,"Fire fighting, fire prevention, and fire inspection occs",0.325,0.006,0.795,1
+153,"Police and detectives, public service",0.098,0.045,0.731,1
+154,"Sheriffs, bailiffs, correctional institution officers",0.480,0.267,0.435,1
+155,Crossing guards,0.490,0.297,0.028,1
+156,"Guards and police, except public service",0.840,0.723,0.519,1
+157,"Protective service, n.e.c.",0.670,0.191,0.433,1
+158,Bartenders,0.770,0.802,0.343,1
+159,Waiters and waitresses,0.940,0.130,0.036,1
+160,Cooks,0.768,0.887,0.291,1
+161,Food preparation workers,0.870,0.556,0.002,1
+162,Miscellanious food preparation and service workers,0.895,0.553,0.047,1
+163,Dental Assistants,0.510,0.963,0.497,1
+164,Health and nursing aides,0.390,0.273,0.428,1
+165,Supervisors of cleaning and building service,0.940,0.246,0.324,2
+166,"Superv. of landscaping, lawn service, groundskeeping",0.570,0.121,0.556,2
+167,Gardeners and groundskeepers,0.950,0.316,0.239,1
+168,Janitors,0.660,0.386,0.025,1
+169,Pest control occupations,0.660,0.376,0.418,1
+170,Barbers,0.800,0.990,0.056,1
+171,Hairdressers and cosmetologists,0.110,0.820,0.162,1
+172,Recreation facility attendants,0.006,0.176,0.117,1
+173,Guides,0.484,0.446,0.335,1
+174,Ushers,0.960,0.583,0.036,1
+175,"Baggage porters, bellhops and concierges",0.520,0.118,0.270,1
+176,Recreation and fitness workers,0.046,0.012,0.356,1
+177,Motion picture projectionists,0.970,0.735,0.062,1
+178,Child care workers,0.084,0.537,0.433,1
+179,"Supervisors of personal service jobs, n.e.c",0.076,0.173,0.620,2
+180,Public transportation attendants and inspectors,0.825,0.027,0.431,1
+181,"Animal caretakers, except farm",0.820,0.629,0.322,1
+182,Supervisors of mechanics and repairers,0.003,0.249,0.816,1
+183,Automobile mechanics and repairers,0.590,0.379,0.555,1
+184,"Bus, truck, and stationary engine mechanics",0.730,0.382,0.448,1
+185,Aircraft mechanics,0.710,0.328,0.764,1
+186,Small engine repairers,0.930,0.613,0.355,1
+187,Auto body repairers,0.910,0.808,0.244,1
+188,Heavy equipement and farm equipment mechanics,0.575,0.395,0.353,1
+189,Industrial machinery repairers,0.860,0.455,0.335,1
+190,Machinery maintenance occupations,0.860,0.945,0.320,1
+191,Repairers of industrial electrical equipment,0.410,0.665,0.639,1
+192,Repairers of data processing equipment,0.740,0.747,0.429,1
+193,Repairers of household appliances and power tools,0.720,0.604,0.500,1
+194,Telecom and line installers and repairers,0.425,0.234,0.528,1
+195,"Repairers of electrical equipment, n.e.c.",0.650,0.468,0.618,1
+196,"Heating, air conditioning, and refrigeration mechanics",0.650,0.392,0.623,1
+197,"Precision makers, repairers, and smiths",0.785,0.896,0.432,1
+198,Locksmiths and safe repairers,0.770,0.598,0.418,1
+199,Repairers of mechanical controls and valves,0.630,0.601,0.305,1
+200,Elevator installers and repairers,0.390,0.407,0.538,1
+201,Millwrights,0.590,0.294,0.583,1
+202,"Mechanics and repairers, n.e.c.",0.500,0.440,0.383,1
+203,Supervisors of construction work,0.170,0.115,0.678,2
+204,"Masons, tilers, and carpet installers",0.847,0.404,0.269,1
+205,Carpenters,0.720,0.206,0.412,1
+206,Drywall installers,0.790,0.544,0.114,1
+207,Electricians,0.150,0.285,0.568,1
+208,Electric power installers and repairers,0.097,0.148,0.531,1
+209,"Painters, construction and maintenance",0.750,0.477,0.123,1
+210,Paperhangers,0.870,0.541,0.041,1
+211,Plasterers,0.840,0.334,0.270,1
+212,"Plumbers, pipe fitters, and steamfitters",0.350,0.364,0.392,1
+213,Concrete and cement workers,0.940,0.519,0.164,1
+214,Glaziers,0.730,0.550,0.169,1
+215,Insulation workers,0.735,0.367,0.321,1
+216,"Paving, surfacing, and tamping equipment operators",0.830,0.525,0.240,1
+217,Roofers and slaters,0.900,0.352,0.374,1
+218,Structural metal workers,0.830,0.337,0.178,1
+219,Drillers of earth,0.850,0.358,0.275,1
+220,Misc. construction and related occupations,0.710,0.413,0.349,1
+221,Drillers of oil wells,0.530,0.434,0.498,1
+222,Explosives workers,0.480,0.252,0.720,1
+223,Miners,0.565,0.559,0.293,1
+224,Other mining occupations,0.930,0.568,0.063,1
+225,Production supervisors or foremen,0.016,0.200,0.617,2
+226,Tool and die makers and die setters,0.840,0.899,0.580,1
+227,Machinists,0.910,0.711,0.512,1
+228,Boilermakers,0.680,0.534,0.502,1
+229,Patternmakers and model makers,0.915,0.933,0.322,1
+230,Engravers,0.980,0.790,0.244,1
+231,Cabinetmakers and bench carpeters,0.920,0.325,0.420,1
+232,"Furniture/wood finishers, other prec. wood workers",0.870,0.939,0.131,1
+233,"Dressmakers, seamstresses, and tailors",0.840,0.574,0.177,1
+234,Upholsterers,0.390,0.835,0.393,1
+235,"Hand molders and shapers, except jewelers",0.900,0.686,0.292,1
+236,Bookbinders,0.950,0.607,0.360,1
+237,Butchers and meat cutters,0.930,0.635,0.032,1
+238,Bakers,0.890,0.902,0.173,1
+239,Batch food makers,0.700,0.677,0.275,1
+240,Water and sewage treatment plant operators,0.610,0.465,0.571,1
+241,Power plant operators,0.850,0.237,0.716,1
+242,"Plant and system operators, stationary engineers",0.870,0.492,0.537,1
+243,Other plant and system operators,0.860,0.510,0.575,1
+244,"Lathe, milling, and turning machine operatives",0.840,0.729,0.252,1
+245,"Rollers, roll hands, and finishers of metal",0.830,0.641,0.425,1
+246,Drilling and boring machine operators,0.940,0.832,0.340,1
+247,"Grinding, abrading, buffing, and polishing workers",0.950,0.917,0.424,1
+248,Molders and casting machine operators,0.950,0.699,0.041,1
+249,Heat treating equipment operators,0.910,0.623,0.346,1
+250,Sawing machine operators and sawyers,0.860,0.617,0.058,1
+251,"Nail, tacking, shaping and joining mach ops (wood)",0.960,0.689,0.178,1
+252,Winding and twisting textile and apparel operatives,0.960,0.884,0.275,1
+253,"Knitters, loopers, and toppers textile operatives",0.730,0.969,0.033,1
+254,Textile cutting and dyeing machine operators,0.960,0.726,0.336,1
+255,Textile sewing machine operators,0.890,0.656,0.042,1
+256,Shoemaking machine operators,0.970,0.714,0.025,1
+257,Clothing pressing machine operators,0.810,0.860,0.002,1
+258,"Packers, fillers, and wrappers",0.980,0.759,0.276,1
+259,Extruding and forming machine operators,0.930,0.702,0.300,1
+260,Mixing and blending machine operators,0.830,0.823,0.355,1
+261,"Separating, filtering, and clarifying machine operators",0.880,0.653,0.529,1
+262,Food roasting and baking machine operators,0.910,0.857,0.071,1
+263,"Washing, cleaning, and pickling machine operators",0.810,0.693,0.032,1
+264,Paper folding machine operators,0.670,0.677,0.233,1
+265,"Furnace, kiln, and oven operators, apart from food",0.370,0.492,0.176,1
+266,"Slicing, cutting, crushing and grinding machine",0.860,0.732,0.172,1
+267,Photographic process workers,0.990,0.851,0.299,1
+268,"Welders, solderers, and metal cutters",0.940,0.662,0.084,1
+269,Assemblers of electrical equipment,0.950,0.844,0.320,1
+270,Painting and decoration occupations,0.920,0.264,0.163,1
+271,Supervisors of motor vehicle transportation,0.029,0.170,0.569,2
+272,"Truck, delivery, and tractor drivers",0.740,0.139,0.233,1
+273,Bus drivers,0.780,0.063,0.127,1
+274,Taxi cab drivers and chauffeurs,0.890,0.079,0.281,1
+275,Parking lot attendants,0.870,0.060,0.055,1
+276,Railroad conductors and yardmasters,0.830,0.009,0.501,1
+277,Locomotive operators: engineers and firemen,0.945,0.030,0.362,1
+278,"Railroad brake, coupler, and switch operators",0.830,0.155,0.337,1
+279,Ship crews and marine engineers,0.010,0.069,0.576,1
+280,Operating engineers of construction equipment,0.950,0.416,0.274,1
+281,"Crane, derrick, winch, hoist, longshore operators",0.823,0.717,0.296,1
+282,Excavating and loading machine operators,0.940,0.398,0.128,1
+283,"Helpers, constructions",0.787,0.571,0.278,1
+284,Construction laborers,0.880,0.462,0.264,1
+285,Production helpers,0.660,0.768,0.054,1
+286,Garbage and recyclable material collectors,0.930,0.799,0.048,1
+287,Machine feeders and offbearers,0.930,0.705,0.117,1
+288,Garage and service station related occupations,0.910,0.765,0.062,1
+289,Vehicle washers and equipment cleaners,0.370,0.793,0.002,1
+290,Packers and packagers by hand,0.380,0.890,0.039,1
+291,"Laborers, freight, stock, and material handlers, n.e.c.",0.850,0.498,0.161,1

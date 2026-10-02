@@ -1,0 +1,57 @@
+{
+  "accuracy_claim": false,
+  "all_profiles_eligible_audit_candidate_count": 597,
+  "deterministic_lookup_only": true,
+  "distinct_active_lookup_SOCs": 170,
+  "distinct_historical_sources_reached": 22,
+  "distinct_mapped_modern_SOCs": 27,
+  "evaluated_eligible_candidate_count": 542,
+  "insufficient_lookup_count": 0,
+  "mapped_candidate_count": 165,
+  "personal_risk_metric": false,
+  "profile_numeric_summary_non_null_count": 0,
+  "relationship_type_counts_candidate_source_rows": {
+    "EQUIVALENT": 105,
+    "OVERLAP": 7,
+    "SOURCE_BROADER_THAN_ONET": 53
+  },
+  "relationship_type_counts_distinct_active_edges": {
+    "EQUIVALENT": 13,
+    "OVERLAP": 2,
+    "SOURCE_BROADER_THAN_ONET": 12
+  },
+  "shared_source_count": 3,
+  "shared_sources": {
+    "31": [
+      "15-1211.00",
+      "15-1221.00"
+    ],
+    "4": [
+      "11-2011.00",
+      "11-2021.00",
+      "13-1161.00",
+      "27-3031.00"
+    ],
+    "5": [
+      "11-9032.00",
+      "11-9033.00"
+    ]
+  },
+  "source_ambiguity_candidate_count": 0,
+  "source_ambiguity_distinct_SOC_count": 0,
+  "state_counts": {
+    "INSUFFICIENT": 163,
+    "MULTIPLE_ALL_MAPPED": 11,
+    "MULTIPLE_NONE_MAPPED": 53,
+    "MULTIPLE_PARTIAL": 82,
+    "TOP_MAPPED": 23,
+    "TOP_UNMAPPED": 12
+  },
+  "total_profiles": 344,
+  "unavailability_count_unit": "Candidate reasons plus profile INSUFFICIENT reasons; no double-counted TOP profile reason.",
+  "unavailability_reason_counts": {
+    "LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE": 163,
+    "UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING": 377
+  },
+  "unavailable_candidate_count": 377
+}

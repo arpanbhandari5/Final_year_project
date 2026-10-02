@@ -1,0 +1,347 @@
+{
+  "freeze_version": "occupation-inference-v1.0",
+  "source_engine": "scripts/cv_occupation_inference_v2_2.py",
+  "frozen_engine": "scripts/frozen/cv_occupation_inference_v1_0.py",
+  "freeze_date": "2026-10-01T17:13:34.322710+00:00",
+  "methodology_type": "deterministic_rule_based",
+  "training_used": false,
+  "experimental_model_used": false,
+  "automation_probability_used": false,
+  "job_side_labels_used": false,
+  "input_sha256_before": {
+    "scripts/cv_occupation_inference.py": "ee6b5ce23985a020d2dc08f3a5275b6f0af5ad4d49cf55f2acb0adfc3a935d30",
+    "data/cv_occupation_mapping/cv_occupation_inference_results.csv": "f8b9a41361dee9165fce412b47eabf1971441fde4b17638aaaffb2896ec03d88",
+    "data/cv_occupation_mapping/cv_occupation_candidate_details.csv": "0c68d854f70ef25bad90e0dc7c3afc107c5cbf60b2402fd326f9c742e4a405b9",
+    "data/cv_occupation_mapping/cv_occupation_candidate_adjudication.csv": "6f6725ea792f64628ea0f88a093e433b6d21bda88b0cf2411c0de5bf9400ce38",
+    "data/cv_occupation_mapping/cv_occupation_profile_adjudication.csv": "0ecd115a418b81ec59958a6be5e2c27e8b9cd4e5a2141d7119b7730a4401c799",
+    "data/cv_occupation_mapping/cv_occupation_manual_review_provenance.csv": "bca1ba49da1fb93caeb58301acb2dd24e8dd5a7811d805b08278ba2ca79c8753",
+    "data/resume_corpus.csv": "c29ef568c726c4664a62d3f35ed9456441731f24b58fb9dd977995830eef97be",
+    "data/Occupation Data.xlsx": "13b2aa4c08e6c9a3708d5e5ac83e13da5cc184e3798313c8942a266d00593ace",
+    "data/Job Titles.xlsx": "1d5f1e469e99d95b9496ca7beb094fa107c215ede6249129955345c774904c0d",
+    "data/Sample of Reported Titles.xlsx": "aa869fdfee5ed9b6e3dd139538861eb996af37a374b0a5d47cdec8d6d967a80c",
+    "data/skill_mapping/onet_skill_vocabulary.csv": "f3e784535dd4b992a759d8862fc155db125ea070b2dcaf2c83ec614ec35206e7",
+    "data/skill_mapping/software_skill_vocabulary.csv": "2ce7069b63f95ee19179eca4ce854726507c36270c49160170ef367b2609ad20",
+    "data/skill_mapping/skill_alias_candidates.csv": "6856548d7aafe4df0b70a16a741bda03387c36826bdf526d647f4b553a9e0a41",
+    "data/onet_normalized/31_0/occupation_skills.csv": "640278a11f64c7de8ab555f6b02a25fb8f93612b10d4c5c5d923ba36dd9376c4",
+    "data/onet_normalized/31_0/occupation_software_skills.csv": "36c1b5e8c1add38cea87ea94eb9e310cb6a23f3a906b3c81a237f4c879d7c4d9",
+    "data/cv_occupation_mapping/cv_occupation_training_audit.csv": "de0e1acdabb9d225de3fab140e26bd3861737932fa38af37c851a712c50e5670",
+    "data/cv_occupation_mapping/occupation_title_aliases_v1.csv": "3ef978756e583cdba31a75faf90a65f1794487a8e84450d068fe7f2880979ac8",
+    "scripts/cv_occupation_inference_v2.py": "9b0aedc5cbb78d5b2858a7ba851c3b9f7c1dbdddf5c8693be84b0a6a4ca87302",
+    "data/cv_occupation_mapping/v2/cv_occupation_inference_results_v2.csv": "6ce76d546182a252fa2e9f0d0c167b1279238961fc287ce80637a6da43d19381",
+    "data/cv_occupation_mapping/v2/cv_occupation_candidate_details_v2.csv": "b7f4a8528f1efb31899534058ec565132d9852616bfc6e9cf3e9985884ff4655",
+    "data/cv_occupation_mapping/v2/cv_occupation_v1_v2_review_comparison.csv": "f277168b58050f130fd3399a5c41e0b555aa0c370b2fde0a693cfdaac3174faf",
+    "data/cv_occupation_mapping/v2/cv_occupation_v2_manual_review.csv": "34647ed9aca6f24f22d474ef0eca71047042177c9a69bdf21a34d093da3d0224",
+    "scripts/cv_occupation_inference_v2_1.py": "404443014425b54f354814797fb1c49f866d9e1e4d8a9516cd3cd1cec2be2ddd",
+    "data/cv_occupation_mapping/v2_1/cv_occupation_inference_results_v2_1.csv": "765c03526b3d6dec9189b6856464a20e21f5c883d8be351e2f85bcae03cb1113",
+    "data/cv_occupation_mapping/v2_1/cv_occupation_candidate_details_v2_1.csv": "2c6fe58e211e5ed15d9b115ae61a728b377a00e99f7b259e08e8361178acac17",
+    "data/cv_occupation_mapping/v2_1/cv_occupation_v1_v2_v2_1_comparison.csv": "f5c50aa8c6112e8cbfef978b6091463a2b155fe5c41778daa8ec47edbfbaa51d",
+    "data/cv_occupation_mapping/v2_1/cv_occupation_v2_1_manual_review.csv": "e38da51db6b86eca6d6434d755b9ed703497b48aff429afdbf67d443d3339e64",
+    "scripts/cv_occupation_inference_v2_2.py": "bb5956366d2a3837344b0c4fbed19bd5be8823e6fceaae4cfc87491f33257b41",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_inference_results_v2_2.csv": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_candidate_details_v2_2.csv": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_v1_v2_v2_1_v2_2_comparison.csv": "c194610d4706d84e8b01fdad2940f8dc98538cc62ec59f79da4bef2e95d5c6e3",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_v2_2_final_review.csv": "caca180b431ce7bfa01890ddabb91654aafa7969d487e8a0b9553e68a6a7f4c8"
+  },
+  "input_sha256_after": {
+    "scripts/cv_occupation_inference.py": "ee6b5ce23985a020d2dc08f3a5275b6f0af5ad4d49cf55f2acb0adfc3a935d30",
+    "data/cv_occupation_mapping/cv_occupation_inference_results.csv": "f8b9a41361dee9165fce412b47eabf1971441fde4b17638aaaffb2896ec03d88",
+    "data/cv_occupation_mapping/cv_occupation_candidate_details.csv": "0c68d854f70ef25bad90e0dc7c3afc107c5cbf60b2402fd326f9c742e4a405b9",
+    "data/cv_occupation_mapping/cv_occupation_candidate_adjudication.csv": "6f6725ea792f64628ea0f88a093e433b6d21bda88b0cf2411c0de5bf9400ce38",
+    "data/cv_occupation_mapping/cv_occupation_profile_adjudication.csv": "0ecd115a418b81ec59958a6be5e2c27e8b9cd4e5a2141d7119b7730a4401c799",
+    "data/cv_occupation_mapping/cv_occupation_manual_review_provenance.csv": "bca1ba49da1fb93caeb58301acb2dd24e8dd5a7811d805b08278ba2ca79c8753",
+    "data/resume_corpus.csv": "c29ef568c726c4664a62d3f35ed9456441731f24b58fb9dd977995830eef97be",
+    "data/Occupation Data.xlsx": "13b2aa4c08e6c9a3708d5e5ac83e13da5cc184e3798313c8942a266d00593ace",
+    "data/Job Titles.xlsx": "1d5f1e469e99d95b9496ca7beb094fa107c215ede6249129955345c774904c0d",
+    "data/Sample of Reported Titles.xlsx": "aa869fdfee5ed9b6e3dd139538861eb996af37a374b0a5d47cdec8d6d967a80c",
+    "data/skill_mapping/onet_skill_vocabulary.csv": "f3e784535dd4b992a759d8862fc155db125ea070b2dcaf2c83ec614ec35206e7",
+    "data/skill_mapping/software_skill_vocabulary.csv": "2ce7069b63f95ee19179eca4ce854726507c36270c49160170ef367b2609ad20",
+    "data/skill_mapping/skill_alias_candidates.csv": "6856548d7aafe4df0b70a16a741bda03387c36826bdf526d647f4b553a9e0a41",
+    "data/onet_normalized/31_0/occupation_skills.csv": "640278a11f64c7de8ab555f6b02a25fb8f93612b10d4c5c5d923ba36dd9376c4",
+    "data/onet_normalized/31_0/occupation_software_skills.csv": "36c1b5e8c1add38cea87ea94eb9e310cb6a23f3a906b3c81a237f4c879d7c4d9",
+    "data/cv_occupation_mapping/cv_occupation_training_audit.csv": "de0e1acdabb9d225de3fab140e26bd3861737932fa38af37c851a712c50e5670",
+    "data/cv_occupation_mapping/occupation_title_aliases_v1.csv": "3ef978756e583cdba31a75faf90a65f1794487a8e84450d068fe7f2880979ac8",
+    "scripts/cv_occupation_inference_v2.py": "9b0aedc5cbb78d5b2858a7ba851c3b9f7c1dbdddf5c8693be84b0a6a4ca87302",
+    "data/cv_occupation_mapping/v2/cv_occupation_inference_results_v2.csv": "6ce76d546182a252fa2e9f0d0c167b1279238961fc287ce80637a6da43d19381",
+    "data/cv_occupation_mapping/v2/cv_occupation_candidate_details_v2.csv": "b7f4a8528f1efb31899534058ec565132d9852616bfc6e9cf3e9985884ff4655",
+    "data/cv_occupation_mapping/v2/cv_occupation_v1_v2_review_comparison.csv": "f277168b58050f130fd3399a5c41e0b555aa0c370b2fde0a693cfdaac3174faf",
+    "data/cv_occupation_mapping/v2/cv_occupation_v2_manual_review.csv": "34647ed9aca6f24f22d474ef0eca71047042177c9a69bdf21a34d093da3d0224",
+    "scripts/cv_occupation_inference_v2_1.py": "404443014425b54f354814797fb1c49f866d9e1e4d8a9516cd3cd1cec2be2ddd",
+    "data/cv_occupation_mapping/v2_1/cv_occupation_inference_results_v2_1.csv": "765c03526b3d6dec9189b6856464a20e21f5c883d8be351e2f85bcae03cb1113",
+    "data/cv_occupation_mapping/v2_1/cv_occupation_candidate_details_v2_1.csv": "2c6fe58e211e5ed15d9b115ae61a728b377a00e99f7b259e08e8361178acac17",
+    "data/cv_occupation_mapping/v2_1/cv_occupation_v1_v2_v2_1_comparison.csv": "f5c50aa8c6112e8cbfef978b6091463a2b155fe5c41778daa8ec47edbfbaa51d",
+    "data/cv_occupation_mapping/v2_1/cv_occupation_v2_1_manual_review.csv": "e38da51db6b86eca6d6434d755b9ed703497b48aff429afdbf67d443d3339e64",
+    "scripts/cv_occupation_inference_v2_2.py": "bb5956366d2a3837344b0c4fbed19bd5be8823e6fceaae4cfc87491f33257b41",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_inference_results_v2_2.csv": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_candidate_details_v2_2.csv": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_v1_v2_v2_1_v2_2_comparison.csv": "c194610d4706d84e8b01fdad2940f8dc98538cc62ec59f79da4bef2e95d5c6e3",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_v2_2_final_review.csv": "caca180b431ce7bfa01890ddabb91654aafa7969d487e8a0b9553e68a6a7f4c8"
+  },
+  "v2_2_output_sha256": {
+    "data/cv_occupation_mapping/v2_2/cv_occupation_inference_results_v2_2.csv": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_candidate_details_v2_2.csv": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_v1_v2_v2_1_v2_2_comparison.csv": "c194610d4706d84e8b01fdad2940f8dc98538cc62ec59f79da4bef2e95d5c6e3",
+    "data/cv_occupation_mapping/v2_2/cv_occupation_v2_2_final_review.csv": "caca180b431ce7bfa01890ddabb91654aafa7969d487e8a0b9553e68a6a7f4c8"
+  },
+  "engine_byte_identical": true,
+  "source_engine_sha256": "bb5956366d2a3837344b0c4fbed19bd5be8823e6fceaae4cfc87491f33257b41",
+  "frozen_engine_sha256": "bb5956366d2a3837344b0c4fbed19bd5be8823e6fceaae4cfc87491f33257b41",
+  "profile_count": 344,
+  "status_counts": {
+    "INSUFFICIENT_EVIDENCE": 163,
+    "MULTIPLE_CANDIDATES": 146,
+    "TOP_CANDIDATE": 35
+  },
+  "generated_candidate_count": 3193,
+  "eligible_candidate_count": 597,
+  "rejected_candidate_count": 2596,
+  "behavioral_reproduction": {
+    "profiles_matched": 344,
+    "candidate_records_matched": 3193,
+    "all_profile_fields_equal": true,
+    "all_candidate_fields_equal": true,
+    "ordering_identical": true,
+    "csv_bytes_identical": true,
+    "method": "Frozen main read/group/immutable V2 candidate replay executed; output-writing tail replaced in memory with return. No on-disk engine changes. Full ordered dictionaries compared before copying exact CSV bytes."
+  },
+  "runtime_contract": {
+    "imports": "Add repository scripts directory to sys.path before loading frozen file with importlib; imports V2.1, V2 and V1. Verify their manifest hashes.",
+    "api": "infer_occupation(cv, index, skill_index, aliases=(), generated=None); freeze validation passes the original V2 candidate pool, exactly as V2.2 main.",
+    "cli": "Inherited main writes V2.2-named outputs and refuses existing files; do not run the inherited CLI in the populated workspace. Frozen output publication uses the verified API replay described above.",
+    "technical_adjustments": "None to engine bytes. Explicit import search path and root in validation harness only."
+  },
+  "scoring_formula": "title_evidence_score + objective_evidence_score + skill_support_score + domain_support_score - generic_title_penalty - broad_alias_penalty - domain_conflict_penalty",
+  "scoring_components": {
+    "canonical_title": 70,
+    "alternate_title": 65,
+    "reported_title": 60,
+    "qualified_exact": 45,
+    "token_core_review": 40,
+    "fuzzy": "15 * similarity",
+    "generic_original_penalty": 35,
+    "generic_derived_penalty": 15,
+    "broad_alias_penalty": 20,
+    "objective_unique_shared": [
+      20,
+      10
+    ],
+    "skills": "min(10, 2 * unique exact supported concepts)",
+    "domain": "min(8, 2 * shared lexical domain tokens)",
+    "conflict": "Removes remaining title contribution; see hashed V2 implementation."
+  },
+  "decision_thresholds": {
+    "TOP_CANDIDATE": "Exactly one eligible SOC; >=1 strong distinct employment term; score >=60; margin >=10; no multi-role singleton risk.",
+    "MULTIPLE_CANDIDATES": "More than one eligible SOC.",
+    "INSUFFICIENT_EVIDENCE": "Otherwise; includes singleton weak/low-score evidence and singleton multi-role risk.",
+    "singleton_margin": "Sole eligible candidate score."
+  },
+  "eligibility_rules": "V2.1 independent corroboration, complete-domain/role-anchor and literal function gates retained; V2.2 specific occupational phrase and compound recovery exactly as frozen source. Rejected candidates remain in audit and never determine ranking.",
+  "generic_title_policy": "Generic employment matches require independent occupation-specific corroboration; mapped software tools alone do not qualify.",
+  "broad_alias_policy": "Official alias equality alone is insufficient; candidate-specific occupational phrase and independent context required; broad evidence is not automatically strong.",
+  "fuzzy_policy": "Review-only; fuzzy-only candidates rejected.",
+  "compound_role_policy": "Explicit components retained; specific deterministic official component recorded; constrained V2.2 recovery only, no scoring change.",
+  "domain_family_policy": "Local lexical official vocabulary and recorded inflections; weak conflicting families pruned; strong specific exact matches retained; empty domain UNKNOWN; no invented semantic equivalence.",
+  "multi_role_singleton_policy": "Group literal domain/function/unique official-SOC role families; risk when sole candidate leaves independently evidenced different family unresolved; downgrade TOP to abstention; no chronology selection.",
+  "approved_aliases_actually_used": [],
+  "pending_aliases_explicitly_excluded": [
+    {
+      "alias": "SDE",
+      "expanded_form": "Software Development Engineer",
+      "version": "1",
+      "status": "PENDING_REVIEW",
+      "reason": "Proposed abbreviation expansion; official expanded title exists but the supplied CV says only SDE and no human approval is recorded.",
+      "source_provenance": "Step 6D request proposes SDE; data/Job Titles.xlsx Job Title and data/Sample of Reported Titles.xlsx Reported Job Title contain Software Development Engineer. No approval established."
+    }
+  ],
+  "known_limitations": [
+    {
+      "limitation_id": "L01",
+      "category": "methodology",
+      "description": "Deterministic rule-based inference; no trained classifier.",
+      "impact": "No measured classifier accuracy.",
+      "system_behavior": "Fixed lexical rules.",
+      "downstream_handling": "Preserve methodology version.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L02",
+      "category": "scores",
+      "description": "Evidence scores are engineering scores, not probabilities.",
+      "impact": "Cannot interpret scores as confidence percentages.",
+      "system_behavior": "Fixed additive evidence scoring.",
+      "downstream_handling": "Never calibrate implicitly.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L03",
+      "category": "top",
+      "description": "TOP_CANDIDATE is an inferred occupation, not ground truth.",
+      "impact": "Possible incorrect matches remain.",
+      "system_behavior": "Conservative strong-evidence gate.",
+      "downstream_handling": "Retain provenance and status.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L04",
+      "category": "multiple",
+      "description": "MULTIPLE_CANDIDATES retains unresolved plausible occupations.",
+      "impact": "No single selected occupation.",
+      "system_behavior": "All eligible candidates retained.",
+      "downstream_handling": "Handle every eligible SOC explicitly.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L05",
+      "category": "abstention",
+      "description": "INSUFFICIENT_EVIDENCE represents abstention, even with a sole eligible audit candidate.",
+      "impact": "Occupation unavailable.",
+      "system_behavior": "Does not force assignment.",
+      "downstream_handling": "Return unavailable or request clarification.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L06",
+      "category": "chronology",
+      "description": "CV chronology may be missing, redacted, misaligned or historical.",
+      "impact": "Cannot verify current employment.",
+      "system_behavior": "No current/past role selection or recency weighting.",
+      "downstream_handling": "Do not describe inference as current employment.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L07",
+      "category": "broad_titles",
+      "description": "Generic and broad official aliases remain difficult.",
+      "impact": "False alternatives or abstention remain possible.",
+      "system_behavior": "Eligibility and corroboration gates.",
+      "downstream_handling": "Preserve candidate ambiguity.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L08",
+      "category": "qualified_titles",
+      "description": "Qualified titles may lack direct O*NET equivalents.",
+      "impact": "Literal core matching may miss nuance.",
+      "system_behavior": "Recorded qualifier and compound handling.",
+      "downstream_handling": "Review underlying evidence.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L09",
+      "category": "it_support",
+      "description": "IT Support / IT Intern remains a known review risk.",
+      "impact": "Useful support alternatives may be lost.",
+      "system_behavior": "Frozen lexical family and eligibility gates.",
+      "downstream_handling": "Request duties when needed.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L10",
+      "category": "engineering",
+      "description": "Some useful engineering alternatives may be over-pruned.",
+      "impact": "Candidate recall may be incomplete.",
+      "system_behavior": "Frozen domain-family gates.",
+      "downstream_handling": "Do not treat rejection as verified exclusion.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L11",
+      "category": "deep_learning",
+      "description": "Deep Learning Engineer Intern may abstain.",
+      "impact": "No guaranteed inferred occupation.",
+      "system_behavior": "No invented deep-learning/machine-learning equivalence.",
+      "downstream_handling": "Request additional occupation evidence.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L12",
+      "category": "data_managerial",
+      "description": "Data Managerial Intern may abstain.",
+      "impact": "No guaranteed inferred occupation.",
+      "system_behavior": "No invented semantic expansion.",
+      "downstream_handling": "Request duties or clarification.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L13",
+      "category": "pending_alias",
+      "description": "SDE alias remains pending and is not applied.",
+      "impact": "Abbreviation is not approved occupation evidence.",
+      "system_behavior": "Only approved aliases may apply; none currently approved.",
+      "downstream_handling": "Preserve pending status.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L14",
+      "category": "semantic_models",
+      "description": "No external semantic or embedding model is used.",
+      "impact": "Lexical recall limitations remain.",
+      "system_behavior": "Deterministic local evidence only.",
+      "downstream_handling": "Do not claim semantic model validation.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L15",
+      "category": "cv_skills",
+      "description": "CV skills support inference but do not prove occupation.",
+      "impact": "Tools can occur across occupations.",
+      "system_behavior": "Skill overlap alone is insufficient strong employment evidence.",
+      "downstream_handling": "Retain source context.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L16",
+      "category": "proficiency",
+      "description": "O*NET occupational requirements do not represent user proficiency.",
+      "impact": "Requirements cannot establish personal skill levels.",
+      "system_behavior": "No proficiency estimation implemented.",
+      "downstream_handling": "Keep occupational requirements separate from user evidence.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L17",
+      "category": "multi_role",
+      "description": "Mixed role histories can produce singleton-risk abstention.",
+      "impact": "A retained candidate may describe only one historical role.",
+      "system_behavior": "Multi-role singleton risk can downgrade TOP to abstention.",
+      "downstream_handling": "Do not silently choose a historical role.",
+      "status": "KNOWN_LIMITATION"
+    },
+    {
+      "limitation_id": "L18",
+      "category": "review_labels",
+      "description": "Reviewer fields are blank and are not validated ground truth.",
+      "impact": "344 profiles are not an accuracy benchmark.",
+      "system_behavior": "No review labels consumed as training targets.",
+      "downstream_handling": "Do not report accuracy from this replay.",
+      "status": "KNOWN_LIMITATION"
+    }
+  ],
+  "known_review_risks": [
+    "IT Support / IT Intern alternatives",
+    "Engineering over-pruning and retained weak alternatives",
+    "Deep Learning Engineer Intern abstention",
+    "Data Managerial Intern abstention",
+    "Mixed historical roles and singleton risk"
+  ],
+  "reviewer_fields": "All final-review decision fields remain blank; not ground truth or accuracy benchmark.",
+  "freeze_interpretation": "Stable methodology for downstream integration; no validated accuracy claim. Step 6E only.",
+  "artifacts": {
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv": {
+      "sha256": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+      "rows": 344
+    },
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv": {
+      "sha256": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+      "rows": 3193
+    },
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_limitations_v1_0.csv": {
+      "sha256": "350b8d00db3c924f048717728746e17df1b38b018b1c1e5ddc990ba3cbb71591",
+      "rows": 18
+    },
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv": {
+      "sha256": "fdb7de7b6bee992be127ab535ad46f0214766015e8d79fc4b079828527a55633",
+      "rows": 8
+    }
+  },
+  "integrity": "PASS: all 32 protected input/source/version files unchanged before and after."
+}

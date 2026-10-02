@@ -1,0 +1,1069 @@
+{
+  "contract_version": "historical-exposure-methodology-v1.0",
+  "task": "STEP_7B_1",
+  "status": "FROZEN",
+  "scope": "Contract/methodology only; no Step 7B.2 exposure engine or application integration implemented.",
+  "primary_states": [
+    "TOP_MAPPED",
+    "TOP_UNMAPPED",
+    "MULTIPLE_ALL_MAPPED",
+    "MULTIPLE_PARTIAL",
+    "MULTIPLE_NONE_MAPPED",
+    "INSUFFICIENT"
+  ],
+  "state_rules": [
+    {
+      "primary_state": "TOP_MAPPED",
+      "input_inference_status": "TOP_CANDIDATE",
+      "state_condition": "Selected TOP SOC has at least one valid FROZEN source path and valid value.",
+      "lookup_allowed": "TRUE",
+      "candidate_preservation_rule": "Return selected inferred TOP SOC; no claim of confirmed/current employment.",
+      "exposure_value_behavior": "Return unchanged source-attributed values in source_records; relationship interpretation mandatory.",
+      "profile_level_numeric_summary_allowed": "FALSE",
+      "profile_level_numeric_summary": "NULL",
+      "clarification_recommended": "FALSE",
+      "required_provenance": "Profile/system contract fields plus each candidate/source field when applicable; nullability per exposure_provenance_contract_v1.csv.",
+      "user_facing_interpretation": "Operational historical counterpart for EQUIVALENT; contextual historical source-category reference for broader/overlap.",
+      "unavailable_error_behavior": "INSUFFICIENT: LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE. Otherwise missing mapping: UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING; missing/invalid value: UNAVAILABLE_SOURCE_EXPOSURE_VALUE. Artifact failure overrides successful result, fails closed with ARTIFACT_VALIDATION_FAILURE and no numeric fallback.",
+      "rf_fallback_allowed": "FALSE",
+      "automatic_occupation_resolution_allowed": "FALSE"
+    },
+    {
+      "primary_state": "TOP_UNMAPPED",
+      "input_inference_status": "TOP_CANDIDATE",
+      "state_condition": "Selected TOP SOC has zero valid valued FROZEN paths.",
+      "lookup_allowed": "TRUE",
+      "candidate_preservation_rule": "Retain selected inferred SOC and title even when exposure unavailable.",
+      "exposure_value_behavior": "Exposure null; retain invalid/missing frozen source records with unavailable reasons if any.",
+      "profile_level_numeric_summary_allowed": "FALSE",
+      "profile_level_numeric_summary": "NULL",
+      "clarification_recommended": "TRUE",
+      "required_provenance": "Profile/system contract fields plus each candidate/source field when applicable; nullability per exposure_provenance_contract_v1.csv.",
+      "user_facing_interpretation": "Historical exposure unavailable; occupation remains inferred.",
+      "unavailable_error_behavior": "INSUFFICIENT: LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE. Otherwise missing mapping: UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING; missing/invalid value: UNAVAILABLE_SOURCE_EXPOSURE_VALUE. Artifact failure overrides successful result, fails closed with ARTIFACT_VALIDATION_FAILURE and no numeric fallback.",
+      "rf_fallback_allowed": "FALSE",
+      "automatic_occupation_resolution_allowed": "FALSE"
+    },
+    {
+      "primary_state": "MULTIPLE_ALL_MAPPED",
+      "input_inference_status": "MULTIPLE_CANDIDATES",
+      "state_condition": "All eligible SOCs have at least one valid valued FROZEN path; eligible denominator greater than zero.",
+      "lookup_allowed": "TRUE",
+      "candidate_preservation_rule": "Preserve every candidate_eligible=TRUE SOC; audit rank/evidence retained, no automatic winner.",
+      "exposure_value_behavior": "Return each SOC independently with all frozen source records; no profile scalar.",
+      "profile_level_numeric_summary_allowed": "FALSE",
+      "profile_level_numeric_summary": "NULL",
+      "clarification_recommended": "TRUE",
+      "required_provenance": "Profile/system contract fields plus each candidate/source field when applicable; nullability per exposure_provenance_contract_v1.csv.",
+      "user_facing_interpretation": "All candidate paths available; occupation remains unresolved and coverage is not confidence.",
+      "unavailable_error_behavior": "INSUFFICIENT: LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE. Otherwise missing mapping: UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING; missing/invalid value: UNAVAILABLE_SOURCE_EXPOSURE_VALUE. Artifact failure overrides successful result, fails closed with ARTIFACT_VALIDATION_FAILURE and no numeric fallback.",
+      "rf_fallback_allowed": "FALSE",
+      "automatic_occupation_resolution_allowed": "FALSE"
+    },
+    {
+      "primary_state": "MULTIPLE_PARTIAL",
+      "input_inference_status": "MULTIPLE_CANDIDATES",
+      "state_condition": "At least one but fewer than all eligible SOCs have a valid valued FROZEN path.",
+      "lookup_allowed": "TRUE",
+      "candidate_preservation_rule": "Preserve every eligible SOC including every unmapped SOC; full denominator mandatory.",
+      "exposure_value_behavior": "Per-SOC source values where available, explicit null/reason otherwise; no profile scalar.",
+      "profile_level_numeric_summary_allowed": "FALSE",
+      "profile_level_numeric_summary": "NULL",
+      "clarification_recommended": "TRUE",
+      "required_provenance": "Profile/system contract fields plus each candidate/source field when applicable; nullability per exposure_provenance_contract_v1.csv.",
+      "user_facing_interpretation": "Report mapped/total availability, e.g. 2/3; never interpret as 66.7% confidence.",
+      "unavailable_error_behavior": "INSUFFICIENT: LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE. Otherwise missing mapping: UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING; missing/invalid value: UNAVAILABLE_SOURCE_EXPOSURE_VALUE. Artifact failure overrides successful result, fails closed with ARTIFACT_VALIDATION_FAILURE and no numeric fallback.",
+      "rf_fallback_allowed": "FALSE",
+      "automatic_occupation_resolution_allowed": "FALSE"
+    },
+    {
+      "primary_state": "MULTIPLE_NONE_MAPPED",
+      "input_inference_status": "MULTIPLE_CANDIDATES",
+      "state_condition": "No eligible SOC has a valid valued FROZEN path; eligible denominator greater than zero.",
+      "lookup_allowed": "TRUE",
+      "candidate_preservation_rule": "Preserve every eligible SOC with rank/evidence and explicit unavailable reason.",
+      "exposure_value_behavior": "All historical exposure values null; no numeric defaults or fallback.",
+      "profile_level_numeric_summary_allowed": "FALSE",
+      "profile_level_numeric_summary": "NULL",
+      "clarification_recommended": "TRUE",
+      "required_provenance": "Profile/system contract fields plus each candidate/source field when applicable; nullability per exposure_provenance_contract_v1.csv.",
+      "user_facing_interpretation": "Occupation unresolved; historical exposure unavailable for every retained eligible SOC.",
+      "unavailable_error_behavior": "INSUFFICIENT: LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE. Otherwise missing mapping: UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING; missing/invalid value: UNAVAILABLE_SOURCE_EXPOSURE_VALUE. Artifact failure overrides successful result, fails closed with ARTIFACT_VALIDATION_FAILURE and no numeric fallback.",
+      "rf_fallback_allowed": "FALSE",
+      "automatic_occupation_resolution_allowed": "FALSE"
+    },
+    {
+      "primary_state": "INSUFFICIENT",
+      "input_inference_status": "INSUFFICIENT_EVIDENCE",
+      "state_condition": "Frozen inference abstains, regardless of diagnostic TOP fields or audit candidates.",
+      "lookup_allowed": "FALSE",
+      "candidate_preservation_rule": "Retain original inference status and eligible audit count; candidate audit references may remain diagnostics only; exposure candidate results empty.",
+      "exposure_value_behavior": "All exposure fields null; source_records empty; no historical/source lookup.",
+      "profile_level_numeric_summary_allowed": "FALSE",
+      "profile_level_numeric_summary": "NULL",
+      "clarification_recommended": "TRUE",
+      "required_provenance": "Profile/system contract fields plus each candidate/source field when applicable; nullability per exposure_provenance_contract_v1.csv.",
+      "user_facing_interpretation": "Occupation inference unavailable or insufficient evidence; clarification can create a new context only.",
+      "unavailable_error_behavior": "INSUFFICIENT: LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE. Otherwise missing mapping: UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING; missing/invalid value: UNAVAILABLE_SOURCE_EXPOSURE_VALUE. Artifact failure overrides successful result, fails closed with ARTIFACT_VALIDATION_FAILURE and no numeric fallback.",
+      "rf_fallback_allowed": "FALSE",
+      "automatic_occupation_resolution_allowed": "FALSE"
+    }
+  ],
+  "relationship_semantics": [
+    {
+      "relationship_type": "EQUIVALENT",
+      "present_in_frozen_v4": "TRUE",
+      "frozen_v4_relationship_count": 16,
+      "preferred_display_term": "Historical occupation-level automation exposure",
+      "operational_interpretation": "Operational historical counterpart; may display unchanged historical SOURCE value with its source attribution.",
+      "value_owner": "HISTORICAL_SOURCE_OCCUPATION",
+      "source_attribution_required": "TRUE",
+      "exact_modern_soc_measurement_claim_allowed": "FALSE",
+      "unchanged_source_value_display_allowed": "TRUE",
+      "scope_limitations": "Operational equivalence does not remove historical/current scope differences or unresolved local lineage; no exact current-SOC measurement claim.",
+      "individual_job_loss_interpretation_allowed": "FALSE",
+      "provenance_requirement": "Retain crosswalk row evidence_source, adjudication_reason and source_taxonomy_provenance; preserve crosswalk hash and source row/hash."
+    },
+    {
+      "relationship_type": "SOURCE_BROADER_THAN_ONET",
+      "present_in_frozen_v4": "TRUE",
+      "frozen_v4_relationship_count": 23,
+      "preferred_display_term": "Historical source-category reference",
+      "operational_interpretation": "Value belongs to a broader historical source category; contextual reference only.",
+      "value_owner": "HISTORICAL_SOURCE_OCCUPATION",
+      "source_attribution_required": "TRUE",
+      "exact_modern_soc_measurement_claim_allowed": "FALSE",
+      "unchanged_source_value_display_allowed": "TRUE",
+      "scope_limitations": "Never claim the scalar is an exact measured value for the narrower modern SOC; preserve inclusion limits and sharing.",
+      "individual_job_loss_interpretation_allowed": "FALSE",
+      "provenance_requirement": "Retain crosswalk row evidence_source, adjudication_reason and source_taxonomy_provenance; preserve crosswalk hash and source row/hash."
+    },
+    {
+      "relationship_type": "OVERLAP",
+      "present_in_frozen_v4": "TRUE",
+      "frozen_v4_relationship_count": 2,
+      "preferred_display_term": "Historical source-category reference",
+      "operational_interpretation": "Value belongs to a related historical source category with partial occupational scope correspondence; contextual reference only.",
+      "value_owner": "HISTORICAL_SOURCE_OCCUPATION",
+      "source_attribution_required": "TRUE",
+      "exact_modern_soc_measurement_claim_allowed": "FALSE",
+      "unchanged_source_value_display_allowed": "TRUE",
+      "scope_limitations": "Never assign scalar as exact measurement of the whole modern SOC; preserve overlap and excluded duties.",
+      "individual_job_loss_interpretation_allowed": "FALSE",
+      "provenance_requirement": "Retain crosswalk row evidence_source, adjudication_reason and source_taxonomy_provenance; preserve crosswalk hash and source row/hash."
+    }
+  ],
+  "unavailability_reasons": [
+    {
+      "reason_code": "UNAVAILABLE_NO_DEFENSIBLE_FROZEN_MAPPING",
+      "trigger": "No valid FROZEN relationship for the modern SOC in the complete pinned V4 artifact.",
+      "meaning": "No authorized historical linkage is available; this does not prove no historical counterpart exists.",
+      "level": "candidate",
+      "value_behavior": "NULL",
+      "numerical_fallback_allowed": "FALSE",
+      "recovery": "Retain unavailable; broad expansion stopped. New evidence requires separately authorized reopening."
+    },
+    {
+      "reason_code": "UNAVAILABLE_SOURCE_EXPOSURE_VALUE",
+      "trigger": "Frozen relationship exists but its source automation_probability cell is missing, nonnumeric, nonfinite or outside the pinned local 0..1 scale.",
+      "meaning": "Historical source value is unavailable or invalid; missing is not zero.",
+      "level": "source; candidate if no valid valued source remains",
+      "value_behavior": "NULL for invalid source only; retain other valid sources separately",
+      "numerical_fallback_allowed": "FALSE",
+      "recovery": "Resolve source-data validity with explicit provenance and authorization; no prediction or imputation."
+    },
+    {
+      "reason_code": "LOOKUP_NOT_PERFORMED_INSUFFICIENT_INFERENCE",
+      "trigger": "Frozen inference status is INSUFFICIENT_EVIDENCE.",
+      "meaning": "Exposure lookup is prohibited, even with diagnostic SOCs or audit candidates.",
+      "level": "profile",
+      "value_behavior": "NULL; no source lookup",
+      "numerical_fallback_allowed": "FALSE",
+      "recovery": "Clarification/manual confirmation may create a new analysis context without rewriting frozen inference."
+    },
+    {
+      "reason_code": "ARTIFACT_VALIDATION_FAILURE",
+      "trigger": "Pinned artifact/hash/schema failure, invalid identifiers/title links, duplicate conflicting rows, unsupported relationship/status, malformed inference contract, or inconsistent required counts/eligibility.",
+      "meaning": "Cannot safely reconstruct a trustworthy result; fail closed.",
+      "level": "system; affected result",
+      "value_behavior": "NULL; no partially successful response on untrusted artifacts",
+      "numerical_fallback_allowed": "FALSE",
+      "recovery": "Return structured validation errors and stop dependent exposure evaluation until artifacts are validated."
+    }
+  ],
+  "provenance_fields": [
+    {
+      "level": "profile",
+      "field_name": "profile_input_id",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Original profile_group_id or separately identified new input context.",
+      "supported_by": "Frozen inference profile_group_id"
+    },
+    {
+      "level": "profile",
+      "field_name": "analysis_context_id",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Result context identifier; future confirmation uses a new identifier linked to original.",
+      "supported_by": "Future engine must assign; no runtime context created in Step 7B.1"
+    },
+    {
+      "level": "profile",
+      "field_name": "inference_engine",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Frozen deterministic engine identity, not RF.",
+      "supported_by": "occupation_inference_freeze_manifest.json frozen_engine"
+    },
+    {
+      "level": "profile",
+      "field_name": "inference_version",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "occupation-inference-v1.0.",
+      "supported_by": "Inference freeze manifest freeze_version"
+    },
+    {
+      "level": "profile",
+      "field_name": "original_frozen_inference_status",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Preserve TOP_CANDIDATE/MULTIPLE_CANDIDATES/INSUFFICIENT_EVIDENCE.",
+      "supported_by": "Frozen inference inference_status"
+    },
+    {
+      "level": "profile",
+      "field_name": "selection_origin",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "FROZEN_INFERENCE for automatic result; future USER_SELECTED or USER_CONFIRMED only with provenance.",
+      "supported_by": "State rule; future explicit action"
+    },
+    {
+      "level": "profile",
+      "field_name": "complete_eligible_candidate_count",
+      "data_type": "integer",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Count every eligible audit SOC including diagnostics for INSUFFICIENT; does not authorize lookup.",
+      "supported_by": "Candidate audit candidate_eligible=TRUE, cross-check frozen eligible_candidate_count"
+    },
+    {
+      "level": "profile",
+      "field_name": "evaluated_candidate_count",
+      "data_type": "integer",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "TOP selected SOC count 1; MULTIPLE all eligible SOC count; INSUFFICIENT 0.",
+      "supported_by": "Inference gate and candidate-preservation rule"
+    },
+    {
+      "level": "profile",
+      "field_name": "mapped_candidate_count",
+      "data_type": "integer",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Evaluated SOC count with at least one valid valued frozen path; INSUFFICIENT 0.",
+      "supported_by": "Future validated per-SOC lookup"
+    },
+    {
+      "level": "profile",
+      "field_name": "coverage_numerator",
+      "data_type": "integer",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Mapped count; availability only.",
+      "supported_by": "mapped_candidate_count"
+    },
+    {
+      "level": "profile",
+      "field_name": "coverage_denominator",
+      "data_type": "integer",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "MULTIPLE all eligible SOCs; TOP evaluated count 1; null for INSUFFICIENT, never diagnostic denominator as lookup.",
+      "supported_by": "State rules"
+    },
+    {
+      "level": "profile",
+      "field_name": "coverage_state",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Exactly six primary states on valid result; null on artifact validation error.",
+      "supported_by": "State contract"
+    },
+    {
+      "level": "profile",
+      "field_name": "clarification_recommended",
+      "data_type": "boolean",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Advisory only; never silently resolves occupation.",
+      "supported_by": "State contract"
+    },
+    {
+      "level": "profile",
+      "field_name": "profile_exposure_summary",
+      "data_type": "null",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Always JSON null in this policy, including TOP; numeric exposure remains in source records.",
+      "supported_by": "No profile aggregate policy"
+    },
+    {
+      "level": "profile",
+      "field_name": "unavailable_reason",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Reason for profile abstention/unmapped result or artifact error; null for successful all-path availability.",
+      "supported_by": "Stable reason-code contract"
+    },
+    {
+      "level": "profile",
+      "field_name": "validation_errors",
+      "data_type": "array",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Empty on valid result; structured failed checks on artifact failure.",
+      "supported_by": "Future artifact validation"
+    },
+    {
+      "level": "profile",
+      "field_name": "crosswalk_version",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Pinned container v4.0; independent from original row introduction version.",
+      "supported_by": "V4 freeze manifest"
+    },
+    {
+      "level": "profile",
+      "field_name": "crosswalk_sha256",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Hash identifying complete V4 graph actually used.",
+      "supported_by": "V4 artifact hash"
+    },
+    {
+      "level": "profile",
+      "field_name": "interpretation_policy_version",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "historical-exposure-methodology-v1.0.",
+      "supported_by": "This frozen methodology contract"
+    },
+    {
+      "level": "candidate",
+      "field_name": "modern_soc",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Modern SOC identifier preserved verbatim.",
+      "supported_by": "TOP inference or every eligible candidate audit row"
+    },
+    {
+      "level": "candidate",
+      "field_name": "modern_title",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Recorded modern occupational title.",
+      "supported_by": "Frozen inference/audit title, matched crosswalk when mapped"
+    },
+    {
+      "level": "candidate",
+      "field_name": "modern_taxonomy",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "O*NET-SOC label when documented.",
+      "supported_by": "Documented artifact provenance only"
+    },
+    {
+      "level": "candidate",
+      "field_name": "modern_taxonomy_version",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Exact taxonomy release if directly documented; otherwise null, never inferred from SOC formatting.",
+      "supported_by": "Recorded evidence_provenance or freeze provenance if available"
+    },
+    {
+      "level": "candidate",
+      "field_name": "candidate_rank",
+      "data_type": "integer",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Original audit ordering, never occupation probability; null if absent.",
+      "supported_by": "Candidate audit candidate_rank"
+    },
+    {
+      "level": "candidate",
+      "field_name": "evidence_score",
+      "data_type": "number",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Unchanged engineering evidence score; not probability or exposure weight.",
+      "supported_by": "Candidate audit evidence_score"
+    },
+    {
+      "level": "candidate",
+      "field_name": "evidence_support",
+      "data_type": "object",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Retain title/objective/skill/domain scores, penalties, strong evidence counts, matched terms/titles/types, eligibility reason, domain/role evidence and review flags.",
+      "supported_by": "All relevant candidate audit columns, not a regenerated score"
+    },
+    {
+      "level": "candidate",
+      "field_name": "evidence_provenance",
+      "data_type": "object_or_string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Original recorded lexical/evidence provenance, without invented sources.",
+      "supported_by": "Candidate audit evidence_provenance and eligibility_provenance"
+    },
+    {
+      "level": "candidate",
+      "field_name": "mapping_available",
+      "data_type": "boolean",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "At least one valid valued frozen source path; separate from applicability.",
+      "supported_by": "Validated complete frozen V4 graph and source row"
+    },
+    {
+      "level": "candidate",
+      "field_name": "unavailable_reason",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "No mapping or no valid source value; null when at least one valid source available.",
+      "supported_by": "Reason contract"
+    },
+    {
+      "level": "candidate",
+      "field_name": "source_records",
+      "data_type": "array",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "All accepted source relationships, including individually unavailable source values; empty when unmapped.",
+      "supported_by": "Complete FROZEN V4 rows for this SOC"
+    },
+    {
+      "level": "candidate",
+      "field_name": "source_ambiguity",
+      "data_type": "boolean",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "More than one historical source record for same SOC; never silently choose.",
+      "supported_by": "Source identity collection"
+    },
+    {
+      "level": "source",
+      "field_name": "historical_source_id",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Source record_id/automation_record_id; preserved for deduplication.",
+      "supported_by": "Crosswalk and automation_probability_labels.csv"
+    },
+    {
+      "level": "source",
+      "field_name": "historical_source_title",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Exact source occupation label.",
+      "supported_by": "automation_probability_labels.csv occupation"
+    },
+    {
+      "level": "source",
+      "field_name": "relationship_type",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "EQUIVALENT, SOURCE_BROADER_THAN_ONET or OVERLAP; belongs to this SOC-source edge.",
+      "supported_by": "Crosswalk relationship_type"
+    },
+    {
+      "level": "source",
+      "field_name": "relationship_limitation",
+      "data_type": "string_or_object",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Retain adjudication_reason, evidence_source scope limits and historical provenance limitations.",
+      "supported_by": "Crosswalk plus source_taxonomy_provenance.csv"
+    },
+    {
+      "level": "source",
+      "field_name": "applicability",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "OPERATIONAL_HISTORICAL_COUNTERPART or CONTEXTUAL_BROADER_SOURCE or CONTEXTUAL_PARTIAL_OVERLAP.",
+      "supported_by": "Relationship semantics"
+    },
+    {
+      "level": "source",
+      "field_name": "historical_exposure_value",
+      "data_type": "number",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Exact numerical source value, zero valid; null if unavailable. No weighting, calibration or conversion.",
+      "supported_by": "Source automation_probability cell"
+    },
+    {
+      "level": "source",
+      "field_name": "historical_exposure_raw",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Original CSV cell retained to reconstruct exact representation; null if unavailable.",
+      "supported_by": "automation_probability_labels.csv automation_probability"
+    },
+    {
+      "level": "source",
+      "field_name": "value_available",
+      "data_type": "boolean",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Finite valid numeric value on local 0..1 scale.",
+      "supported_by": "Strict source-value validation; no truthiness test"
+    },
+    {
+      "level": "source",
+      "field_name": "value_scale",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Local stored scalar 0..1, unchanged; observed domain does not establish calibration or exact modern measurement.",
+      "supported_by": "Validated pinned local source values"
+    },
+    {
+      "level": "source",
+      "field_name": "semantic_label",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Historical occupation-level automation exposure or Historical source-category reference by edge relationship.",
+      "supported_by": "Relationship semantics"
+    },
+    {
+      "level": "source",
+      "field_name": "source_dataset",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Recorded Wocke Probability of Automation of Occupations 2036 dataset identity only when documented.",
+      "supported_by": "Source provenance references; no independent reconstruction claim"
+    },
+    {
+      "level": "source",
+      "field_name": "source_dataset_version",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Recorded Wocke V1 reference, DOI 10.17632/czbvhmzwm3.1; does not prove local extraction identity.",
+      "supported_by": "source_taxonomy_provenance.csv notes"
+    },
+    {
+      "level": "source",
+      "field_name": "source_dataset_date",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Publication/as-of date only when supported; preserve type/date provenance, otherwise null. Not current date or access date.",
+      "supported_by": "Not recorded as structured date in current source CSV; null unless supporting recorded evidence"
+    },
+    {
+      "level": "source",
+      "field_name": "lineage_verification_status",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Local extraction lineage unresolved; label reference verification distinct from source boundaries.",
+      "supported_by": "source_taxonomy_provenance.csv wocke_taxonomy_status and notes"
+    },
+    {
+      "level": "source",
+      "field_name": "historical_reference_system",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Reference taxonomy label only, not proven Wocke canonical system.",
+      "supported_by": "historical_system"
+    },
+    {
+      "level": "source",
+      "field_name": "historical_reference_code",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Reference code, not asserted source-assigned code.",
+      "supported_by": "historical_code"
+    },
+    {
+      "level": "source",
+      "field_name": "label_verification_status",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Historical code/title verification only; never promote to lineage verification.",
+      "supported_by": "source_verification_status"
+    },
+    {
+      "level": "source",
+      "field_name": "crosswalk_row_number",
+      "data_type": "integer",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "CSV row number identifies exact edge.",
+      "supported_by": "Pinned V4 CSV"
+    },
+    {
+      "level": "source",
+      "field_name": "crosswalk_row_introduction_version",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Original row crosswalk_version; may be v1.0-v4.0. Not a selection filter.",
+      "supported_by": "Crosswalk row crosswalk_version"
+    },
+    {
+      "level": "source",
+      "field_name": "source_csv_row_number",
+      "data_type": "integer",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Exact source-value row position.",
+      "supported_by": "Pinned automation_probability_labels.csv"
+    },
+    {
+      "level": "source",
+      "field_name": "source_value_file_sha256",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Hash of source values used.",
+      "supported_by": "Pinned local CSV"
+    },
+    {
+      "level": "source",
+      "field_name": "crosswalk_evidence",
+      "data_type": "object_or_string",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Full recorded evidence_source and adjudication_reason for reconstructability.",
+      "supported_by": "Pinned crosswalk row"
+    },
+    {
+      "level": "source",
+      "field_name": "source_provenance",
+      "data_type": "object",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Original full provenance row and reference locations; limits retained.",
+      "supported_by": "Pinned source_taxonomy_provenance.csv"
+    },
+    {
+      "level": "source",
+      "field_name": "shared_with_modern_socs",
+      "data_type": "array",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "All other modern SOCs reaching same historical record; not independent measurements.",
+      "supported_by": "Full FROZEN bipartite graph"
+    },
+    {
+      "level": "source",
+      "field_name": "unavailable_reason",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "UNAVAILABLE_SOURCE_EXPOSURE_VALUE if invalid/missing; otherwise null.",
+      "supported_by": "Source-value validation"
+    },
+    {
+      "level": "system",
+      "field_name": "artifact_paths_and_hashes",
+      "data_type": "object",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "All runtime authoritative inference/candidate/crosswalk/source/contract artifacts; pin and validate before dependent lookup.",
+      "supported_by": "Freeze manifests and actual input SHA-256"
+    },
+    {
+      "level": "system",
+      "field_name": "validation_status",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "PASS or ERROR; failure has no numeric fallback.",
+      "supported_by": "Artifact/schema/relationship/eligibility checks"
+    },
+    {
+      "level": "system",
+      "field_name": "source_age_and_geography_limitations",
+      "data_type": "array",
+      "required": "TRUE",
+      "nullable": "FALSE",
+      "meaning": "Historical, US-origin reference evidence; not current generative-AI risk or universally applicable labor-market measurement.",
+      "supported_by": "Frozen methodology limitations"
+    },
+    {
+      "level": "profile_future_confirmation",
+      "field_name": "user_selected",
+      "data_type": "boolean",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Future explicit user selection; not verification of employment.",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "level": "profile_future_confirmation",
+      "field_name": "user_confirmed",
+      "data_type": "boolean",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Future explicit confirmation action; not validated ground truth.",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "level": "profile_future_confirmation",
+      "field_name": "selected_soc",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Explicitly selected modern SOC in NEW context.",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "level": "profile_future_confirmation",
+      "field_name": "selected_title",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Selected recorded modern title.",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "level": "profile_future_confirmation",
+      "field_name": "confirmation_taxonomy_version",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Documented taxonomy release for selected SOC.",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "level": "profile_future_confirmation",
+      "field_name": "confirmation_timestamp",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Actual future action timestamp, never invented or backfilled.",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "level": "profile_future_confirmation",
+      "field_name": "role_context",
+      "data_type": "enum",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "current / past / desired / unspecified; explicit context, no inferred recency.",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    },
+    {
+      "level": "profile_future_confirmation",
+      "field_name": "original_analysis_context_id",
+      "data_type": "string",
+      "required": "TRUE",
+      "nullable": "TRUE",
+      "meaning": "Reference original immutable inference context.",
+      "supported_by": "Reserved future contract only; null/not applicable now; manual confirmation not implemented"
+    }
+  ],
+  "authoritative_artifact_paths": [
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_freeze_manifest.json",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv",
+    "data/automation_onet_crosswalk_v4.csv",
+    "data/automation_probability_labels.csv",
+    "data/source_taxonomy_provenance.csv",
+    "data/automation_exposure_integration/step7a7/crosswalk_v4_freeze_manifest.json",
+    "data/automation_exposure_integration/step7a7/exposure_coverage_summary_v4.json",
+    "data/automation_exposure_integration/step7a7/crosswalk_expansion_stopping_rule_v1.json",
+    "data/automation_exposure_integration/step7a7/crosswalk_phase_final_summary.json",
+    "data/automation_exposure_integration/step7a7/final_targeted_unresolved_register.csv",
+    "data/automation_exposure_integration/step7a7/profile_exposure_coverage_audit_v4.csv",
+    "data/automation_exposure_integration/step7a7/soc_exposure_path_audit_v4.csv",
+    "data/automation_exposure_integration/step7a7/unique_soc_exposure_coverage_v4.csv"
+  ],
+  "authoritative_artifact_sha256": {
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv": "fdb7de7b6bee992be127ab535ad46f0214766015e8d79fc4b079828527a55633",
+    "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_freeze_manifest.json": "8eff580e3eb0f6b27c3c5de767d8fa266cf8cded0e93fe2a99cc929cbbb83e1c",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+    "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+    "data/automation_onet_crosswalk_v4.csv": "eeb19305b727e4dc33a3a3dae0c2bab6fd6af575a0563eb8ebda9fad02b5459f",
+    "data/automation_probability_labels.csv": "0b388464310a627a1e67e7364e559a0ebff9f494bf1f0287564d3c7b39b42b4f",
+    "data/source_taxonomy_provenance.csv": "b829f1f7a8491224d03187b6584fbd2b6afbc2ab99d1b77d746e63a7d40e2659",
+    "data/automation_exposure_integration/step7a7/crosswalk_v4_freeze_manifest.json": "bb337635388bc6c0b9aacf2a66aec6f8bce62f7f6fa56279f29cf287f95780f3",
+    "data/automation_exposure_integration/step7a7/exposure_coverage_summary_v4.json": "96e7f187714f8afc3856456fe21ddb5927aade869d75b1be2fcc6ff8d8dff399",
+    "data/automation_exposure_integration/step7a7/crosswalk_expansion_stopping_rule_v1.json": "9d3a87d100b99cd7bdd0ab242a68d31e02b613e241310795d292cdfa12c619c0",
+    "data/automation_exposure_integration/step7a7/crosswalk_phase_final_summary.json": "e83a64c8b01fb227aee3c6975142025363d3989e6e4f631be6a548615a576ad8",
+    "data/automation_exposure_integration/step7a7/final_targeted_unresolved_register.csv": "e3cef2948e11d6fd051f05375c105c2c4937ccf80521db61e526aaff6254cea6",
+    "data/automation_exposure_integration/step7a7/profile_exposure_coverage_audit_v4.csv": "ea26728d1c6947695a7b11a1d5613bf2890721a1574f3309dbd698ca3e239330",
+    "data/automation_exposure_integration/step7a7/soc_exposure_path_audit_v4.csv": "0875a08ceb232c7ccd2cfb3414f47e192ad5b6671ca98ea611c15e3bd7a99ce7",
+    "data/automation_exposure_integration/step7a7/unique_soc_exposure_coverage_v4.csv": "4956e2a3d34d395c6a0da6e6663b8157ee944aee29fe77c0423b6f0e583b0a21"
+  },
+  "source_inference_version": "occupation-inference-v1.0",
+  "crosswalk_container_version": "v4.0",
+  "interpretation_rules": {
+    "availability_is_not_applicability": true,
+    "numeric_owner": "Historical source occupation/category, never individual user.",
+    "preferred_term": "Historical occupation-level automation exposure",
+    "contextual_term": "Historical source-category reference",
+    "forbidden_terms": [
+      "AI replacement risk",
+      "personal automation probability",
+      "probability of losing your job",
+      "personal job-loss probability",
+      "current AI displacement probability"
+    ],
+    "relationship_applicability": {
+      "EQUIVALENT": "OPERATIONAL_HISTORICAL_COUNTERPART",
+      "SOURCE_BROADER_THAN_ONET": "CONTEXTUAL_BROADER_SOURCE",
+      "OVERLAP": "CONTEXTUAL_PARTIAL_OVERLAP"
+    },
+    "unchanged_value": true,
+    "profile_exposure_summary": null,
+    "source_terminology": "The original source column uses automation_probability; retaining that field for provenance does not authorize personal or current risk interpretation."
+  },
+  "crosswalk_selection": {
+    "artifact": "data/automation_onet_crosswalk_v4.csv",
+    "include_all_frozen_versions": true,
+    "selection_predicate": "mapping_status == 'FROZEN' after artifact/schema validation",
+    "row_introduction_version_filter_allowed": false,
+    "explanation": "V4 contains valid FROZEN v1/v2/v3/v4-introduced rows. crosswalk_version==v4.0 is NOT a valid selection filter.",
+    "authorization_metadata": "Actual CSV uses mapping_status; do not invent a universal decision/adjudication_status column. Where supplemental decision/adjudication metadata exists, preserve and validate against the freeze manifest without requiring such fields on earlier rows.",
+    "excluded_statuses": [
+      "HELD_OUT",
+      "RESIDUAL_UNMAPPED",
+      "UNRESOLVED"
+    ],
+    "new_mapping_or_expansion_allowed": false,
+    "stopping_rule_artifact": "data\\automation_exposure_integration\\step7a7\\crosswalk_expansion_stopping_rule_v1.json"
+  },
+  "source_value_validation": {
+    "value_column": "automation_probability",
+    "source_id_column": "record_id",
+    "source_title_column": "occupation",
+    "local_scale_minimum": 0,
+    "local_scale_maximum": 1,
+    "range_basis": "Observed and validated pinned local CSV domain; range is not a calibration or current-risk claim.",
+    "requirements": [
+      "Parse numeric without changing numerical value.",
+      "Require finite number and 0 <= value <= 1.",
+      "Preserve original cell representation for reconstruction.",
+      "Use explicit missingness and validity checks, never truthiness; numeric zero is valid.",
+      "Empty, nonnumeric, NaN, infinity or out-of-range cell produces UNAVAILABLE_SOURCE_EXPOSURE_VALUE, not numerical zero."
+    ],
+    "transformation_allowed": false,
+    "inference_score_or_rank_weight_allowed": false,
+    "mapping_confidence_weight_allowed": false,
+    "skill_or_user_characteristic_adjustment_allowed": false
+  },
+  "candidate_selection": {
+    "TOP": "Use frozen selected top_onet_soc_code/title; preserve inference status and source evidence. Do not choose a new SOC based on exposure availability.",
+    "MULTIPLE": "Return every unique SOC with candidate_eligible == 'TRUE' from the frozen audit for the profile; retain original row rank/evidence metadata, including unmapped SOCs.",
+    "INSUFFICIENT": "Gate before any crosswalk or source-value lookup; no exposure candidate result. Eligible audit count/diagnostic evidence does not override abstention.",
+    "candidate_eligibility_change_allowed": false,
+    "rank_is_probability": false,
+    "evidence_score_is_probability": false,
+    "profile_numeric_summary_allowed": false,
+    "coverage_is_confidence": false,
+    "coverage_rule": "For MULTIPLE, mapped numerator counts eligible SOCs having at least one valid valued FROZEN source path; denominator is ALL eligible SOCs. Preserve unmapped SOCs. For TOP denominator is selected SOC 1; for INSUFFICIENT no lookup coverage denominator.",
+    "source_records_rule": "For each mapped/frozen SOC, retain every source edge including individually unavailable values. A candidate may be mapped if at least one source value is valid; individual missing sources retain reasons and do not disappear.",
+    "partial_source_coverage": "A SOC with some valid and some invalid source paths retains candidate mapped availability plus each source value_available/unavailable_reason. Source ambiguity is an orthogonal flag, not a seventh primary state."
+  },
+  "source_identity_safeguards": {
+    "one_SOC_multiple_sources": "Retain every frozen source record, flag ambiguity if multiple sources, no selection or averaging; currently zero SOCs with multiple FROZEN sources in V4.",
+    "multiple_SOCs_one_source": "Preserve source IDs and shared_with_modern_socs across the complete graph; repeated values from the same source are not independent measurements.",
+    "shared_source_deduplication": "A display may identify common source identity, but must not drop eligible SOCs, merge occupations or create an aggregate."
+  },
+  "manual_confirmation": {
+    "implemented": false,
+    "reserved_only": true,
+    "may_create_new_analysis_context": true,
+    "original_frozen_result_mutation_allowed": false,
+    "fields": [
+      "user_selected",
+      "user_confirmed",
+      "selected_soc",
+      "selected_title",
+      "confirmation_taxonomy_version",
+      "confirmation_timestamp",
+      "role_context",
+      "original_analysis_context_id"
+    ],
+    "selection_origin_values": [
+      "FROZEN_INFERENCE",
+      "USER_SELECTED",
+      "USER_CONFIRMED"
+    ],
+    "role_context_values": [
+      "current",
+      "past",
+      "desired",
+      "unspecified"
+    ],
+    "timestamp_rule": "Actual future action time only; null before an action; never backfill.",
+    "original_status_preserved": true
+  },
+  "validation_error_behavior": {
+    "primary_state_on_error": null,
+    "error_reason": "ARTIFACT_VALIDATION_FAILURE",
+    "error_is_primary_state": false,
+    "fail_closed": true,
+    "exposure_fields": null,
+    "successful_partial_result_on_untrusted_artifact_allowed": false,
+    "proceed_with_lookup_after_validation_failure": false,
+    "checks": [
+      "Validate pinned artifact hashes and required schemas before dependent evaluation.",
+      "Validate identifiers/title correspondence, row consistency, supported mapping states and the complete graph.",
+      "Validate inference state/eligible-count contract; MULTIPLE must have a nonempty eligible set; TOP selected SOC must be supported by frozen inference.",
+      "Validate value cells per source; recoverable invalid cell gives UNAVAILABLE_SOURCE_EXPOSURE_VALUE, missing source identity/title mismatch is artifact failure.",
+      "Duplicate identical audit evidence may retain all row references without double-counting SOCs; conflicting identities or ranks require validation error."
+    ],
+    "no_numeric_fallback": true
+  },
+  "experimental_RF_separation": {
+    "production_role": "NONE",
+    "academic_experiment_separate": true,
+    "loading_allowed": false,
+    "training_refit_allowed": false,
+    "missing_crosswalk_imputation_allowed": false,
+    "missing_source_value_imputation_allowed": false,
+    "individual_risk_generation_allowed": false,
+    "source_value_modification_allowed": false,
+    "multiple_candidate_selection_allowed": false,
+    "skill_gap_influence_allowed": false
+  },
+  "legacy_application_boundary": {
+    "existing_legacy_risk_behavior_authoritative": false,
+    "step7b1_app_changes_allowed": false,
+    "new_result_populates_legacy_risk_score": false,
+    "legacy_fallback_allowed": false,
+    "required_before_application_integration": "Isolate or retire legacy CV-text risk predictor/fallback logic; new Step 7B results must never silently populate, fall back to or be conflated with risk_score.",
+    "audit_basis": "User supplied independent Astra read-only audit finding; legacy application code was not executed or modified in this contract step."
+  },
+  "skill_gap_separation": {
+    "chain_A": [
+      "occupation",
+      "historical crosswalk",
+      "historical exposure context"
+    ],
+    "chain_B": [
+      "user skill evidence + chosen occupation requirements",
+      "evidence gaps",
+      "reskilling recommendations"
+    ],
+    "exposure_weights_skill_gap": false,
+    "course_completion_reduces_historical_exposure_claim_allowed": false,
+    "missing_exposure_blocks_otherwise_valid_skill_gap": false,
+    "computation_or_recommendations_implemented": false,
+    "requirements_are_user_proficiency": false
+  },
+  "known_limitations": [
+    "Historical source-taxonomy correspondence and exact inclusion boundaries have limitations.",
+    "Modern O*NET mapping does not make a historical value current.",
+    "Complete local source/Wocke extraction lineage has not been independently reproduced; reference code/title verification is a separate claim.",
+    "Historical occupation-level exposure is not current generative-AI risk, personal automation probability or probability of losing a job.",
+    "US-origin reference evidence may not generalize to other labor markets.",
+    "Coverage is data availability, not accuracy, semantic equivalence or inference confidence.",
+    "TOP inference does not verify current employment; CV role chronology may remain unresolved.",
+    "EQUIVALENT retains recorded scope/current-historical limitations; broader and overlap values are contextual source references."
+  ],
+  "baseline_coverage_validation": {
+    "total_profiles": 344,
+    "inference_counts": {
+      "INSUFFICIENT_EVIDENCE": 163,
+      "MULTIPLE_CANDIDATES": 146,
+      "TOP_CANDIDATE": 35
+    },
+    "crosswalk_rows": 323,
+    "frozen_relationship_rows": 41,
+    "actual_frozen_relationship_types": {
+      "EQUIVALENT": 16,
+      "SOURCE_BROADER_THAN_ONET": 23,
+      "OVERLAP": 2
+    },
+    "audit_inventory_distinct_eligible_SOCs": 179,
+    "active_lookup_distinct_SOCs": 170,
+    "insufficient_only_inventory_SOCs": 9,
+    "complete_SOC_paths": 27,
+    "audit_inventory_coverage": {
+      "numerator": 27,
+      "denominator": 179,
+      "percentage": 15.083798882681565
+    },
+    "active_lookup_SOC_coverage": {
+      "numerator": 27,
+      "denominator": 170,
+      "percentage": 15.882352941176471
+    },
+    "TOP": {
+      "mapped": 23,
+      "unmapped": 12,
+      "total": 35
+    },
+    "MULTIPLE": {
+      "all_mapped": 11,
+      "partial": 82,
+      "none_mapped": 53,
+      "total": 146
+    },
+    "overall": {
+      "full": 34,
+      "partial": 82,
+      "unmapped": 65,
+      "insufficient_no_lookup": 163
+    },
+    "remaining_active_missing_SOCs": 143,
+    "accuracy_claim": false,
+    "denominator_rule": "179 is audit inventory; 170 enters active lookup; nine insufficient-only SOCs do not enter lookup. Never describe both denominators as active SOCs."
+  },
+  "independent_audit": {
+    "status": "READY_WITH_REQUIRED_METHODOLOGY_CHANGES",
+    "basis": "User-supplied report of independent GPT-6-Astra High read-only audit; this task encodes required constraints and does not claim to rerun that audit."
+  },
+  "prohibited_behaviors": [
+    "RF fallback or model loading/training/refitting",
+    "Nearest-occupation fallback or forced/new crosswalk",
+    "Numerical defaults for unavailable exposure, including zero",
+    "Profile exposure averaging, weighting, median, min/max scoring or other aggregation",
+    "Rank-1 selection for MULTIPLE or discarding unmapped eligible SOCs",
+    "Treating inference scores, rank, mapping confidence or coverage fractions as probabilities",
+    "Transforming source values by CV skills, user characteristics, score or confidence",
+    "INSUFFICIENT historical lookup, including diagnostic TOP and eligible/rejected audit candidates",
+    "Individual job-loss or current generative-AI displacement probability",
+    "Legacy risk_score fallback or silent population",
+    "Skill-gap scoring or reskilling implementation in this step"
+  ],
+  "next_phase": "STEP_7B_2",
+  "next_phase_started": false
+}
