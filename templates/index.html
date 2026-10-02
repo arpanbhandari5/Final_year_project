@@ -6,7 +6,7 @@
     <div>
       <span class="eyebrow">AI-powered career intelligence</span>
       <h1 data-hero-title>Get clear career direction from your resume, with practical next moves you can use today.</h1>
-      <p class="lead" data-hero-lead>Prayash combines local machine learning, O*NET intelligence, and optional deep AI guidance to show your task exposure estimate, role fit, and learning priorities without permanently storing your resume.</p>
+      <p class="lead" data-hero-lead>Prayash combines local machine learning, O*NET intelligence, and optional deep AI guidance to show your automation risk, role fit, and learning priorities without permanently storing your resume.</p>
 
       <div class="actions" style="margin-top: 2rem;">
         <a class="button" href="#analysis" data-hero-primary-link>Start my assessment</a>
@@ -45,7 +45,7 @@
 
       <div class="hero-mini-grid">
         <div class="kpi">
-          <div class="kpi__label">Task Exposure Estimate</div>
+          <div class="kpi__label">Automation risk</div>
           <div class="kpi__value">Low-to-moderate</div>
         </div>
         <div class="kpi">
@@ -129,94 +129,64 @@
           <textarea id="resume_text" name="resume_text" placeholder="Paste your resume or a job-focused profile summary here." data-resume-text></textarea>
         </div>
 
-        <div class="field">
-          <label for="job_description">Target job description <span class="small-note">optional, for skill matching</span></label>
-          <textarea id="job_description" name="job_description" placeholder="Paste the role description to see matched skills, missing skills, evidence, and a tailored action plan." data-job-description></textarea>
-        </div>
-        <div class="field">
-          <label for="confirmed_skills">Correct or add skills <span class="small-note">comma separated; these are included in the match</span></label>
-          <input id="confirmed_skills" name="confirmed_skills" type="text" placeholder="Example: Python, stakeholder management, Tableau">
-        </div>
-
         <div class="inline-actions" style="justify-content: space-between;">
           <div class="mode-toggle" role="tablist" aria-label="Analysis mode duplicate">
             <button class="mode-toggle__button is-active" type="button" data-mode="standard">Standard <small>(Local ML)</small></button>
             <button class="mode-toggle__button" type="button" data-mode="advanced">Advanced <small>(Deep AI)</small></button>
           </div>
-          <button class="button-secondary" type="submit" data-assess-button>Run analysis</button>
+          <div class="inline-actions">
+            <button class="button-secondary" type="submit" data-assess-button>Run analysis</button>
+            <button class="button-ghost" type="button" data-export-button>Export PDF</button>
+            <button class="button-ghost compare-toggle" type="button" data-compare-toggle>Compare</button>
+          </div>
+        </div>
+
+        <!-- Comparison Panel -->
+        <div class="compare-panel" data-compare-panel>
+          <h3>Compare Two Resumes</h3>
+          <div class="compare-inputs">
+            <textarea placeholder="Paste Resume A text here..." data-compare-text-a></textarea>
+            <textarea placeholder="Paste Resume B text here..." data-compare-text-b></textarea>
+          </div>
+          <button class="button-secondary" type="button" data-compare-run>Compare</button>
+          <div class="compare-results hidden" data-compare-results></div>
         </div>
       </form>
     </div>
   </div>
 </section>
 
-<section class="content-section" id="career-discovery">
+<!-- ═══ SKILLS GAP ANALYSIS SECTION ═══ -->
+<section class="content-section" id="skills-gap">
   <div class="container">
-    <div class="section-card discovery-card">
-      <div class="inline-actions" style="justify-content: space-between; align-items: flex-start; gap: 1rem;">
+    <div class="section-card" id="skills-gap-section">
+      <div class="inline-actions" style="justify-content:space-between;align-items:start;margin-bottom:1rem;">
         <div>
-          <span class="eyebrow">Career discovery</span>
-          <h2 class="section-title" style="margin-top: .8rem;">Tell us what matters to you.</h2>
-          <p class="section-subtitle">These questions help you reflect on direction, goals, and how you approach real work situations. Your answers stay in this browser session and do not change your automation-exposure score.</p>
+          <h2 class="section-title">🎯 Skills Gap Analysis</h2>
+          <p class="section-subtitle">Compare your resume skills against a target role to find what you already have and what to learn next.</p>
         </div>
-        <span class="status-pill">5–7 minutes</span>
+        <span class="status-pill is-warm">New feature</span>
       </div>
 
-      <form class="discovery-form" data-discovery-form>
-        <fieldset class="discovery-question">
-          <legend>What would you most like your next step to be?</legend>
-          <label><input type="radio" name="direction" value="Explore career options" required> Explore career options</label>
-          <label><input type="radio" name="direction" value="Find a role" required> Find a role</label>
-          <label><input type="radio" name="direction" value="Change careers" required> Change careers</label>
-          <label><input type="radio" name="direction" value="Grow in my current field" required> Grow in my current field</label>
-        </fieldset>
-
-        <div class="field">
-          <label for="vision">What would a meaningful work life look like for you in the next two to three years?</label>
-          <textarea id="vision" name="vision" required placeholder="For example: work on useful problems, lead a small team, have flexible work, or become a specialist."></textarea>
+      <form id="skills-gap-form" class="skills-gap-form" method="post" style="display:flex;gap:1rem;align-items:end;flex-wrap:wrap;">
+        <div class="field" style="flex:1;min-width:200px;">
+          <label for="skills-gap-role">Select target role</label>
+          <select id="skills-gap-role" style="padding:0.85rem 0.95rem;">
+            <option value="">Loading available roles...</option>
+          </select>
         </div>
-
-        <fieldset class="discovery-question">
-          <legend>Which outcome matters most right now?</legend>
-          <label><input type="radio" name="priority" value="Build confidence and experience" required> Build confidence and experience</label>
-          <label><input type="radio" name="priority" value="Increase income or stability" required> Increase income or stability</label>
-          <label><input type="radio" name="priority" value="Do meaningful work" required> Do meaningful work</label>
-          <label><input type="radio" name="priority" value="Gain flexibility or balance" required> Gain flexibility or balance</label>
-        </fieldset>
-
-        <fieldset class="discovery-question">
-          <legend>Situation: a job you want asks for one skill you do not yet have. What do you do first?</legend>
-          <label><input type="radio" name="gap_response" value="Create a small project to demonstrate nearby skills" required> Create a small project to demonstrate nearby skills</label>
-          <label><input type="radio" name="gap_response" value="Take a short course and practise the skill" required> Take a short course and practise the skill</label>
-          <label><input type="radio" name="gap_response" value="Apply anyway and explain my transferable experience" required> Apply anyway and explain my transferable experience</label>
-          <label><input type="radio" name="gap_response" value="Choose a different role" required> Choose a different role</label>
-        </fieldset>
-
-        <fieldset class="discovery-question">
-          <legend>Situation: you have two good opportunities. Which factor breaks the tie?</legend>
-          <label><input type="radio" name="decision_style" value="Learning and mentorship" required> Learning and mentorship</label>
-          <label><input type="radio" name="decision_style" value="Purpose and impact" required> Purpose and impact</label>
-          <label><input type="radio" name="decision_style" value="Pay and stability" required> Pay and stability</label>
-          <label><input type="radio" name="decision_style" value="Freedom and flexibility" required> Freedom and flexibility</label>
-        </fieldset>
-
-        <fieldset class="discovery-question">
-          <legend>How do you prefer to contribute?</legend>
-          <label><input type="radio" name="work_style" value="Analyse and solve complex problems" required> Analyse and solve complex problems</label>
-          <label><input type="radio" name="work_style" value="Create and communicate ideas" required> Create and communicate ideas</label>
-          <label><input type="radio" name="work_style" value="Support, teach, or work with people" required> Support, teach, or work with people</label>
-          <label><input type="radio" name="work_style" value="Organise, improve, and deliver" required> Organise, improve, and deliver</label>
-        </fieldset>
-
-        <button class="button" type="submit">Create my reflection summary</button>
+        <button type="submit" id="skills-gap-submit" class="button-secondary" style="white-space:nowrap;">
+          Analyze Skills Gap
+        </button>
       </form>
 
-      <div class="discovery-summary hidden" data-discovery-summary aria-live="polite">
-        <h3 class="section-title">Your career reflection</h3>
-        <p data-discovery-summary-text></p>
-        <p class="small-note">Use this alongside your resume analysis to choose a target role and next learning action.</p>
-        <a class="button-ghost" href="#analysis">Continue to resume analysis</a>
+      <div id="skills-gap-loading" class="hidden" style="text-align:center;padding:2rem 0;">
+        <div style="font-size:1.2rem;color:var(--primary);">🔍 Analyzing skills gap...</div>
       </div>
+
+      <div id="skills-gap-error" class="auth-error hidden" role="alert" style="margin-top:1rem;"></div>
+
+      <div id="skills-gap-results" class="hidden" style="margin-top:1.5rem;"></div>
     </div>
   </div>
 </section>
@@ -225,7 +195,7 @@
   <div class="container feature-grid">
     <article class="feature-card">
       <h3 class="section-title">How this works</h3>
-      <p class="section-subtitle">Upload or paste your resume, choose standard or advanced mode, and receive role fit, task exposure estimate, roadmap suggestions, and RIASEC guidance in one report.</p>
+      <p class="section-subtitle">Upload or paste your resume, choose standard or advanced mode, and receive role fit, automation risk, roadmap suggestions, and RIASEC guidance in one report.</p>
     </article>
     <article class="feature-card">
       <h3 class="section-title">What your report means</h3>
@@ -273,15 +243,14 @@
 <section class="content-section">
   <div class="container dashboard-grid">
     <div class="span-4 glass-card">
-      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Task Exposure Estimate</div>
+      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Risk Index</div>
       <div class="score-ring" data-risk-ring style="--score: 0.08; margin-top: 1.2rem; width: 11rem;">
         <div class="score-ring__content">
           <p class="score-ring__value" data-risk-score-display>--</p>
           <p class="score-ring__label" data-risk-label-display>Awaiting analysis</p>
         </div>
       </div>
-      <p class="section-subtitle centered" data-risk-summary>Upload a resume to see the local task exposure estimate.</p>
-      <div class="uncertainty-banner" data-uncertainty-banner>Uncertainty applies: this is an educational estimate based on available evidence, not a forecast.</div>
+      <p class="section-subtitle centered" data-risk-summary>Upload a resume to see the automation risk prediction.</p>
     </div>
 
     <div class="span-8 glass-card">
@@ -420,9 +389,18 @@
       <button class="button-ghost" type="button" data-modal-close>Close</button>
     </div>
 
+    <!-- SSE Progress Bar -->
+    <div class="progress-bar" data-progress-bar>
+      <div class="progress-bar__fill"></div>
+    </div>
+    <div class="progress-info">
+      <span class="progress-status" data-progress-status></span>
+      <span class="progress-percent" data-progress-percent></span>
+    </div>
+
     <div class="modal-kpis">
       <div class="kpi">
-        <div class="kpi__label">Task Exposure Estimate</div>
+        <div class="kpi__label">Automation risk</div>
         <div class="kpi__value" data-modal-risk-score>--</div>
       </div>
       <div class="kpi">
@@ -439,7 +417,6 @@
       <h3 class="result-banner__title" data-result-status>What users say</h3>
       <p class="result-banner__text" data-narrative>“Prayash gave me a clear, practical learning roadmap based on my resume — I landed interviews within a month. The local-first pipeline preserved my privacy while surfacing exactly what to learn next.” — Arpan B.</p>
     </div>
-    <div class="uncertainty-banner" data-modal-uncertainty>Uncertainty applies: this is an educational estimate based on available evidence, not a forecast.</div>
 
     <div class="modal-grid" style="margin-top: 1rem;">
       <div class="summary-card">
@@ -458,42 +435,12 @@
       </div>
     </div>
 
-    <div class="summary-card tier tier-standard" style="margin-top: 1rem;">
-      <p class="tier__label">Tier 1 · Standard O*NET guidance</p>
-      <h3 class="section-title">Resume vs. target job</h3>
-      <p class="section-subtitle">Skill overlap is based on text you provide. Review and correct skills before relying on the result.</p>
-      <div class="compact-list" data-jd-match><div class="list-card"><div><strong>No target job added</strong><p>Paste a job description in the form to compare it with your resume.</p></div></div></div>
-    </div>
-
-    <div class="summary-card tier tier-market" style="margin-top: 1rem;">
-      <p class="tier__label">Tier 2 · Live market signals</p>
-      <p class="section-subtitle">Live demand and skill-momentum data are not connected in this local build. Course links use the local catalog or a direct Coursera search.</p>
-    </div>
-
-    <div class="summary-card tier tier-experimental" style="margin-top: 1rem;">
-      <p class="tier__label">Task Exposure Estimate · Educational signal</p>
-      <p class="disclaimer">This local estimate is based on historical task-automation indexes. It is an exploratory educational signal, not a job-loss prediction, hiring chance, or ATS score.</p>
-    </div>
-
     <div class="summary-card" style="margin-top: 1rem;">
       <h3 class="section-title" style="margin: 0 0 1rem;">What to do next</h3>
       <div class="compact-list" data-modal-next-steps>
         <div class="list-card"><div><strong>Run analysis</strong><p>Practical next actions will appear here.</p></div></div>
       </div>
     </div>
-
-    <form class="summary-card feedback-form" data-feedback-form style="margin-top: 1rem;">
-      <h3 class="section-title">Give feedback</h3>
-      <p class="section-subtitle">Was this recommendation helpful?</p>
-      <input type="hidden" name="upload_id" data-feedback-upload-id>
-      <div class="actions">
-        <button class="button-ghost" type="button" data-feedback-rating="1">👍 Helpful</button>
-        <button class="button-ghost" type="button" data-feedback-rating="0">👎 Not helpful</button>
-      </div>
-      <div class="field" style="margin-top: .8rem;"><label for="feedback_message">Optional detail</label><textarea id="feedback_message" name="message" placeholder="Tell us what worked or needs correction."></textarea></div>
-      <button class="button" type="submit" style="margin-top: .8rem;">Send feedback</button>
-      <p class="small-note" data-feedback-status aria-live="polite"></p>
-    </form>
   </div>
 </div>
 {% endblock %}

@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container page-hero__grid">
+    <div>
+      <span class="eyebrow">Skills Gap Analysis</span>
+      <h1>Compare your skills against any role</h1>
+      <p class="lead">Paste your resume text, select a target career role, and instantly see where you stand — with personalised learning recommendations and an action plan.</p>
+    </div>
+    <div class="glass-card">
+      <h2 class="section-title">About this tool</h2>
+      <div class="compact-list workspace-status-list">
+        <div class="list-card">
+          <div><strong>How it works</strong><p>Matches your resume keywords against a curated skill database for 20+ tech roles.</p></div>
+          <span class="status-pill">ML-powered</span>
+        </div>
+        <div class="list-card">
+          <div><strong>What you get</strong><p>Skill match percentage, missing skills, and a prioritised learning action plan.</p></div>
+          <span class="status-pill is-warm">Actionable</span>
+        </div>
+        <div class="list-card">
+          <div><strong>Privacy</strong><p>Your resume text is analysed in memory and never stored permanently.</p></div>
+          <span class="status-pill">Ephemeral</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Input Section ═══ -->
+<section class="content-section" id="input-section">
+  <div class="container">
+    <div class="glass-card" style="max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title">Start your analysis</h2>
+      <p class="section-subtitle">Provide your resume text and choose a target role to compare against.</p>
+
+      <form id="skills-gap-form" class="skills-gap-form" data-skills-gap-form>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="resume-text" class="form-label">Resume text <span class="required-star">*</span></label>
+          <textarea
+            id="resume-text"
+            class="form-textarea"
+            rows="8"
+            placeholder="Paste your resume text here... (min 20 characters)"
+            required
+            minlength="20"
+          ></textarea>
+          <div class="form-hint" data-char-count>0 characters — minimum 20</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="target-role" class="form-label">Target role <span class="required-star">*</span></label>
+          <div class="select-wrapper">
+            <select id="target-role" class="form-select" required data-role-select>
+              <option value="">Loading available roles…</option>
+            </select>
+            <span class="select-arrow" aria-hidden="true">▼</span>
+          </div>
+          <div class="form-hint" data-roles-status>Fetching roles from the ML pipeline…</div>
+        </div>
+
+        <div class="inline-actions" style="justify-content: flex-end; gap: 0.75rem;">
+          <button type="reset" class="button-ghost" data-reset-btn>Clear</button>
+          <button type="submit" class="button" data-analyze-btn disabled>
+            <span class="btn-text">Analyze skills gap</span>
+            <span class="btn-spinner hidden" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Results Section ═══ -->
+<section class="content-section hidden" id="results-section" data-results-section>
+  <div class="container">
+    <!-- Error banner -->
+    <div class="glass-card hidden" style="border-left: 4px solid var(--error); margin-bottom: 2rem;" data-error-card>
+      <div class="inline-actions" style="justify-content: space-between;">
+        <div>
+          <h3 class="section-title" style="color: var(--error);">Analysis failed</h3>
+          <p class="section-subtitle" data-error-message></p>
+        </div>
+        <button class="button-ghost" data-dismiss-error>✕</button>
+      </div>
+    </div>
+
+    <!-- Stats Cards Row (SAHAY_AI-inspired) -->
+    <div class="skills-gap-stats" data-stats-row>
+      <div class="stats-card glass-card">
+        <div class="stats-card__number" data-stat-matched>0</div>
+        <div class="stats-card__label">Skills matched</div>
+        <div class="stats-card__icon" aria-hidden="true">✅</div>
+      </div>
+      <div class="stats-card glass-card">
+        <div class="stats-card__number" data-stat-missing>0</div>
+        <div class="stats-card__label">Skills to develop</div>
+        <div class="stats-card__icon" aria-hidden="true">📈</div>
+      </div>
+      <div class="stats-card glass-card">
+        <div class="stats-card__number" data-stat-total>0</div>
+        <div class="stats-card__label">Total required</div>
+        <div class="stats-card__icon" aria-hidden="true">🎯</div>
+      </div>
+      <div class="stats-card glass-card">
+        <div class="stats-card__number" data-stat-percentage>0%</div>
+        <div class="stats-card__label">Match score</div>
+        <div class="stats-card__icon" aria-hidden="true">📊</div>
+      </div>
+    </div>
+
+    <!-- Match Progress Bar -->
+    <div class="glass-card" style="margin-bottom: 2rem;">
+      <div class="inline-actions" style="justify-content: space-between; margin-bottom: 0.75rem;">
+        <h3 class="section-title" style="margin: 0;">Overall skill match</h3>
+        <span class="match-label" data-match-label>0%</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-fill" data-progress-fill style="width: 0%;"></div>
+      </div>
+      <p class="form-hint" style="margin-top: 0.5rem;" data-match-hint>
+        How well your resume matches the target role's skill requirements.
+      </p>
+    </div>
+
+    <!-- Skills Comparison (SAHAY_AI-inspired side-by-side) -->
+    <div class="skills-gap-comparison">
+      <div class="glass-card">
+        <h3 class="section-title">
+          <span style="color: var(--success);">✓</span> Your current skills
+        </h3>
+        <p class="section-subtitle">Skills you already have that are relevant for <strong data-role-name></strong>:</p>
+        <div class="skills-badge-container" data-matched-skills>
+          <div class="skills-placeholder">No matched skills found. Try a different role or update your resume text.</div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <h3 class="section-title">
+          <span style="color: var(--warning);">!</span> Skills to develop
+        </h3>
+        <p class="section-subtitle">Skills you need to acquire for <strong data-role-name-missing></strong>:</p>
+        <div class="skills-badge-container" data-missing-skills>
+          <div class="skills-placeholder">All required skills matched! 🎉</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations (SAHAY_AI-inspired) -->
+    <div class="glass-card" style="margin-bottom: 2rem;" data-recommendations-card>
+      <h3 class="section-title">💡 Personalised recommendations</h3>
+      <p class="section-subtitle">Prioritised learning actions to close your skill gaps:</p>
+      <div class="recommendations-list" data-recommendations-list>
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+    <!-- Action Plan (SAHAY_AI-inspired) -->
+    <div class="glass-card" style="margin-bottom: 2rem;">
+      <h3 class="section-title">🗺️ Your action plan</h3>
+      <div class="action-plan-grid">
+        <div class="action-plan-card">
+          <div class="action-plan__phase">Phase 1</div>
+          <h4>Immediate (Next 30 days)</h4>
+          <ul class="action-plan__list">
+            <li>Prioritise the top 2-3 missing skills from the list above</li>
+            <li>Start with online courses or hands-on tutorials</li>
+            <li>Set specific weekly learning goals</li>
+            <li>Join a community or study group for accountability</li>
+          </ul>
+        </div>
+        <div class="action-plan-card">
+          <div class="action-plan__phase">Phase 2</div>
+          <h4>Medium-term (3-6 months)</h4>
+          <ul class="action-plan__list">
+            <li>Complete certification or structured courses</li>
+            <li>Build real projects using your new skills</li>
+            <li>Contribute to open-source or freelance work</li>
+            <li>Update your resume with new competencies</li>
+          </ul>
+        </div>
+        <div class="action-plan-card">
+          <div class="action-plan__phase">Phase 3</div>
+          <h4>Long-term (6-12 months)</h4>
+          <ul class="action-plan__list">
+            <li>Deepen expertise in your target role's core technologies</li>
+            <li>Network with professionals in the field</li>
+            <li>Apply for roles that match your new skill set</li>
+            <li>Re-run this analysis to track your progress</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Next Steps (SAHAY_AI-inspired) -->
+    <div class="glass-card" style="text-align: center;">
+      <h3 class="section-title">What would you like to do next?</h3>
+      <div class="inline-actions" style="justify-content: center; flex-wrap: wrap; gap: 0.75rem;">
+        <a class="button" href="{{ url_for('workspace') }}">📄 Back to workspace</a>
+        <a class="button-outline" href="#" data-retry-btn>🔄 Analyze a different role</a>
+        <a class="button-outline" href="{{ url_for('index') }}#analysis">📊 Run full risk analysis</a>
+        <a class="button-ghost" href="{{ url_for('index') }}#resource-hub">📚 Explore resources</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+  'use strict';
+
+  const form = document.getElementById('skills-gap-form');
+  const resumeText = document.getElementById('resume-text');
+  const targetRole = document.getElementById('target-role');
+  const analyzeBtn = document.querySelector('[data-analyze-btn]');
+  const resetBtn = document.querySelector('[data-reset-btn]');
+  const resultsSection = document.querySelector('[data-results-section]');
+  const inputSection = document.getElementById('input-section');
+  const errorCard = document.querySelector('[data-error-card]');
+  const errorMsg = document.querySelector('[data-error-message]');
+  const charCount = document.querySelector('[data-char-count]');
+  const rolesStatus = document.querySelector('[data-roles-status]');
+
+  // Stats
+  const statMatched = document.querySelector('[data-stat-matched]');
+  const statMissing = document.querySelector('[data-stat-missing]');
+  const statTotal = document.querySelector('[data-stat-total]');
+  const statPercentage = document.querySelector('[data-stat-percentage]');
+  const progressFill = document.querySelector('[data-progress-fill]');
+  const matchLabel = document.querySelector('[data-match-label]');
+  const matchHint = document.querySelector('[data-match-hint]');
+  const roleName = document.querySelector('[data-role-name]');
+  const roleNameMissing = document.querySelector('[data-role-name-missing]');
+  const matchedSkills = document.querySelector('[data-matched-skills]');
+  const missingSkills = document.querySelector('[data-missing-skills]');
+  const recommendationsList = document.querySelector('[data-recommendations-list]');
+  const recommendationsCard = document.querySelector('[data-recommendations-card]');
+  const retryBtn = document.querySelector('[data-retry-btn]');
+
+  // ── Fetch roles on load ──
+  async function loadRoles() {
+    targetRole.innerHTML = '<option value="">Loading…</option>';
+    rolesStatus.textContent = 'Fetching roles from the ML pipeline…';
+    try {
+      const res = await fetch('/api/skills-gap/roles');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.roles)) {
+        targetRole.innerHTML = '<option value="">Select a target role…</option>';
+        data.roles.forEach(function(role) {
+          const opt = document.createElement('option');
+          opt.value = role;
+          opt.textContent = role;
+          targetRole.appendChild(opt);
+        });
+        rolesStatus.textContent = data.roles.length + ' roles available';
+        rolesStatus.style.color = 'var(--text-secondary)';
+      } else {
+        targetRole.innerHTML = '<option value="">No roles available</option>';
+        rolesStatus.textContent = 'Failed to load roles';
+        rolesStatus.style.color = 'var(--error)';
+      }
+    } catch (err) {
+      targetRole.innerHTML = '<option value="">Roles unavailable</option>';
+      rolesStatus.textContent = 'Network error — could not fetch roles';
+      rolesStatus.style.color = 'var(--error)';
+    }
+    validateForm();
+  }
+
+  // ── Validation ──
+  function validateForm() {
+    const textOk = resumeText.value.trim().length >= 20;
+    const roleOk = targetRole.value !== '';
+    const rolesLoaded = targetRole.options.length > 1 && targetRole.options[0].value === '';
+    analyzeBtn.disabled = !(textOk && roleOk && rolesLoaded);
+  }
+
+  resumeText.addEventListener('input', function() {
+    const len = resumeText.value.length;
+    charCount.textContent = len + ' characters — minimum 20';
+    charCount.style.color = len >= 20 ? 'var(--success)' : 'var(--text-secondary)';
+    validateForm();
+  });
+
+  targetRole.addEventListener('change', validateForm);
+
+  // ── Submit ──
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const text = resumeText.value.trim();
+    const role = targetRole.value;
+    if (text.length < 20 || !role) return;
+
+    // Show loading
+    analyzeBtn.disabled = true;
+    analyzeBtn.querySelector('.btn-text').textContent = 'Analyzing…';
+    analyzeBtn.querySelector('.btn-spinner').classList.remove('hidden');
+    errorCard.classList.add('hidden');
+
+    try {
+      const res = await fetch('/api/skills-gap/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+        body: JSON.stringify({ resume_text: text, target_role: role }),
+      });
+      const data = await res.json();
+
+      if (data.success && data.analysis) {
+        renderResults(data.analysis);
+      } else {
+        showError(data.error || 'Unknown error occurred');
+      }
+    } catch (err) {
+      showError('Network error — please try again.');
+    } finally {
+      analyzeBtn.disabled = false;
+      analyzeBtn.querySelector('.btn-text').textContent = 'Analyze skills gap';
+      analyzeBtn.querySelector('.btn-spinner').classList.add('hidden');
+    }
+  });
+
+  // ── Render results (SAHAY_AI-style) ──
+  function renderResults(analysis) {
+    // Stats cards
+    statMatched.textContent = analysis.matched_count || 0;
+    statMissing.textContent = analysis.missing_count || 0;
+    statTotal.textContent = analysis.total_required || 0;
+    const pct = analysis.match_percentage || 0;
+    statPercentage.textContent = pct + '%';
+
+    // Progress bar
+    progressFill.style.width = pct + '%';
+    matchLabel.textContent = pct + '%';
+    if (pct >= 70) {
+      progressFill.style.background = 'var(--success)';
+      matchHint.textContent = 'Strong match! You have most of the required skills.';
+    } else if (pct >= 40) {
+      progressFill.style.background = 'var(--warning)';
+      matchHint.textContent = 'Moderate match — focus on closing the gaps below.';
+    } else {
+      progressFill.style.background = 'var(--error)';
+      matchHint.textContent = 'Low match — consider developing the missing skills listed below.';
+    }
+
+    // Role name
+    roleName.textContent = analysis.target_role || '';
+    roleNameMissing.textContent = analysis.target_role || '';
+
+    // Matched skills (green badges)
+    if (analysis.matched_skills && analysis.matched_skills.length > 0) {
+      matchedSkills.innerHTML = analysis.matched_skills.map(function(s) {
+        return '<span class="skill-badge skill-badge--matched">' + escapeHtml(s) + '</span>';
+      }).join('');
+    } else {
+      matchedSkills.innerHTML = '<div class="skills-placeholder">No matched skills found.</div>';
+    }
+
+    // Missing skills (warning badges)
+    if (analysis.missing_skills && analysis.missing_skills.length > 0) {
+      missingSkills.innerHTML = analysis.missing_skills.map(function(s) {
+        return '<span class="skill-badge skill-badge--missing">' + escapeHtml(s) + '</span>';
+      }).join('');
+    } else {
+      missingSkills.innerHTML = '<div class="skills-placeholder" style="color: var(--success);">✅ All required skills matched! Great fit for this role.</div>';
+    }
+
+    // Recommendations
+    if (analysis.recommendations && analysis.recommendations.length > 0) {
+      recommendationsCard.classList.remove('hidden');
+      recommendationsList.innerHTML = analysis.recommendations.map(function(rec) {
+        var priorityColor = rec.priority === 'High' ? 'var(--error)' : rec.priority === 'Medium' ? 'var(--warning)' : 'var(--success)';
+        var resources = Array.isArray(rec.resources) ? rec.resources.map(function(r) {
+          return '<li>' + escapeHtml(r) + '</li>';
+        }).join('') : '<li>Research and practice ' + escapeHtml(rec.skill) + '</li>';
+        return (
+          '<div class="recommendation-item" style="--priority-color: ' + priorityColor + ';">' +
+            '<div class="recommendation-item__header">' +
+              '<span class="recommendation-item__skill">' + escapeHtml(rec.skill) + '</span>' +
+              '<span class="recommendation-item__priority" style="color: ' + priorityColor + ';">' + escapeHtml(rec.priority || 'Medium') + '</span>' +
+            '</div>' +
+            '<ul class="recommendation-item__resources">' + resources + '</ul>' +
+          '</div>'
+        );
+      }).join('');
+    } else {
+      recommendationsCard.classList.add('hidden');
+    }
+
+    // Show results, scroll to them
+    resultsSection.classList.remove('hidden');
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showError(msg) {
+    errorCard.classList.remove('hidden');
+    errorMsg.textContent = msg;
+    errorCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ── Dismiss error ──
+  document.querySelector('[data-dismiss-error]').addEventListener('click', function() {
+    errorCard.classList.add('hidden');
+  });
+
+  // ── Clear / retry ──
+  resetBtn.addEventListener('click', function() {
+    resultsSection.classList.add('hidden');
+    errorCard.classList.add('hidden');
+    resumeText.value = '';
+    targetRole.value = '';
+    charCount.textContent = '0 characters — minimum 20';
+    charCount.style.color = '';
+    validateForm();
+    inputSection.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  if (retryBtn) {
+    retryBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      resultsSection.classList.add('hidden');
+      errorCard.classList.add('hidden');
+      inputSection.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
+  // ── Init ──
+  loadRoles();
+})();
+</script>
+{% endblock %}

@@ -2,22 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Prayash">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Prayash">
+  <meta name="msapplication-TileColor" content="#4c1d95">
+  <meta name="msapplication-TileImage" content="/static/icons/icon-144x144.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+  <!-- Favicon -->
+  <!-- Favicon: multiple formats for broad browser support -->
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/icon.svg') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/icon-72x72.png') }}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+  <link rel="mask-icon" href="{{ url_for('static', filename='icons/icon.svg') }}" color="#4c1d95">
   <title>{{ title or site_name }}</title>
   <meta name="description" content="Prayash: Learning for better future career intelligence platform.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/motion@12.23.12/dist/motion.js"></script>
-  <script type="importmap">
-    {
-      "imports": {
-        "motion": "/static/vendor/motion.mjs",
-        "@formkit/auto-animate": "/static/vendor/auto-animate.mjs"
-      }
-    }
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v=static_version) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='auth-assistant.css', v=static_version) }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <!-- Prevent flash of wrong theme on load -->
+  <script nonce="{{ csp_nonce }}">
+    (function() {
+      var m = localStorage.getItem('prayash-theme-mode');
+      var dark = false;
+      if (m === 'dark') { dark = true; }
+      else if (!m || m === 'auto') { dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; }
+      if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    })();
   </script>
 </head>
 <body>
@@ -29,7 +50,14 @@
           <span class="brand__tagline">Learning for better future</span>
         </a>
 
-        <nav class="nav-links" aria-label="Primary">
+        <!-- Mobile hamburger menu -->
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation" aria-expanded="false" data-mobile-menu>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+
+        <nav class="nav-links" aria-label="Primary" data-nav-links>
           <a class="nav-link {% if active_page == 'home' %}is-active{% endif %}" href="{{ url_for('index') }}">Home</a>
           <a class="nav-link" href="{{ url_for('index') }}#start-here">Start Here</a>
           <a class="nav-link" href="{{ url_for('index') }}#resource-hub">Resources</a>
@@ -48,12 +76,24 @@
           {% endif %}
           {% if is_authenticated %}
           <form method="post" action="{{ url_for('logout') }}" style="display: inline; margin: 0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="nav-link" style="background: transparent; border: 0; padding: 0.65rem 0.15rem;">Logout</button>
           </form>
           {% endif %}
+          <div class="nav-theme-controls">
+            <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+              <span class="theme-toggle-icon" data-icon="auto" aria-hidden="true">🌓</span>
+              <span class="theme-toggle-icon" data-icon="light" aria-hidden="true">☀️</span>
+              <span class="theme-toggle-icon" data-icon="dark" aria-hidden="true">🌙</span>
+            </button>
+            <span class="theme-mode-label" data-theme-mode-label>Auto</span>
+          </div>
         </nav>
       </div>
     </header>
+
+    <!-- Mobile nav backdrop -->
+    <div class="nav-backdrop" data-nav-backdrop></div>
 
     <main>
       {% block content %}{% endblock %}
@@ -83,9 +123,32 @@
     </footer>
   </div>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-  <script>if (window.lucide) window.lucide.createIcons();</script>
-  <script type="module" src="{{ url_for('static', filename='js/ui-init.js') }}"></script>
+  <!-- Toast Notifications -->
+  <div class="toast-container" data-toast-container role="status" aria-live="polite"></div>
+
+  <!-- Keyboard Shortcuts Panel -->
+  <div class="shortcuts-panel" data-shortcuts-panel role="dialog" aria-label="Keyboard shortcuts"></div>
+
+  <!-- Service Worker Update Banner -->
+  <div class="sw-update-banner hidden" data-sw-update>
+    <span>New version available</span>
+    <button class="button" data-sw-update-btn>Refresh</button>
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div class="pwa-install-banner hidden" data-pwa-install-banner>
+    <div class="pwa-install-banner__content">
+      <span class="pwa-install-banner__icon">📱</span>
+      <div>
+        <strong>Install Prayash</strong>
+        <p>Add to your home screen for the best experience</p>
+      </div>
+      <button class="button" data-pwa-install-button>Install</button>
+      <button class="button-ghost" data-pwa-dismiss>✕</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js', v=static_version) }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

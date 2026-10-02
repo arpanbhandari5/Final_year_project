@@ -5,18 +5,29 @@
   <div class="container page-hero__grid">
     <div>
       <span class="eyebrow">Workspace</span>
-      <h1>Your authenticated Prayash workspace.</h1>
-      <p class="lead">You are signed in. Continue your analysis from the landing page or review admin analytics if your email has admin access.</p>
-      <div class="actions" style="margin-top: 1.5rem;">
-        <a class="button" href="{{ url_for('index') }}#analysis">Go to analysis</a>
+      <h1>Welcome back, {{ current_user.email }}.</h1>
+      <p class="lead">Your authenticated Prayash workspace. Run analyses, review past results, or dive into insights.</p>
+      <div class="actions workspace-actions">
+        <a class="button" href="{{ url_for('index') }}#analysis">Run new analysis</a>
         <a class="button-outline" href="{{ url_for('insights') }}">View insights</a>
+        <a class="button-ghost" href="{{ url_for('methodology') }}">Methodology</a>
       </div>
     </div>
     <div class="glass-card">
       <h2 class="section-title">Session status</h2>
-      <div class="compact-list" style="margin-top: 1rem;">
-        <div class="list-card"><div><strong>Auth state</strong><p>Logged in and persisted with Flask-Login.</p></div><span class="status-pill">Active</span></div>
-        <div class="list-card"><div><strong>User</strong><p>{{ current_user.email }}</p></div><span class="status-pill is-warm">Signed in</span></div>
+      <div class="compact-list workspace-status-list">
+        <div class="list-card">
+          <div><strong>Auth state</strong><p>Logged in and persisted with Flask-Login.</p></div>
+          <span class="status-pill">Active</span>
+        </div>
+        <div class="list-card">
+          <div><strong>User</strong><p>{{ current_user.email }}</p></div>
+          <span class="status-pill is-warm">Signed in</span>
+        </div>
+        <div class="list-card">
+          <div><strong>Theme</strong><p>Switch between light, dark, or auto mode using the toggle in the navbar.</p></div>
+          <span class="status-pill">Customisable</span>
+        </div>
       </div>
     </div>
   </div>
@@ -24,325 +35,122 @@
 
 <section class="content-section">
   <div class="container">
-    <div class="section-card">
-      <div class="inline-actions" style="justify-content: space-between; align-items: flex-start; gap: 1rem;">
-        <div>
-          <span class="eyebrow">Career direction</span>
-          <h2 class="section-title" style="margin-top: .8rem;">Set your intent and target role</h2>
-          <p class="section-subtitle">This profile anchors future evidence, skill-gap, and learning recommendations.</p>
-        </div>
-        <span class="status-pill">User-provided</span>
+    <div class="workspace-dashboard-grid">
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">📄</div>
+        <h3 class="section-title">Analyze a resume</h3>
+        <p class="section-subtitle">Upload or paste your resume for automation risk scoring, role matching, and a personalised learning roadmap.</p>
+        <a class="button-secondary" href="{{ url_for('index') }}#analysis">Go to analysis</a>
       </div>
-      <form class="discovery-form" data-career-profile-form>
-        <div class="field">
-          <label for="career-intent">Intent</label>
-          <select id="career-intent" name="intent" required>
-            {% for option in ["Explore career options", "Find a role", "Change careers", "Grow in my current field"] %}
-            <option value="{{ option }}" {% if career_profile and career_profile.intent == option %}selected{% endif %}>{{ option }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="field">
-          <label for="target-role">Target role</label>
-          <input id="target-role" name="target_role" maxlength="160" required value="{{ career_profile.target_role if career_profile else '' }}" placeholder="Example: Data Analyst">
-        </div>
-        <div class="inline-actions" style="justify-content: space-between; align-items: center;">
-          <span class="small-note" data-career-profile-status aria-live="polite">{% if career_profile %}Last saved as self-reported{% else %}Not saved yet{% endif %}</span>
-          <button class="button" type="submit"><i data-lucide="save"></i> Save direction</button>
-        </div>
-      </form>
-      <div class="inline-actions" style="justify-content: space-between; align-items: center; margin-top: 1.25rem;">
-        <span class="small-note">Review extracted skills and correct evidence before using recommendations.</span>
-        <button class="button-outline" type="button" data-evidence-open>
-          <i data-lucide="file-text" aria-hidden="true"></i> Open evidence profile
-        </button>
+
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">📊</div>
+        <h3 class="section-title">Review methodology</h3>
+        <p class="section-subtitle">Understand how the ML pipeline works — TF-IDF vectorization, Ridge regression, O*NET matching, and RIASEC profiling.</p>
+        <a class="button-outline" href="{{ url_for('methodology') }}">Open methodology</a>
+      </div>
+
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">🛡️</div>
+        <h3 class="section-title">Privacy & data</h3>
+        <p class="section-subtitle">Resume data stays ephemeral — processed in memory and discarded after each analysis. No permanent storage of your personal data.</p>
+        <a class="button-outline" href="{{ url_for('privacy') }}">Privacy details</a>
+      </div>
+
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">🎯</div>
+        <h3 class="section-title">Skills gap analysis</h3>
+        <p class="section-subtitle">Compare your resume skills against 20+ career roles. Get a match score, missing skills, and a personalised learning action plan.</p>
+        <a class="button-outline" href="{{ url_for('skills_gap') }}">Analyze skills gap</a>
+      </div>
+
+      <div class="workspace-card glass-card">
+        <div class="workspace-card__icon">🔑</div>
+        <h3 class="section-title">Quick tips</h3>
+        <p class="section-subtitle">Press <kbd>?</kbd> for keyboard shortcuts, <kbd>E</kbd> to focus the text area, <kbd>R</kbd> to run analysis, and <kbd>Esc</kbd> to close modals.</p>
       </div>
     </div>
   </div>
 </section>
 
-<div class="evidence-backdrop hidden" data-evidence-backdrop aria-hidden="true"></div>
-<aside class="evidence-drawer" data-evidence-drawer aria-hidden="true" aria-labelledby="evidence-title">
-  <div class="evidence-drawer__header">
-    <div>
-      <span class="eyebrow">Evidence Profile</span>
-      <h2 class="section-title" id="evidence-title">Review your skill evidence</h2>
-    </div>
-    <button class="icon-button" type="button" data-evidence-close aria-label="Close evidence profile" title="Close evidence profile">
-      <i data-lucide="x" aria-hidden="true"></i>
-    </button>
-  </div>
-  <div class="evidence-status" data-evidence-status aria-live="polite">
-    <i data-lucide="check-circle" aria-hidden="true"></i>
-    <span>Owner-only profile</span>
-  </div>
-  <form class="evidence-goal-form" data-evidence-goal-form>
-    <div class="field">
-      <label for="goal-target-role">Target role</label>
-      <input id="goal-target-role" name="target_role" required placeholder="Example: Data Analyst">
-    </div>
-    <div class="field">
-      <label for="goal-alternative-roles">Alternative roles</label>
-      <input id="goal-alternative-roles" name="alternative_roles" placeholder="BI Analyst, Product Analyst">
-    </div>
-    <div class="inline-actions">
-      <div class="field evidence-field"><label for="goal-geography">Geography</label><input id="goal-geography" name="geography" placeholder="Remote or city"></div>
-      <div class="field evidence-field"><label for="goal-seniority">Seniority</label><input id="goal-seniority" name="seniority" placeholder="Entry level"></div>
-    </div>
-    <button class="button-secondary" type="submit"><i data-lucide="target" aria-hidden="true"></i> Save career goal</button>
-  </form>
-  <div class="evidence-drawer__section">
-    <div class="inline-actions" style="justify-content: space-between; align-items: center;">
-      <div><h3 class="section-title">Extracted skills</h3><p class="small-note">Add, edit, or remove a mention to keep your profile truthful.</p></div>
-      <span class="status-pill" data-evidence-confidence>Confidence 0%</span>
-    </div>
-    <div class="evidence-skill-list" data-evidence-skill-list data-auto-animate></div>
-    <form class="inline-actions evidence-add-form" data-evidence-add-form>
-      <label class="sr-only" for="evidence-new-skill">Add skill mention</label>
-      <input id="evidence-new-skill" name="skill" placeholder="Add a skill mention">
-      <button class="icon-button" type="submit" aria-label="Add skill mention" title="Add skill mention"><i data-lucide="plus" aria-hidden="true"></i></button>
-    </form>
-  </div>
-</aside>
-
-<section class="content-section" id="application-tracker">
+<section class="content-section">
   <div class="container">
-    <div class="section-card">
-      <div class="inline-actions" style="justify-content: space-between; align-items: flex-start; gap: 1rem;">
+    <div class="glass-card workspace-feedback-card">
+      <div class="inline-actions" style="justify-content: space-between;">
         <div>
-          <span class="eyebrow">Application workflow</span>
-          <h2 class="section-title">Capture jobs and track your next action</h2>
-          <p class="section-subtitle">Paste a job description or save its URL manually. Prayash never scrapes or submits applications.</p>
+          <h3 class="section-title">Have feedback?</h3>
+          <p class="section-subtitle" style="margin-top: 0.4rem;">Your input helps improve the platform. Share your thoughts with the team.</p>
         </div>
-        <span class="status-pill"><i data-lucide="briefcase" aria-hidden="true"></i> Manual capture</span>
+        <a class="button-ghost" href="{{ url_for('index') }}#analysis" data-export-button>Send feedback</a>
       </div>
-      <div class="workflow-grid">
-        <form class="workflow-form" data-job-capture-form>
-          <h3 class="section-title">Manual Job Capture</h3>
-          <div class="field"><label for="job-title">Job title</label><input id="job-title" name="title" required placeholder="Data Analyst"></div>
-          <div class="field"><label for="job-company">Company</label><input id="job-company" name="company" placeholder="Company name"></div>
-          <div class="field"><label for="job-url">Source URL</label><input id="job-url" name="source_url" type="url" placeholder="https://example.com/job"></div>
-          <div class="field"><label for="job-description">JD paste</label><textarea id="job-description" name="description_raw" required placeholder="Paste the full job description here."></textarea></div>
-          <button class="button-secondary" type="submit"><i data-lucide="briefcase" aria-hidden="true"></i> Save job</button>
-        </form>
-        <form class="workflow-form" data-resume-version-form>
-          <h3 class="section-title">Resume Version</h3>
-          <div class="field"><label for="resume-version-name">Version name</label><input id="resume-version-name" name="name" required placeholder="Analytics resume - April"></div>
-          <div class="field"><label for="resume-version-content">Resume text</label><textarea id="resume-version-content" name="content_text" required placeholder="Paste the resume version used for comparisons."></textarea></div>
-          <button class="button-outline" type="submit"><i data-lucide="file-text" aria-hidden="true"></i> Save resume version</button>
-        </form>
-      </div>
-      <div class="workflow-analysis" data-workflow-analysis>
-        <div class="inline-actions" style="justify-content: space-between; align-items: center;">
-          <div><h3 class="section-title">Compare resume to a saved job</h3><p class="small-note">Required and preferred skills are evidence signals, not hiring predictions.</p></div>
-          <span class="status-pill" data-analysis-status>Awaiting selection</span>
-        </div>
-        <div class="inline-actions workflow-selects">
-          <div class="field"><label for="analysis-job">Saved job</label><select id="analysis-job" data-analysis-job><option value="">Select a job</option></select></div>
-          <div class="field"><label for="analysis-resume">Resume version</label><select id="analysis-resume" data-analysis-resume><option value="">Select a resume</option></select></div>
-          <button class="button" type="button" data-run-job-analysis><i data-lucide="check-circle" aria-hidden="true"></i> Analyze match</button>
-        </div>
-        <div class="analysis-result" data-analysis-result aria-live="polite">Choose a saved job and resume version to see the comparison.</div>
-      </div>
-      <div class="tracker-header">
-        <div><h3 class="section-title">Application Tracker</h3><p class="small-note" data-tracker-status>Loading applications...</p></div>
-        <div class="segmented-control" role="tablist" aria-label="Application view"><button type="button" class="is-active" data-tracker-view="table">Table</button><button type="button" data-tracker-view="kanban">Kanban</button></div>
-      </div>
-      <div class="application-table" data-application-table></div>
-      <div class="application-kanban hidden" data-application-kanban></div>
     </div>
   </div>
 </section>
-{% endblock %}
+<!-- ═══ Career Chat Widget (SAHAY_AI-inspired AI advisor) ═══ -->
+<div id="career-chat" class="career-chat" data-career-chat>
+  <!-- Toggle Button -->
+  <button id="career-chat-toggle" class="career-chat-toggle" aria-label="Open career assistant" title="Ask about your career">
+    <span class="career-chat-toggle__icon" aria-hidden="true">💼</span>
+  </button>
 
-{% block scripts %}
-<script>
-  const profileForm = document.querySelector('[data-career-profile-form]');
-  const profileStatus = document.querySelector('[data-career-profile-status]');
-  if (profileForm) {
-    profileForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const response = await fetch('{{ url_for("api_save_career_profile") }}', {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          intent: profileForm.elements.intent.value,
-          target_role: profileForm.elements.target_role.value,
-        }),
-      });
-      const payload = await response.json();
-      profileStatus.textContent = payload.success ? 'Saved as self-reported' : (payload.error || 'Could not save');
-    });
-  }
-</script>
-<script>
-  const animate = (target, keyframes, options) => window.Motion?.animate ? window.Motion.animate(target, keyframes, options) : target.animate(keyframes, options);
-  let autoAnimate = window.autoAnimate;
-  const openButton = document.querySelector('[data-evidence-open]');
-  const closeButton = document.querySelector('[data-evidence-close]');
-  const drawer = document.querySelector('[data-evidence-drawer]');
-  const backdrop = document.querySelector('[data-evidence-backdrop]');
-  const skillList = document.querySelector('[data-evidence-skill-list]');
-  const status = document.querySelector('[data-evidence-status] span');
-  const confidence = document.querySelector('[data-evidence-confidence]');
-  const goalForm = document.querySelector('[data-evidence-goal-form]');
-  const addForm = document.querySelector('[data-evidence-add-form]');
-  let evidenceProfile = { extracted_skills: [], confidence: 0 };
+  <!-- Chat Panel -->
+  <div id="career-chat-panel" class="career-chat-panel" role="dialog" aria-label="Career assistant chat">
+    <!-- Header -->
+    <div class="career-chat__header">
+      <div class="career-chat__avatar" aria-hidden="true">🤖</div>
+      <div class="career-chat__header-info">
+        <span class="career-chat__header-name">Career Advisor</span>
+        <span class="career-chat__header-status">
+          <span class="chat-status-dot" aria-hidden="true"></span>
+          <span data-chat-status-text>Ready to help</span>
+        </span>
+      </div>
+      <button class="career-chat__minimize" data-chat-minimize aria-label="Minimize chat" title="Minimize">_</button>
+    </div>
 
-  if (skillList) {
-    if (autoAnimate) {
-      autoAnimate(skillList);
-      skillList.dataset.autoAnimate = 'ready';
-    } else {
-      import('{{ url_for("static", filename="vendor/auto-animate.mjs") }}').then((module) => {
-        autoAnimate = module.autoAnimate;
-        autoAnimate(skillList);
-        skillList.dataset.autoAnimate = 'ready';
-      }).catch(() => undefined);
-    }
-  }
+    <!-- Messages -->
+    <div id="career-chat-messages" class="career-chat__messages" role="log" aria-live="polite">
+      <div class="chat-message is-assistant">
+        <div class="chat-message__avatar" aria-hidden="true">🤖</div>
+        <div class="chat-message__bubble">
+          👋 Hi! I'm your AI Career Advisor. I can help with:
+          <br><br>
+          • Skill development & learning recommendations<br>
+          • Job search strategies & career advice<br>
+          • Resume improvement tips<br>
+          • Interview preparation<br>
+          • Salary & compensation questions<br><br>
+          What would you like to know?
+          <div class="chat-quick-actions">
+            <button class="chat-quick-action" data-chat-quick="What skills should I learn?">💡 Skills</button>
+            <button class="chat-quick-action" data-chat-quick="How can I improve my resume?">📄 Resume</button>
+            <button class="chat-quick-action" data-chat-quick="Tips for job interviews?">🎯 Interviews</button>
+            <button class="chat-quick-action" data-chat-quick="Help me plan my career path">🗺️ Career</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  const setDrawerState = (open) => {
-    if (!drawer || !backdrop) return;
-    drawer.setAttribute('aria-hidden', String(!open));
-    backdrop.setAttribute('aria-hidden', String(!open));
-    backdrop.classList.toggle('hidden', !open);
-    if (open) {
-      animate(backdrop, { opacity: [0, 1] }, { duration: 0.2 });
-      animate(drawer, { transform: ['translateX(100%)', 'translateX(0%)'] }, { duration: 0.28, easing: 'ease-out' });
-    } else {
-      animate(backdrop, { opacity: [1, 0] }, { duration: 0.16 });
-      animate(drawer, { transform: ['translateX(0%)', 'translateX(100%)'] }, { duration: 0.2, easing: 'ease-in' });
-    }
-  };
+    <!-- Input -->
+    <div class="career-chat__input-area">
+      <input
+        id="career-chat-input"
+        class="career-chat__input"
+        type="text"
+        placeholder="Ask about your career..."
+        autocomplete="off"
+        aria-label="Type your career question"
+      >
+      <button id="career-chat-send" class="career-chat__send" aria-label="Send message" title="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
 
-  const renderSkills = () => {
-    if (!skillList) return;
-    skillList.replaceChildren(...(evidenceProfile.extracted_skills || []).map((item) => {
-      const row = document.createElement('div');
-      row.className = 'evidence-skill-row';
-      const text = document.createElement('span');
-      text.textContent = `${item.skill} (${Math.round((item.confidence || 0) * 100)}%)`;
-      const edit = document.createElement('button');
-      edit.className = 'icon-button';
-      edit.type = 'button';
-      edit.title = `Edit ${item.skill}`;
-      edit.setAttribute('aria-label', `Edit ${item.skill}`);
-      const editIcon = document.createElement('i');
-      editIcon.dataset.lucide = 'file-text';
-      editIcon.setAttribute('aria-hidden', 'true');
-      edit.append(editIcon);
-      edit.addEventListener('click', async () => {
-        const replacement = window.prompt('Edit skill mention', item.skill);
-        if (!replacement || replacement === item.skill) return;
-        await correctSkill({ action: 'edit', skill_id: item.id, skill: replacement });
-      });
-      const remove = document.createElement('button');
-      remove.className = 'icon-button is-danger';
-      remove.type = 'button';
-      remove.title = `Remove ${item.skill}`;
-      remove.setAttribute('aria-label', `Remove ${item.skill}`);
-      const removeIcon = document.createElement('i');
-      removeIcon.dataset.lucide = 'trash-2';
-      removeIcon.setAttribute('aria-hidden', 'true');
-      remove.append(removeIcon);
-      remove.addEventListener('click', () => correctSkill({ action: 'delete', skill_id: item.id }));
-      row.append(text, edit, remove);
-      return row;
-    }));
-    if (window.lucide) window.lucide.createIcons();
-    if (confidence) confidence.textContent = `Confidence ${Math.round((evidenceProfile.confidence || 0) * 100)}%`;
-  };
+<link rel="stylesheet" href="{{ url_for('static', filename='career-chat.css', v=static_version) }}">
 
-  const loadEvidence = async () => {
-    const [goalResponse, evidenceResponse] = await Promise.all([fetch('{{ url_for("api_get_career_goal") }}'), fetch('{{ url_for("api_get_evidence_profile") }}')]);
-    const goalPayload = await goalResponse.json();
-    const evidencePayload = await evidenceResponse.json();
-    if (goalPayload.goal && goalForm) {
-      goalForm.elements.target_role.value = goalPayload.goal.target_role || '';
-      goalForm.elements.alternative_roles.value = (goalPayload.goal.alternative_roles || []).join(', ');
-      goalForm.elements.geography.value = goalPayload.goal.geography || '';
-      goalForm.elements.seniority.value = goalPayload.goal.seniority || '';
-    }
-    evidenceProfile = evidencePayload.profile || evidenceProfile;
-    renderSkills();
-  };
-
-  const correctSkill = async (body) => {
-    const response = await fetch('{{ url_for("api_correct_evidence_profile") }}', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    const payload = await response.json();
-    if (!response.ok) { if (status) status.textContent = payload.error || 'Could not update evidence'; return; }
-    evidenceProfile = payload.profile;
-    if (status) status.textContent = 'Evidence profile saved';
-    renderSkills();
-  };
-
-  openButton?.addEventListener('click', async () => { setDrawerState(true); await loadEvidence(); });
-  closeButton?.addEventListener('click', () => setDrawerState(false));
-  backdrop?.addEventListener('click', () => setDrawerState(false));
-  goalForm?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const response = await fetch('{{ url_for("api_save_career_goal") }}', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-      target_role: goalForm.elements.target_role.value,
-      alternative_roles: goalForm.elements.alternative_roles.value,
-      geography: goalForm.elements.geography.value,
-      seniority: goalForm.elements.seniority.value,
-    }) });
-    const payload = await response.json();
-    if (status) status.textContent = payload.success ? 'Career goal saved' : (payload.error || 'Could not save career goal');
-  });
-  addForm?.addEventListener('submit', async (event) => { event.preventDefault(); const skill = addForm.elements.skill.value.trim(); if (!skill) return; await correctSkill({ action: 'add', skill }); addForm.reset(); });
-</script>
-<script>
-  const jobCaptureForm = document.querySelector('[data-job-capture-form]');
-  const resumeVersionForm = document.querySelector('[data-resume-version-form]');
-  const applicationTable = document.querySelector('[data-application-table]');
-  const applicationKanban = document.querySelector('[data-application-kanban]');
-  const trackerStatus = document.querySelector('[data-tracker-status]');
-  const analysisJob = document.querySelector('[data-analysis-job]');
-  const analysisResume = document.querySelector('[data-analysis-resume]');
-  const analysisResult = document.querySelector('[data-analysis-result]');
-  const analysisStatus = document.querySelector('[data-analysis-status]');
-  let trackerApplications = [];
-  let trackerJobs = [];
-  let trackerResumes = [];
-  const applicationStatuses = ['Bookmarked', 'Applying', 'Applied', 'Interviewing', 'Accepted', 'Rejected'];
-  const trackerMake = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
-  const trackerReplace = (container, nodes) => container?.replaceChildren(...nodes);
-  const trackerIcon = (name) => { const icon = document.createElement('i'); icon.dataset.lucide = name; icon.setAttribute('aria-hidden', 'true'); return icon; };
-  const trackerAnimateColumn = (column) => {
-    if (!column) return;
-    if (window.autoAnimate) { window.autoAnimate(column); column.dataset.autoAnimate = 'ready'; }
-    else import('{{ url_for("static", filename="vendor/auto-animate.mjs") }}').then((module) => { module.autoAnimate(column); column.dataset.autoAnimate = 'ready'; }).catch(() => undefined);
-  };
-  const renderTracker = () => {
-    const makeCard = (item) => {
-      const card = trackerMake('article', 'application-card'); card.draggable = true; card.dataset.applicationId = item.id;
-      const heading = trackerMake('div', 'application-card__heading'); heading.append(trackerIcon('briefcase'), trackerMake('strong', null, item.job?.title || 'Untitled role'), trackerMake('span', 'status-pill', item.status));
-      const company = trackerMake('p', 'small-note', item.job?.company || 'Company not provided');
-      const actions = trackerMake('div', 'application-card__actions');
-      const statusSelect = document.createElement('select'); statusSelect.setAttribute('aria-label', `Status for ${item.job?.title || 'application'}`); applicationStatuses.forEach((statusValue) => { const option = trackerMake('option', null, statusValue); option.value = statusValue; option.selected = item.status === statusValue; statusSelect.append(option); });
-      statusSelect.addEventListener('change', () => updateApplication(item.id, { status: statusSelect.value }));
-      actions.append(statusSelect);
-      if (item.job?.source_url) { const link = trackerMake('a', 'icon-button', ''); link.href = item.job.source_url; link.target = '_blank'; link.rel = 'noreferrer'; link.title = 'Open source job'; link.setAttribute('aria-label', 'Open source job'); link.replaceChildren(trackerIcon('external-link')); actions.append(link); }
-      const exportButton = trackerMake('button', 'icon-button', ''); exportButton.type = 'button'; exportButton.title = 'Export PDF and mark applied'; exportButton.setAttribute('aria-label', 'Export PDF and mark applied'); exportButton.append(trackerIcon('clock')); exportButton.addEventListener('click', () => exportAndApply(item)); actions.append(exportButton);
-      card.append(heading, company, actions);
-      card.addEventListener('dragstart', (event) => { event.dataTransfer.setData('text/plain', String(item.id)); });
-      return card;
-    };
-    const tableRows = trackerApplications.map((item) => { const row = trackerMake('div', 'application-row'); row.append(trackerMake('strong', null, item.job?.title || 'Untitled role'), trackerMake('span', null, item.job?.company || 'Company not provided'), trackerMake('span', 'status-pill', item.status), trackerMake('span', 'small-note', item.follow_up_date ? `Follow up ${item.follow_up_date}` : 'No follow-up date')); return row; });
-    trackerReplace(applicationTable, tableRows.length ? tableRows : [trackerMake('p', 'small-note', 'Capture a job to start tracking applications.')]);
-    const columns = applicationStatuses.map((statusValue) => { const column = trackerMake('section', 'kanban-column'); const heading = trackerMake('div', 'kanban-column__heading'); heading.append(trackerMake('strong', null, statusValue), trackerMake('span', 'status-pill', trackerApplications.filter((item) => item.status === statusValue).length)); const list = trackerMake('div', 'kanban-column__list'); list.dataset.kanbanStatus = statusValue; list.dataset.autoAnimate = 'true'; trackerApplications.filter((item) => item.status === statusValue).forEach((item) => list.append(makeCard(item))); list.addEventListener('dragover', (event) => event.preventDefault()); list.addEventListener('drop', (event) => { event.preventDefault(); const id = Number(event.dataTransfer.getData('text/plain')); updateApplication(id, { status: statusValue }); }); column.append(heading, list); trackerAnimateColumn(list); return column; });
-    trackerReplace(applicationKanban, columns); if (window.lucide) window.lucide.createIcons();
-    if (trackerStatus) trackerStatus.textContent = `${trackerApplications.length} application${trackerApplications.length === 1 ? '' : 's'} tracked`;
-  };
-  const loadTracker = async () => { const [jobsResponse, applicationsResponse, resumesResponse] = await Promise.all([fetch('{{ url_for("api_list_jobs") }}'), fetch('{{ url_for("api_list_applications") }}'), fetch('{{ url_for("api_list_resume_versions") }}')]); trackerJobs = (await jobsResponse.json()).jobs || []; trackerApplications = (await applicationsResponse.json()).applications || []; trackerResumes = (await resumesResponse.json()).resume_versions || []; if (analysisJob) { analysisJob.replaceChildren(trackerMake('option', null, 'Select a job')); trackerJobs.forEach((job) => { const option = trackerMake('option', null, `${job.title} · ${job.company || 'Unknown company'}`); option.value = job.id; analysisJob.append(option); }); } if (analysisResume) { analysisResume.replaceChildren(trackerMake('option', null, 'Select a resume')); trackerResumes.forEach((resume) => { const option = trackerMake('option', null, resume.name); option.value = resume.id; analysisResume.append(option); }); } renderTracker(); };
-  const updateApplication = async (id, body) => { const response = await fetch(`/api/applications/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); if (response.ok) { await loadTracker(); } };
-  const exportAndApply = async (item) => { if (!item.analysis_snapshot_id) { if (trackerStatus) trackerStatus.textContent = 'Analyze this job before exporting and marking applied.'; return; } const response = await fetch(`/api/applications/${item.id}/export-apply`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ analysis_snapshot_id: item.analysis_snapshot_id }) }); if (response.ok) await loadTracker(); };
-  jobCaptureForm?.addEventListener('submit', async (event) => { event.preventDefault(); const data = Object.fromEntries(new FormData(jobCaptureForm)); const response = await fetch('{{ url_for("api_create_job") }}', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); if (response.ok) { jobCaptureForm.reset(); await loadTracker(); } });
-  resumeVersionForm?.addEventListener('submit', async (event) => { event.preventDefault(); const data = Object.fromEntries(new FormData(resumeVersionForm)); const response = await fetch('{{ url_for("api_create_resume_version") }}', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); if (response.ok) { resumeVersionForm.reset(); await loadTracker(); } });
-  document.querySelector('[data-run-job-analysis]')?.addEventListener('click', async () => { if (!analysisJob.value || !analysisResume.value) return; const response = await fetch('{{ url_for("api_analyze_job") }}', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_posting_id: analysisJob.value, resume_version_id: analysisResume.value }) }); const payload = await response.json(); if (!response.ok) { analysisResult.textContent = payload.error || 'Analysis failed'; return; } analysisStatus.textContent = `Snapshot ${payload.snapshot.snapshot_hash.slice(0, 12)}`; const required = payload.analysis.required; const preferred = payload.analysis.preferred; analysisResult.textContent = `Required matched ${required.matched.length}/${required.skills.length}; preferred matched ${preferred.matched.length}/${preferred.skills.length}; missing: ${payload.analysis.missing_skill_requirements.join(', ') || 'None identified'}. Evidence quotes: ${payload.analysis.resume_evidence_quotes.map((item) => item.quote).join(' | ') || 'None available'}`; await loadTracker(); });
-  document.querySelectorAll('[data-tracker-view]').forEach((button) => button.addEventListener('click', () => { const kanban = button.dataset.trackerView === 'kanban'; applicationTable?.classList.toggle('hidden', kanban); applicationKanban?.classList.toggle('hidden', !kanban); document.querySelectorAll('[data-tracker-view]').forEach((item) => item.classList.toggle('is-active', item === button)); }));
-  loadTracker();
-</script>
+<script src="{{ url_for('static', filename='career-chat.js', v=static_version) }}"></script>
 {% endblock %}

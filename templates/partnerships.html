@@ -24,15 +24,25 @@
     <article class="form-card">
       <h3 class="section-title">Start a pilot</h3>
       <p class="section-subtitle">Use Prayash with a cohort, a department, or a talent team.</p>
-      {% if status %}<p class="small-note" aria-live="polite">{{ status }}</p>{% endif %}
+
+      {% if submitted %}
+      <div class="result-banner" style="margin-top: 1rem;">
+        <h3 class="result-banner__title">Thank you!</h3>
+        <p class="result-banner__text">Your inquiry has been received. The Prayash team will follow up shortly.</p>
+      </div>
+      {% else %}
       <form method="post" class="field" style="margin-top: 1rem; gap: 1rem;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if error %}
+        <p class="small-note" style="color: var(--error);">{{ error }}</p>
+        {% endif %}
         <label>
           Organization
-          <input name="organization" type="text" placeholder="Organization name" required>
+          <input type="text" name="organization" placeholder="Organization name" required>
         </label>
         <label>
           Contact email
-          <input name="contact_email" type="email" placeholder="name@company.com" required>
+          <input type="email" name="contact_email" placeholder="name@company.com" required>
         </label>
         <label>
           Use case
@@ -40,6 +50,7 @@
         </label>
         <button class="button" type="submit">Request a walkthrough</button>
       </form>
+      {% endif %}
     </article>
     <article class="form-card">
       <h3 class="section-title">What partners get</h3>
