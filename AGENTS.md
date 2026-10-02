@@ -32,7 +32,7 @@
 
 - Dependencies live in `.venv`. The default image needs `python3-venv` before `python3 -m venv .venv`. Use `.venv/bin/python` and `.venv/bin/pytest`.
 - `ml_models/*.pkl` is gitignored. Generate missing `model.pkl` and `courses.pkl` with `.venv/bin/python train_model.py`. `python app.py` also calls `bootstrap.ensure_model_artifacts()`, which retrains when `ml_models/automation_model.pkl` is absent.
-- Dev server: `.venv/bin/python app.py` on `0.0.0.0:5000`. `GET /healthz` should report `"ml_pipeline": "ready"`.
+- Dev server: `.venv/bin/python app.py` on `0.0.0.0:5000`. Create `instance/` first (`mkdir -p instance`); SQLite does not create that parent directory. `GET /healthz` should report `"ml_pipeline": "ready"`.
 - Local defaults without `.env`: admin `admin@prayash.local` / `prayash-admin`. Ollama, OAuth, and SMTP are optional. With mail unset, OTP codes are printed in the server log.
 - Pytest is not in `requirements.txt`. Install `pytest>=9.0.3`. CI-equivalent command: `DATABASE_URL=sqlite:///test_ci.db MAIL_USERNAME= MAIL_PASSWORD= SMTP_USERNAME= SMTP_PASSWORD= FLASK_SECRET_KEY=ci-test-secret-key-do-not-use-in-production .venv/bin/pytest tests/ -q --tb=short`.
 - `npm test` is a stub. The UI is served from `templates/` and `static/` and does not need `npm install`.
