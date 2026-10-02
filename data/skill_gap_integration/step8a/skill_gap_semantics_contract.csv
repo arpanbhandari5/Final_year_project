@@ -1,0 +1,8 @@
+state,condition,user_facing_wording,interpretation,allowed_action
+MATCHING_EVIDENCE,Valid occupation relevance and unambiguous positive user evidence,Your CV mentions this occupation-relevant skill,Presence/usage evidence; proficiency unassessed,Show evidence and occupation rating
+NOT_OBSERVED,Valid occupation relevance and no matching CV evidence,This occupation-relevant skill was not found in your CV,Evidence gap; possession and proficiency unknown,Invite confirmation or learning-interest review
+AMBIGUOUS_EVIDENCE,User mention has uncertain context or target,Your CV evidence for this skill needs clarification,No definitive present/absent classification,Review candidate mappings and context
+MAPPING_UNCERTAIN,Alias or concept mapping unsupported,This term could not be mapped reliably,Unresolved comparison; not a skill deficit,Abstain with reason
+OCCUPATION_UNCERTAIN,MULTIPLE or INSUFFICIENT frozen state,These opportunities depend on your target occupation,Candidate-dependent or unavailable,Separate candidates or request clarification
+REQUIREMENTS_UNAVAILABLE,No valid requirement source or suppressed rating,Reliable occupation information is unavailable for this comparison,Missing evidence on requirement side,Exclude from ranking and report unavailable
+CONFIRMED_LEARNING_NEED,Future user confirmation and goal plus validated relevance,You identified this skill as a learning priority,User-confirmed goal; still no measured proficiency deficit,Future interpretable ordering only

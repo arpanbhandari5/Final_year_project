@@ -1,0 +1,9 @@
+stage,rule,auto_accept_condition,abstention,examples
+SAFE_PARSE,Parse list cells with safe literal/JSON parsing; retain source field and exact span,Complete term with user-side provenance,Malformed list; role or negative/aspirational context,Do not split C++ or titles destructively
+NORMALIZE,NFKC; BOM removal; casefold; whitespace/format punctuation normalization; preserve + # . - / & _,Unique canonical target and full term,Normalized collision or token boundary mismatch,C++; C#; .NET; Node.js remain distinct
+EXACT,Full official concept/product equality,Unique target with positive attributable user evidence,Multiple category targets,Python exact official product if unique
+ALIAS,"Versioned deterministic alias registry with human approval, source and rationale",Explicit APPROVED alias and valid taxonomy version,Current AUTO_EXACT/PENDING_REVIEW are not approval,Python programming/Python 3; React.js/ReactJS; MS Excel/Microsoft Excel require verified reviewed entries
+VERSION,Preserve raw product version and canonical parent link separately,Reviewed version-to-product relation,Version changes semantic target or unsupported link,Python 3 may map to parent only after documented policy
+FUZZY_EMBEDDING,Candidate retrieval only; never final mapping,NONE,Abstain pending human review; similarity is not confidence,Do not match broad SQL to every SQL product
+FREE_TEXT_CONTEXT,"Term boundaries plus section/span; detect negation, desire-to-learn, job quotations and role ambiguity",Positive explicit mention with matching evidence,Unknown context or implied title-derived skill,"Learning Python is aspiration, not demonstrated usage"
+PRECEDENCE,Exact unambiguous then approved alias; unresolved alternatives remain visible,No candidate override of an ambiguous exact match,Reason code and candidate list retained,No forced winner

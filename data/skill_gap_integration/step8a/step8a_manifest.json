@@ -1,0 +1,1064 @@
+{
+  "step": "8A",
+  "status": "READY_FOR_STEP_8B",
+  "head": "5f170071dd0d97ec1dbb55b07dbc8271f5fc4266",
+  "branch": "ml-pipeline-v2",
+  "input_inventory_rows": 91,
+  "protected_file_count": 205,
+  "protected_hash_result": "PASS_BYTE_IDENTICAL",
+  "protected_files": [
+    {
+      "path": ".gitignore",
+      "sha256_before": "510d5b8a2e09c369323e2d1d6ca471e9105b8bff99d0bfbf73a3040363b644df",
+      "sha256_after": "510d5b8a2e09c369323e2d1d6ca471e9105b8bff99d0bfbf73a3040363b644df"
+    },
+    {
+      "path": "app.py",
+      "sha256_before": "f619f5c4ee80feb9299e75aa184f90f7c6f984c51ac082e32e726956001aa578",
+      "sha256_after": "f619f5c4ee80feb9299e75aa184f90f7c6f984c51ac082e32e726956001aa578"
+    },
+    {
+      "path": "bootstrap.py",
+      "sha256_before": "460fde28cb7ed5513105f03376dae1b3998168cf7e299c0fd7d1cc4ac8bb7a57",
+      "sha256_after": "460fde28cb7ed5513105f03376dae1b3998168cf7e299c0fd7d1cc4ac8bb7a57"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a/exposure_coverage_summary.json",
+      "sha256_before": "9547942c7cb60361387f3cf8e4e883b044d7d14691befa4112b372d2fd3dbf45",
+      "sha256_after": "9547942c7cb60361387f3cf8e4e883b044d7d14691befa4112b372d2fd3dbf45"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a/missing_exposure_coverage_queue.csv",
+      "sha256_before": "2c33ee3f0c4ad96354ba60410901f17c56e60deb3961156d4dd3bc4d3bd6f0ae",
+      "sha256_after": "2c33ee3f0c4ad96354ba60410901f17c56e60deb3961156d4dd3bc4d3bd6f0ae"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a/profile_exposure_coverage_audit.csv",
+      "sha256_before": "2a9e8d611f953a9dc09134df5fd2d0a46e732bcb54f2252bb407baa69f66ec01",
+      "sha256_after": "2a9e8d611f953a9dc09134df5fd2d0a46e732bcb54f2252bb407baa69f66ec01"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a/soc_exposure_path_audit.csv",
+      "sha256_before": "8b97fa2766e764697314631a7144c489be8f8722d52c1bf3cdb3470ee6208938",
+      "sha256_after": "8b97fa2766e764697314631a7144c489be8f8722d52c1bf3cdb3470ee6208938"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a/unique_soc_exposure_coverage.csv",
+      "sha256_before": "923d16cadc058edf5db544cae544e1d4310d1f91f1c78712225cdc7227482fef",
+      "sha256_after": "923d16cadc058edf5db544cae544e1d4310d1f91f1c78712225cdc7227482fef"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a1/crosswalk_candidate_discovery_summary.json",
+      "sha256_before": "15053315019aa5a5a2bc35b4a05f19c7660955fc4485432a0a374c282c88a39c",
+      "sha256_after": "15053315019aa5a5a2bc35b4a05f19c7660955fc4485432a0a374c282c88a39c"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a1/high_impact_crosswalk_review.csv",
+      "sha256_before": "32c33754d4c1ed58e36bca65207463129abfdf618d864e4ae59dbd1f94d799e6",
+      "sha256_after": "32c33754d4c1ed58e36bca65207463129abfdf618d864e4ae59dbd1f94d799e6"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a1/missing_soc_crosswalk_candidates.csv",
+      "sha256_before": "75ac3b36bdb8d77e17ab9949fd61098cd2be8a58254de052d3fc192b5857aa17",
+      "sha256_after": "75ac3b36bdb8d77e17ab9949fd61098cd2be8a58254de052d3fc192b5857aa17"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a1/missing_soc_review_queue.csv",
+      "sha256_before": "ee7f9b237805796cba28168802e4673b631ec4182dd8d4401b452f455fcb6e54",
+      "sha256_after": "ee7f9b237805796cba28168802e4673b631ec4182dd8d4401b452f455fcb6e54"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a2/priority1_candidate_adjudication.csv",
+      "sha256_before": "caa338cd2029b6a629b7bae6a36414f7a9acacbc0467f3346658621730b99f16",
+      "sha256_after": "caa338cd2029b6a629b7bae6a36414f7a9acacbc0467f3346658621730b99f16"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a2/priority1_human_review_brief.md",
+      "sha256_before": "1736fab581fea2d42c49f0214be9925755fe5d7e7a7879fdac62afd6fb7e9002",
+      "sha256_after": "1736fab581fea2d42c49f0214be9925755fe5d7e7a7879fdac62afd6fb7e9002"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a2/priority1_soc_adjudication_summary.csv",
+      "sha256_before": "fcaccde2bfb2a53dd438711134ff995faae90b0e7612887fa3ccfa3754a2b70b",
+      "sha256_after": "fcaccde2bfb2a53dd438711134ff995faae90b0e7612887fa3ccfa3754a2b70b"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a3/coverage_v1_v2_comparison.csv",
+      "sha256_before": "054a4ca626e0cc1fca74b31b4d372aade39808aff4198d1e3a0597f9ae8717ae",
+      "sha256_after": "054a4ca626e0cc1fca74b31b4d372aade39808aff4198d1e3a0597f9ae8717ae"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a3/crosswalk_v2_freeze_manifest.json",
+      "sha256_before": "fe1f76317f60de83f27859134d878acf0f7b86f6e4682aaf1e8566014d424273",
+      "sha256_after": "fe1f76317f60de83f27859134d878acf0f7b86f6e4682aaf1e8566014d424273"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a3/exposure_coverage_summary_v2.json",
+      "sha256_before": "444d6cd95bb4e63dc374a0636dbf64f99ec912610f531d855367d8feb5095382",
+      "sha256_after": "444d6cd95bb4e63dc374a0636dbf64f99ec912610f531d855367d8feb5095382"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a3/missing_exposure_coverage_queue_v2.csv",
+      "sha256_before": "4f403f325c1ebd85fdf3c719b077e754c0a8a88f643f1052236fb8a239198861",
+      "sha256_after": "4f403f325c1ebd85fdf3c719b077e754c0a8a88f643f1052236fb8a239198861"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a3/profile_exposure_coverage_audit_v2.csv",
+      "sha256_before": "03d7648c7b19b769406346d63dfb379b0eb2455c336f49c2e55af4f527f37cb8",
+      "sha256_after": "03d7648c7b19b769406346d63dfb379b0eb2455c336f49c2e55af4f527f37cb8"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a3/soc_exposure_path_audit_v2.csv",
+      "sha256_before": "e4f500302c38f6bbffb567eaa2603407c0364bed2373a1b46986d7f67cfc9687",
+      "sha256_after": "e4f500302c38f6bbffb567eaa2603407c0364bed2373a1b46986d7f67cfc9687"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a3/unique_soc_exposure_coverage_v2.csv",
+      "sha256_before": "f13057f118af07f11bfcd22772018eeee696c0970cdd36dba50b9abd4115c4c8",
+      "sha256_after": "f13057f118af07f11bfcd22772018eeee696c0970cdd36dba50b9abd4115c4c8"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a4/priority2_adjudication_preparation_summary.json",
+      "sha256_before": "ad4d43b398d4df4973719230862d82bd1e5247e13de71017d70f12a28ea05fa5",
+      "sha256_after": "ad4d43b398d4df4973719230862d82bd1e5247e13de71017d70f12a28ea05fa5"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a4/priority2_candidate_adjudication.csv",
+      "sha256_before": "aa7fd69e9863763cd1b431be1056b6eb0913fe2b5293e79a5152668d8cc8eec0",
+      "sha256_after": "aa7fd69e9863763cd1b431be1056b6eb0913fe2b5293e79a5152668d8cc8eec0"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a4/priority2_high_impact_review.csv",
+      "sha256_before": "3e08ca9cb2d66ce858239111f3da5591b26c1d721409ffe2959e741cd37b1b88",
+      "sha256_after": "3e08ca9cb2d66ce858239111f3da5591b26c1d721409ffe2959e741cd37b1b88"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a4/priority2_human_review_brief.md",
+      "sha256_before": "95151f30c7dcafe33084d0e60416cf76e8a9f93990601664a17d715ae4571010",
+      "sha256_after": "95151f30c7dcafe33084d0e60416cf76e8a9f93990601664a17d715ae4571010"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a4/priority2_soc_adjudication_summary.csv",
+      "sha256_before": "7b02303cd01c1309a9677f5c0f71824d133f255846d1032a471e53446a64d79c",
+      "sha256_after": "7b02303cd01c1309a9677f5c0f71824d133f255846d1032a471e53446a64d79c"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/coverage_v2_v3_comparison.csv",
+      "sha256_before": "ab15ffd79833b0324c9b666ef7a25ae98898dcfb35e5a07094ca271b36b443bb",
+      "sha256_after": "ab15ffd79833b0324c9b666ef7a25ae98898dcfb35e5a07094ca271b36b443bb"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/coverage_version_trajectory.csv",
+      "sha256_before": "17be2bd8bf8ec488b83ef020baa7007a115b635ec48ec0f3437ec863c67e410c",
+      "sha256_after": "17be2bd8bf8ec488b83ef020baa7007a115b635ec48ec0f3437ec863c67e410c"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/crosswalk_v3_freeze_manifest.json",
+      "sha256_before": "b8bf287fbea3241e80c6ae6505f4ccc269550cbd625ffc5d18dea3db2f0f4053",
+      "sha256_after": "b8bf287fbea3241e80c6ae6505f4ccc269550cbd625ffc5d18dea3db2f0f4053"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/exposure_coverage_summary_v3.json",
+      "sha256_before": "c38e7dd77091f735f7ed9e75b866aa655b0a6872645498fe46d6fb8bbda800a7",
+      "sha256_after": "c38e7dd77091f735f7ed9e75b866aa655b0a6872645498fe46d6fb8bbda800a7"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/missing_exposure_coverage_queue_v3.csv",
+      "sha256_before": "e0cff27ed82012ac462d45ba28c345682f979eb7b8965f9c85b5a603279dd381",
+      "sha256_after": "e0cff27ed82012ac462d45ba28c345682f979eb7b8965f9c85b5a603279dd381"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/priority2_disagreement_register.csv",
+      "sha256_before": "c0084cfa88fa290181b9f16eeb7823447542cfd6ed2debf0afcaae26cad6f7af",
+      "sha256_after": "c0084cfa88fa290181b9f16eeb7823447542cfd6ed2debf0afcaae26cad6f7af"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/profile_exposure_coverage_audit_v3.csv",
+      "sha256_before": "57cbee62edb29a94cf95c904406d7edb1fcc2a770ba3a0426d96cb7c6772b66d",
+      "sha256_after": "57cbee62edb29a94cf95c904406d7edb1fcc2a770ba3a0426d96cb7c6772b66d"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/soc_exposure_path_audit_v3.csv",
+      "sha256_before": "f73410f0088123f2fd3fd63646181a9f94d0843bfdfea8fa48779d424c97ec7a",
+      "sha256_after": "f73410f0088123f2fd3fd63646181a9f94d0843bfdfea8fa48779d424c97ec7a"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a5/unique_soc_exposure_coverage_v3.csv",
+      "sha256_before": "2b09dcc71ab26a1810d3328dc78aa4afc146b4ddda9769247b2c6dcb594da0ef",
+      "sha256_after": "2b09dcc71ab26a1810d3328dc78aa4afc146b4ddda9769247b2c6dcb594da0ef"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a6/crosswalk_stopping_rule_analysis.json",
+      "sha256_before": "88eb4b7e9a2f2261afdd5e5202acaeded16251eed63c8a2affcd835a8d4424f5",
+      "sha256_after": "88eb4b7e9a2f2261afdd5e5202acaeded16251eed63c8a2affcd835a8d4424f5"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a6/targeted_gap_evidence.csv",
+      "sha256_before": "c5c438e0d9a4d6a964c826d874d56b4134d42ab56cdef52b2c0017744393c058",
+      "sha256_after": "c5c438e0d9a4d6a964c826d874d56b4134d42ab56cdef52b2c0017744393c058"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a6/targeted_gap_evidence_ledger.csv",
+      "sha256_before": "4ad5d5e61987bcf7f4fcb065732c3e33b6e50c169be108752559ecc0999531a7",
+      "sha256_after": "4ad5d5e61987bcf7f4fcb065732c3e33b6e50c169be108752559ecc0999531a7"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a6/targeted_gap_human_review_brief.md",
+      "sha256_before": "1006c303ec61270f5d52075eef54b375a27397cfd85ebdbfc08d7b47dcd82325",
+      "sha256_after": "1006c303ec61270f5d52075eef54b375a27397cfd85ebdbfc08d7b47dcd82325"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a6/targeted_gap_research_summary.json",
+      "sha256_before": "443d7e8cb33e3b599d217085b94f103d03610c354724bbb21d87c01506704004",
+      "sha256_after": "443d7e8cb33e3b599d217085b94f103d03610c354724bbb21d87c01506704004"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/coverage_v3_v4_comparison.csv",
+      "sha256_before": "758f48f8bcfd3d5153c8799fcad2680109f904a22c628226bb3b2bfbe020b74a",
+      "sha256_after": "758f48f8bcfd3d5153c8799fcad2680109f904a22c628226bb3b2bfbe020b74a"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/coverage_version_trajectory_final.csv",
+      "sha256_before": "b791942b226d2ea2703fa0d77df24e4db61e7494423b4fa1c7201d6c47f14fe1",
+      "sha256_after": "b791942b226d2ea2703fa0d77df24e4db61e7494423b4fa1c7201d6c47f14fe1"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/crosswalk_expansion_stopping_rule_v1.json",
+      "sha256_before": "9d3a87d100b99cd7bdd0ab242a68d31e02b613e241310795d292cdfa12c619c0",
+      "sha256_after": "9d3a87d100b99cd7bdd0ab242a68d31e02b613e241310795d292cdfa12c619c0"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/crosswalk_phase_final_summary.json",
+      "sha256_before": "e83a64c8b01fb227aee3c6975142025363d3989e6e4f631be6a548615a576ad8",
+      "sha256_after": "e83a64c8b01fb227aee3c6975142025363d3989e6e4f631be6a548615a576ad8"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/crosswalk_v4_freeze_manifest.json",
+      "sha256_before": "bb337635388bc6c0b9aacf2a66aec6f8bce62f7f6fa56279f29cf287f95780f3",
+      "sha256_after": "bb337635388bc6c0b9aacf2a66aec6f8bce62f7f6fa56279f29cf287f95780f3"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/exposure_coverage_summary_v4.json",
+      "sha256_before": "96e7f187714f8afc3856456fe21ddb5927aade869d75b1be2fcc6ff8d8dff399",
+      "sha256_after": "96e7f187714f8afc3856456fe21ddb5927aade869d75b1be2fcc6ff8d8dff399"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/final_targeted_unresolved_register.csv",
+      "sha256_before": "e3cef2948e11d6fd051f05375c105c2c4937ccf80521db61e526aaff6254cea6",
+      "sha256_after": "e3cef2948e11d6fd051f05375c105c2c4937ccf80521db61e526aaff6254cea6"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/missing_exposure_coverage_queue_v4.csv",
+      "sha256_before": "f0aca26a3de036438d4377f3f9753698e99f214694f0ff3a6efc8b4d636ef64f",
+      "sha256_after": "f0aca26a3de036438d4377f3f9753698e99f214694f0ff3a6efc8b4d636ef64f"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/profile_exposure_coverage_audit_v4.csv",
+      "sha256_before": "ea26728d1c6947695a7b11a1d5613bf2890721a1574f3309dbd698ca3e239330",
+      "sha256_after": "ea26728d1c6947695a7b11a1d5613bf2890721a1574f3309dbd698ca3e239330"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/soc_exposure_path_audit_v4.csv",
+      "sha256_before": "0875a08ceb232c7ccd2cfb3414f47e192ad5b6671ca98ea611c15e3bd7a99ce7",
+      "sha256_after": "0875a08ceb232c7ccd2cfb3414f47e192ad5b6671ca98ea611c15e3bd7a99ce7"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7a7/unique_soc_exposure_coverage_v4.csv",
+      "sha256_before": "4956e2a3d34d395c6a0da6e6663b8157ee944aee29fe77c0423b6f0e583b0a21",
+      "sha256_after": "4956e2a3d34d395c6a0da6e6663b8157ee944aee29fe77c0423b6f0e583b0a21"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b1/exposure_integration_methodology_contract_v1.json",
+      "sha256_before": "756cc6b264e3c4ff983ea430dcd3d6094835bf0c4fd0338be65a85c0204319aa",
+      "sha256_after": "756cc6b264e3c4ff983ea430dcd3d6094835bf0c4fd0338be65a85c0204319aa"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b1/exposure_integration_state_contract_v1.csv",
+      "sha256_before": "8eebf2c0c01c604c53c85ad0862bd8c56814fb709413a22987f58a27a5b9c1f7",
+      "sha256_after": "8eebf2c0c01c604c53c85ad0862bd8c56814fb709413a22987f58a27a5b9c1f7"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b1/exposure_provenance_contract_v1.csv",
+      "sha256_before": "1ec839bd485d10feac5bd2d5caba54ea6a98d4272d39f2b899bc6388b54906ce",
+      "sha256_after": "1ec839bd485d10feac5bd2d5caba54ea6a98d4272d39f2b899bc6388b54906ce"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b1/exposure_relationship_semantics_v1.csv",
+      "sha256_before": "b6112d4d4e6d0bab8acacd8313bb5f37a71fd9ed954ab09c2d713e64ef971eb1",
+      "sha256_after": "b6112d4d4e6d0bab8acacd8313bb5f37a71fd9ed954ab09c2d713e64ef971eb1"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b1/exposure_unavailability_reason_codes_v1.csv",
+      "sha256_before": "37596b40f936f1b2f7b6e32fa853b3ac6ed35d07ed1364ab65addf9b3ab265d9",
+      "sha256_after": "37596b40f936f1b2f7b6e32fa853b3ac6ed35d07ed1364ab65addf9b3ab265d9"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b1/step7b1_methodology_freeze_manifest.json",
+      "sha256_before": "79b73f02bd857f2129132497654feb7d89d574654d99208ab1649778e2ba7555",
+      "sha256_after": "79b73f02bd857f2129132497654feb7d89d574654d99208ab1649778e2ba7555"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b2/candidate_historical_exposure_results_v1.csv",
+      "sha256_before": "6177d57fa713f19a691d587519e7028b4b5cd030ecb2fc55d4631c483a2c1f38",
+      "sha256_after": "6177d57fa713f19a691d587519e7028b4b5cd030ecb2fc55d4631c483a2c1f38"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b2/historical_exposure_source_trace_v1.csv",
+      "sha256_before": "3ffc3e5ac92393ad7264ad2e80104eea5f5ea04dda6d18b9b9d83ee6f7655132",
+      "sha256_after": "3ffc3e5ac92393ad7264ad2e80104eea5f5ea04dda6d18b9b9d83ee6f7655132"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b2/historical_exposure_state_summary_v1.json",
+      "sha256_before": "5024e845b548901de1f4b8ca97d62b5f30044d6d98bd9b8544c12f62b50af62a",
+      "sha256_after": "5024e845b548901de1f4b8ca97d62b5f30044d6d98bd9b8544c12f62b50af62a"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b2/historical_exposure_validation_audit_v1.csv",
+      "sha256_before": "98a8b70567c31fb5500fb39f5e9b393ef9a58b4b1f0af773eab1b4173cb47218",
+      "sha256_after": "98a8b70567c31fb5500fb39f5e9b393ef9a58b4b1f0af773eab1b4173cb47218"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b2/profile_historical_exposure_results_v1.csv",
+      "sha256_before": "ac7b8314f40f9337db51a85b5da844060944f687fe19626a19329aad46494d28",
+      "sha256_after": "ac7b8314f40f9337db51a85b5da844060944f687fe19626a19329aad46494d28"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b2/step7b2_build_manifest.json",
+      "sha256_before": "599c9372b1a26afa64e93f36d96f006e0b6d9bdb8bf44067987631c717ed7e4e",
+      "sha256_after": "599c9372b1a26afa64e93f36d96f006e0b6d9bdb8bf44067987631c717ed7e4e"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b2/step7b2_release_bundle_inventory.json",
+      "sha256_before": "99169b81b3d9ae4ceefbcd8a4adc741a1b57edc1b3e26f480ae5cbc82c723936",
+      "sha256_after": "99169b81b3d9ae4ceefbcd8a4adc741a1b57edc1b3e26f480ae5cbc82c723936"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b3/exposure_display_state_contract_v1.csv",
+      "sha256_before": "c81871994dcefd5d9ab4d6ff1cb9845bf79acdd62d04b37a9c3d141af3a15a38",
+      "sha256_after": "c81871994dcefd5d9ab4d6ff1cb9845bf79acdd62d04b37a9c3d141af3a15a38"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b3/exposure_downstream_contract_v1.json",
+      "sha256_before": "84b0eba245fedb7e79b034ecfea6d53b98a953232df68893c7829a7509fcdd9c",
+      "sha256_after": "84b0eba245fedb7e79b034ecfea6d53b98a953232df68893c7829a7509fcdd9c"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b3/exposure_downstream_provenance_contract_v1.csv",
+      "sha256_before": "79a6cc1f18e539cfb26589877f2ad7a8dedf9ab104aa483288beaff327cebd6d",
+      "sha256_after": "79a6cc1f18e539cfb26589877f2ad7a8dedf9ab104aa483288beaff327cebd6d"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b3/exposure_failure_contract_v1.csv",
+      "sha256_before": "220468ee7f7b0dff3b086c4920712da38c2cce32b0712cacf3ebf1542cd49964",
+      "sha256_after": "220468ee7f7b0dff3b086c4920712da38c2cce32b0712cacf3ebf1542cd49964"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b3/exposure_shared_source_contract_v1.csv",
+      "sha256_before": "7a5aaf82af26bd07444f2541487f1e470b300e641474c0f719fa17e611a51029",
+      "sha256_after": "7a5aaf82af26bd07444f2541487f1e470b300e641474c0f719fa17e611a51029"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b3/exposure_terminology_contract_v1.csv",
+      "sha256_before": "a7c682bc27a1691d95346e99bea4511a09a1b248c9346999fa25856550ce4205",
+      "sha256_after": "a7c682bc27a1691d95346e99bea4511a09a1b248c9346999fa25856550ce4205"
+    },
+    {
+      "path": "data/automation_exposure_integration/step7b3/step7b3_freeze_manifest.json",
+      "sha256_before": "bf3523f4a6297b4f4d7cdadbe1701f6ce107b703a2e50e1ec330ee0fe15be5c5",
+      "sha256_after": "bf3523f4a6297b4f4d7cdadbe1701f6ce107b703a2e50e1ec330ee0fe15be5c5"
+    },
+    {
+      "path": "data/automation_onet_crosswalk_candidates.csv",
+      "sha256_before": "74c2961586c1f74863dc9ef0beae4f72316a2013636cfded1348bb195079645f",
+      "sha256_after": "74c2961586c1f74863dc9ef0beae4f72316a2013636cfded1348bb195079645f"
+    },
+    {
+      "path": "data/automation_onet_crosswalk_v1.csv",
+      "sha256_before": "3ae3d89dd3602377d5b3099c7c921364749c8b1be3ac2179d781011a42b7eb0d",
+      "sha256_after": "3ae3d89dd3602377d5b3099c7c921364749c8b1be3ac2179d781011a42b7eb0d"
+    },
+    {
+      "path": "data/automation_onet_crosswalk_v2.csv",
+      "sha256_before": "ce1256438f2a1cf05cc896346ce2e24ecb0ca54714f84bacfde904d18e4a7aa5",
+      "sha256_after": "ce1256438f2a1cf05cc896346ce2e24ecb0ca54714f84bacfde904d18e4a7aa5"
+    },
+    {
+      "path": "data/automation_onet_crosswalk_v3.csv",
+      "sha256_before": "9dd9ccf618d34d13b942d4680179023c4e8b8ff9aca6450f85f0aef4fc622af9",
+      "sha256_after": "9dd9ccf618d34d13b942d4680179023c4e8b8ff9aca6450f85f0aef4fc622af9"
+    },
+    {
+      "path": "data/automation_onet_crosswalk_v4.csv",
+      "sha256_before": "eeb19305b727e4dc33a3a3dae0c2bab6fd6af575a0563eb8ebda9fad02b5459f",
+      "sha256_after": "eeb19305b727e4dc33a3a3dae0c2bab6fd6af575a0563eb8ebda9fad02b5459f"
+    },
+    {
+      "path": "data/automation_probability_labels.csv",
+      "sha256_before": "0b388464310a627a1e67e7364e559a0ebff9f494bf1f0287564d3c7b39b42b4f",
+      "sha256_after": "0b388464310a627a1e67e7364e559a0ebff9f494bf1f0287564d3c7b39b42b4f"
+    },
+    {
+      "path": "data/automation_risk.csv",
+      "sha256_before": "d28ca4cbc2ca746c9a033d1953d49d565c3e64a2d8ae54b6ce52bed1826a18f1",
+      "sha256_after": "d28ca4cbc2ca746c9a033d1953d49d565c3e64a2d8ae54b6ce52bed1826a18f1"
+    },
+    {
+      "path": "data/coursera_catalog.csv",
+      "sha256_before": "0902f4c487a1b043ff028213399e1b1b613f4c9fa4d788c2581fea3bef2b861d",
+      "sha256_after": "0902f4c487a1b043ff028213399e1b1b613f4c9fa4d788c2581fea3bef2b861d"
+    },
+    {
+      "path": "data/crosswalk_aliases.csv",
+      "sha256_before": "aec6a6cbfe8ab1d952ff1dbf8b82429c79e36f02e40c405ce3bc3f675c97b633",
+      "sha256_after": "aec6a6cbfe8ab1d952ff1dbf8b82429c79e36f02e40c405ce3bc3f675c97b633"
+    },
+    {
+      "path": "data/crosswalk_disputed_verification.csv",
+      "sha256_before": "258d85440e17565b1548481a278afa84150cbd7c339852e2c13f7f3a35e27baa",
+      "sha256_after": "258d85440e17565b1548481a278afa84150cbd7c339852e2c13f7f3a35e27baa"
+    },
+    {
+      "path": "data/crosswalk_review_priority.csv",
+      "sha256_before": "1c9c65ba93502a67d2b2d0a394fd9ebe79dca3acd56ec0ba528749c7437e3eb2",
+      "sha256_after": "1c9c65ba93502a67d2b2d0a394fd9ebe79dca3acd56ec0ba528749c7437e3eb2"
+    },
+    {
+      "path": "data/crosswalk_review_priority_provenance.csv",
+      "sha256_before": "2430adc82674e02e0f6674a4f6f42c1ffe0ab367a5c29cfd110ba812de6e8e9a",
+      "sha256_after": "2430adc82674e02e0f6674a4f6f42c1ffe0ab367a5c29cfd110ba812de6e8e9a"
+    },
+    {
+      "path": "data/cv_occupation_mapping/cv_classifier_methodology.csv",
+      "sha256_before": "8918753216cd6a4a53aff50cae893df03eb685575168e53180a965f914612e48",
+      "sha256_after": "8918753216cd6a4a53aff50cae893df03eb685575168e53180a965f914612e48"
+    },
+    {
+      "path": "data/cv_occupation_mapping/cv_occupation_candidate_adjudication.csv",
+      "sha256_before": "6f6725ea792f64628ea0f88a093e433b6d21bda88b0cf2411c0de5bf9400ce38",
+      "sha256_after": "6f6725ea792f64628ea0f88a093e433b6d21bda88b0cf2411c0de5bf9400ce38"
+    },
+    {
+      "path": "data/cv_occupation_mapping/cv_occupation_candidate_details.csv",
+      "sha256_before": "0c68d854f70ef25bad90e0dc7c3afc107c5cbf60b2402fd326f9c742e4a405b9",
+      "sha256_after": "0c68d854f70ef25bad90e0dc7c3afc107c5cbf60b2402fd326f9c742e4a405b9"
+    },
+    {
+      "path": "data/cv_occupation_mapping/cv_occupation_inference_results.csv",
+      "sha256_before": "f8b9a41361dee9165fce412b47eabf1971441fde4b17638aaaffb2896ec03d88",
+      "sha256_after": "f8b9a41361dee9165fce412b47eabf1971441fde4b17638aaaffb2896ec03d88"
+    },
+    {
+      "path": "data/cv_occupation_mapping/cv_occupation_manual_review_provenance.csv",
+      "sha256_before": "bca1ba49da1fb93caeb58301acb2dd24e8dd5a7811d805b08278ba2ca79c8753",
+      "sha256_after": "bca1ba49da1fb93caeb58301acb2dd24e8dd5a7811d805b08278ba2ca79c8753"
+    },
+    {
+      "path": "data/cv_occupation_mapping/cv_occupation_manual_review_sample.csv",
+      "sha256_before": "84dd0d00f30dba7bff3d580c06bce5bd8bca969c84a165085f310b4d4f674274",
+      "sha256_after": "84dd0d00f30dba7bff3d580c06bce5bd8bca969c84a165085f310b4d4f674274"
+    },
+    {
+      "path": "data/cv_occupation_mapping/cv_occupation_profile_adjudication.csv",
+      "sha256_before": "0ecd115a418b81ec59958a6be5e2c27e8b9cd4e5a2141d7119b7730a4401c799",
+      "sha256_after": "0ecd115a418b81ec59958a6be5e2c27e8b9cd4e5a2141d7119b7730a4401c799"
+    },
+    {
+      "path": "data/cv_occupation_mapping/cv_occupation_training_audit.csv",
+      "sha256_before": "de0e1acdabb9d225de3fab140e26bd3861737932fa38af37c851a712c50e5670",
+      "sha256_after": "de0e1acdabb9d225de3fab140e26bd3861737932fa38af37c851a712c50e5670"
+    },
+    {
+      "path": "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_candidate_audit_frozen_v1_0.csv",
+      "sha256_before": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+      "sha256_after": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5"
+    },
+    {
+      "path": "data/cv_occupation_mapping/frozen_v1_0/cv_occupation_inference_frozen_v1_0.csv",
+      "sha256_before": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+      "sha256_after": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5"
+    },
+    {
+      "path": "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_downstream_contract.csv",
+      "sha256_before": "fdb7de7b6bee992be127ab535ad46f0214766015e8d79fc4b079828527a55633",
+      "sha256_after": "fdb7de7b6bee992be127ab535ad46f0214766015e8d79fc4b079828527a55633"
+    },
+    {
+      "path": "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_freeze_manifest.json",
+      "sha256_before": "8eff580e3eb0f6b27c3c5de767d8fa266cf8cded0e93fe2a99cc929cbbb83e1c",
+      "sha256_after": "8eff580e3eb0f6b27c3c5de767d8fa266cf8cded0e93fe2a99cc929cbbb83e1c"
+    },
+    {
+      "path": "data/cv_occupation_mapping/frozen_v1_0/occupation_inference_limitations_v1_0.csv",
+      "sha256_before": "350b8d00db3c924f048717728746e17df1b38b018b1c1e5ddc990ba3cbb71591",
+      "sha256_after": "350b8d00db3c924f048717728746e17df1b38b018b1c1e5ddc990ba3cbb71591"
+    },
+    {
+      "path": "data/cv_occupation_mapping/occupation_title_aliases_v1.csv",
+      "sha256_before": "3ef978756e583cdba31a75faf90a65f1794487a8e84450d068fe7f2880979ac8",
+      "sha256_after": "3ef978756e583cdba31a75faf90a65f1794487a8e84450d068fe7f2880979ac8"
+    },
+    {
+      "path": "data/cv_occupation_mapping/target_label_onet_candidates.csv",
+      "sha256_before": "e5620730d5e3e11d07df5801a196095da050aaa0d75c70733d950b4086071ee2",
+      "sha256_after": "e5620730d5e3e11d07df5801a196095da050aaa0d75c70733d950b4086071ee2"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2/cv_occupation_candidate_details_v2.csv",
+      "sha256_before": "b7f4a8528f1efb31899534058ec565132d9852616bfc6e9cf3e9985884ff4655",
+      "sha256_after": "b7f4a8528f1efb31899534058ec565132d9852616bfc6e9cf3e9985884ff4655"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2/cv_occupation_inference_results_v2.csv",
+      "sha256_before": "6ce76d546182a252fa2e9f0d0c167b1279238961fc287ce80637a6da43d19381",
+      "sha256_after": "6ce76d546182a252fa2e9f0d0c167b1279238961fc287ce80637a6da43d19381"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2/cv_occupation_v1_v2_review_comparison.csv",
+      "sha256_before": "f277168b58050f130fd3399a5c41e0b555aa0c370b2fde0a693cfdaac3174faf",
+      "sha256_after": "f277168b58050f130fd3399a5c41e0b555aa0c370b2fde0a693cfdaac3174faf"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2/cv_occupation_v2_manual_review.csv",
+      "sha256_before": "34647ed9aca6f24f22d474ef0eca71047042177c9a69bdf21a34d093da3d0224",
+      "sha256_after": "34647ed9aca6f24f22d474ef0eca71047042177c9a69bdf21a34d093da3d0224"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2_1/cv_occupation_candidate_details_v2_1.csv",
+      "sha256_before": "2c6fe58e211e5ed15d9b115ae61a728b377a00e99f7b259e08e8361178acac17",
+      "sha256_after": "2c6fe58e211e5ed15d9b115ae61a728b377a00e99f7b259e08e8361178acac17"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2_1/cv_occupation_inference_results_v2_1.csv",
+      "sha256_before": "765c03526b3d6dec9189b6856464a20e21f5c883d8be351e2f85bcae03cb1113",
+      "sha256_after": "765c03526b3d6dec9189b6856464a20e21f5c883d8be351e2f85bcae03cb1113"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2_1/cv_occupation_v1_v2_v2_1_comparison.csv",
+      "sha256_before": "f5c50aa8c6112e8cbfef978b6091463a2b155fe5c41778daa8ec47edbfbaa51d",
+      "sha256_after": "f5c50aa8c6112e8cbfef978b6091463a2b155fe5c41778daa8ec47edbfbaa51d"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2_1/cv_occupation_v2_1_manual_review.csv",
+      "sha256_before": "e38da51db6b86eca6d6434d755b9ed703497b48aff429afdbf67d443d3339e64",
+      "sha256_after": "e38da51db6b86eca6d6434d755b9ed703497b48aff429afdbf67d443d3339e64"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2_2/cv_occupation_candidate_details_v2_2.csv",
+      "sha256_before": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5",
+      "sha256_after": "c154afe721e90443b31c1ac7780f3e668cf59401b20da6cb4125d56d117ac4d5"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2_2/cv_occupation_inference_results_v2_2.csv",
+      "sha256_before": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5",
+      "sha256_after": "359190cf266ba402e5d02c2ae8f23a35172d365d178fb35b229d38e894c9f3f5"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2_2/cv_occupation_v1_v2_v2_1_v2_2_comparison.csv",
+      "sha256_before": "c194610d4706d84e8b01fdad2940f8dc98538cc62ec59f79da4bef2e95d5c6e3",
+      "sha256_after": "c194610d4706d84e8b01fdad2940f8dc98538cc62ec59f79da4bef2e95d5c6e3"
+    },
+    {
+      "path": "data/cv_occupation_mapping/v2_2/cv_occupation_v2_2_final_review.csv",
+      "sha256_before": "caca180b431ce7bfa01890ddabb91654aafa7969d487e8a0b9553e68a6a7f4c8",
+      "sha256_after": "caca180b431ce7bfa01890ddabb91654aafa7969d487e8a0b9553e68a6a7f4c8"
+    },
+    {
+      "path": "data/Job Titles.xlsx",
+      "sha256_before": "1d5f1e469e99d95b9496ca7beb094fa107c215ede6249129955345c774904c0d",
+      "sha256_after": "1d5f1e469e99d95b9496ca7beb094fa107c215ede6249129955345c774904c0d"
+    },
+    {
+      "path": "data/ml_methodology_audit.csv",
+      "sha256_before": "310d4ddf4ffd23a874ed73caecc4970a8a4bed8124caa03bd690692583329290",
+      "sha256_after": "310d4ddf4ffd23a874ed73caecc4970a8a4bed8124caa03bd690692583329290"
+    },
+    {
+      "path": "data/Occupation Data.xlsx",
+      "sha256_before": "13b2aa4c08e6c9a3708d5e5ac83e13da5cc184e3798313c8942a266d00593ace",
+      "sha256_after": "13b2aa4c08e6c9a3708d5e5ac83e13da5cc184e3798313c8942a266d00593ace"
+    },
+    {
+      "path": "data/onet_31_audit.csv",
+      "sha256_before": "a2ae87f6d55d3fa173498b93d0ad7cbb2df4406b14b219b50050be20a15822af",
+      "sha256_after": "a2ae87f6d55d3fa173498b93d0ad7cbb2df4406b14b219b50050be20a15822af"
+    },
+    {
+      "path": "data/onet_interest_keywords.csv",
+      "sha256_before": "5a52434b5ff428e96e7b698ecde04fbfe6d655cabff17d9905046e9f65e09a4e",
+      "sha256_after": "5a52434b5ff428e96e7b698ecde04fbfe6d655cabff17d9905046e9f65e09a4e"
+    },
+    {
+      "path": "data/onet_interests.csv",
+      "sha256_before": "6d9a78bc145c7813e1f59a4fc9e30008f806d416673f9bea132b204c7c79939a",
+      "sha256_after": "6d9a78bc145c7813e1f59a4fc9e30008f806d416673f9bea132b204c7c79939a"
+    },
+    {
+      "path": "data/onet_normalized/31_0/career_interest_keywords.csv",
+      "sha256_before": "4cf2464cd339e942eb623ec7637eb984dc14c85ad4fa8cec9e46cc2066403c01",
+      "sha256_after": "4cf2464cd339e942eb623ec7637eb984dc14c85ad4fa8cec9e46cc2066403c01"
+    },
+    {
+      "path": "data/onet_normalized/31_0/frozen_soc_data_coverage.csv",
+      "sha256_before": "9a43e5c355141233257242e83db2889b199cbe4359aea1a150ac47a166715dba",
+      "sha256_after": "9a43e5c355141233257242e83db2889b199cbe4359aea1a150ac47a166715dba"
+    },
+    {
+      "path": "data/onet_normalized/31_0/occupation_career_interests.csv",
+      "sha256_before": "e9eb092079c0f69a41ddef42e9052f8aca408f26736a555d2ea25d7c76fbc074",
+      "sha256_after": "e9eb092079c0f69a41ddef42e9052f8aca408f26736a555d2ea25d7c76fbc074"
+    },
+    {
+      "path": "data/onet_normalized/31_0/occupation_skills.csv",
+      "sha256_before": "640278a11f64c7de8ab555f6b02a25fb8f93612b10d4c5c5d923ba36dd9376c4",
+      "sha256_after": "640278a11f64c7de8ab555f6b02a25fb8f93612b10d4c5c5d923ba36dd9376c4"
+    },
+    {
+      "path": "data/onet_normalized/31_0/occupation_software_skills.csv",
+      "sha256_before": "36c1b5e8c1add38cea87ea94eb9e310cb6a23f3a906b3c81a237f4c879d7c4d9",
+      "sha256_after": "36c1b5e8c1add38cea87ea94eb9e310cb6a23f3a906b3c81a237f4c879d7c4d9"
+    },
+    {
+      "path": "data/onet_normalized/31_0/occupation_specific_interests.csv",
+      "sha256_before": "c89e2fe20bbab6c2323d403521aa07803392823cbfc0c9b79827e025fa08f37e",
+      "sha256_after": "c89e2fe20bbab6c2323d403521aa07803392823cbfc0c9b79827e025fa08f37e"
+    },
+    {
+      "path": "data/onet_raw/31_0/career_interest_type_keywords.csv",
+      "sha256_before": "9aa5e9d2a125fc2ff5fadf099365c09d04791c5f70236eb9e1ba3b995bab39a2",
+      "sha256_after": "9aa5e9d2a125fc2ff5fadf099365c09d04791c5f70236eb9e1ba3b995bab39a2"
+    },
+    {
+      "path": "data/onet_raw/31_0/career_interest_types.csv",
+      "sha256_before": "19f452d51b81a4d59389b500f85baf252563858f596124fe446dd436a9f41206",
+      "sha256_after": "19f452d51b81a4d59389b500f85baf252563858f596124fe446dd436a9f41206"
+    },
+    {
+      "path": "data/onet_raw/31_0/essential_skills.csv",
+      "sha256_before": "68c4d31d8c55077238395dca40cc4e6d32e6a608b5474bb8264b1f98ae415bd7",
+      "sha256_after": "68c4d31d8c55077238395dca40cc4e6d32e6a608b5474bb8264b1f98ae415bd7"
+    },
+    {
+      "path": "data/onet_raw/31_0/software_skills.csv",
+      "sha256_before": "6aabb96b464288db849580e6510530efff3f80e25dde2bb23f1fc36bb526b016",
+      "sha256_after": "6aabb96b464288db849580e6510530efff3f80e25dde2bb23f1fc36bb526b016"
+    },
+    {
+      "path": "data/onet_raw/31_0/specific_interest_areas.csv",
+      "sha256_before": "3c59c823f228d4ee5e066560a4fc39676c5cfd956355ad9d19bf8f552f87f0eb",
+      "sha256_after": "3c59c823f228d4ee5e066560a4fc39676c5cfd956355ad9d19bf8f552f87f0eb"
+    },
+    {
+      "path": "data/onet_raw/31_0/transferable_skills.csv",
+      "sha256_before": "f17d0419e818a3bf2f55076510c76c4aef01cc8f5aee2670d2f44f6f44ac60f7",
+      "sha256_after": "f17d0419e818a3bf2f55076510c76c4aef01cc8f5aee2670d2f44f6f44ac60f7"
+    },
+    {
+      "path": "data/onet_skils.csv",
+      "sha256_before": "c38338e9130b3374af597ececbb73f639088263e60f0bedde18a5b5e64f85f2c",
+      "sha256_after": "c38338e9130b3374af597ececbb73f639088263e60f0bedde18a5b5e64f85f2c"
+    },
+    {
+      "path": "data/resume_corpus.csv",
+      "sha256_before": "c29ef568c726c4664a62d3f35ed9456441731f24b58fb9dd977995830eef97be",
+      "sha256_after": "c29ef568c726c4664a62d3f35ed9456441731f24b58fb9dd977995830eef97be"
+    },
+    {
+      "path": "data/Sample of Reported Titles.xlsx",
+      "sha256_before": "aa869fdfee5ed9b6e3dd139538861eb996af37a374b0a5d47cdec8d6d967a80c",
+      "sha256_after": "aa869fdfee5ed9b6e3dd139538861eb996af37a374b0a5d47cdec8d6d967a80c"
+    },
+    {
+      "path": "data/skill_mapping/cv_skill_mapping_design.csv",
+      "sha256_before": "7766c11c7862b656c237873e63a60f440573ab3cb68d56b4abc7d8d6491a8377",
+      "sha256_after": "7766c11c7862b656c237873e63a60f440573ab3cb68d56b4abc7d8d6491a8377"
+    },
+    {
+      "path": "data/skill_mapping/onet_skill_vocabulary.csv",
+      "sha256_before": "f3e784535dd4b992a759d8862fc155db125ea070b2dcaf2c83ec614ec35206e7",
+      "sha256_after": "f3e784535dd4b992a759d8862fc155db125ea070b2dcaf2c83ec614ec35206e7"
+    },
+    {
+      "path": "data/skill_mapping/skill_alias_candidates.csv",
+      "sha256_before": "6856548d7aafe4df0b70a16a741bda03387c36826bdf526d647f4b553a9e0a41",
+      "sha256_after": "6856548d7aafe4df0b70a16a741bda03387c36826bdf526d647f4b553a9e0a41"
+    },
+    {
+      "path": "data/skill_mapping/software_skill_vocabulary.csv",
+      "sha256_before": "2ce7069b63f95ee19179eca4ce854726507c36270c49160170ef367b2609ad20",
+      "sha256_after": "2ce7069b63f95ee19179eca4ce854726507c36270c49160170ef367b2609ad20"
+    },
+    {
+      "path": "data/source_taxonomy_provenance.csv",
+      "sha256_before": "b829f1f7a8491224d03187b6584fbd2b6afbc2ab99d1b77d746e63a7d40e2659",
+      "sha256_after": "b829f1f7a8491224d03187b6584fbd2b6afbc2ab99d1b77d746e63a7d40e2659"
+    },
+    {
+      "path": "evaluation.py",
+      "sha256_before": "b741eb54c67b2d0c5a76a6a234c687ff13233136aeaba2163788df1ea28d8099",
+      "sha256_after": "b741eb54c67b2d0c5a76a6a234c687ff13233136aeaba2163788df1ea28d8099"
+    },
+    {
+      "path": "ml_models/courses.pkl",
+      "sha256_before": "8bef0a99a6aca545a3b670561f9d7ed667d1d787108024210a3570d516634aba",
+      "sha256_after": "8bef0a99a6aca545a3b670561f9d7ed667d1d787108024210a3570d516634aba"
+    },
+    {
+      "path": "ml_models/model.pkl",
+      "sha256_before": "92ca8fd888720a1966bcd4fa03453af849beceaafdd193b9adaf96925e011a04",
+      "sha256_after": "92ca8fd888720a1966bcd4fa03453af849beceaafdd193b9adaf96925e011a04"
+    },
+    {
+      "path": "models/experimental_automation/error_analysis.csv",
+      "sha256_before": "60b0406a4c3299630b0d115cd9c58fa773d24f77c4f4a9a2707a0cb5a1c5e1c2",
+      "sha256_after": "60b0406a4c3299630b0d115cd9c58fa773d24f77c4f4a9a2707a0cb5a1c5e1c2"
+    },
+    {
+      "path": "models/experimental_automation/model.joblib",
+      "sha256_before": "8a0525d157fdd7621b7afa07534ae9db6025356c7f672d44d967d65c39e8250d",
+      "sha256_after": "8a0525d157fdd7621b7afa07534ae9db6025356c7f672d44d967d65c39e8250d"
+    },
+    {
+      "path": "models/experimental_automation/model_comparison.csv",
+      "sha256_before": "8b2d11c82ab32eb98eec67698530c473a061f40f41ed0b77a73a22ae328ca20e",
+      "sha256_after": "8b2d11c82ab32eb98eec67698530c473a061f40f41ed0b77a73a22ae328ca20e"
+    },
+    {
+      "path": "models/experimental_automation/oof_predictions.csv",
+      "sha256_before": "26919ed4c04ba8f0505123f73ff385a89a94d408423da99a8abab017c1725071",
+      "sha256_after": "26919ed4c04ba8f0505123f73ff385a89a94d408423da99a8abab017c1725071"
+    },
+    {
+      "path": "models/experimental_automation/training_metadata.json",
+      "sha256_before": "018084478564b8e8197fd0f1f81890c9c4a46cff08838d9d83e425f70ed266c0",
+      "sha256_after": "018084478564b8e8197fd0f1f81890c9c4a46cff08838d9d83e425f70ed266c0"
+    },
+    {
+      "path": "rag_retriever.py",
+      "sha256_before": "fcc9217c6df98c24d9bc2cde5b4f471b0957f22322fa88bb0561e6b73444c013",
+      "sha256_after": "fcc9217c6df98c24d9bc2cde5b4f471b0957f22322fa88bb0561e6b73444c013"
+    },
+    {
+      "path": "requirements.txt",
+      "sha256_before": "272495bc68e8085063e2c87554ae2fa4d5b2e0b9921a2544b3f101f83d59ce46",
+      "sha256_after": "272495bc68e8085063e2c87554ae2fa4d5b2e0b9921a2544b3f101f83d59ce46"
+    },
+    {
+      "path": "resume_parser.py",
+      "sha256_before": "95599ec180d47710298540b372f119bd1aab6e00738166c1afa9e344aa679e33",
+      "sha256_after": "95599ec180d47710298540b372f119bd1aab6e00738166c1afa9e344aa679e33"
+    },
+    {
+      "path": "risk_assessor.py",
+      "sha256_before": "1ebc3ea9afde7bdd2b54029803f1ffba1ea4f865ebe1fc96cd214c0d5430aff2",
+      "sha256_after": "1ebc3ea9afde7bdd2b54029803f1ffba1ea4f865ebe1fc96cd214c0d5430aff2"
+    },
+    {
+      "path": "scripts/automation_exposure_integration.py",
+      "sha256_before": "e689a3e80c485b7d5e4681854e536d41bcaa196291f16acf13cc0bb65947a1b3",
+      "sha256_after": "e689a3e80c485b7d5e4681854e536d41bcaa196291f16acf13cc0bb65947a1b3"
+    },
+    {
+      "path": "scripts/build_crosswalk_candidates.py",
+      "sha256_before": "a542b5ef90354d5519c2c43fdc932c16a7a75b57a988e4c3e03b7f783d909d01",
+      "sha256_after": "a542b5ef90354d5519c2c43fdc932c16a7a75b57a988e4c3e03b7f783d909d01"
+    },
+    {
+      "path": "scripts/cv_occupation_inference.py",
+      "sha256_before": "ee6b5ce23985a020d2dc08f3a5275b6f0af5ad4d49cf55f2acb0adfc3a935d30",
+      "sha256_after": "ee6b5ce23985a020d2dc08f3a5275b6f0af5ad4d49cf55f2acb0adfc3a935d30"
+    },
+    {
+      "path": "scripts/cv_occupation_inference_v2.py",
+      "sha256_before": "9b0aedc5cbb78d5b2858a7ba851c3b9f7c1dbdddf5c8693be84b0a6a4ca87302",
+      "sha256_after": "9b0aedc5cbb78d5b2858a7ba851c3b9f7c1dbdddf5c8693be84b0a6a4ca87302"
+    },
+    {
+      "path": "scripts/cv_occupation_inference_v2_1.py",
+      "sha256_before": "404443014425b54f354814797fb1c49f866d9e1e4d8a9516cd3cd1cec2be2ddd",
+      "sha256_after": "404443014425b54f354814797fb1c49f866d9e1e4d8a9516cd3cd1cec2be2ddd"
+    },
+    {
+      "path": "scripts/cv_occupation_inference_v2_2.py",
+      "sha256_before": "bb5956366d2a3837344b0c4fbed19bd5be8823e6fceaae4cfc87491f33257b41",
+      "sha256_after": "bb5956366d2a3837344b0c4fbed19bd5be8823e6fceaae4cfc87491f33257b41"
+    },
+    {
+      "path": "scripts/frozen/automation_exposure_integration_v1_0.py",
+      "sha256_before": "e689a3e80c485b7d5e4681854e536d41bcaa196291f16acf13cc0bb65947a1b3",
+      "sha256_after": "e689a3e80c485b7d5e4681854e536d41bcaa196291f16acf13cc0bb65947a1b3"
+    },
+    {
+      "path": "scripts/frozen/cv_occupation_inference_v1_0.py",
+      "sha256_before": "bb5956366d2a3837344b0c4fbed19bd5be8823e6fceaae4cfc87491f33257b41",
+      "sha256_after": "bb5956366d2a3837344b0c4fbed19bd5be8823e6fceaae4cfc87491f33257b41"
+    },
+    {
+      "path": "static/auth-assistant.css",
+      "sha256_before": "854aa17fe0adb95baee001b00eca8dbde5cf2cd01944734ae11b277c28d7b066",
+      "sha256_after": "854aa17fe0adb95baee001b00eca8dbde5cf2cd01944734ae11b277c28d7b066"
+    },
+    {
+      "path": "static/auth-assistant.js",
+      "sha256_before": "38780f4662c05d9a861e4188299bf678b19e77f0a7b08ac36155672cab247741",
+      "sha256_after": "38780f4662c05d9a861e4188299bf678b19e77f0a7b08ac36155672cab247741"
+    },
+    {
+      "path": "static/career-chat.css",
+      "sha256_before": "173bdf842c34c9ad91f230802a0dcabf618e6bc7454c265d271043636c9074f1",
+      "sha256_after": "173bdf842c34c9ad91f230802a0dcabf618e6bc7454c265d271043636c9074f1"
+    },
+    {
+      "path": "static/career-chat.js",
+      "sha256_before": "acda4156cb9995e8d9810db18962d26721561f4a14ed90ece80b626e3576e107",
+      "sha256_after": "acda4156cb9995e8d9810db18962d26721561f4a14ed90ece80b626e3576e107"
+    },
+    {
+      "path": "static/design_ref.png",
+      "sha256_before": "3a80805e7a154c855621400087eb3d60119a2c54fd82896d8e6bef4608fe2350",
+      "sha256_after": "3a80805e7a154c855621400087eb3d60119a2c54fd82896d8e6bef4608fe2350"
+    },
+    {
+      "path": "static/icons/icon-128x128.png",
+      "sha256_before": "d5cccd813aa623e435e7afe0cf470e6f365c2b1894a3eefe0b7b171aa4365608",
+      "sha256_after": "d5cccd813aa623e435e7afe0cf470e6f365c2b1894a3eefe0b7b171aa4365608"
+    },
+    {
+      "path": "static/icons/icon-144x144.png",
+      "sha256_before": "c92f8cbab35acc8a8af7ccbc8fab78514fe2a71f9237c4e8d889266bc9e00eab",
+      "sha256_after": "c92f8cbab35acc8a8af7ccbc8fab78514fe2a71f9237c4e8d889266bc9e00eab"
+    },
+    {
+      "path": "static/icons/icon-152x152.png",
+      "sha256_before": "940aae47c0aedff6499d99b48718f20b32e18faf7c7c83da6e765ada1ae023bf",
+      "sha256_after": "940aae47c0aedff6499d99b48718f20b32e18faf7c7c83da6e765ada1ae023bf"
+    },
+    {
+      "path": "static/icons/icon-192x192.png",
+      "sha256_before": "8c30e8f83f8307e60a10f4efb95ef5ceae5d16378f9e0f6e8295288ec7d3df01",
+      "sha256_after": "8c30e8f83f8307e60a10f4efb95ef5ceae5d16378f9e0f6e8295288ec7d3df01"
+    },
+    {
+      "path": "static/icons/icon-384x384.png",
+      "sha256_before": "170a7fe94a9b23a434a09a043db1812b258ae62828a78eeacc1b6e03fec036d1",
+      "sha256_after": "170a7fe94a9b23a434a09a043db1812b258ae62828a78eeacc1b6e03fec036d1"
+    },
+    {
+      "path": "static/icons/icon-512x512.png",
+      "sha256_before": "ff0f48adc47ad74953f82591492348077c99a55733456738a476260f01f9553b",
+      "sha256_after": "ff0f48adc47ad74953f82591492348077c99a55733456738a476260f01f9553b"
+    },
+    {
+      "path": "static/icons/icon-72x72.png",
+      "sha256_before": "d7f81b3ac99a3529b91c9ffdcd7bf0ef344a7d47acf6d70e6c65f37d003e73f2",
+      "sha256_after": "d7f81b3ac99a3529b91c9ffdcd7bf0ef344a7d47acf6d70e6c65f37d003e73f2"
+    },
+    {
+      "path": "static/icons/icon-96x96.png",
+      "sha256_before": "00728e8114d857626379052fe9ea6e31c0436c452a227190d974da71a338890a",
+      "sha256_after": "00728e8114d857626379052fe9ea6e31c0436c452a227190d974da71a338890a"
+    },
+    {
+      "path": "static/icons/icon.svg",
+      "sha256_before": "19679dc12fc3d0a3db2d714a548396795bd6585c7981dfc9bcccd6142b73009c",
+      "sha256_after": "19679dc12fc3d0a3db2d714a548396795bd6585c7981dfc9bcccd6142b73009c"
+    },
+    {
+      "path": "static/manifest.json",
+      "sha256_before": "0f8b0a218b205f9fcee915e0d38996c07f73e4c1fd590b48f146d03eb8980518",
+      "sha256_after": "0f8b0a218b205f9fcee915e0d38996c07f73e4c1fd590b48f146d03eb8980518"
+    },
+    {
+      "path": "static/offline.html",
+      "sha256_before": "35f44a22eabad9b4e92090bd8781c1c9be271b063aa1d5fa3eae220af246ff89",
+      "sha256_after": "35f44a22eabad9b4e92090bd8781c1c9be271b063aa1d5fa3eae220af246ff89"
+    },
+    {
+      "path": "static/script.js",
+      "sha256_before": "8eeb85face3e13740d77f6ad256484d676af9961d527eb63574033ac141da923",
+      "sha256_after": "8eeb85face3e13740d77f6ad256484d676af9961d527eb63574033ac141da923"
+    },
+    {
+      "path": "static/script.ts",
+      "sha256_before": "8a539a67cdb77308d47f537164a84e50da6ac81f3ea829fb31fecc9d0d48b686",
+      "sha256_after": "8a539a67cdb77308d47f537164a84e50da6ac81f3ea829fb31fecc9d0d48b686"
+    },
+    {
+      "path": "static/signup_ref.png",
+      "sha256_before": "155b6da1380d3005005a19466881f10bdab5d245a9a45985f579fbe95189a456",
+      "sha256_after": "155b6da1380d3005005a19466881f10bdab5d245a9a45985f579fbe95189a456"
+    },
+    {
+      "path": "static/styles.css",
+      "sha256_before": "ce18df5a0edc46353035e31d802ae6af1d14bcb585880907ae56762f0e591247",
+      "sha256_after": "ce18df5a0edc46353035e31d802ae6af1d14bcb585880907ae56762f0e591247"
+    },
+    {
+      "path": "static/sw.js",
+      "sha256_before": "d29417e6475e22044d45120bf46cb397f83b2cfd882d0b95ceba3b27ac61b6b3",
+      "sha256_after": "d29417e6475e22044d45120bf46cb397f83b2cfd882d0b95ceba3b27ac61b6b3"
+    },
+    {
+      "path": "storage.py",
+      "sha256_before": "82a155dcd6d8de490b814d0ce4bf6112dce8cd0dd81231342ee1bc9eae81c771",
+      "sha256_after": "82a155dcd6d8de490b814d0ce4bf6112dce8cd0dd81231342ee1bc9eae81c771"
+    },
+    {
+      "path": "templates/404.html",
+      "sha256_before": "341a32280f3e20d8d068bf990326055519a7310aefddfaa6b6226d8719af3243",
+      "sha256_after": "341a32280f3e20d8d068bf990326055519a7310aefddfaa6b6226d8719af3243"
+    },
+    {
+      "path": "templates/500.html",
+      "sha256_before": "35342eebad3fe5d98ce38e8ff780596bb3e6dc36b5bffc8d72938e1e57a38a01",
+      "sha256_after": "35342eebad3fe5d98ce38e8ff780596bb3e6dc36b5bffc8d72938e1e57a38a01"
+    },
+    {
+      "path": "templates/admin.html",
+      "sha256_before": "15b7388769f34d07d32b3e3e20b0f03edb62f72c6956d1b06589d80d4b945948",
+      "sha256_after": "15b7388769f34d07d32b3e3e20b0f03edb62f72c6956d1b06589d80d4b945948"
+    },
+    {
+      "path": "templates/auth.html",
+      "sha256_before": "6892edf35c402206fe558572378f0679b839d713efebaa5f93256ac24000861c",
+      "sha256_after": "6892edf35c402206fe558572378f0679b839d713efebaa5f93256ac24000861c"
+    },
+    {
+      "path": "templates/auth_assistant.html",
+      "sha256_before": "07d6c49b98e4e93f11cafecf9914818d46c25f4faa3a32a845ee3e7b682c389f",
+      "sha256_after": "07d6c49b98e4e93f11cafecf9914818d46c25f4faa3a32a845ee3e7b682c389f"
+    },
+    {
+      "path": "templates/base.html",
+      "sha256_before": "f5dd0aed792657cd4ef3942d01065b0d9221e782e70dd9e3eddccdd71f2102be",
+      "sha256_after": "f5dd0aed792657cd4ef3942d01065b0d9221e782e70dd9e3eddccdd71f2102be"
+    },
+    {
+      "path": "templates/forgot_password.html",
+      "sha256_before": "20c55b0d04b71cc54c4e3c376072dac4e494370a6fa2abd201aba397546b37cc",
+      "sha256_after": "20c55b0d04b71cc54c4e3c376072dac4e494370a6fa2abd201aba397546b37cc"
+    },
+    {
+      "path": "templates/index.html",
+      "sha256_before": "bf5deb9a2b99f7c36d3d337a6431ca7a088ae9e58707adbd6687df0a401046df",
+      "sha256_after": "bf5deb9a2b99f7c36d3d337a6431ca7a088ae9e58707adbd6687df0a401046df"
+    },
+    {
+      "path": "templates/insights.html",
+      "sha256_before": "70341175396aa097453d135701e659e176831435d5e33886eac907189fde9e29",
+      "sha256_after": "70341175396aa097453d135701e659e176831435d5e33886eac907189fde9e29"
+    },
+    {
+      "path": "templates/methodology.html",
+      "sha256_before": "4faf12e1610725594a8492364bec56ed9859798d00b55688ae939d389dc3fbdd",
+      "sha256_after": "4faf12e1610725594a8492364bec56ed9859798d00b55688ae939d389dc3fbdd"
+    },
+    {
+      "path": "templates/partnerships.html",
+      "sha256_before": "f7a95d604b571e08159fad1366f3bb93d107bb19848baf57849be2e25019210c",
+      "sha256_after": "f7a95d604b571e08159fad1366f3bb93d107bb19848baf57849be2e25019210c"
+    },
+    {
+      "path": "templates/privacy.html",
+      "sha256_before": "22849cdfb5996f0218865a44df1ec44c2b8f6e0899f6e33a2920172668462da4",
+      "sha256_after": "22849cdfb5996f0218865a44df1ec44c2b8f6e0899f6e33a2920172668462da4"
+    },
+    {
+      "path": "templates/report.html",
+      "sha256_before": "1f4a785d719ef07b68c782736dcdf420d5e5c150add901a646a123b3e21338ee",
+      "sha256_after": "1f4a785d719ef07b68c782736dcdf420d5e5c150add901a646a123b3e21338ee"
+    },
+    {
+      "path": "templates/reset_password.html",
+      "sha256_before": "621e48b361c2f9e92b2eb141963dbcba4825d6e9f9c6882d9b676300a9c221c2",
+      "sha256_after": "621e48b361c2f9e92b2eb141963dbcba4825d6e9f9c6882d9b676300a9c221c2"
+    },
+    {
+      "path": "templates/skills_gap.html",
+      "sha256_before": "40e76d497c0a3274929b75fae09081462aa3c1a586c09fa4f62a8f8b21f03247",
+      "sha256_after": "40e76d497c0a3274929b75fae09081462aa3c1a586c09fa4f62a8f8b21f03247"
+    },
+    {
+      "path": "templates/verify_otp.html",
+      "sha256_before": "949721598efe07346ee24151d6704fc1f6a515265f422be496af850ccf7de819",
+      "sha256_after": "949721598efe07346ee24151d6704fc1f6a515265f422be496af850ccf7de819"
+    },
+    {
+      "path": "templates/workspace.html",
+      "sha256_before": "5b6401720c4e045b70b326233ce8d50a4de4337497f2ca59dfe931ab12c40cd0",
+      "sha256_after": "5b6401720c4e045b70b326233ce8d50a4de4337497f2ca59dfe931ab12c40cd0"
+    },
+    {
+      "path": "test_auth_e2e.py",
+      "sha256_before": "2b7a8e200eba294b0a56e141b77a34ced4b784fed15cd3850128bbb052eef58a",
+      "sha256_after": "2b7a8e200eba294b0a56e141b77a34ced4b784fed15cd3850128bbb052eef58a"
+    },
+    {
+      "path": "test_forgot_password.py",
+      "sha256_before": "fffc8c24d136d629c460f7c9906bad92b18faa208c57d0631cfa699e0f3f920b",
+      "sha256_after": "fffc8c24d136d629c460f7c9906bad92b18faa208c57d0631cfa699e0f3f920b"
+    },
+    {
+      "path": "tests/test_app.py",
+      "sha256_before": "95db6e98b2c854c77179cbbe1b09b780a7d98563f8138b8a1bee1485b257e1d0",
+      "sha256_after": "95db6e98b2c854c77179cbbe1b09b780a7d98563f8138b8a1bee1485b257e1d0"
+    },
+    {
+      "path": "tests/test_automation_exposure_integration.py",
+      "sha256_before": "6340da35b214cdfaa8eef2bb4dc8a2fac548cc3aa450494bfdeb798ed7ea9060",
+      "sha256_after": "6340da35b214cdfaa8eef2bb4dc8a2fac548cc3aa450494bfdeb798ed7ea9060"
+    },
+    {
+      "path": "tests/test_email_service.py",
+      "sha256_before": "c4b2a61bc54bdbe5ff44cc60584f385a96f5a82203bfdf0dec6e875ddbe2f5ac",
+      "sha256_after": "c4b2a61bc54bdbe5ff44cc60584f385a96f5a82203bfdf0dec6e875ddbe2f5ac"
+    },
+    {
+      "path": "tests/test_exposure_downstream_contract.py",
+      "sha256_before": "438e1aa96ccc05c30933ecfaf73e0e64f1987b6d68226cb3bc84bdab28ced241",
+      "sha256_after": "438e1aa96ccc05c30933ecfaf73e0e64f1987b6d68226cb3bc84bdab28ced241"
+    },
+    {
+      "path": "tests/test_forgot_password_otp.py",
+      "sha256_before": "a5f7cf9156f5444263a0482d644511c6b3d5f1ef5e30eb9ea501154dc62d93fe",
+      "sha256_after": "a5f7cf9156f5444263a0482d644511c6b3d5f1ef5e30eb9ea501154dc62d93fe"
+    },
+    {
+      "path": "train_model.py",
+      "sha256_before": "e9d289b6067b5b6e051e4894bc4f61c1caede5253783117351a98a5b319432b2",
+      "sha256_after": "e9d289b6067b5b6e051e4894bc4f61c1caede5253783117351a98a5b319432b2"
+    },
+    {
+      "path": "utils.py",
+      "sha256_before": "dc58e3cf4c118a3cfcb5aa7047cc38832c14a4c690db72b75aa387849de24ccb",
+      "sha256_after": "dc58e3cf4c118a3cfcb5aa7047cc38832c14a4c690db72b75aa387849de24ccb"
+    }
+  ],
+  "output_hashes": {
+    "canonical_skill_taxonomy_contract.csv": "088f586eeea3892627b3c4faedd05345f407030ef9a026504fb5bf370500e4fb",
+    "cv_skill_evidence_contract.csv": "9759af6d125c4c15712ecc6e8be251a3da87abf475fb161cff211cbc0dc05d71",
+    "occupation_skill_requirement_contract.csv": "b9f8a65ecd628fa1a36a504734de10167c968f8d63a4fa3bc476894c05c850cd",
+    "occupation_uncertainty_skillgap_contract.csv": "0d5f4c895bd655c20c11bdbe32dd32745a4904b75e766077c4e539368bc9b1c9",
+    "reskilling_priority_methodology.csv": "faa6ef9bc0bdaa09e634631f4425ba9d492c8f6975a01dd4aa854728a55a7162",
+    "skill_data_inventory.csv": "2326fc647c80b1234698c6c85bbc7c4cebc256a7010180e028bcd5494908dddb",
+    "skill_extraction_evaluation_plan.csv": "c01e02e8f043b4e84bb0617c5660307b874ae7cc3698d3df34c5d134fe7104cd",
+    "skill_gap_semantics_contract.csv": "52317484846f529897d2708228da5d46d5f9d767d5d310411af49f524e21ce3e",
+    "skill_normalization_policy.csv": "af9214b3a5ecca7cd42ee96d4f9ee2f56b891c017726f201645346902b37396a",
+    "skill_source_quality_audit.csv": "27f78600015941d6ca223a6a302059e9546853fe6b920289f355e63b0387b5e4",
+    "step8a_methodology_recommendation.json": "d04307e1184d07c6cbc15214485ca021aac9a92eb913efe08b8d95bca2db7b81"
+  },
+  "manifest_self_hash": "Not embedded to avoid self-reference",
+  "checks": [
+    "Exactly twelve authorized output files",
+    "All pre-existing protected/input/application/model files unchanged",
+    "Raw-normalized skill identity/value/quality flag set and row count agreement",
+    "All generated CSVs parsed; JSONs parsed",
+    "No binary models loaded; no training; no course recommendation; no Step 8B implementation"
+  ],
+  "limitations": [
+    "Tabular missingness counts literal blank/None only; CV semantic-empty parsing remains future validation",
+    "Source/version attribution checked using local audit and official documentation, not independently reacquired raw-file bytes",
+    "Model schemas unavailable by design; byte hashes only",
+    "No independent manual skill ground truth currently available"
+  ],
+  "recovery_status": "All twelve existing artifacts present, complete and structurally valid; preserved methodology contracts, enriched inventory quality evidence only; 205 protected files unchanged and tracked diff empty"
+}

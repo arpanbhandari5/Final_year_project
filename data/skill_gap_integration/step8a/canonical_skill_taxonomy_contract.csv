@@ -1,0 +1,8 @@
+concept_family,canonical_id_policy,local_support,comparison_role,numeric_policy
+ONET_SKILL,onet:31.0:skill:<element_id>,35 essential/transferable concepts,Occupation IM/LV plus user evidence presence,Occupation IM/LV retained separately; no personal subtraction
+ONET_KNOWLEDGE,onet:<release>:knowledge:<element_id>,ABSENT,Reserved; unavailable until validated source acquisition,No current calculations
+TECHNOLOGY,onet:31.0:software:<element_id>:<stable_product_key>,8908 category/example pairs; collisions require review,Occurrence-based occupation opportunities; preserve category and product,Boolean listing/evidence only; no common IM scale
+USER_EXPLICIT_UNMAPPED,local:user_term:<stable_normalized_key>,CV explicit terms,Preserve unmapped evidence without forcing official concept,No requirement score
+CERTIFICATION,credential:<issuer>:<credential>:<version>,Partial user claims,Separate evidence object linked only via validated supported mappings,No proficiency equivalence
+BROADER_COMPETENCY,local:reviewed_competency:<version>:<id>,Parser categories experimental,Display/context only until explicit definitions and manual approval,No gap scoring
+ONET_ABILITY,onet:<release>:ability:<element_id>,ABSENT,"Reserved, distinct from skills",No current calculations

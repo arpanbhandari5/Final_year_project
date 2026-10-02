@@ -1,0 +1,5 @@
+occupation_state,permitted_output,selection_policy,shared_opportunity_policy,failure_policy
+TOP,Occupation-specific evidence comparison,Use frozen eligible TOP SOC; preserve inference provenance,Not needed to infer additional occupations,Missing requirements: unavailable; never approximate SOC
+MULTIPLE,Separate results per eligible SOC; shared and candidate-specific opportunities labeled,Never silently pick rank 1 or average into fictional occupation,Intersection only across candidates with complete validated coverage; show membership and incomplete-coverage caveat,Clarification may narrow future target; uncalibrated scores never probability weights
+INSUFFICIENT,User evidence inventory and clarification only,No occupation-specific gap or generic skills assigned as occupation requirements,No candidate pooling from gated diagnostic rows,OCCUPATION_UNRESOLVED
+MISSING_OR_INVALID,Structured unavailable/error result,Validate frozen artifact contract before comparisons,No fallback to model or exposure,Fail visibly; no fabricated empty-gap success

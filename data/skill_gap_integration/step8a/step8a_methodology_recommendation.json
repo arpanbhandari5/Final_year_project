@@ -1,0 +1,294 @@
+{
+  "step": "8A",
+  "status": "FROZEN_METHODOLOGY_RECOMMENDATION",
+  "branch": "ml-pipeline-v2",
+  "head": "5f170071dd0d97ec1dbb55b07dbc8271f5fc4266",
+  "scope": "Audit/design only; no Step 8B engine, model, application or database change",
+  "observed_data": {
+    "skill_rows": 63700,
+    "skill_socs": 910,
+    "skill_concepts": 35,
+    "software_rows": 31821,
+    "software_socs": 923,
+    "alias_status": {
+      "AUTO_EXACT": 135,
+      "PENDING_REVIEW": 47
+    },
+    "software_normalized_collisions": 151,
+    "scales": {
+      "IM": {
+        "count": 31850,
+        "min": 1.0,
+        "max": 5.0,
+        "quartiles": [
+          1.88,
+          2.75,
+          3.12
+        ],
+        "median": 2.75,
+        "threshold_sensitivity": {
+          "3": 12883,
+          "3.5": 5472,
+          "4": 1958
+        },
+        "suppression": {
+          "N": 31850
+        },
+        "not_relevant": {
+          "": 31850
+        }
+      },
+      "LV": {
+        "count": 31850,
+        "min": 0.0,
+        "max": 6.0,
+        "quartiles": [
+          1.5,
+          2.62,
+          3.25
+        ],
+        "median": 2.62,
+        "threshold_sensitivity": {
+          "3": 12797,
+          "3.5": 6558,
+          "4": 3230
+        },
+        "suppression": {
+          "N": 31693,
+          "Y": 157
+        },
+        "not_relevant": {
+          "N": 28335,
+          "Y": 3515
+        }
+      }
+    },
+    "cv_nonempty": {
+      "address": 784,
+      "career_objective": 4740,
+      "skills": 9432,
+      "educational_institution_name": 9460,
+      "degree_names": 9460,
+      "passing_years": 9460,
+      "educational_results": 9460,
+      "result_types": 9460,
+      "major_field_of_studies": 9460,
+      "professional_company_names": 9460,
+      "company_urls": 9460,
+      "start_dates": 9460,
+      "end_dates": 9460,
+      "related_skils_in_job": 9460,
+      "positions": 9460,
+      "locations": 9460,
+      "responsibilities": 9544,
+      "extra_curricular_activity_types": 3426,
+      "extra_curricular_organization_names": 3426,
+      "extra_curricular_organization_links": 3426,
+      "role_positions": 3426,
+      "languages": 700,
+      "proficiency_levels": 700,
+      "certification_providers": 2008,
+      "certification_skills": 2008,
+      "online_links": 2008,
+      "issue_dates": 2008,
+      "expiry_dates": 2008,
+      "\ufeffjob_position_name": 9544,
+      "educationaL_requirements": 9544,
+      "experiencere_requirement": 8180,
+      "age_requirement": 5457,
+      "responsibilities.1": 9544,
+      "skills_required": 7843,
+      "matched_score": 9544
+    },
+    "inventory_files": 91,
+    "protected_files": 205,
+    "active_coverage": {
+      "active_eligible_socs": 170,
+      "skills_covered": 158,
+      "software_covered": 160,
+      "missing_skills": [
+        "11-9199.00",
+        "13-2051.00",
+        "15-1299.00",
+        "17-3029.00",
+        "19-4099.00",
+        "23-2099.00",
+        "29-9021.00",
+        "43-4199.00",
+        "43-9199.00",
+        "49-9099.00",
+        "51-9199.00",
+        "55-3015.00"
+      ],
+      "missing_software": [
+        "11-9199.00",
+        "15-1299.00",
+        "17-3029.00",
+        "19-4099.00",
+        "23-2099.00",
+        "43-4199.00",
+        "43-9199.00",
+        "49-9099.00",
+        "51-9199.00",
+        "55-3015.00"
+      ],
+      "profile_states": {
+        "INSUFFICIENT_EVIDENCE": 163,
+        "MULTIPLE_CANDIDATES": 146,
+        "TOP_CANDIDATE": 35
+      }
+    },
+    "cv_semantic_nonempty_paired_rows": {
+      "skills": 9432,
+      "related_skils_in_job": 8088,
+      "certification_skills": 784,
+      "positions": 9404,
+      "start_dates": 9376,
+      "end_dates": 9208,
+      "languages": 700,
+      "proficiency_levels": 588
+    },
+    "vocabulary_reference_checks": {
+      "human_id_name_match": true,
+      "software_category_product_match": true,
+      "alias_target_mismatches": 0
+    }
+  },
+  "method": "Deterministic user-side extraction candidates + context rules + unique exact matching + explicitly approved versioned aliases + review/abstention",
+  "new_trained_model_justified": false,
+  "ml_nlp_comparison": [
+    {
+      "method": "deterministic taxonomy",
+      "data": "Validated official vocabulary and approved aliases",
+      "labels": "Independent mapping gold for evaluation",
+      "evaluation": "Exact accuracy, precision, coverage, abstention",
+      "explainability": "Direct term-to-ID provenance",
+      "failure_modes": "Ambiguity; unseen terms; technical punctuation",
+      "suitability": "Recommended baseline"
+    },
+    {
+      "method": "rule-based NLP",
+      "data": "User-side sections and spans",
+      "labels": "Manual positive/negation/aspiration span labels for evaluation",
+      "evaluation": "Span precision/recall/F1 by context",
+      "explainability": "Rule and span provenance",
+      "failure_modes": "Negation; keyword collisions; missing sections",
+      "suitability": "Recommended minimal extraction layer after validation"
+    },
+    {
+      "method": "embeddings retrieval",
+      "data": "Versioned vocabulary and candidate index",
+      "labels": "Mapping relevance gold and abstention examples",
+      "evaluation": "Recall at k and false acceptance separately",
+      "explainability": "Candidate evidence plus similarity, not proof",
+      "failure_modes": "Semantically nearby incompatible concepts",
+      "suitability": "Optional later discovery only; not initially necessary"
+    },
+    {
+      "method": "pretrained LLM assistance",
+      "data": "Minimized redacted spans; documented provider/version",
+      "labels": "Independent extraction/mapping gold",
+      "evaluation": "Held-out factuality, precision, privacy and consistency",
+      "explainability": "Validate supplied spans and IDs; model explanation not evidence",
+      "failure_modes": "Hallucination; privacy; prompt injection; nondeterminism",
+      "suitability": "Optional review aid only; no need for initial FYP baseline"
+    },
+    {
+      "method": "supervised classifier/ranker",
+      "data": "Sufficient independently labeled skill spans/mappings/preferences",
+      "labels": "Currently absent; no 344-profile pseudo-label truth",
+      "evaluation": "Group-held-out metrics and baseline comparison",
+      "explainability": "Needs calibration/error analysis",
+      "failure_modes": "Leakage; overfit; no legitimate labels",
+      "suitability": "Not justified now; no training"
+    },
+    {
+      "method": "hybrid",
+      "data": "Deterministic extraction, validated taxonomy, reviewed registry",
+      "labels": "Manual gold to assess baseline",
+      "evaluation": "Layer-wise and end-to-end metrics",
+      "explainability": "Field/span/rule/source/version links",
+      "failure_modes": "Inherited ambiguity and coverage limitations",
+      "suitability": "Recommended rule/exact/review hybrid; no new trained model"
+    }
+  ],
+  "user_skill_representation": [
+    "PRESENT",
+    "EVIDENCED",
+    "UNKNOWN"
+  ],
+  "proficiency": "Not validated; no 0-100 score; explicit future self-report separate from occupational LV",
+  "requirements": "Occupation relevance descriptors, not universal mandatory job requirements; separate IM/LV/software families",
+  "gap": "CV evidence gap or user-confirmed learning need; no inference of non-possession from absence",
+  "priority": "Separate interpretable candidate-specific ordinal relevance and evidence-review queues; no weighted formula, exposure multiplier or AI uplift",
+  "ai_claims": {
+    "supported": "Separate historical exposure context and present occupation descriptors",
+    "unsupported": [
+      "Personal job-loss probability",
+      "AI replacement probability",
+      "AI-resilient skill guarantee",
+      "Current validated AI-complementarity ranking"
+    ],
+    "additional_evidence": "Dated task-level technology adoption/AI complementarity sources, occupational validation, explicit scope and longitudinal/outcome evaluation"
+  },
+  "leakage_safeguards": [
+    "Strict user-side field allowlist; exclude paired job fields and matched_score",
+    "Occupation requirements never assign user possession",
+    "Do not use inference supporting skills or occupation aliases as manual gold",
+    "Deduplicate and split by upstream profile groups",
+    "Source interests and synthetic risk features never become user skills"
+  ],
+  "privacy": {
+    "minimum_record": [
+      "Pseudonymous profile reference",
+      "Canonical concept/version",
+      "Evidence state",
+      "Source section/rule",
+      "Minimal redacted evidence span or secure evidence locator",
+      "Mapping alternatives/reason",
+      "Relevant coarse date only if attributable"
+    ],
+    "avoid": [
+      "Full CV text",
+      "Contacts/addresses",
+      "Employer URLs and unnecessary sensitive data"
+    ],
+    "policy": "Future retention/access/deletion and consent rules before persistence; no database implementation"
+  },
+  "reproducibility": {
+    "raw": "Versioned source URLs/release/license and exact hashes; external retrieval when redistribution inappropriate",
+    "normalized": "Track approved normalized data or reproducible versioned transform with schema and input/output hashes",
+    "aliases": "Human-approved versioned registry separate from immutable candidate observations",
+    "generated": "Manifest source hash, code revision, policy version and evaluation checkpoint",
+    "warning": "91-file inventory includes untracked/ignored assets; existing normalization construction script not identified among inspected scripts; do not declare rebuild reproducibility"
+  },
+  "next_step": "Step 8B: finalize validated vocabulary IDs and approved aliases, design independently labeled redacted evaluation sample, then implement isolated evidence extraction/mapping with stated abstention; do not implement numeric proficiency or course recommendations",
+  "external_references": [
+    {
+      "url": "https://www.onetonline.org/help/online/scales",
+      "supports": "IM importance 1-5; LV level 0-7; occupational descriptors and suppression semantics",
+      "accessed": "2026-10-02"
+    },
+    {
+      "url": "https://www.onetcenter.org/dictionary/31.0/csv/essential_skills.html",
+      "supports": "Release 31.0 essential skill schema and 18200 rows",
+      "accessed": "2026-10-02"
+    },
+    {
+      "url": "https://www.onetcenter.org/dictionary/31.0/excel/software_skills.html",
+      "supports": "Software category/examples and hot/in-demand flags",
+      "accessed": "2026-10-02"
+    },
+    {
+      "url": "https://www.onetcenter.org/database.html",
+      "supports": "O*NET release and license attribution; preserve source-specific licensing terms",
+      "accessed": "2026-10-02"
+    }
+  ],
+  "recovery_status": "All twelve existing artifacts present, complete and structurally valid; preserved methodology contracts, enriched inventory quality evidence only; 205 protected files unchanged and tracked diff empty",
+  "occupation_state_names": {
+    "TOP": "TOP_CANDIDATE",
+    "MULTIPLE": "MULTIPLE_CANDIDATES",
+    "INSUFFICIENT": "INSUFFICIENT_EVIDENCE"
+  }
+}

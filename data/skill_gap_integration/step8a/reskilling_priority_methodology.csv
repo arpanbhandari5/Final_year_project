@@ -1,0 +1,11 @@
+factor,decision,ordering_role,evidence_requirement,limitations
+USER_GOAL,Future user-confirmed target and interest first,Separate confirmed learning needs from CV evidence review,Explicit user confirmation,Not yet locally labeled
+IMPORTANCE,Use valid within-occupation IM descending,Ordinal transparent relevance order; stable canonical ID ties,Unsuppressed same-family IM,No arbitrary weighted score or mandatory threshold
+EVIDENCE,Separate unknown/ambiguous from confirmed learning need,Evidence review queue before declaring deficits,Direct CV provenance and optional user confirmation,No confidence-derived proficiency
+TRANSFERABILITY,Display validated coverage across eligible candidates,Shared opportunities alongside individual results; no score averaging,Complete candidate requirement coverage,Broad listing does not prove transfer learning
+LEVEL,Explain only; do not add to IM,Separate context,Element-specific anchors and non-suppressed relevant LV,No common cross-skill level/proficiency deficit
+TECHNOLOGY,Separate occurrence list and hot/in-demand context,No synthetic importance ranking,Validated software SOC/product link,No importance scale
+PREREQUISITES,Unavailable by default,No sequencing without evidence,Reviewed external prerequisite relations,Do not infer from co-occurrence
+AI_ADAPTATION,Research-only future label,No priority uplift from current local assets,Current task-level AI complementarity evidence with dated source and evaluation,No job-safety guarantee
+HISTORICAL_EXPOSURE,Excluded from priority formula,Optional separate occupational context,Frozen downstream exposure contract,No multiplier or personal AI-risk interpretation
+FINAL_SCORE,Not supported; do not calculate,Interpretable ordered groups only,Future separately evaluated rationale,No weighted formula frozen in Step 8A
