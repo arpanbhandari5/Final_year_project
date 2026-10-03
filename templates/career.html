@@ -108,7 +108,7 @@
     <section class="career-step is-active" data-step="dashboard">
       <div class="career-step__header">
         <h1>📊 Dashboard</h1>
-        <p>Your career intelligence overview at a glance</p>
+        <p>{% if is_authenticated %}Welcome back, {{ current_user.email }} — your career intelligence overview at a glance{% else %}Your career intelligence overview at a glance{% endif %}</p>
       </div>
 
       <div class="career-dash-stats">
@@ -168,6 +168,43 @@
       </div>
 
       <div class="career-dash-tips">
+        <h3>🧭 Explore the platform</h3>
+        <div class="career-dash-tips-grid career-quicklinks">
+          <a class="career-quicklink" href="{{ url_for('index') }}#resume-score">
+            <span class="career-quicklink__icon" aria-hidden="true">💯</span>
+            <div><strong>Resume Strength Score</strong><p>Animated 0–100 meter with skill, experience, and quality sub-scores.</p></div>
+          </a>
+          <a class="career-quicklink" href="{{ url_for('index') }}#job-dashboard">
+            <span class="career-quicklink__icon" aria-hidden="true">💼</span>
+            <div><strong>Job Match Dashboard</strong><p>Interactive role cards with search, filters, sorting, and job-board links.</p></div>
+          </a>
+          <a class="career-quicklink" href="{{ url_for('index') }}#risk-meter">
+            <span class="career-quicklink__icon" aria-hidden="true">⚠️</span>
+            <div><strong>Career Risk Meter</strong><p>Color-coded automation-exposure gauge with actionable guidance.</p></div>
+          </a>            <a class="career-quicklink" href="{{ url_for('chat_bp.chatbot_page') }}">
+            <span class="career-quicklink__icon" aria-hidden="true">🤖</span>
+            <div><strong>AI Career Assistant</strong><p>Chat through career questions with a resume-aware assistant.</p></div>
+          </a>
+          <a class="career-quicklink" href="{{ url_for('skills_gap') }}">
+            <span class="career-quicklink__icon" aria-hidden="true">🎯</span>
+            <div><strong>Skills Gap Analyzer</strong><p>Compare your skills against 20+ target roles and plan what to learn.</p></div>
+          </a>
+          <a class="career-quicklink" href="{{ url_for('methodology') }}">
+            <span class="career-quicklink__icon" aria-hidden="true">📊</span>
+            <div><strong>Methodology</strong><p>How the ML pipeline works — TF-IDF, risk model, O*NET matching.</p></div>
+          </a>
+          <a class="career-quicklink" href="{{ url_for('insights') }}">
+            <span class="career-quicklink__icon" aria-hidden="true">📈</span>
+            <div><strong>Insights</strong><p>Aggregated platform statistics and usage patterns.</p></div>
+          </a>
+          <a class="career-quicklink" href="{{ url_for('performance') }}">
+            <span class="career-quicklink__icon" aria-hidden="true">🩺</span>
+            <div><strong>Performance Monitor</strong><p>Live RAG pipeline health, cache stats, and API rate limits.</p></div>
+          </a>
+        </div>
+      </div>
+
+      <div class="career-dash-tips">
         <h3>💡 Getting Started Tips</h3>
         <div class="career-dash-tips-grid">
           <div class="career-dash-tip">
@@ -195,6 +232,38 @@
       </div>
     </section>
 
+
+    <section class="content-section" id="linked-accounts">
+      <div class="container">
+        <div class="glass-card">
+          <h3 class="section-title">🔗 Linked accounts</h3>
+          <p class="section-subtitle" style="text-align:left;margin-top:0.4rem;">Attach Google (or GitHub / LinkedIn) sign-in to your account and use it to log in without a password. Your existing email and password keep working.</p>
+          <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1rem;">
+            {% for provider, label, icon in [("google", "Google", "🔵"), ("github", "GitHub", "🐙"), ("linkedin", "LinkedIn", "🔗")] %}
+              {% set linked = provider in linked_providers %}
+              {% set configured = {"google": oauth_google_configured, "github": oauth_github_configured, "linkedin": oauth_linkedin_configured}[provider] %}
+              {% if linked %}
+              <form method="post" action="{{ url_for('linked_account_remove', provider=provider) }}">
+                <button type="submit" class="career-btn career-btn--ghost career-btn--sm" title="Unlink {{ label }} sign-in">
+                  {{ icon }} {{ label }} — linked ✓ (unlink)
+                </button>
+              </form>
+              {% elif configured %}
+              <form method="post" action="{{ url_for('linked_account_start', provider=provider) }}">
+                <button type="submit" class="career-btn career-btn--secondary career-btn--sm" title="Attach {{ label }} sign-in to your account">
+                  {{ icon }} Link {{ label }}
+                </button>
+              </form>
+              {% else %}
+              <button type="button" class="career-btn career-btn--ghost career-btn--sm" disabled title="{{ label }} OAuth is not configured on this server">
+                {{ icon }} {{ label }} — not configured
+              </button>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- ═══ STEP: Resume Analysis ═══ -->
     <section class="career-step" data-step="resume">
       <div class="career-step__header">
@@ -757,6 +826,12 @@
       </div>
 
       <!-- Step Progress Indicator -->
+      <!-- View Toggle -->
+      <div class="rm-view-toggle">
+        <button type="button" class="rm-view-btn is-active" data-rm-view="phases">📋 Phase View</button>
+        <button type="button" class="rm-view-btn" data-rm-view="weekly">📅 Weekly Schedule</button>
+      </div>
+
       <div class="rm-step-progress">
         <div class="rm-step-progress__track">
           <div class="rm-step-progress__fill" data-rm-progress-fill style="width: 0%"></div>
@@ -829,6 +904,16 @@
           <p class="rm-complete__desc">You've completed all 5 phases of your learning roadmap. You're ready to start your job search!</p>
           <button type="button" class="career-btn career-btn--primary" data-rm-view-jobs>View Job Matches →</button>
         </div>
+      </div>
+
+      <!-- Weekly Schedule View (hidden by default) -->
+      <div class="rm-weekly hidden" data-rm-weekly-view>
+        <div class="rm-weekly-header">
+          <h2>📅 Week-by-Week Schedule</h2>
+          <p>Your personalized weekly learning plan</p>
+        </div>
+        <div class="rm-weekly-summary" data-rm-weekly-summary></div>
+        <div class="rm-weekly-list" data-rm-weekly-list></div>
       </div>
 
       <!-- Skill Detail Panel (Modal) -->

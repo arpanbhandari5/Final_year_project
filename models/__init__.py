@@ -11,18 +11,17 @@ tables. The legacy models (User, Upload, Feedback, VerificationOTP) live in
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from extensions import db
 
 
 def utc_now() -> datetime:
     """Naive UTC datetime, consistent with what SQLite stores/returns."""
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
-# Register the chatbot models so create_all() knows about them.
-from . import chat, upload  # noqa: E402,F401
+# Register the chatbot + profile models so create_all() knows about them.
+from . import chat, profile, upload  # noqa: E402
 
-
-__all__ = ["db", "utc_now", "chat", "upload"]
+__all__ = ["chat", "db", "profile", "upload", "utc_now"]

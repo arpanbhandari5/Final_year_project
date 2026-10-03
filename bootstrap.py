@@ -4,7 +4,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "ml_models" / "model.pkl"
 

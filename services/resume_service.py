@@ -28,6 +28,8 @@ from resume_parser import (
 )
 from risk_assessor import (
     analyze_resume as assess_resume,
+)
+from risk_assessor import (
     analyze_skills_gap,
     generate_learning_roadmap,
     get_available_roles,
@@ -94,9 +96,8 @@ def rule_based_career_answer(
                 p = part.strip()
                 if not p or len(p) < 12:
                     continue
-                if any(re.search(rf"\b{re.escape(kw)}", p, re.IGNORECASE) for kw in keywords):
-                    if p not in hits:
-                        hits.append(p)
+                if p not in hits and any(re.search(rf"\b{re.escape(kw)}", p, re.IGNORECASE) for kw in keywords):
+                    hits.append(p)
                 if len(hits) >= limit:
                     break
             return "\n".join(f"• {h}" for h in hits)
@@ -227,7 +228,7 @@ def rule_based_career_answer(
         if top_skills:
             return (
                 f"Based on your skills ({top_skills}), here's a career map: "
-                "1) Compare your skills against job postings to pick 2–3 target roles, "
+                "1) Compare your skills against job postings to pick 2-3 target roles, "
                 "2) List the skills each role asks for that you don't have yet, "
                 "3) Follow a learning roadmap to close the biggest gaps first, "
                 "4) Set 3-month and 12-month milestones with measurable outcomes, "
@@ -318,7 +319,7 @@ def _extract_skills_safe(resume_text: str) -> dict[str, Any]:
 
 
 def compute_ats_score(resume_text: str) -> dict[str, Any]:
-    """Heuristic ATS-compatibility score (0–100) with a checklist.
+    """Heuristic ATS-compatibility score (0-100) with a checklist.
 
     Checks the dimensions ATS + recruiters actually scan for: contact info,
     required sections, keyword density, action verbs, quantified results,
@@ -395,8 +396,6 @@ def compare_with_job_description(resume_text: str, jd_text: str) -> dict[str, An
     Returns the matched skills, missing keywords, extras, and an overall
     match percentage — the backbone of the "compare resume with JD" feature.
     """
-    resume_lower = resume_text.lower()
-    jd_lower = jd_text.lower()
     resume_skills = set(s.lower() for s in (_extract_skills_safe(resume_text).get("all_skills") or []))
     jd_skills = set(s.lower() for s in (_extract_skills_safe(jd_text).get("all_skills") or []))
 
@@ -462,7 +461,7 @@ def interview_questions(resume_text: str) -> dict[str, Any]:
         "Why are you interested in this role?",
         "Walk me through a project you are most proud of.",
         "Describe a time you faced a challenge and how you overcame it (STAR).",
-        "Where do you see yourself in 3–5 years?",
+        "Where do you see yourself in 3-5 years?",
     ]
     technical = [f"Explain how you have used {s} in a real project." for s in skill_list[:4]]
     role_specific = [
@@ -612,7 +611,7 @@ def format_tool_result(tool: str, data: dict[str, Any]) -> str:
             f"### 📝 Resume Rewrite Suggestions\n\n"
             f"**Completeness:** {d.get('quality_score', 0)}/100 · **ATS:** {d.get('ats_score', 0)}/100\n\n"
             f"**Strengths:**\n" + "\n".join(f"- {s}" for s in d.get("strengths", []))
-            + f"\n\n**Suggestions:**\n" + "\n".join(f"- {s}" for s in d.get("suggestions", []))
+            + "\n\n**Suggestions:**\n" + "\n".join(f"- {s}" for s in d.get("suggestions", []))
         )
     if tool == "salary":
         lines = ["### 💰 Salary Estimates (from O*NET data)"]

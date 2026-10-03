@@ -11,12 +11,13 @@ from flask_wtf.csrf import generate_csrf
 
 from bootstrap import ensure_model_artifacts
 from config import Config
-from extensions import compress, csrf, login_manager
+from extensions import compress, csrf, db, login_manager
 
 # ── Route modules (plain-route registration keeps endpoint names stable,
 #    e.g. ``login``, ``workspace``, ``methodology``, used by templates) ──
 from routes.admin import register_admin
 from routes.api import register_api
+from routes.extension_api import register_extension_api
 from routes.auth import LINKEDIN_AVAILABLE, _oauth_is_configured, register_auth
 
 # ── Career Assistant Chat Blueprint (ChatGPT-style page) ──
@@ -25,7 +26,7 @@ from routes.auth import LINKEDIN_AVAILABLE, _oauth_is_configured, register_auth
 # runs in initialize_database() — otherwise the chat tables would never exist.
 from routes.chat import chat_bp
 from routes.pages import register_pages
-from storage import User, init_database
+from storage import User, get_linked_providers, init_database
 from utils import get_cache_bust_hash
 
 # ── Project root ─────────────────────────────────────────────
@@ -96,7 +97,7 @@ login_manager.login_view = "login"
 @login_manager.user_loader
 def load_user(user_id: str) -> User | None:
     try:
-        return User.query.get(int(user_id))
+        return db.session.get(User, int(user_id))
     except Exception:
         return None
 
@@ -113,6 +114,7 @@ register_pages(app)
 register_auth(app)  # also registers the OAuth blueprints under /login
 register_admin(app)
 register_api(app)
+register_extension_api(app)
 app.register_blueprint(chat_bp)
 
 
@@ -135,6 +137,8 @@ def inject_globals() -> dict[str, Any]:
         "oauth_google_configured": _oauth_is_configured("google"),
         "oauth_github_configured": _oauth_is_configured("github"),
         "oauth_linkedin_configured": _oauth_is_configured("linkedin") and LINKEDIN_AVAILABLE,
+        # Providers already attached to the signed-in account (Linked Accounts UI)
+        "linked_providers": (get_linked_providers(current_user) if current_user.is_authenticated else []),
     }
 
 

@@ -33,6 +33,7 @@ from utils import clean_text as _clean_text
 # PyMuPDF - SAHAY_AI-style enhanced PDF extraction (3x better quality)
 # Imported lazily - PyMuPDF is heavy (~0.6s) and only needed for PDF parsing.
 HAS_PYMUPDF: bool | None = None
+HAS_PDFPLUMBER: bool | None = None
 
 
 def _pymupdf_available() -> bool:
@@ -45,6 +46,18 @@ def _pymupdf_available() -> bool:
         except Exception:
             HAS_PYMUPDF = False
     return HAS_PYMUPDF
+
+
+def _pdfplumber_available() -> bool:
+    global HAS_PDFPLUMBER
+    if HAS_PDFPLUMBER is None:
+        try:
+            import pdfplumber  # noqa: F401
+
+            HAS_PDFPLUMBER = True
+        except Exception:
+            HAS_PDFPLUMBER = False
+    return HAS_PDFPLUMBER
 
 
 log = logging.getLogger("prayash.parser")
@@ -249,6 +262,22 @@ def extract_resume_text(uploaded_file) -> str:
             text = _extract_pdf_with_pymupdf(payload)
             if text:
                 return _clean_text(text)
+        # Fallback to pdfplumber (layout-aware page-by-page extraction)
+        if _pdfplumber_available():
+            try:
+                import pdfplumber
+
+                parts: list[str] = []
+                with pdfplumber.open(BytesIO(payload), unicode_norm="NFKC") as pdf:
+                    for page in pdf.pages:
+                        page_text = page.extract_text() or ""
+                        if page_text:
+                            parts.append(page_text)
+                text = "\n".join(parts).strip()
+                if text:
+                    return _clean_text(text)
+            except Exception:
+                pass
         # Fallback to pypdf
         if PdfReader is not None:
             reader = PdfReader(BytesIO(payload))

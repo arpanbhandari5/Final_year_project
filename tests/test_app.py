@@ -431,6 +431,39 @@ def test_feedback_rejects_empty(client) -> None:
     assert resp.status_code == 400
 
 
+# ── Report Export Endpoint ───────────────────────────────────────
+
+
+def test_export_report(client) -> None:
+    """POST /api/export renders the printable report for an analysis payload
+    (regression: static/script.js called this route but it did not exist)."""
+    resp = client.post(
+        "/api/export",
+        json={
+            "analysis": {
+                "risk_score": 0.42,
+                "risk_label": "Moderate",
+                "mode": "standard",
+                "top_roles": [{"job_role": "Data Analyst", "industry": "Tech", "similarity": 0.8, "risk_score": 0.4}],
+                "riasec": {"scores": {"Investigative": 80}, "primary": "Investigative", "secondary": "Artistic", "tertiary": "Social"},
+            }
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["success"] is True
+    assert "Prayash Career Intelligence Report" in data["html"]
+    assert "42%" in data["html"]
+    assert "Data Analyst" in data["html"]
+
+
+def test_export_report_rejects_missing_analysis(client) -> None:
+    """POST /api/export without an analysis payload returns 400."""
+    resp = client.post("/api/export", json={})
+    assert resp.status_code == 400
+    assert resp.get_json()["success"] is False
+
+
 # ── Career Chat API Tests ────────────────────────────────────────────
 
 

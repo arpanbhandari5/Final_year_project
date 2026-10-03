@@ -70,9 +70,7 @@
           <a class="nav-link {% if active_page == 'insights' %}is-active{% endif %}" href="{{ url_for('insights') }}">Insights</a>
           <a class="nav-link {% if active_page == 'performance' %}is-active{% endif %}" href="{{ url_for('performance') }}">Performance</a>
           <a class="nav-link {% if active_page == 'partnerships' %}is-active{% endif %}" href="{{ url_for('partnerships') }}">Partnerships</a>
-          {% if is_authenticated %}
-          <a class="nav-link {% if active_page == 'career' %}is-active{% endif %}" href="{{ url_for('career_analysis') }}">Career Analysis</a>
-          {% endif %}
+
           {% if not is_authenticated %}
           <a class="nav-link {% if active_page == 'login' %}is-active{% endif %}" href="{{ url_for('login') }}">Login</a>
           <a class="nav-link {% if active_page == 'signup' %}is-active{% endif %}" href="{{ url_for('signup') }}">Sign Up</a>
@@ -99,15 +97,6 @@
               <span class="user-menu__label">Signed in as {{ current_user.email }}</span>
               <a class="user-menu__item {% if active_page == 'workspace' %}is-active{% endif %}" role="menuitem" href="{{ url_for('workspace') }}">
                 <span aria-hidden="true">💼</span> Workspace
-              </a>
-              <a class="user-menu__item {% if active_page == 'career' %}is-active{% endif %}" role="menuitem" href="{{ url_for('career_analysis') }}">
-                <span aria-hidden="true">🎯</span> Career Analysis
-              </a>
-              <a class="user-menu__item" role="menuitem" href="{{ url_for('skills_gap') }}">
-                <span aria-hidden="true">📊</span> Skills Gap
-              </a>
-              <a class="user-menu__item {% if active_page == 'chatbot' %}is-active{% endif %}" role="menuitem" href="{{ url_for('chat_bp.chatbot_page') }}">
-                <span aria-hidden="true">💬</span> Career Chat
               </a>
               {% if admin_authenticated %}
               <a class="user-menu__item {% if active_page == 'admin' %}is-active{% endif %}" role="menuitem" href="{{ url_for('admin_dashboard') }}">
@@ -192,6 +181,10 @@
     </div>
   </div>
 
+  <!-- Shared roadmap-progress engine: loaded before the page bundles so both
+       the Workplace (script.js) and the guided flow (career-analysis.js) use
+       the same progress store and API calls instead of diverging copies. -->
+  <script src="{{ url_for('static', filename='roadmap-progress.js', v=static_version) }}"></script>
   <script src="{{ url_for('static', filename='script.js', v=static_version) }}"></script>
   {% block scripts %}{% endblock %}
 </body>

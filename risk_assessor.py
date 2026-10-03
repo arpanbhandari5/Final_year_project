@@ -564,15 +564,22 @@ def _normalize_skill(skill: str) -> str:
     return skill.strip().lower()
 
 
-def analyze_skills_gap(resume_text: str, target_role: str) -> dict[str, Any]:
+def analyze_skills_gap(
+    resume_text: str, target_role: str, user_skills: list[str] | None = None
+) -> dict[str, Any]:
     """Analyze skills gap between resume and target role.
 
     Extracts skills from the resume text, compares them against the
     target role's requirements, and generates learning recommendations.
 
     Args:
-        resume_text: The cleaned resume text.
+        resume_text: The cleaned resume text. May be empty when
+            ``user_skills`` carries the detected skill list instead (e.g. the
+            workspace reuses the skills extracted by a completed analysis).
         target_role: The target career role to analyze against.
+        user_skills: Optional already-extracted skills from a prior analysis.
+            They are seeded into the detected set the same way text keywords
+            are, so the comparison stays consistent.
 
     Returns:
         dict with current_skills, missing_skills, matched_skills,
@@ -587,6 +594,15 @@ def analyze_skills_gap(resume_text: str, target_role: str) -> dict[str, Any]:
 
     # Extract skills from resume using the same keyword extraction
     detected_keywords = set(split_keywords(resume_text))
+
+    # Seed the detected set with skills already extracted by a prior
+    # analysis (workspace skill-gap runs after the main analysis, where the
+    # resume text is intentionally not persisted).
+    for s in user_skills or []:
+        name = str(s or "").strip()
+        if name:
+            detected_keywords.add(name)
+            detected_keywords.add(name.lower())
 
     # Also check detected skills from the analysis pipeline
     detected_skills = set()

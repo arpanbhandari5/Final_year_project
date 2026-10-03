@@ -21,6 +21,13 @@
   // Activity log
   let activityLog = [];
 
+  // Dashboard stats — persisted to localStorage so the dashboard keeps its
+  // numbers (Analyses Run, Careers Explored, Skills Detected, Best Match,
+  // Roadmap Done) and Recent Activity across page reloads instead of
+  // resetting to 0/"—" every time the page is opened.
+  const DASH_STORAGE_KEY = 'prayash-career-dashboard';
+  let dashStats = { analyses: 0, careers: 0, skills: 0, match: null, roadmap: null };
+
   // ── DOM refs ───────────────────────────────────────────────
   const app = document.querySelector('[data-career-app]');
   if (!app) return;
@@ -155,7 +162,11 @@
   const addActivity = (text) => {
     activityLog.unshift({ text, time: new Date() });
     if (activityLog.length > 10) activityLog = activityLog.slice(0, 10);
+    // Count analyses explicitly — the visible log is capped at 10 entries,
+    // so counting from it alone would undercount after a few reloads.
+    if (text.includes('analyzed')) dashStats.analyses += 1;
     renderActivity();
+    updateDashboard();
   };
 
   const renderActivity = () => {
@@ -258,20 +269,53 @@
   }
 
   function updateDashboard() {
-    if (dashAnalyses) dashAnalyses.textContent = activityLog.filter(a => a.text.includes('analyzed')).length || 0;
-    if (dashCareers) dashCareers.textContent = careerPaths.length || 0;
-    if (dashSkills) dashSkills.textContent = skillsData?.count || 0;
-    if (dashMatch) {
-      const top = careerPaths[0];
-      dashMatch.textContent = top ? `${top.score}%` : '—';
+    // Merge the live session into the persisted stats, then render from the
+    // merged view so an empty (fresh) session falls back to saved numbers.
+    const liveAnalyses = activityLog.filter(a => a.text.includes('analyzed')).length;
+    dashStats.analyses = Math.max(dashStats.analyses || 0, liveAnalyses);
+    if (careerPaths.length) {
+      dashStats.careers = careerPaths.length;
+      dashStats.match = careerPaths[0].score;
     }
-    // Update roadmap progress on dashboard
-    if (dashRoadmapProgress) {
-      const stats = getRoadmapCompletionStats();
-      dashRoadmapProgress.textContent = stats.total > 0 ? `${stats.pct}%` : '—';
-    }
+    if (skillsData?.count) dashStats.skills = skillsData.count;
+    const liveRoadmap = getRoadmapCompletionStats();
+    if (liveRoadmap.total > 0) dashStats.roadmap = liveRoadmap.pct;
+
+    if (dashAnalyses) dashAnalyses.textContent = dashStats.analyses || 0;
+    if (dashCareers) dashCareers.textContent = dashStats.careers || 0;
+    if (dashSkills) dashSkills.textContent = dashStats.skills || 0;
+    if (dashMatch) dashMatch.textContent = dashStats.match != null ? `${dashStats.match}%` : '—';
+    if (dashRoadmapProgress) dashRoadmapProgress.textContent = dashStats.roadmap != null ? `${dashStats.roadmap}%` : '—';
+
+    persistDashboardState();
     // Update career score ring in sidebar
     updateCareerScoreRing();
+  }
+
+  function persistDashboardState() {
+    try {
+      localStorage.setItem(DASH_STORAGE_KEY, JSON.stringify({
+        stats: dashStats,
+        activity: activityLog.map(a => ({
+          text: a.text,
+          time: (a.time instanceof Date ? a.time : new Date(a.time)).toISOString(),
+        })),
+      }));
+    } catch { /* storage full/unavailable — dashboard still works in-session */ }
+  }
+
+  function restoreDashboardState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(DASH_STORAGE_KEY) || 'null');
+      if (!saved) return;
+      if (saved.stats) dashStats = { ...dashStats, ...saved.stats };
+      if (Array.isArray(saved.activity)) {
+        activityLog = saved.activity.map(a => ({
+          text: String(a.text || ''),
+          time: a.time ? new Date(a.time) : new Date(),
+        }));
+      }
+    } catch { /* corrupted storage — start fresh */ }
   }
 
   function updateCareerScoreRing() {
@@ -982,6 +1026,7 @@
         roadmapData = data.roadmap.phases || [];
         renderRoadmap();
         renderRoadmapHeader();
+        loadRoadmapProgress(); // re-point the shared engine at this target role
         addActivity('Personalized learning roadmap generated — ' + roadmapData.length + ' phases');
         navItems[steps.indexOf('advisor')].disabled = false;
       } else {
@@ -1020,52 +1065,50 @@
   }
 
   // ── Roadmap Progress Persistence ─────────────────────────
-  const PROGRESS_STORAGE_KEY = 'prayash-roadmap-progress';
+  // Delegates to the shared window.RoadmapProgress engine
+  // (static/roadmap-progress.js) — the SAME store the Workplace uses, so a
+  // roadmap completed here shows completed there and vice versa. Progress is
+  // mirrored to localStorage and persisted per-account through
+  // /api/roadmap-progress (backed by the existing roadmap_progress table).
+  const RP = window.RoadmapProgress;
+  roadmapCompletion = RP ? RP.state : {}; // keep the live reference in sync
+
+  function _syncProgressTarget() {
+    if (!RP) return;
+    const role = gapData?.target_role || personalizedRoadmap?.target_role || '';
+    RP.configure(role, personalizedRoadmap?.weekly_hours || 8);
+  }
 
   function loadRoadmapProgress() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(PROGRESS_STORAGE_KEY) || '{}');
-      roadmapCompletion = saved;
-    } catch { roadmapCompletion = {}; }
+    _syncProgressTarget();
+    if (!RP) return Promise.resolve();
+    return RP.load();
   }
 
   function saveRoadmapProgress() {
-    try { localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(roadmapCompletion)); } catch {}
+    if (!RP) return;
+    _syncProgressTarget();
+    RP.save();
   }
 
   function getProgressKey(phaseIdx, itemIdx) {
-    return `${gapData?.target_role || 'default'}::${phaseIdx}::${itemIdx}`;
+    return RP ? RP.key(phaseIdx, itemIdx) : `${gapData?.target_role || 'default'}::${phaseIdx}::${itemIdx}`;
   }
 
   function isItemComplete(phaseIdx, itemIdx) {
-    return !!roadmapCompletion[getProgressKey(phaseIdx, itemIdx)];
+    return RP ? RP.isComplete(phaseIdx, itemIdx) : false;
   }
 
   function toggleItemComplete(phaseIdx, itemIdx) {
-    const key = getProgressKey(phaseIdx, itemIdx);
-    if (roadmapCompletion[key]) {
-      delete roadmapCompletion[key];
-    } else {
-      roadmapCompletion[key] = true;
-    }
-    saveRoadmapProgress();
+    if (!RP) return;
+    _syncProgressTarget();
+    RP.toggle(phaseIdx, itemIdx);
     updateRoadmapProgressBar();
     updateDashboard();
   }
 
   function getRoadmapCompletionStats() {
-    let totalItems = 0;
-    let completedItems = 0;
-    const mapping = getPhaseMapping();
-    mapping.forEach((phase, pIdx) => {
-      (phase.stages || []).forEach((s, sIdx) => {
-        totalItems++;
-        const pI = s._phaseIdx != null ? s._phaseIdx : pIdx;
-        const sI = s._skillIdx != null ? s._skillIdx : sIdx;
-        if (isItemComplete(pI, sI)) completedItems++;
-      });
-    });
-    return { total: totalItems, completed: completedItems, pct: totalItems ? Math.round((completedItems / totalItems) * 100) : 0 };
+    return RP ? RP.stats(getPhaseMapping()) : { total: 0, completed: 0, pct: 0 };
   }
 
   function updateRoadmapProgressBar() {
@@ -1074,8 +1117,7 @@
   }
 
   function resetRoadmapProgress() {
-    roadmapCompletion = {};
-    saveRoadmapProgress();
+    if (RP) RP.reset();
     renderRoadmap();
     updateDashboard();
     toast('Roadmap progress reset.', 'info');
@@ -1371,6 +1413,97 @@
       if (descEl) descEl.textContent = r.reason || '';
     }
   }
+
+  // ── Weekly Schedule View ─────────────────────────────────
+  let currentView = 'phases'; // 'phases' or 'weekly'
+
+  function renderWeeklySchedule() {
+    const weeklyList = document.querySelector('[data-rm-weekly-list]');
+    const weeklySummary = document.querySelector('[data-rm-weekly-summary]');
+    if (!weeklyList || !personalizedRoadmap) return;
+
+    const schedule = personalizedRoadmap.weekly_schedule || [];
+    if (schedule.length === 0) {
+      weeklyList.innerHTML = '<p style="color:var(--text-muted);">No weekly schedule available. Generate a roadmap first.</p>';
+      return;
+    }
+
+    // Summary
+    const totalWeeks = schedule.length;
+    const totalHours = schedule.reduce((acc, w) => acc + (w.hours || 0), 0);
+    const uniqueSkills = [...new Set(schedule.map(w => w.skill))];
+    if (weeklySummary) {
+      weeklySummary.innerHTML = `
+        <div class="rm-weekly-summary-card">
+          <div class="rm-weekly-summary-card__label">Total Weeks</div>
+          <div class="rm-weekly-summary-card__value">${totalWeeks}</div>
+        </div>
+        <div class="rm-weekly-summary-card">
+          <div class="rm-weekly-summary-card__label">Total Hours</div>
+          <div class="rm-weekly-summary-card__value">${totalHours}h</div>
+        </div>
+        <div class="rm-weekly-summary-card">
+          <div class="rm-weekly-summary-card__label">Skills to Learn</div>
+          <div class="rm-weekly-summary-card__value">${uniqueSkills.length}</div>
+        </div>
+        <div class="rm-weekly-summary-card">
+          <div class="rm-weekly-summary-card__label">Weekly Hours</div>
+          <div class="rm-weekly-summary-card__value">${personalizedRoadmap.weekly_hours || 8}h</div>
+        </div>`;
+    }
+
+    // Render week cards
+    weeklyList.innerHTML = schedule.map(w => {
+      const topicsHtml = (w.topics || []).map(t => `<span class="rm-week-card__topic">${esc(t)}</span>`).join('');
+      const practiceHtml = (w.practice || []).map(p => `<div class="rm-week-card__practice-item">${esc(p)}</div>`).join('');
+      const projectHtml = w.project ? `<div class="rm-week-card__project">${esc(w.project)}</div>` : '';
+
+      return `
+        <div class="rm-week-card">
+          <div class="rm-week-card__header">
+            <span class="rm-week-card__num">Week ${w.week}</span>
+            <span class="rm-week-card__skill">${esc(w.skill)}</span>
+            <div class="rm-week-card__meta">
+              <span class="rm-week-card__hours">${w.hours}h</span>
+              <span class="rm-week-card__phase">${esc(w.phase)}</span>
+            </div>
+          </div>
+          <div class="rm-week-card__body">
+            ${topicsHtml ? `<div><div class="rm-week-card__section-title">Topics</div><div class="rm-week-card__topics">${topicsHtml}</div></div>` : ''}
+            ${practiceHtml ? `<div><div class="rm-week-card__section-title">Practice</div><div class="rm-week-card__practice">${practiceHtml}</div></div>` : ''}
+            ${projectHtml ? `<div><div class="rm-week-card__section-title">Project</div>${projectHtml}</div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // View toggle
+  document.querySelectorAll('[data-rm-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.rmView;
+      if (view === currentView) return;
+      currentView = view;
+
+      document.querySelectorAll('[data-rm-view]').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+
+      const phaseContainer = document.querySelector('[data-rm-phase-container]');
+      const weeklyView = document.querySelector('[data-rm-weekly-view]');
+      const stepProgress = document.querySelector('.rm-step-progress');
+
+      if (view === 'phases') {
+        if (phaseContainer) phaseContainer.classList.remove('hidden');
+        if (weeklyView) weeklyView.classList.add('hidden');
+        if (stepProgress) stepProgress.classList.remove('hidden');
+        renderRoadmap();
+      } else {
+        if (phaseContainer) phaseContainer.classList.add('hidden');
+        if (weeklyView) weeklyView.classList.remove('hidden');
+        if (stepProgress) stepProgress.classList.add('hidden');
+        renderWeeklySchedule();
+      }
+    });
+  });
 
   // ── Skill Detail Panel ─────────────────────────────────
   function showSkillDetail(phaseIdx, skillIdx) {
@@ -2005,7 +2138,12 @@
           localStorage.removeItem('prayash-theme-mode');
           localStorage.removeItem('prayash-analysis-mode');
           localStorage.removeItem('prayash-active-path');
-          roadmapCompletion = {};
+          localStorage.removeItem(DASH_STORAGE_KEY);
+          if (RP) RP.reset();
+          activityLog = [];
+          dashStats = { analyses: 0, careers: 0, skills: 0, match: null, roadmap: null };
+          renderActivity();
+          updateDashboard();
           toast('All local data cleared.', 'info');
         } catch {}
       }
@@ -2020,9 +2158,11 @@
   }
 
   // ── Init ───────────────────────────────────────────────────
+  restoreDashboardState();
   goToStep(0);
   renderSkillsDeepDive();
   renderActivity();
+  updateDashboard();
 
   // Skill Extraction: render if data exists
   if (typeof SkillExtraction !== 'undefined' && skillsData) {

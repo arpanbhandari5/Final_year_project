@@ -32,7 +32,6 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from pathlib import Path
 from typing import Any
 
@@ -46,7 +45,7 @@ def _load_resources() -> dict[str, Any]:
     """Load the curated learning resources dataset."""
     if RESOURCES_PATH.exists():
         try:
-            with open(RESOURCES_PATH, "r", encoding="utf-8") as f:
+            with open(RESOURCES_PATH, encoding="utf-8") as f:
                 return json.load(f)
         except Exception:
             log.warning("Failed to load learning resources from %s", RESOURCES_PATH)
@@ -1375,6 +1374,87 @@ def _estimate_total_weeks(phases: list[dict[str, Any]]) -> str:
     return f"{total}-{total + 2} weeks" if total > 0 else "4-6 weeks"
 
 
+def _generate_weekly_schedule(phases: list[dict[str, Any]], weekly_hours: int = 8) -> list[dict[str, Any]]:
+    """Generate a week-by-week learning schedule from the roadmap phases.
+
+    Assigns skills to weeks based on their estimated time and the user's
+    available weekly hours. Each week includes the skills to focus on,
+    topics to cover, and practice activities.
+    """
+    weeks: list[dict[str, Any]] = []
+    week_num = 0
+
+    for phase in phases:
+        for skill in phase.get("skills", []):
+            # Skip completed items
+            if skill.get("status") == "completed":
+                continue
+            if skill.get("type") == "project":
+                # Projects get 1-2 weeks
+                week_num += 1
+                weeks.append({
+                    "week": week_num,
+                    "phase": phase["name"],
+                    "skill": skill["name"],
+                    "hours": weekly_hours,
+                    "topics": skill.get("topics", [])[:6],
+                    "practice": skill.get("practice", [])[:3],
+                    "project": skill.get("description", ""),
+                })
+                continue
+            if skill.get("type") == "action":
+                # Job Ready actions get 1 week each
+                week_num += 1
+                weeks.append({
+                    "week": week_num,
+                    "phase": phase["name"],
+                    "skill": skill["name"],
+                    "hours": weekly_hours,
+                    "topics": skill.get("topics", [])[:6],
+                    "practice": skill.get("practice", [])[:3],
+                    "project": "",
+                })
+                continue
+            # Parse estimated_time to determine number of weeks
+            time_str = skill.get("estimated_time", "2-3 weeks")
+            num_weeks = 2
+            try:
+                parts = time_str.replace("weeks", "").replace("week", "").strip().split("-")
+                num_weeks = int(parts[-1].strip()) if len(parts) > 1 else int(parts[0].strip())
+            except (ValueError, IndexError):
+                num_weeks = 2
+            num_weeks = max(1, min(num_weeks, 6))  # Clamp between 1 and 6 weeks
+
+            topics = skill.get("topics", [])
+            practice = skill.get("practice", [])
+
+            for w in range(num_weeks):
+                week_num += 1
+                # Split topics across weeks
+                topic_start = int(w * len(topics) / num_weeks)
+                topic_end = int((w + 1) * len(topics) / num_weeks)
+                week_topics = topics[topic_start:topic_end] if topics else []
+
+                week_practice = []
+                if w == num_weeks - 1:
+                    # Last week gets the practice and project work
+                    week_practice = practice[:3]
+                else:
+                    week_practice = [f"Review {skill['name']} concepts from this week"]
+
+                weeks.append({
+                    "week": week_num,
+                    "phase": phase["name"],
+                    "skill": skill["name"],
+                    "hours": weekly_hours,
+                    "topics": week_topics,
+                    "practice": week_practice,
+                    "project": "" if w < num_weeks - 1 else (skill.get("projects", [""])[0] if skill.get("projects") else ""),
+                })
+
+    return weeks
+
+
 def generate_personalized_roadmap(
     resume_text: str,
     target_role: str,
@@ -1518,6 +1598,7 @@ def generate_personalized_roadmap(
         "weekly_hours": weekly_hours,
         "already_have": already_have,
         "phases": phases,
+        "weekly_schedule": _generate_weekly_schedule(phases, weekly_hours),
         "reskilling_context": _build_reskilling_context(target_role, user_skills_lower),
     }
 

@@ -36,20 +36,30 @@ def get_cache_bust_hash() -> str:
     """Return a content-based hash of the versioned static assets for cache busting.
 
     Covers every file that templates load with ``v=static_version`` (styles.css,
-    script.js, career-chat.*, auth-assistant.*) so a change to ANY of them changes
-    the query string. This matters especially for the PWA service worker, which
+    script.js, career-chat.*, auth-assistant.*, career-analysis.*,
+    skill-extraction.*, ui-refresh.css) so a change to ANY of them changes the
+    query string. This matters especially for the PWA service worker, which
     serves static assets cache-first — a stale version would otherwise be served
-    forever.
+    forever, and /static/ responses are sent with ``immutable`` caching so an
+    unchanged query string would pin the browser to the old file.
     """
     global _CACHE_BUST_HASH
     if _CACHE_BUST_HASH is None:
         names = (
             "styles.css",
+            "ui-refresh.css",
             "script.js",
+            "roadmap-progress.js",
             "auth-assistant.css",
             "auth-assistant.js",
             "career-chat.css",
             "career-chat.js",
+            "career-advisor.css",
+            "career-advisor.js",
+            "career-analysis.css",
+            "career-analysis.js",
+            "skill-extraction.css",
+            "skill-extraction.js",
             "chatbot.css",
             "chatbot.js",
             "manifest.json",

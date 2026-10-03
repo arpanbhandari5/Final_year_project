@@ -23,8 +23,12 @@ from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.github import make_github_blueprint
 from flask_dance.contrib.google import make_google_blueprint
 from flask_login import current_user, login_required, login_user, logout_user
+from oauthlib.oauth2.rfc6749.errors import (
+    MismatchingStateError,
+    OAuth2Error,
+)
 
-from extensions import csrf
+from extensions import csrf, db
 from security import (
     _LOGIN_ATTEMPT_STORE,
     _LOGIN_MAX_ATTEMPTS,
@@ -45,12 +49,16 @@ from storage import (
     create_oauth_user,
     create_otp,
     create_user,
+    get_linked_providers,
     get_otp_attempts_remaining,
     get_user_by_email,
+    get_user_by_oauth,
     get_user_by_username,
+    link_oauth_account,
     invalidate_user_otps,
     mark_email_verified,
     send_email,
+    unlink_oauth_account,
     update_user_password,
     verify_otp,
 )
@@ -240,6 +248,62 @@ def register_auth(app) -> None:
     LINKEDIN_AVAILABLE = linkedin_bp is not None
 
     # ── OAuth Authorized Handlers ─────────────────────────────────
+    # ── Shared OAuth identity resolution (account linking) ──
+    def _handle_oauth_identity(blueprint, token, provider: str, email: str, provider_user_id: str | None) -> bool:
+        """Resolve an OAuth identity to a user, linking accounts.
+
+        Order: (1) durable provider-identity match (oauth_accounts),
+        (2) email match — attaches the identity to the existing account
+        so the user keeps their password login and data, (3) create a
+        new account. When the session carries an attach marker
+        (oauth_attach_<provider>), the identity is attached to that
+        signed-in user instead — required when the provider email
+        differs from the local account email.
+        """
+        if not token:
+            log.warning("%s OAuth failed — no token received", provider)
+            return False
+
+        # Attach flow: signed-in user explicitly attaching this provider.
+        attach_user_id = session.pop(f"oauth_attach_{provider}", None)
+        if attach_user_id:
+            from storage import User as _User
+
+            attach_user = db.session.get(_User, int(attach_user_id))
+            if attach_user is not None:
+                link_oauth_account(attach_user, provider, provider_user_id or email)
+                login_user(attach_user, remember=True)
+                log.info("%s OAuth attached to existing account: %s", provider, attach_user.email)
+                return False
+
+        # 1. Durable provider-identity match
+        if provider_user_id:
+            user = get_user_by_oauth(provider, provider_user_id)
+            if user:
+                login_user(user, remember=True)
+                log.info("%s OAuth login (identity match): %s", provider, user.email)
+                return False
+
+        # 2. Email match — attach the provider identity to the local account
+        user = get_user_by_email(email)
+        if user:
+            if provider_user_id:
+                link_oauth_account(user, provider, provider_user_id)
+            if not user.email_verified:
+                mark_email_verified(user.id)
+                user.email_verified = True
+            login_user(user, remember=True)
+            log.info("%s OAuth login (email link): %s", provider, user.email)
+            return False
+
+        # 3. New account
+        user = create_oauth_user(email, provider)
+        if provider_user_id:
+            link_oauth_account(user, provider, provider_user_id)
+        login_user(user, remember=True)
+        log.info("%s OAuth login (new account): %s", provider, email)
+        return False  # Prevent Flask-Dance from storing the token
+
     @oauth_authorized.connect_via(google_bp)
     def google_logged_in(blueprint, token):
         if not token:
@@ -254,10 +318,7 @@ def register_auth(app) -> None:
         if not email:
             log.warning("Google OAuth — no email in userinfo")
             return False
-        user = create_oauth_user(email, "google")
-        login_user(user, remember=True)
-        log.info("Google OAuth login: %s", email)
-        return False  # Prevent Flask-Dance from storing the token
+        return _handle_oauth_identity(blueprint, token, "google", email, info.get("sub"))
 
     @oauth_authorized.connect_via(github_bp)
     def github_logged_in(blueprint, token):
@@ -283,10 +344,7 @@ def register_auth(app) -> None:
                     if entry.get("primary") and entry.get("verified"):
                         email = entry["email"].strip().lower()
                         break
-        user = create_oauth_user(email, "github")
-        login_user(user, remember=True)
-        log.info("GitHub OAuth login: %s", email)
-        return False
+        return _handle_oauth_identity(blueprint, token, "github", email, str(info.get("id") or ""))
 
     if linkedin_bp is not None:
 
@@ -317,15 +375,57 @@ def register_auth(app) -> None:
                 if not email:
                     log.warning("LinkedIn OAuth — no email could be derived")
                     return False
-                user = create_oauth_user(email, "linkedin")
-                login_user(user, remember=True)
-                log.info("LinkedIn OAuth login: %s", email)
+                return _handle_oauth_identity(blueprint, token, "linkedin", email, str(info.get("id") or ""))
             except Exception as exc:
                 log.warning("LinkedIn OAuth error: %s", exc)
                 return False
             return False
 
     # ── OAuth Login Routes ──────────────────────────────────────────
+
+    # ── OAuth error tolerance (all providers) ─────────────────────
+    # Flask-Dance's /login/<provider>/authorized view raises unhandled
+    # exceptions (500 + debugger page) when the provider's redirect is
+    # invalid:
+    #   - MismatchingStateError: session cookie lost between "Sign in with
+    #     <provider>" and the callback (localhost vs 127.0.0.1 mixup,
+    #     stale tab, or blocked third-party cookies)
+    #   - invalid_grant / missing code: user cancelled consent, or the
+    #     provider returned an error param
+    # Each blueprint's authorized view is wrapped so these degrade to a
+    # friendly redirect back to the login page instead of a 500.
+    def _wrap_authorized(view, label: str):
+        """Catch OAuth2 errors inside a flask-dance authorized view."""
+        from functools import wraps
+
+        @wraps(view)
+        def wrapper(*args, **kwargs):
+            try:
+                return view(*args, **kwargs)
+            except (MismatchingStateError, OAuth2Error) as exc:
+                log.warning("%s OAuth callback error: %s", label, exc)
+                return redirect(url_for("login", error=f"{label} sign-in failed or was cancelled. Please try again."))
+        return wrapper
+
+    def _register_oauth_error_tolerance(blueprint, label: str) -> None:
+        authorized_key = f"{blueprint.name}.authorized"
+        if authorized_key in app.view_functions:
+            app.view_functions[authorized_key] = _wrap_authorized(app.view_functions[authorized_key], label)
+        else:  # pragma: no cover - defensive
+            log.debug("No authorized view for %s; skipping error wrap", label)
+
+    _register_oauth_error_tolerance(google_bp, "Google")
+    _register_oauth_error_tolerance(github_bp, "GitHub")
+    if linkedin_bp is not None:
+        _register_oauth_error_tolerance(linkedin_bp, "LinkedIn")
+
+    # Last-resort handler: any MismatchingStateError escaping a non-wrapped
+    # path still degrades to the login page instead of a 500.
+    def _mismatching_state_handler(error):
+        log.warning("OAuth state mismatch: %s", error)
+        return redirect(url_for("login", error="Sign-in failed or was cancelled. Please try again."))
+
+    app.register_error_handler(MismatchingStateError, _mismatching_state_handler)
 
     @app.get("/oauth/google")
     def google_login():
@@ -395,6 +495,31 @@ def register_auth(app) -> None:
         """Callback landing after LinkedIn OAuth completes."""
         if not current_user.is_authenticated:
             return redirect(url_for("login", error="LinkedIn login failed. Please try again."))
+        return redirect(url_for("workspace"))
+
+    # ── Linked Accounts (attach / detach OAuth identities) ──
+    @app.post("/settings/linked-accounts/<provider>/start")
+    @login_required
+    @csrf.exempt  # redirects into the OAuth flow; flask-dance manages its own state
+    def linked_account_start(provider: str):
+        """Begin attaching an OAuth identity to the signed-in account.
+
+        Marks the session so the oauth_authorized handler attaches the
+        resulting provider identity to *this* user instead of matching
+        or creating an account by email.
+        """
+        if provider not in {"google", "github", "linkedin"}:
+            return redirect(url_for("workspace"))
+        session[f"oauth_attach_{provider}"] = str(current_user.id)
+        blueprint_login = {"google": "google.login", "github": "github.login", "linkedin": "linkedin.login"}[provider]
+        return redirect(url_for(blueprint_login))
+
+    @app.post("/settings/linked-accounts/<provider>/remove")
+    @login_required
+    @csrf.exempt  # no state change beyond removing a link row; keeps the form simple
+    def linked_account_remove(provider: str):
+        """Detach an OAuth identity from the signed-in account."""
+        unlink_oauth_account(current_user, provider)
         return redirect(url_for("workspace"))
 
     # ── Local Auth Routes ───────────────────────────────────────────

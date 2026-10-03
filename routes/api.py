@@ -19,9 +19,10 @@ import uuid
 from collections.abc import Generator
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 import requests
-from flask import Response, current_app, jsonify, request, stream_with_context, url_for
+from flask import Response, current_app, jsonify, render_template, request, stream_with_context, url_for
 from flask_login import current_user, login_required
 from flask_wtf.csrf import generate_csrf
 from werkzeug.utils import secure_filename
@@ -35,16 +36,116 @@ from resume_parser import (
 from resume_parser import extract_resume_text as parse_resume_file
 from risk_assessor import analyze_resume as assess_resume
 from risk_assessor import (
+    _score_risk,
+    _top_matches,
     analyze_skills_gap,
     generate_learning_roadmap,
     get_available_roles,
+    load_artifacts,
     suggest_career_paths,
 )
+from services.resume_service import compute_ats_score
 from security import _RATE_LIMIT_MAX_REQUESTS, _RATE_LIMIT_WINDOW, rate_limit
 from storage import record_feedback, record_upload
-from utils import clean_text, get_cache_bust_hash
+from utils import RISK_LOW, RISK_MODERATE, clean_text, get_cache_bust_hash, risk_label
 
 log = logging.getLogger("prayash.api")
+
+# ── Skill → role affinity (curated) ──────────────────────────────────
+# The bundled job corpus is synthetic: profile texts carry no real skill
+# vocabulary, so keyword matching cannot rank roles. These curated keyword
+# sets map the 20 role archetypes in the corpus to the skills each one
+# actually requires. Scores stay explainable: coverage of the role's
+# keyword set by the user's skills.
+_ROLE_SKILL_MAP: dict[str, list[str]] = {
+    "Data Analyst": ["python", "sql", "pandas", "power bi", "tableau", "excel", "statistics", "analytics", "data", "dashboard"],
+    "Software Engineer": ["python", "java", "javascript", "git", "docker", "react", "flask", "django", "api", "testing"],
+    "Business Analyst": ["sql", "excel", "requirements", "stakeholder", "analytics", "reporting", "power bi", "process", "agile"],
+    "Product Manager": ["roadmap", "stakeholder", "agile", "analytics", "strategy", "user research", "prioritization", "kpi"],
+    "Marketing Specialist": ["seo", "content", "social media", "campaign", "analytics", "branding", "copywriting", "email"],
+    "Graphic Designer": ["photoshop", "illustrator", "figma", "branding", "typography", "layout", "design", "creative"],
+    "UX Designer": ["figma", "wireframe", "prototype", "user research", "usability", "design", "persona", "accessibility"],
+    "HR Specialist": ["recruitment", "onboarding", "payroll", "employee", "compliance", "interview", "engagement"],
+    "Accountant": ["tally", "excel", "gst", "bookkeeping", "audit", "reconciliation", "tax", "ledger"],
+    "Financial Analyst": ["excel", "modeling", "valuation", "forecasting", "sql", "reporting", "budget"],
+    "Consultant": ["stakeholder", "presentation", "strategy", "research", "analysis", "communication", "project"],
+    "Customer Support": ["communication", "crm", "ticketing", "zendesk", "empathy", "escalation", "phone"],
+    "Sales Manager": ["crm", "negotiation", "pipeline", "leads", "quota", "b2b", "forecasting", "relationship"],
+    "Teacher": ["curriculum", "lesson", "classroom", "mentoring", "assessment", "pedagogy", "tutoring"],
+    "Nurse": ["patient", "clinical", "triage", " medication", "care", "vital", "emergency"],
+    "Doctor": ["diagnosis", "clinical", "patient", "surgery", "treatment", "medical"],
+    "Civil Engineer": ["autocad", "survey", "construction", "structural", "estimation", "site", "concrete"],
+    "Electrician": ["wiring", "installation", "maintenance", "electrical", "safety", "troubleshooting"],
+    "Mechanic": ["repair", "engine", "diagnostics", "maintenance", "vehicle", "tools"],
+    "Lawyer": ["legal", "litigation", "contract", "compliance", "research", "drafting", "court"],
+    "Plumber": ["pipe", "installation", "repair", "maintenance", "drainage", "fixtures"],
+}
+
+def clamp01(v: float) -> float:
+    """Clamp a value into the 0-1 interval."""
+    return max(0.0, min(1.0, float(v)))
+
+def _job_board_links(job_role: str) -> list[dict[str, str]]:
+    """Deep-link search URLs for the major job boards, per role."""
+    q = quote(str(job_role or "career"))
+    slug = q.lower().replace("%20", "-")
+    return [
+        {"label": "Indeed", "url": f"https://www.indeed.com/jobs?q={q}"},
+        {"label": "LinkedIn", "url": f"https://www.linkedin.com/jobs/search/?keywords={q}"},
+        {"label": "Naukri", "url": f"https://www.naukri.com/{slug}-jobs"},
+    ]
+
+def _match_jobs_by_skills(skills: list[str], bundle: dict[str, Any], limit: int = 8) -> list[dict[str, Any]]:
+    """Rank role archetypes by curated skill-keyword coverage.
+
+    For each archetype the corpus's ~150 industry variants are averaged so
+    the returned risk score and trait chips reflect real bundled data.
+    Returns at most *limit* roles with positive coverage, best first.
+    """
+    joined = " " + " ".join(s.lower() for s in skills) + " "
+    tokens = set(re.findall(r"[a-z][a-z0-9+#.-]{1,}", joined))
+
+    # Aggregate variants per archetype: mean risk + mean attribute scores.
+    agg: dict[str, dict[str, Any]] = {}
+    for profile in bundle.get("job_profiles", []):
+        role = str(profile.get("job_role") or "")
+        entry = agg.setdefault(role, {"n": 0, "risk": 0.0, "attrs": None})
+        entry["n"] += 1
+        entry["risk"] += float(profile.get("risk_score") or 0.0)
+        attrs = profile.get("skills")
+        if isinstance(attrs, (list, tuple)) and attrs:
+            vals = [float(a) for a in attrs]
+            if entry["attrs"] is None:
+                entry["attrs"] = vals
+            else:
+                entry["attrs"] = [a + b for a, b in zip(entry["attrs"], vals)]
+
+    scored: list[dict[str, Any]] = []
+    for role, kws in _ROLE_SKILL_MAP.items():
+        if role not in agg:
+            continue
+        matched = sum(1 for kw in kws if kw in joined or kw in tokens)
+        if matched == 0:
+            continue
+        first = next(p for p in bundle.get("job_profiles", []) if p.get("job_role") == role)
+        mean_risk = agg[role]["risk"] / max(1, agg[role]["n"])
+        mean_attrs = agg[role]["attrs"]
+        chips: list[str] | None = None
+        if mean_attrs:
+            means = [v / agg[role]["n"] for v in mean_attrs]
+            labels = ["Skill complexity", "Domain knowledge", "Communication", "Collaboration"]
+            top2 = sorted(zip(means, labels), reverse=True)[:2]
+            chips = [f"{label} {v:.0%}" for v, label in top2]
+        scored.append({
+            "job_role": role,
+            "industry": first.get("industry", ""),
+            "risk_score": mean_risk,
+            "trait_chips": chips,
+            "similarity": min(1.0, matched / 5.0),  # 5 covered keywords ⇒ 100%
+        })
+
+    scored.sort(key=lambda m: m["similarity"], reverse=True)
+    return scored[:limit]
 
 # ── LLM API (OpenRouter / DeepSeek / OpenAI) ──
 # openai is imported lazily on first use — importing it at module load
@@ -383,6 +484,43 @@ def register_api(app) -> None:
             ],
         }
 
+    def _enrich_top_roles(analysis: dict[str, Any]) -> None:
+        """Clean up and enrich ``analysis['top_roles']`` for the dashboard.
+
+        The ML profiles carry two fields that leak training internals into
+        the API payload: ``text`` (the raw vectorizer blob) and ``skills``
+        (four numeric attribute scores, not real skill names). Each role is
+        rewritten to drop ``text`` and convert the attribute scores into
+        human-readable, per-role ``trait_chips`` (top-2 attributes) plus
+        ``job_board_links`` for the frontend job cards.
+        """
+        _TRAIT_LABELS: dict[str, str] = {
+            "skill_complexity_score": "Skill complexity",
+            "domain_specific_knowledge_level": "Domain knowledge",
+            "communication_requirement": "Communication",
+            "team_collaboration_level": "Collaboration",
+        }
+        for role in analysis.get("top_roles") or []:
+            role.pop("text", None)
+            raw_attrs = role.pop("skills", None)
+            if isinstance(raw_attrs, dict) and raw_attrs:
+                top2 = sorted(raw_attrs.items(), key=lambda kv: kv[1], reverse=True)[:2]
+                role["trait_chips"] = [label for _attr, label in top2]
+            elif isinstance(raw_attrs, (list, tuple)) and raw_attrs:
+                # Legacy ordered-list form: align positions to the labels,
+                # then keep the two strongest attributes.
+                labels = list(_TRAIT_LABELS.values())
+                pairs = [(float(v), labels[i]) for i, v in enumerate(raw_attrs) if i < len(labels)]
+                role["trait_chips"] = [f"{label} {v:.0%}" for v, label in sorted(pairs, reverse=True)[:2]]
+            if "job_board_links" not in role:
+                q = quote(str(role.get("job_role") or "career"))
+                slug = q.lower().replace("%20", "-")
+                role["job_board_links"] = [
+                    {"label": "Indeed", "url": f"https://www.indeed.com/jobs?q={q}"},
+                    {"label": "LinkedIn", "url": f"https://www.linkedin.com/jobs/search/?keywords={q}"},
+                    {"label": "Naukri", "url": f"https://www.naukri.com/{slug}-jobs"},
+                ]
+
     def _run_analysis_workflow(resume_text: str, mode: str) -> dict[str, Any]:
         """Run the full analysis pipeline.
 
@@ -391,6 +529,7 @@ def register_api(app) -> None:
         analysis will raise ``RuntimeError``, which the caller should handle.
         """
         analysis = assess_resume(resume_text, mode=mode)
+        _enrich_top_roles(analysis)
         analysis.setdefault("guided_next_steps", _build_guided_next_steps(analysis))
         analysis.setdefault("support_resources", _build_support_resources())
         analysis.setdefault("report_guide", _build_report_guide(analysis))
@@ -503,27 +642,242 @@ def register_api(app) -> None:
     @rate_limit
     @login_required
     def api_skills_gap_analyze():
-        """Analyze skills gap between resume skills and a target role."""
+        """Analyze skills gap between resume skills and a target role.
+
+        Accepts ``resume_text`` as before, or ``user_skills`` (a list of
+        already-extracted skills from the latest analysis) — the workspace
+        Skill Gap page reuses those when the resume text is no longer in the
+        form (it is intentionally never persisted server-side).
+        """
         data = request.get_json(silent=True) if request.is_json else {}
         resume_text = (request.form.get("resume_text") or data.get("resume_text", "")).strip()
         target_role = (request.form.get("target_role") or data.get("target_role", "")).strip()
+        raw_skills = data.get("user_skills") if isinstance(data, dict) else None
+        user_skills = [str(s).strip() for s in raw_skills if str(s).strip()] if isinstance(raw_skills, (list, tuple)) else []
 
-        if not resume_text or len(resume_text) < 20:
-            return jsonify({"success": False, "error": "Resume text is required (min 20 characters)."}), 400
         if not target_role:
             return jsonify({"success": False, "error": "Target role is required."}), 400
+        if (not resume_text or len(resume_text) < 20) and not user_skills:
+            return jsonify({"success": False, "error": "Resume text is required (min 20 characters)."}), 400
 
         cleaned_text = clean_text(resume_text)
 
-        result = analyze_skills_gap(cleaned_text, target_role)
+        result = analyze_skills_gap(cleaned_text, target_role, user_skills=user_skills)
         if "error" in result:
             return jsonify(
                 {"success": False, "error": result["error"], "available_roles": result.get("available_roles", [])}
             ), 400
 
-        return jsonify({"success": True, "analysis": result})
+        return jsonify({"success": True, "analysis": result})    # ── Resume Strength Score API ───────────────────────────────────────
 
-    # ── Career Paths API ────────────────────────────────────────────────
+    @app.post("/score_resume")
+    @rate_limit
+    def api_score_resume():
+        """Score a resume's strength on a 0-100 scale with sub-scores.
+
+        Accepts either:
+          - multipart/form-data with a file under "resume" (or "resume_file")
+          - application/json (or form) with "resume_text"
+
+        Returns:
+            JSON: {
+              success, result: {
+                final_score, skill_score, experience_score, quality_score,
+                feedback, skills, strengths, improvements, word_count
+              }
+            }
+        """
+        uploaded_file = request.files.get("resume") or request.files.get("resume_file")
+        data = request.get_json(silent=True) if request.is_json else {}
+        resume_text = (request.form.get("resume_text") or (data or {}).get("resume_text", "")).strip()
+
+        if uploaded_file and uploaded_file.filename:
+            try:
+                resume_text = parse_resume_file(uploaded_file)
+            except Exception:
+                return jsonify({"success": False, "error": "Could not read the uploaded file."}), 400
+
+        resume_text = clean_text(resume_text)
+        if not resume_text or len(resume_text) < 20:
+            return jsonify({"success": False, "error": "Provide a resume file or at least 20 characters of resume text."}), 400
+
+        ats = compute_ats_score(resume_text)
+        skills = extract_skills_from_text(resume_text)
+        skill_list = skills.get("all_skills") or []
+        parsed = parse_resume_enhanced(resume_text)
+
+        # ── Sub-scores (0-100 each) ──
+        # Skill: breadth of detected skills + proof of application (projects).
+        n_skills = len(skill_list)
+        skill_score = min(100, n_skills * 6 + (10 if parsed.get("projects") else 0))
+
+        # Experience: career signals — work history section, quantified
+        # results, tenure keywords and progression language.
+        experience_score = 25
+        sections_l = str(parsed.get("sections_found") or []).lower()
+        if "experience" in sections_l:
+            experience_score += 30
+        if re.search(r"\b\d{1,3}(?:[%kKx]| percent)\b|\b\d{2,4}\+?\b", resume_text):
+            experience_score += 20
+        if re.search(r"\b(intern|internship|freelance|part-time|full-time|years?)\b", resume_text, re.IGNORECASE):
+            experience_score += 15
+        if re.search(r"\b(senior|lead|headed|promoted|managed)\b", resume_text, re.IGNORECASE):
+            experience_score += 10
+        experience_score = min(100, experience_score)
+
+        # Quality: ATS compliance (structure, contact info, formatting).
+        quality_score = min(100, int(ats.get("score", 0)))
+
+        final_score = round(skill_score * 0.4 + experience_score * 0.3 + quality_score * 0.3)
+
+        # ── Feedback ──
+        if final_score >= 80:
+            feedback = "Strong resume. Fine-tune keywords for each application and keep quantifying your impact."
+        elif final_score >= 70:
+            feedback = "Good resume, needs improvement. Add measurable results and tighten the experience section."
+        elif final_score >= 40:
+            feedback = "Average resume. List more skills, quantify achievements, and structure sections clearly."
+        else:
+            feedback = "Resume needs work. Add an experience section, list concrete skills, and quantify your results."
+        strengths = [c["label"] for c in ats.get("checklist", []) if c.get("passed")][:6]
+        improvements = [c["detail"] for c in ats.get("checklist", []) if not c.get("passed")][:6]
+
+        return jsonify({
+            "success": True,
+            "result": {
+                "final_score": final_score,
+                "skill_score": skill_score,
+                "experience_score": experience_score,
+                "quality_score": quality_score,
+                "feedback": feedback,
+                "skills": skill_list[:15],
+                "strengths": strengths,
+                "improvements": improvements,
+                "word_count": ats.get("word_count", 0),
+            },
+        })
+
+    # ── Job Match API ───────────────────────────────────────────────────
+
+    @app.post("/match_jobs")
+    @rate_limit
+    def api_match_jobs():
+        """Return job matches for a resume or an explicit skill list.
+
+        Accepts JSON (or form): { skills: [...], resume_text: "..." }.
+        With only ``skills``, matches are ranked by keyword overlap between
+        the skill list and each role's profile text. With ``resume_text``,
+        the full ML similarity pipeline is used.
+
+        Returns:
+            JSON: { success, jobs: [{ title, score, skills, risk_level,
+                    risk_score, industry, job_board_links, trait_chips }] }
+        """
+        data = request.get_json(silent=True) if request.is_json else {}
+        resume_text = (request.form.get("resume_text") or (data or {}).get("resume_text", "")).strip()
+        skill_input = (data or {}).get("skills") or request.form.get("skills") or []
+
+        if isinstance(skill_input, str):
+            skill_input = [s.strip() for s in skill_input.split(",") if s.strip()]
+        skills = [str(s) for s in skill_input if str(s).strip()]
+
+        if (not resume_text or len(resume_text) < 20) and not skills:
+            return jsonify({"success": False, "error": "Provide resume text (min 20 chars) or a list of skills."}), 400
+
+        bundle, _courses = load_artifacts()
+        if not bundle:
+            return jsonify({"success": False, "error": "Model artifacts are unavailable."}), 503
+
+        if resume_text and len(resume_text) >= 20:
+            # Full ML similarity against all job profiles.
+            matches = _top_matches(bundle, clean_text(resume_text), limit=8)
+        else:
+            # Curated skill → archetype coverage ranking (the synthetic corpus
+            # carries no real skill vocabulary, so text overlap is useless).
+            matches = _match_jobs_by_skills(skills, bundle, limit=8)
+
+        jobs: list[dict[str, Any]] = []
+        for m in matches:
+            if m.get("similarity", 0) <= 0 and resume_text:
+                continue
+            score = round(clamp01(m.get("similarity", 0.0)) * 100)
+            jobs.append({
+                "title": m.get("job_role", ""),
+                "score": score,
+                "skills": skills[:6],
+                "risk_level": risk_label(float(m.get("risk_score", 0.0))),
+                "risk_score": round(float(m.get("risk_score", 0.0)), 3),
+                "industry": m.get("industry", ""),
+                "job_board_links": _job_board_links(m.get("job_role", "")),
+                "trait_chips": m.get("trait_chips") or None,  # null → frontend falls back to queried skills
+            })
+
+        return jsonify({"success": True, "jobs": jobs, "total": len(jobs)})
+
+    # ── Risk Prediction API ─────────────────────────────────────────────
+
+    @app.post("/predict_risk")
+    @rate_limit
+    def api_predict_risk():
+        """Predict automation-risk for a resume.
+
+        Accepts either:
+          - multipart/form-data with a file under "resume" (or "resume_file")
+          - application/json (or form) with "resume_text"
+
+        Returns:
+            JSON: { success, risk_level, risk_score, explanation,
+                    bands: {low, moderate} }
+        """
+        uploaded_file = request.files.get("resume") or request.files.get("resume_file")
+        data = request.get_json(silent=True) if request.is_json else {}
+        resume_text = (request.form.get("resume_text") or (data or {}).get("resume_text", "")).strip()
+
+        if uploaded_file and uploaded_file.filename:
+            try:
+                resume_text = parse_resume_file(uploaded_file)
+            except Exception:
+                return jsonify({"success": False, "error": "Could not read the uploaded file."}), 400
+
+        resume_text = clean_text(resume_text)
+        if not resume_text or len(resume_text) < 20:
+            return jsonify({"success": False, "error": "Resume text is required (min 20 characters)."}), 400
+
+        bundle, _courses = load_artifacts()
+        if not bundle:
+            return jsonify({"success": False, "error": "Model artifacts are unavailable."}), 503
+
+        cleaned = clean_text(resume_text)
+        risk_score = _score_risk(bundle, cleaned)
+        level = risk_label(risk_score)
+
+        if level == "Elevated":
+            explanation = (
+                f"High automation exposure ({risk_score:.0%}). Repetitive, rule-based "
+                "tasks dominate this profile — prioritize the reskilling actions below."
+            )
+        elif level == "Moderate":
+            explanation = (
+                f"Moderate exposure ({risk_score:.0%}). Parts of this role can be "
+                "automated; strengthening transferable skills will keep you ahead."
+            )
+        else:
+            explanation = (
+                f"Low exposure ({risk_score:.0%}). Your profile leans on judgment and "
+                "interpersonal work — keep skills current to stay positioned."
+            )
+
+        return jsonify({
+            "success": True,
+            "risk_level": level,
+            "risk_score": round(risk_score, 3),
+            "explanation": explanation,
+            "bands": {"low": RISK_LOW, "moderate": RISK_MODERATE},
+        })
+
+    # ── Career Paths API ────────────────────────────────────────────
+
+    # ── Career Paths API ────────────────────────────────────────────
 
     @app.post("/api/career-paths")
     @rate_limit
@@ -615,6 +969,117 @@ def register_api(app) -> None:
         if "error" in roadmap:
             return jsonify({"success": False, "error": roadmap["error"]}), 400
         return jsonify({"success": True, "roadmap": roadmap})
+
+    # ── Roadmap Progress API ─────────────────────────────────────────
+
+    @app.get("/api/roadmap-progress")
+    @rate_limit
+    @login_required
+    def api_get_roadmap_progress():
+        """Get saved roadmap progress for the current user."""
+        from storage import get_roadmap_progress
+
+        target_role = request.args.get("target_role", "").strip()
+        if not target_role:
+            return jsonify({"success": False, "error": "Target role is required."}), 400
+        progress = get_roadmap_progress(current_user.id, target_role)
+        return jsonify({"success": True, "progress": progress})
+
+    @app.post("/api/roadmap-progress")
+    @rate_limit
+    @login_required
+    def api_save_roadmap_progress():
+        """Save roadmap progress for the current user."""
+        from storage import save_roadmap_progress
+
+        data = request.get_json(silent=True) or {}
+        target_role = (data.get("target_role") or "").strip()
+        progress = data.get("progress", {})
+        weekly_hours = data.get("weekly_hours", 8)
+        if not target_role:
+            return jsonify({"success": False, "error": "Target role is required."}), 400
+        ok = save_roadmap_progress(current_user.id, target_role, progress, weekly_hours)
+        if not ok:
+            return jsonify({"success": False, "error": "Could not save progress."}), 500
+        return jsonify({"success": True})
+
+    # ── Career Profile API (Workplace → Profile page) ─────────────────
+
+    @app.get("/api/profile")
+    @rate_limit
+    @login_required
+    def api_get_profile():
+        """Return the signed-in user's career profile (null fields when unset)."""
+        from storage import get_user_profile
+
+        return jsonify({"success": True, "profile": get_user_profile(current_user.id)})
+
+    @app.post("/api/profile")
+    @rate_limit
+    @login_required
+    def api_save_profile():
+        """Create or update the signed-in user's career profile.
+
+        Accepts JSON: { education, occupation, experience_level,
+        preferred_roles, preferred_industry, skills, career_goal }.
+        Every field is optional; only provided fields are written.
+        """
+        from storage import save_user_profile
+
+        data = request.get_json(silent=True) or {}
+
+        def _clean(field: str, cap: int) -> str | None:
+            value = str(data.get(field) or "").strip()
+            if not value:
+                return None
+            return value[:cap]
+
+        payload = {
+            "education": _clean("education", 120),
+            "occupation": _clean("occupation", 120),
+            "experience_level": _clean("experience_level", 40),
+            "preferred_roles": _clean("preferred_roles", 255),
+            "preferred_industry": _clean("preferred_industry", 120),
+            "skills": _clean("skills", 500),
+            "career_goal": _clean("career_goal", 2000),
+        }
+        if not any(payload.values()):
+            return jsonify({"success": False, "error": "Provide at least one profile field."}), 400
+
+        saved = save_user_profile(current_user.id, payload)
+        if saved is None:
+            return jsonify({"success": False, "error": "Could not save your profile. Please try again."}), 500
+        return jsonify({"success": True, "profile": saved, "message": "Profile saved successfully."})
+
+    # ── Analysis History API (Workplace → History page) ───────────────
+
+    @app.get("/api/history")
+    @rate_limit
+    @login_required
+    def api_get_history():
+        """Return the signed-in user's recent analysis records.
+
+        Reads the existing ``uploads`` table — the same rows already written
+        by every completed analysis — so no new tracking code is needed.
+        """
+        from storage import get_user_history
+
+        try:
+            limit = int(request.args.get("limit", 30))
+        except (TypeError, ValueError):
+            limit = 30
+        return jsonify({"success": True, "history": get_user_history(current_user.id, limit=limit)})
+
+    @app.delete("/api/history/<int:upload_id>")
+    @rate_limit
+    @login_required
+    def api_delete_history(upload_id: int):
+        """Delete one of the user's own analysis records."""
+        from storage import delete_user_history_entry
+
+        if not delete_user_history_entry(current_user.id, upload_id):
+            return jsonify({"success": False, "error": "History entry not found."}), 404
+        return jsonify({"success": True, "message": "History entry deleted."})
 
     # ── Career Chat Session Management (with TTL-based cleanup) ──
 
@@ -1131,6 +1596,29 @@ def register_api(app) -> None:
             )
         except Exception as exc:
             log.exception("Comparison failed")
+            return jsonify({"success": False, "error": str(exc)}), 500
+
+
+    @app.post("/api/export")
+    @rate_limit
+    def api_export():
+        """Render the printable career report (templates/report.html) for the
+        analysis payload returned by /api/analyze and /api/analyze-stream.
+
+        The front-end's "Export PDF" button (static/script.js) posts
+        ``{"analysis": <lastAnalysis>}`` and opens the returned HTML in a
+        print dialog. This endpoint used to be missing, so every export
+        attempt failed with a 404.
+        """
+        payload = request.get_json(silent=True) if request.is_json else {}
+        analysis = (payload or {}).get("analysis")
+        if not isinstance(analysis, dict) or not analysis:
+            return jsonify({"success": False, "error": "No analysis to export."}), 400
+        try:
+            html = render_template("report.html", analysis=analysis)
+            return jsonify({"success": True, "html": html})
+        except Exception as exc:
+            log.exception("Report export failed")
             return jsonify({"success": False, "error": str(exc)}), 500
 
 

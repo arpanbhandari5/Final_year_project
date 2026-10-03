@@ -10,11 +10,11 @@ into meaningful segments, indexing them via TF-IDF, and retrieving the
 most relevant chunks to enrich the career chat LLM prompt.
 
 Components:
-  - chunk_resume()        – split resume text into overlapping chunks
-  - ResumeRetriever       – class that builds a TF-IDF index and retrieves
-  - format_rag_context()  – convert retrieved chunks into an LLM-ready string
-  - RAGService            – session-cached service (SAHAY_AI-inspired)
-  - build_rag_context()   – one-shot convenience pipeline
+  - chunk_resume()        - split resume text into overlapping chunks
+  - ResumeRetriever       - class that builds a TF-IDF index and retrieves
+  - format_rag_context()  - convert retrieved chunks into an LLM-ready string
+  - RAGService            - session-cached service (SAHAY_AI-inspired)
+  - build_rag_context()   - one-shot convenience pipeline
 """
 
 from __future__ import annotations
@@ -440,7 +440,7 @@ class RAGService:
               - cached_sessions  (int)
               - ttl_seconds      (int)
               - active           (bool)
-              - oldest_session_s (float – seconds since oldest entry)
+              - oldest_session_s (float - seconds since oldest entry)
         """
         now = time.time()
         ages = [now - e["created_at"] for e in self._instances.values()]

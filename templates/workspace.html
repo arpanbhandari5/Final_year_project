@@ -1,96 +1,869 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="page-section page-hero">
-  <div class="container page-hero__grid">
-    <div>
-      <span class="eyebrow">Workspace</span>
-      <h1>Welcome back, {{ current_user.email }}.</h1>
-      <p class="lead">Your authenticated Prayash workspace. Run analyses, review past results, or dive into insights.</p>
-      <div class="actions workspace-actions">
-        <a class="button" href="{{ url_for('index') }}#analysis">Run new analysis</a>
-        <a class="button-outline" href="{{ url_for('insights') }}">View insights</a>
-        <a class="button-ghost" href="{{ url_for('methodology') }}">Methodology</a>
+<!-- ═══ DASHBOARD LAYOUT ═══ -->
+<div class="dash-layout" data-dash-layout>
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="dash-sidebar" data-dash-sidebar id="dashSidebar">
+    <div class="dash-sidebar__brand">
+      <div class="dash-sidebar__brand-icon">🧠</div>
+      <div class="dash-sidebar__brand-text">
+        <span class="dash-sidebar__name">AI Career Advisor</span>
+        <span class="dash-sidebar__tagline">Career Risk & Reskilling System</span>
+      </div>
+      <button class="dash-sidebar__collapse-btn" data-dash-sidebar-collapse aria-label="Collapse sidebar">◀</button>
+    </div>
+    <nav class="dash-sidebar__nav" aria-label="Dashboard sections">
+      <div class="dash-sidebar__group">
+        <span class="dash-sidebar__group-title">DASHBOARD</span>
+        <a href="#" class="dash-nav-item is-active" data-page-target="dashboard">
+          <span class="dash-nav-icon">📊</span><span class="dash-nav-text">Dashboard</span>
+        </a>
+      </div>
+      <div class="dash-sidebar__group">
+        <span class="dash-sidebar__group-title">ANALYSIS</span>
+        <a href="#" class="dash-nav-item" data-page-target="resume-analysis">
+          <span class="dash-nav-icon">📄</span><span class="dash-nav-text">Resume Analysis</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="skill-extraction">
+          <span class="dash-nav-icon">🔍</span><span class="dash-nav-text">Skill Extraction</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="skill-gap">
+          <span class="dash-nav-icon">📊</span><span class="dash-nav-text">Skill Gap Analysis</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="career-risk">
+          <span class="dash-nav-icon">⚠️</span><span class="dash-nav-text">Career Risk</span>
+        </a>
+      </div>
+      <div class="dash-sidebar__group">
+        <span class="dash-sidebar__group-title">CAREER</span>
+        <a href="#" class="dash-nav-item" data-page-target="job-matching">
+          <span class="dash-nav-icon">💼</span><span class="dash-nav-text">Job Matching</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="career-path">
+          <span class="dash-nav-icon">🛤️</span><span class="dash-nav-text">Career Path</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="reskilling">
+          <span class="dash-nav-icon">📚</span><span class="dash-nav-text">Reskilling Roadmap</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="interview">
+          <span class="dash-nav-icon">🎤</span><span class="dash-nav-text">Interview Preparation</span>
+        </a>
+      </div>
+      <div class="dash-sidebar__group">
+        <span class="dash-sidebar__group-title">TOOLS</span>
+        <a href="#" class="dash-nav-item" data-page-target="ai-assistant">
+          <span class="dash-nav-icon">🤖</span><span class="dash-nav-text">AI Career Assistant</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="reports">
+          <span class="dash-nav-icon">📋</span><span class="dash-nav-text">Reports</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="history">
+          <span class="dash-nav-icon">🕐</span><span class="dash-nav-text">History</span>
+        </a>
+      </div>
+      <div class="dash-sidebar__group">
+        <span class="dash-sidebar__group-title">ACCOUNT</span>
+        <a href="#" class="dash-nav-item" data-page-target="profile">
+          <span class="dash-nav-icon">👤</span><span class="dash-nav-text">Profile</span>
+        </a>
+        <a href="#" class="dash-nav-item" data-page-target="settings">
+          <span class="dash-nav-icon">⚙️</span><span class="dash-nav-text">Settings</span>
+        </a>
+      </div>
+    </nav>        <div class="dash-sidebar__footer">
+      <div class="dash-sidebar__upgrade">
+        <span class="dash-sidebar__upgrade-icon">🎯</span>
+        <div class="dash-sidebar__upgrade-text">
+          <strong>Analysis Status</strong>
+          <p>Upload a resume to unlock all career insights</p>
+        </div>
+        <button class="dash-sidebar__upgrade-btn" data-dash-action="analyze">Start</button>
       </div>
     </div>
-    <div class="glass-card">
-      <h2 class="section-title">Session status</h2>
-      <div class="compact-list workspace-status-list">
-        <div class="list-card">
-          <div><strong>Auth state</strong><p>Logged in and persisted with Flask-Login.</p></div>
-          <span class="status-pill">Active</span>
+  </aside>
+  <div class="dash-sidebar-backdrop" data-dash-sidebar-backdrop></div>
+
+  <!-- ═══ MAIN DASHBOARD AREA ═══ -->
+  <div class="dash-main">
+
+    <!-- ═══ TOP NAVBAR ═══ -->
+    <header class="dash-topbar">
+      <button class="dash-topbar__menu-btn" data-dash-sidebar-toggle aria-label="Toggle sidebar">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="dash-topbar__search">
+        <span class="dash-topbar__search-icon">🔍</span>
+        <input type="search" placeholder="Search jobs, skills, roles..." data-dash-topbar-search aria-label="Search">
+      </div>
+      <nav class="dash-topbar__crumbs" aria-label="Breadcrumb" data-dash-crumbs aria-live="polite">
+        <span class="dash-topbar__crumb-current">Dashboard</span>
+      </nav>
+      <div class="dash-topbar__actions">
+        <button class="dash-topbar__icon-btn" data-dash-notifications aria-label="Notifications">
+          🔔
+        </button>
+        <button class="dash-topbar__icon-btn" data-dash-theme-toggle-wp aria-label="Toggle theme">🌙</button>
+        <div class="dash-topbar__profile" title="{{ current_user.email }}">
+          <span class="dash-topbar__avatar">{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span>
+          <div class="dash-topbar__profile-info">
+            <span class="dash-topbar__profile-name">{{ (current_user.full_name or current_user.username or current_user.email).split('@')[0] }}</span>
+            <span class="dash-topbar__profile-role">{{ 'Admin' if current_user.is_admin_email else 'Member' }}</span>
+          </div>
         </div>
-        <div class="list-card">
-          <div><strong>User</strong><p>{{ current_user.email }}</p></div>
-          <span class="status-pill is-warm">Signed in</span>
+      </div>
+    </header>
+
+    <!-- ═══ DASHBOARD CONTENT ═══ -->
+    <div class="dash-content">
+
+      <!-- ═══ DASHBOARD OVERVIEW PAGE ═══ -->
+      <div class="dash-page is-active" data-page="dashboard">
+        <!-- Hero Banner -->
+        <div class="dash-hero">
+          <div class="dash-hero__content">
+            <p class="dash-hero__greeting">Welcome back, {{ (current_user.full_name or current_user.username or current_user.email).split('@')[0] }}!</p>
+            <h1 class="dash-hero__title">Your Career Intelligence Dashboard</h1>
+            <p class="dash-hero__sub">Analyze your resume, understand your skills, evaluate career risk, and discover your next career opportunity.</p>
+            <div class="dash-hero__actions">
+              <button class="btn btn-primary" data-dash-action="analyze">📤 Analyze Resume</button>
+              <button class="btn btn-outline" data-dash-action="report">📋 View Full Report</button>
+            </div>
+          </div>
+          <div class="dash-hero__insights">
+            <h3>AI Powered Career Insights</h3>
+            <ul>
+              <li><span class="dash-hero__check">✓</span> Smart Analysis</li>
+              <li><span class="dash-hero__check">✓</span> Personalized Recommendations</li>
+              <li><span class="dash-hero__check">✓</span> Future Ready Skills</li>
+            </ul>
+          </div>
         </div>
-        <div class="list-card">
-          <div><strong>Theme</strong><p>Switch between light, dark, or auto mode using the toggle in the navbar.</p></div>
-          <span class="status-pill">Customisable</span>
+        <div class="risk-cards-grid">
+          <div class="risk-card" data-risk-card="resume-strength" data-dash-goto="resume-analysis" role="button" tabindex="0" aria-label="Open Resume Analysis">
+            <div class="risk-card__header"><span class="risk-card__icon">⚠️</span><span class="risk-card__label">Resume Score</span></div>
+            <div class="risk-card__value"><span class="risk-card__number" data-risk-card-value="resume-strength">0</span><span class="risk-card__unit">/100</span></div>
+            <div class="risk-card__bar"><span data-risk-card-bar="resume-strength" style="width:0%;"></span></div>
+            <span class="risk-card__status" data-risk-card-status="resume-strength">Awaiting analysis</span>
+          </div>
+          <div class="risk-card" data-risk-card="skill-match" data-dash-goto="skill-gap" role="button" tabindex="0" aria-label="Open Skill Gap Analysis">
+            <div class="risk-card__header"><span class="risk-card__icon">🎯</span><span class="risk-card__label">Skill Match</span></div>
+            <div class="risk-card__value"><span class="risk-card__number" data-risk-card-value="skill-match">0</span><span class="risk-card__unit">%</span></div>
+            <div class="risk-card__bar"><span data-risk-card-bar="skill-match" style="width:0%;"></span></div>
+            <span class="risk-card__status" data-risk-card-status="skill-match">Awaiting analysis</span>
+          </div>
+          <div class="risk-card" data-risk-card="career-risk" data-dash-goto="career-risk" role="button" tabindex="0" aria-label="Open Career Risk">
+            <div class="risk-card__header"><span class="risk-card__icon">⚠️</span><span class="risk-card__label">Career Risk</span></div>
+            <div class="risk-card__value"><span class="risk-card__number" data-risk-card-value="career-risk">0</span><span class="risk-card__unit">/100</span></div>
+            <div class="risk-card__bar"><span data-risk-card-bar="career-risk" style="width:0%;"></span></div>
+            <span class="risk-card__status" data-risk-card-status="career-risk">Awaiting analysis</span>
+          </div>
+          <div class="risk-card" data-risk-card="job-compatibility" data-dash-goto="resume-analysis" role="button" tabindex="0" aria-label="Open ATS Checker">
+            <div class="risk-card__header"><span class="risk-card__icon">✅</span><span class="risk-card__label">ATS Score</span></div>
+            <div class="risk-card__value"><span class="risk-card__number" data-risk-card-value="job-compatibility">0</span><span class="risk-card__unit">%</span></div>
+            <div class="risk-card__bar"><span data-risk-card-bar="job-compatibility" style="width:0%;"></span></div>
+            <span class="risk-card__status" data-risk-card-status="job-compatibility">Awaiting analysis</span>
+          </div>
+        </div>
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-card__header">
+              <h3 class="chart-card__title">Skill Distribution</h3>
+              <select class="chart-card__filter" data-skill-filter>
+                <option value="all">All Skills</option>
+                <option value="technical">Technical</option>
+                <option value="soft">Soft Skills</option>
+              </select>
+            </div>
+            <div class="chart-card__canvas-wrap chart-card__canvas-wrap--donut">
+              <canvas id="skillPieChart" data-skill-pie-chart width="300" height="300"></canvas>
+              <div class="chart-card__donut-center">
+                <span class="chart-card__donut-value" data-skill-total>0</span>
+                <span class="chart-card__donut-label">Skills</span>
+              </div>
+            </div>
+            <div class="chart-card__legend" data-skill-pie-legend></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card__header">
+              <h3 class="chart-card__title">Skill Gap Analysis</h3>
+            </div>
+            <div class="chart-card__canvas-wrap">
+              <canvas id="skillGapChart" data-skill-gap-chart width="800" height="400"></canvas>
+            </div>
+            <div class="chart-card__legend">
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#6366f1;"></span>Your Skills</span>
+              <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#a78bfa;"></span>Required Skills</span>
+            </div>
+          </div>
+          <div class="chart-card chart-card--risk">
+            <div class="chart-card__header">
+              <h3 class="chart-card__title">Career Risk Analysis</h3>
+            </div>
+            <div class="risk-gauge-wrap">
+              <div class="risk-gauge" data-risk-gauge>
+                <div class="risk-gauge__ring">
+                  <span class="risk-gauge__value" data-risk-gauge-value>0%</span>
+                  <span class="risk-gauge__label" data-risk-gauge-label>Low Risk</span>
+                </div>
+              </div>
+              <div class="risk-gauge__legend">
+                <div class="risk-gauge__legend-item">
+                  <span class="risk-gauge__dot risk-gauge__dot--high"></span>
+                  <span>High Risk</span>
+                  <span class="risk-gauge__pct" data-risk-pct-high>0%</span>
+                </div>
+                <div class="risk-gauge__legend-item">
+                  <span class="risk-gauge__dot risk-gauge__dot--medium"></span>
+                  <span>Medium Risk</span>
+                  <span class="risk-gauge__pct" data-risk-pct-medium>0%</span>
+                </div>
+                <div class="risk-gauge__legend-item">
+                  <span class="risk-gauge__dot risk-gauge__dot--low"></span>
+                  <span>Low Risk</span>
+                  <span class="risk-gauge__pct" data-risk-pct-low>0%</span>
+                </div>
+              </div>
+            </div>
+            <p class="risk-gauge__summary" data-risk-gauge-summary>Run an analysis to see your career risk.</p>
+          </div>
+        </div>
+        <div class="stats-grid" style="margin-top:1.25rem;">
+          <div class="stat-card"><span class="stat-card__icon">📊</span><div class="stat-card__body"><span class="stat-card__value" data-stat-value="total-resumes">0</span><span class="stat-card__label">Skills Detected</span></div></div>
+          <div class="stat-card"><span class="stat-card__icon">🔍</span><div class="stat-card__body"><span class="stat-card__value" data-stat-value="avg-risk">0%</span><span class="stat-card__label">Missing Skills</span></div></div>
+          <div class="stat-card"><span class="stat-card__icon">💼</span><div class="stat-card__body"><span class="stat-card__value" data-stat-value="total-jobs">0</span><span class="stat-card__label">Job Matches</span></div></div>
+          <div class="stat-card"><span class="stat-card__icon">⚠️</span><div class="stat-card__body"><span class="stat-card__value" data-stat-value="top-missing">—</span><span class="stat-card__label">Career Risk</span></div></div>
+          <div class="stat-card"><span class="stat-card__icon">📚</span><div class="stat-card__body"><span class="stat-card__value" data-stat-value="roadmap-progress">0%</span><span class="stat-card__label">Roadmap Progress</span></div></div>
+        </div>
+        <div class="dash-dashboard-grid">
+          <div class="dash-panel">
+            <div class="dash-panel__header">
+              <h3 class="dash-panel__title">Top Career Recommendations</h3>
+              <a href="#" class="dash-panel__link" data-dash-nav-link="job-matching">View All →</a>
+            </div>
+            <div class="dash-job-cards" data-dash-top-jobs>
+              <div class="list-card is-placeholder"><div><strong>No recommendations yet</strong><p>Run a resume analysis to see your top career matches.</p></div></div>
+            </div>
+          </div>
+          <div class="dash-panel">
+            <div class="dash-panel__header">
+              <h3 class="dash-panel__title">Reskilling Roadmap</h3>
+              <a href="#" class="dash-panel__link" data-dash-nav-link="reskilling">View Full Roadmap →</a>
+            </div>
+            <div class="dash-roadmap-mini" data-dash-roadmap-mini>
+              <div class="list-card is-placeholder"><div><strong>No reskilling plan yet</strong><p>Run a resume analysis to build your personalized learning roadmap.</p></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 1 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
         </div>
       </div>
-    </div>
-  </div>
-</section>
 
-<section class="content-section">
-  <div class="container">
-    <div class="workspace-dashboard-grid">
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">📄</div>
-        <h3 class="section-title">Analyze a resume</h3>
-        <p class="section-subtitle">Upload or paste your resume for automation risk scoring, role matching, and a personalised learning roadmap.</p>
-        <a class="button-secondary" href="{{ url_for('index') }}#analysis">Go to analysis</a>
-      </div>
-
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">📊</div>
-        <h3 class="section-title">Review methodology</h3>
-        <p class="section-subtitle">Understand how the ML pipeline works — TF-IDF vectorization, Ridge regression, O*NET matching, and RIASEC profiling.</p>
-        <a class="button-outline" href="{{ url_for('methodology') }}">Open methodology</a>
-      </div>
-
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">🛡️</div>
-        <h3 class="section-title">Privacy & data</h3>
-        <p class="section-subtitle">Resume data stays ephemeral — processed in memory and discarded after each analysis. No permanent storage of your personal data.</p>
-        <a class="button-outline" href="{{ url_for('privacy') }}">Privacy details</a>
-      </div>
-
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">🎯</div>
-        <h3 class="section-title">Skills gap analysis</h3>
-        <p class="section-subtitle">Compare your resume skills against 20+ career roles. Get a match score, missing skills, and a personalised learning action plan.</p>
-        <a class="button-outline" href="{{ url_for('skills_gap') }}">Analyze skills gap</a>
-      </div>
-
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">📈</div>
-        <h3 class="section-title">Performance monitor</h3>
-        <p class="section-subtitle">Watch the RAG retrieval pipeline live — cached sessions, chat activity, and API rate limits.</p>
-        <a class="button-outline" href="{{ url_for('performance') }}">Open monitoring</a>
-      </div>
-
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">🔑</div>
-        <h3 class="section-title">Quick tips</h3>
-        <p class="section-subtitle">Press <kbd>?</kbd> for keyboard shortcuts, <kbd>E</kbd> to focus the text area, <kbd>R</kbd> to run analysis, and <kbd>Esc</kbd> to close modals.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="content-section">
-  <div class="container">
-    <div class="glass-card workspace-feedback-card">
-      <div class="inline-actions" style="justify-content: space-between;">
-        <div>
-          <h3 class="section-title">Have feedback?</h3>
-          <p class="section-subtitle" style="margin-top: 0.4rem;">Your input helps improve the platform. Share your thoughts with the team.</p>
+      <!-- ═══ RESUME ANALYSIS PAGE ═══ -->
+      <div class="dash-page" data-page="resume-analysis">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Resume Analysis</h1>
+            <p class="dash-page__sub">Upload your resume to extract skills, analyze strength, and check ATS compatibility.</p>
+          </div>
         </div>
-        <a class="button-ghost" href="{{ url_for('index') }}#analysis" data-export-button>Send feedback</a>
+        <div class="dash-workspace-grid">
+          <div class="dash-panel">
+            <h3 class="dash-panel__title">Upload Resume</h3>
+            <form class="results-shell" data-analysis-form>
+            <input type="hidden" name="mode" value="standard" data-mode-input>
+            <div class="pr-dropzone" data-drop-zone>
+              <span class="pr-dropzone__icon" aria-hidden="true">📄</span>
+              <strong>Drag and drop your resume</strong>
+              <p>PDF, DOCX, or plain text. The file is read, analyzed, and discarded after response generation.</p>
+              <input type="file" name="resume_file" accept=".pdf,.docx,.txt" class="hidden" data-file-input>
+              <button class="pr-btn pr-btn--soft" type="button" data-browse-button>Browse files</button>
+              <p class="small-note" data-upload-status style="margin:0;">No file selected yet.</p>
+            </div>
+            <div class="field" style="margin-top:1rem;">
+              <label for="resume_text_wp">Resume text</label>
+              <textarea id="resume_text_wp" placeholder="Paste your resume or a job-focused profile summary here." data-resume-text></textarea>
+            </div>
+            <div class="pr-analyze__actions" style="margin-top:1rem;">
+              <button class="pr-btn pr-btn--primary" type="submit" data-assess-button>Run analysis</button>
+              <button class="pr-btn pr-btn--ghost" type="button" data-remove-file hidden>Remove file</button>
+</div>
+            </form>
+            <div class="resume-preview hidden" data-resume-preview style="margin-top:1rem;">
+              <div class="resume-preview__header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <strong>File Preview</strong>
+                <button type="button" class="button-ghost" data-resume-preview-close style="padding:0.3rem 0.7rem;font-size:0.8rem;">&times;</button>
+              </div>
+              <div class="resume-preview__info" data-resume-preview-info></div>
+              <pre class="resume-preview__content" data-resume-preview-content style="display:none;max-height:200px;overflow:auto;padding:0.75rem;background:var(--surface-container-low);border-radius:0.5rem;font-size:0.82rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;"></pre>
+            </div>
+          </div>
+          <div class="dash-panel">
+            <h3 class="dash-panel__title">Resume Strength</h3>
+            <div class="rs-meter-wrap" data-score-panel>
+              <div class="rs-ring" data-score-ring role="img" aria-label="Resume strength score" style="--rs-pct: 0;">
+                <div class="rs-ring__content">
+                  <span class="rs-ring__value" id="score" data-score-final>--</span>
+                  <span class="rs-ring__label">Final Score</span>
+                </div>
+              </div>
+              <div class="rs-scores">
+                <div class="rs-sub" data-score-sub="skill">
+                  <div class="rs-sub__head"><span>Skill Score</span><span class="rs-sub__value" id="skillScore">--</span></div>
+                  <div class="rs-sub__bar"><span></span></div>
+                </div>
+                <div class="rs-sub" data-score-sub="experience">
+                  <div class="rs-sub__head"><span>Experience Score</span><span class="rs-sub__value" id="expScore">--</span></div>
+                  <div class="rs-sub__bar"><span></span></div>
+                </div>
+                <div class="rs-sub" data-score-sub="quality">
+                  <div class="rs-sub__head"><span>Quality Score</span><span class="rs-sub__value" id="qualityScore">--</span></div>
+                  <div class="rs-sub__bar"><span></span></div>
+                </div>
+              </div>
+            </div>
+            <p class="rs-feedback" id="feedback" data-score-feedback>Run an analysis to see your resume strength.</p>
+          </div>
+          <div class="dash-panel">
+            <h3 class="dash-panel__title">ATS Resume Checker</h3>
+            <p class="dash-page__sub" style="margin-bottom:1rem;">Basic local heuristic checks for ATS compatibility.</p>
+            <div class="ats-score-wrap">
+              <div class="ats-ring" data-ats-ring style="--ats-pct:0;">
+                <span class="ats-ring__value" data-ats-score>0%</span>
+              </div>
+              <div class="ats-score-info"><p class="ats-verdict" data-ats-verdict>Run an analysis to check ATS compatibility.</p></div>
+            </div>
+            <div class="ats-checks" data-ats-checks style="margin-top:1.5rem;">
+              <div class="ats-check" data-ats-check="email"><span class="ats-check-icon">—</span><span>Email address detected</span></div>
+              <div class="ats-check" data-ats-check="phone"><span class="ats-check-icon">—</span><span>Phone number detected</span></div>
+              <div class="ats-check" data-ats-check="skills"><span class="ats-check-icon">—</span><span>Skills section present</span></div>
+              <div class="ats-check" data-ats-check="education"><span class="ats-check-icon">—</span><span>Education section present</span></div>
+              <div class="ats-check" data-ats-check="experience"><span class="ats-check-icon">—</span><span>Experience section present</span></div>
+              <div class="ats-check" data-ats-check="projects"><span class="ats-check-icon">—</span><span>Projects section present</span></div>
+              <div class="ats-check" data-ats-check="keywords"><span class="ats-check-icon">—</span><span>Important keywords found</span></div>
+              <div class="ats-check" data-ats-check="length"><span class="ats-check-icon">—</span><span>Adequate resume length</span></div>
+            </div>
+            <div class="ats-suggestions" data-ats-suggestions style="margin-top:1rem;"></div>
+          </div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 2 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+
+      <!-- ═══ SKILL EXTRACTION PAGE ═══ -->
+      <div class="dash-page" data-page="skill-extraction">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Skill Extraction</h1>
+            <p class="dash-page__sub">Skills detected in your resume, displayed as strength bars with proficiency levels.</p>
+          </div>
+        </div>
+        <div class="skill-filter-row jm-filter-group" role="group" aria-label="Filter skills by category">
+          <button type="button" class="jm-chip is-active" data-skillcat="all">All Skills</button>
+          <button type="button" class="jm-chip" data-skillcat="technical">Technical</button>
+          <button type="button" class="jm-chip" data-skillcat="soft">Soft Skills</button>
+          <button type="button" class="jm-chip" data-skillcat="languages">Languages</button>
+          <button type="button" class="jm-chip" data-skillcat="frameworks">Frameworks</button>
+          <button type="button" class="jm-chip" data-skillcat="databases">Databases</button>
+          <button type="button" class="jm-chip" data-skillcat="tools">Tools</button>
+        </div>
+        <div class="skill-viz-container" data-skillviz-container>
+          <div class="list-card is-placeholder"><div><strong>Awaiting analysis</strong><p>Run a resume analysis to visualize detected skills.</p></div></div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 3 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ SKILL GAP PAGE ═══ -->
+      <div class="dash-page" data-page="skill-gap">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Skill Gap Analysis</h1>
+            <p class="dash-page__sub">Compare your current skills with the requirements of your target career.</p>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <h3 class="dash-panel__title">Select Target Role</h3>
+          <form id="skills-gap-form" class="skills-gap-form" method="post" style="display:flex;gap:1rem;align-items:end;flex-wrap:wrap;margin-bottom:1.5rem;">
+            <div class="field" style="flex:1;min-width:200px;">
+              <label for="skills-gap-role">Target role</label>
+              <select id="skills-gap-role" style="padding:0.85rem 0.95rem;">
+                <option value="">Select a target role...</option>
+              </select>
+            </div>
+            <button type="submit" id="skills-gap-submit" class="pr-btn pr-btn--primary" style="white-space:nowrap;">Analyze Skills Gap</button>
+          </form>
+          <div id="skills-gap-loading" class="hidden" style="text-align:center;padding:2rem 0;">
+            <div style="font-size:1.2rem;color:var(--primary);">🔍 Analyzing skills gap...</div>
+          </div>
+          <div id="skills-gap-error" class="auth-error hidden" role="alert" style="margin-top:1rem;"></div>
+          <div id="skills-gap-results" class="hidden" style="margin-top:1.5rem;"></div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 4 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ CAREER RISK PAGE ═══ -->
+      <div class="dash-page" data-page="career-risk">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Career Risk Analysis</h1>
+            <p class="dash-page__sub">Understand your automation exposure and what you can do about it.</p>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <h3 class="dash-panel__title">Risk Meter</h3>
+          <div class="rk-meter" data-riskmeter>
+            <div class="rk-meter__gauge">
+              <div class="rk-meter__track"><div class="rk-meter__marker" data-riskmeter-marker></div></div>
+              <div class="rk-meter__zones" aria-hidden="true"><span>Low</span><span>Medium</span><span>High</span></div>
+            </div>
+            <div class="rk-meter__value">
+              <span class="rk-meter__level" id="riskBox" data-riskmeter-level>--</span>
+              <span class="rk-meter__pct" data-riskmeter-pct></span>
+            </div>
+          </div>
+          <p class="rs-feedback" id="riskExplain" data-riskmeter-summary>Run an analysis to see your automation risk.</p>
+        </div>
+        <div class="dash-panel" style="margin-top:1.25rem;">
+          <h3 class="dash-panel__title">Risk Insights</h3>
+          <div class="compact-list" data-risk-insights>
+            <div class="list-card is-placeholder"><div><strong>Awaiting analysis</strong><p>Run an assessment to see the evidence used to explain the prediction.</p></div></div>
+          </div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 5 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ JOB MATCHING PAGE ═══ -->
+      <div class="dash-page" data-page="job-matching">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Job Matching</h1>
+            <p class="dash-page__sub">Interactive role cards with search, filtering, and sorting — populated from your latest analysis.</p>
+          </div>
+        </div>
+        <div class="jm-toolbar">
+          <input type="search" class="jm-search" data-jm-search placeholder="Search job titles or skills..." aria-label="Search job titles or skills">
+          <div class="jm-filter-group" role="group" aria-label="Filter by match score">
+            <button type="button" class="jm-chip is-active" data-jm-filter-match="all">All <span class="jm-chip__count" data-chip-count="all">0</span></button>
+            <button type="button" class="jm-chip" data-jm-filter-match="high">High &gt; 80 <span class="jm-chip__count" data-chip-count="high">0</span></button>
+            <button type="button" class="jm-chip" data-jm-filter-match="medium">Medium 50&ndash;80 <span class="jm-chip__count" data-chip-count="medium">0</span></button>
+            <button type="button" class="jm-chip" data-jm-filter-match="low">Low &lt; 50 <span class="jm-chip__count" data-chip-count="low">0</span></button>
+          </div>
+          <label class="jm-sort-label"><span>Sort by</span>
+            <select class="jm-sort" data-jm-sort aria-label="Sort jobs">
+              <option value="match-desc">Highest match</option>
+              <option value="risk-asc">Lowest risk</option>
+            </select>
+          </label>
+        </div>
+        <div class="jm-toolbar-status">
+          <span class="jm-status" data-jm-status aria-live="polite">Awaiting analysis</span>
+        </div>
+        <div class="jm-grid" id="jobContainer" data-jm-grid>
+          <div class="list-card is-placeholder jm-placeholder"><div><strong>Awaiting analysis</strong><p>Run a resume analysis to generate matched role cards.</p></div></div>
+        </div>
+        <p class="jm-empty hidden" data-jm-empty>No jobs match your current search or filters. Try clearing them.</p>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 6 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ CAREER PATH PAGE ═══ -->
+      <div class="dash-page" data-page="career-path">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Career Path</h1>
+            <p class="dash-page__sub">Typical career progression based on your selected path. Click any node for details.</p>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <h3 class="dash-panel__title">Choose a journey</h3>
+          <div class="field" style="max-width:340px;margin-bottom:1rem;">
+            <label for="career-path-select">Career journey</label>
+            <select id="career-path-select" data-career-path-select aria-label="Select career journey">
+              <option value="student">Student</option>
+              <option value="job-seeker">Job seeker</option>
+              <option value="career-switcher">Career switcher</option>
+              <option value="new-workforce">New to the workforce</option>
+            </select>
+          </div>
+          <h3 class="dash-panel__title">Progression</h3>
+          <div class="career-flow" data-career-flow>
+            <div class="list-card is-placeholder"><div><strong>No path selected</strong><p>Select a path to see the career progression flowchart.</p></div></div>
+          </div>
+        </div>
+        <p class="career-flow__hint">Click any stage to see its description, career level, and the skills involved — including which ones your resume already shows.</p>
+        <div class="dash-panel" style="margin-top:1.25rem;">
+          <div class="dash-panel__header">
+            <h3 class="dash-panel__title">Recommended from your profile</h3>
+            <button type="button" class="pr-btn pr-btn--ghost" data-career-path-recommend>Analyze my profile</button>
+          </div>
+          <div class="compact-list" data-career-path-recommend-list>
+            <div class="list-card is-placeholder"><div><strong>No recommendations yet</strong><p>Run a resume analysis, then click &ldquo;Analyze my profile&rdquo; for personalized career directions ranked from your real skills.</p></div></div>
+          </div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 7 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ RESKILLING ROADMAP PAGE ═══ -->
+      <div class="dash-page" data-page="reskilling">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Reskilling Roadmap</h1>
+            <p class="dash-page__sub">Your personalized learning progression from foundation to career-ready.</p>
+          </div>
+        </div>
+        <div class="roadmap-stages">
+          <div class="roadmap-stage" data-roadmap-stage="foundation" role="button" tabindex="0" aria-label="Show Foundation skills">
+            <span class="roadmap-stage__num">1</span>
+            <h4>Foundation</h4>
+            <p>Core concepts and prerequisite skills</p>
+          </div>
+          <div class="roadmap-connector"></div>
+          <div class="roadmap-stage" data-roadmap-stage="intermediate" role="button" tabindex="0" aria-label="Show Intermediate skills">
+            <span class="roadmap-stage__num">2</span>
+            <h4>Intermediate</h4>
+            <p>Important technical skills</p>
+          </div>
+          <div class="roadmap-connector"></div>
+          <div class="roadmap-stage" data-roadmap-stage="advanced" role="button" tabindex="0" aria-label="Show Advanced skills">
+            <span class="roadmap-stage__num">3</span>
+            <h4>Advanced</h4>
+            <p>Role-specific technologies</p>
+          </div>
+          <div class="roadmap-connector"></div>
+          <div class="roadmap-stage" data-roadmap-stage="ready" role="button" tabindex="0" aria-label="Show career readiness actions">
+            <span class="roadmap-stage__num">4</span>
+            <h4>Career Ready</h4>
+            <p>Projects, portfolio, interview preparation</p>
+          </div>
+        </div>
+        <div class="compact-list hidden" style="margin-top:1rem;" data-roadmap-stage-detail></div>
+        <div class="dash-panel" style="margin-top:1.25rem;">
+          <div class="dash-panel__header">
+            <h3 class="dash-panel__title">My Progress</h3>
+            <div class="inline-actions">
+              <span class="status-pill" data-roadmap-progress-count>0 of 0 complete</span>
+              <button type="button" class="button-ghost" data-roadmap-progress-reset>Reset</button>
+            </div>
+          </div>
+          <div class="progress-track" style="margin:0.5rem 0 1rem;"><div class="progress-fill" data-roadmap-progress-fill style="width:0%;"></div></div>
+          <p class="dash-page__sub" data-roadmap-progress-summary style="margin:0 0 0.75rem;">Complete roadmap items to track your reskilling progress. Your progress is saved to your account.</p>
+          <div class="compact-list" data-roadmap-progress-list>
+            <div class="list-card is-placeholder"><div><strong>No roadmap items yet</strong><p>Run a resume analysis to generate your personalized learning roadmap.</p></div></div>
+          </div>
+        </div>
+        <div class="compact-list" style="margin-top:1.5rem;" data-next-learning>
+          <div class="list-card is-placeholder"><div><strong>Run analysis first</strong><p>Your learning actions will appear here after assessment.</p></div></div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 8 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ INTERVIEW PREPARATION PAGE ═══ -->
+      <div class="dash-page" data-page="interview">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Interview Preparation</h1>
+            <p class="dash-page__sub">Generate interview questions by category to practice for your next role.</p>
+          </div>
+        </div>
+        <div class="interview-controls" style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+          <select class="jm-sort" data-interview-category style="padding:0.6rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+            <option value="python">Python</option>
+            <option value="web">Web Development</option>
+            <option value="ai-ml">AI / Machine Learning</option>
+            <option value="database">Database</option>
+            <option value="networking">Networking</option>
+            <option value="hr">General HR</option>
+          </select>
+          <select class="jm-sort" data-interview-difficulty style="padding:0.6rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+          <button type="button" class="pr-btn pr-btn--primary" data-interview-generate>Generate Question</button>
+          <button type="button" class="pr-btn pr-btn--ghost" data-interview-regenerate>Regenerate</button>
+          <button type="button" class="pr-btn pr-btn--ghost" data-interview-prev aria-label="Show previous question">← Previous</button>
+          <button type="button" class="pr-btn pr-btn--ghost" data-interview-next aria-label="Show next question">Next →</button>
+          <button type="button" class="pr-btn pr-btn--ghost" data-interview-reset aria-label="Reset interview practice">Reset</button>
+        </div>
+        <div class="interview-question-card" data-interview-card>
+          <div class="list-card is-placeholder"><div><strong>Ready to practice</strong><p>Select a category and click Generate to get started.</p></div></div>
+        </div>
+        <p class="interview-status-note" data-interview-status aria-live="polite"></p>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 9 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ AI CAREER ASSISTANT PAGE ═══ -->
+      <div class="dash-page" data-page="ai-assistant">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">AI Career Assistant</h1>
+            <p class="dash-page__sub">Ask questions about your career, skills, and job search.</p>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <h3 class="dash-panel__title">Chat</h3>
+          <div class="compact-list" id="wp-chat-messages" style="margin-bottom:1rem;">
+            <div class="list-card is-placeholder"><div><strong>AI Assistant ready</strong><p>Ask me anything about your career analysis.</p></div></div>
+          </div>
+          <div class="chat-suggestions">
+            <button class="chip" data-chat-suggestion="What skills am I missing?">What skills am I missing?</button>
+            <button class="chip" data-chat-suggestion="Which career matches my resume?">Which career matches my resume?</button>
+            <button class="chip" data-chat-suggestion="How can I reduce my career risk?">How can I reduce my career risk?</button>
+            <button class="chip" data-chat-suggestion="What should I learn next?">What should I learn next?</button>
+          </div>
+          <form id="wp-chat-form" style="display:flex;gap:0.5rem;margin-top:1rem;">
+            <input type="text" id="wp-chat-input" placeholder="Ask a question..." style="flex:1;padding:0.7rem 0.9rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+            <button type="submit" class="pr-btn pr-btn--primary">Send</button>
+          </form>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 10 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ REPORTS PAGE ═══ -->
+      <div class="dash-page" data-page="reports">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Reports</h1>
+            <p class="dash-page__sub">Summaries of your resume analysis, ATS, skills, career risk, and job matches.</p>
+          </div>
+        </div>
+        <div class="dash-workspace-grid">
+          <div class="dash-panel">
+            <h3 class="dash-panel__title">Resume Analysis</h3>
+            <div class="compact-list" data-roles-list><div class="list-card is-placeholder"><div><strong>Run analysis</strong><p>Resume analysis results will appear here.</p></div></div></div>
+          </div>
+          <div class="dash-panel">
+            <h3 class="dash-panel__title">Top Role Matches</h3>
+            <div class="compact-list" data-roadmap-list><div class="list-card is-placeholder"><div><strong>Run analysis</strong><p>Your matched roles will appear here.</p></div></div></div>
+          </div>
+          <div class="dash-panel">
+            <h3 class="dash-panel__title">Career Risk Summary</h3>
+            <div class="compact-list" data-riasec-list><div class="list-card is-placeholder"><div><strong>Run analysis</strong><p>Your risk summary will appear here.</p></div></div></div>
+          </div>
+          <div class="dash-panel">
+            <h3 class="dash-panel__title">Reskilling Recommendations</h3>
+            <div class="compact-list" data-report-reskilling><div class="list-card is-placeholder"><div><strong>Run analysis</strong><p>Your reskilling actions will appear here.</p></div></div></div>
+          </div>
+          <div class="dash-panel">
+            <h3 class="dash-panel__title">Export</h3>
+            <p class="dash-page__sub" style="margin-bottom:1rem;">Generate a printable summary of your latest analysis via the existing export API.</p>
+            <button type="button" class="pr-btn pr-btn--primary" data-export-button>🖨️ Export Report</button>
+          </div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 11 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ HISTORY PAGE ═══ -->
+      <div class="dash-page" data-page="history">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Analysis History</h1>
+            <p class="dash-page__sub">Previous analyses and their results.</p>
+          </div>
+        </div>
+        <div class="compact-list" data-history-list>
+          <div class="list-card is-placeholder"><div><strong>Loading history…</strong><p>Fetching your saved analyses.</p></div></div>
+        </div>
+        <p class="jm-empty hidden" data-history-error style="margin-top:0.75rem;"></p>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 12 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ PROFILE PAGE ═══ -->
+      <div class="dash-page" data-page="profile">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Profile</h1>
+            <p class="dash-page__sub">Your account information and session status.</p>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <h3 class="dash-panel__title">Account Information</h3>
+          <div class="compact-list">
+            <div class="list-card"><div><strong>Email</strong><p>{{ current_user.email }}</p></div></div>
+            <div class="list-card"><div><strong>Username</strong><p>{{ current_user.username or '—' }}</p></div></div>
+            <div class="list-card"><div><strong>Full name</strong><p>{{ current_user.full_name or '—' }}</p></div></div>
+            <div class="list-card"><div><strong>Account role</strong><p>{{ current_user.role or 'member' }}</p></div></div>
+            <div class="list-card"><div><strong>Member since</strong><p>{{ current_user.created_at.strftime('%b %d, %Y') if current_user.created_at else '—' }}</p></div></div>
+            <div class="list-card"><div><strong>Status</strong><p>Logged in and persisted with Flask-Login.</p></div><span class="status-pill">Active</span></div>
+          </div>
+        </div>
+        <div class="dash-panel" style="margin-top:1.25rem;">
+          <h3 class="dash-panel__title">Career Profile</h3>
+          <p class="dash-page__sub" style="margin-bottom:1rem;">These details sharpen your skill gap, job matches, and assistant answers.</p>
+          <form id="career-profile-form" style="display:grid;gap:0.9rem;max-width:560px;">
+            <div class="field">
+              <label for="career-profile-education">Education</label>
+              <input type="text" id="career-profile-education" data-profile-field="education" maxlength="120" placeholder="e.g. B.Tech Computer Science">
+            </div>
+            <div class="field">
+              <label for="career-profile-occupation">Current occupation</label>
+              <input type="text" id="career-profile-occupation" data-profile-field="occupation" maxlength="120" placeholder="e.g. Student, QA Analyst">
+            </div>
+            <div class="field">
+              <label for="career-profile-experience">Experience level</label>
+              <select id="career-profile-experience" data-profile-field="experience_level">
+                <option value="">Select…</option>
+                <option value="0-1 years">0–1 years</option>
+                <option value="1-3 years">1–3 years</option>
+                <option value="3-5 years">3–5 years</option>
+                <option value="5+ years">5+ years</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="career-profile-roles">Preferred roles</label>
+              <input type="text" id="career-profile-roles" data-profile-field="preferred_roles" maxlength="255" placeholder="e.g. Backend Developer, Data Analyst">
+            </div>
+            <div class="field">
+              <label for="career-profile-industry">Preferred industry</label>
+              <input type="text" id="career-profile-industry" data-profile-field="preferred_industry" maxlength="120" placeholder="e.g. FinTech, Healthcare">
+            </div>
+            <div class="field">
+              <label for="career-profile-skills">Skills</label>
+              <input type="text" id="career-profile-skills" data-profile-field="skills" maxlength="500" placeholder="Comma-separated, e.g. Python, SQL, Git">
+            </div>
+            <div class="field">
+              <label for="career-profile-goal">Career goal</label>
+              <textarea id="career-profile-goal" data-profile-field="career_goal" rows="3" placeholder="What role or level are you aiming for next?"></textarea>
+            </div>
+            <div class="pr-analyze__actions">
+              <button type="submit" class="pr-btn pr-btn--primary" data-profile-save>Save Profile</button>
+              <span class="small-note" data-profile-status aria-live="polite"></span>
+            </div>
+          </form>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 13 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ SETTINGS PAGE ═══ -->
+      <div class="dash-page" data-page="settings">
+        <div class="dash-page__header">
+          <div>
+            <h1 class="dash-page__title">Settings</h1>
+            <p class="dash-page__sub">Customize your dashboard experience.</p>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <h3 class="dash-panel__title">Preferences</h3>
+          <div class="compact-list">
+            <div class="list-card"><div><label for="dash-theme-mode"><strong>Theme</strong></label><p>Light, dark, or follow your system setting. Also available in the navbar.</p></div>
+              <select id="dash-theme-mode" data-dash-theme-mode aria-label="Theme mode" style="padding:0.55rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+                <option value="auto">Auto (system)</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
+            <div class="list-card"><div><strong>Sidebar</strong><p>Collapse or expand the sidebar. Your choice is remembered on this device.</p></div>
+              <label class="dash-switch" for="dash-sidebar-collapsed-pref">
+                <input type="checkbox" id="dash-sidebar-collapsed-pref" data-dash-sidebar-collapsed-pref>
+                <span class="dash-switch__track" aria-hidden="true"></span>
+                <span class="dash-switch__label">Start collapsed</span>
+              </label>
+            </div>
+            <div class="list-card"><div><label for="dash-card-density"><strong>Card density</strong></label><p>Comfortable spacing, or compact to fit more on screen.</p></div>
+              <select id="dash-card-density" data-dash-density aria-label="Card density" style="padding:0.55rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+                <option value="comfortable">Comfortable</option>
+                <option value="compact">Compact</option>
+              </select>
+            </div>
+            <div class="list-card"><div><label for="dash-animations"><strong>Animations</strong></label><p>Reduce motion for a calmer, faster-feeling interface.</p></div>
+              <select id="dash-animations" data-dash-anim aria-label="Animations" style="padding:0.55rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+                <option value="on">Enabled</option>
+                <option value="off">Reduced</option>
+              </select>
+            </div>
+            <div class="list-card"><div><label for="dash-toast-duration"><strong>Notification duration</strong></label><p>How long toast notifications stay on screen.</p></div>
+              <select id="dash-toast-duration" data-dash-toast-duration aria-label="Notification duration" style="padding:0.55rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+                <option value="2500">Short (2.5 s)</option>
+                <option value="4000">Normal (4 s)</option>
+                <option value="6000">Long (6 s)</option>
+              </select>
+            </div>
+            <div class="list-card"><div><label for="dash-start-page"><strong>Open on startup</strong></label><p>Which page the dashboard opens on. "Last visited" remembers where you left off.</p></div>
+              <select id="dash-start-page" data-dash-start-page aria-label="Startup page" style="padding:0.55rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+                <option value="dashboard">Dashboard</option>
+                <option value="last">Last visited page</option>
+                <option value="resume-analysis">Resume Analysis</option>
+                <option value="reports">Reports</option>
+              </select>
+            </div>
+            <div class="list-card"><div><strong>Stored analysis data</strong><p>Removes saved analysis results, resume score, filters, and history from this browser. Your account is not affected.</p></div>
+              <button type="button" class="dash-btn-danger" data-dash-clear-data>Clear analysis data</button>
+            </div>
+          </div>
+        </div>
+        <div class="dash-phase-nav">
+          <button class="dash-phase-btn" data-phase-back>← Back</button>
+          <span class="dash-phase-indicator">Phase 14 of 14</span>
+          <button class="dash-phase-btn" data-phase-next>Next →</button>
+        </div>
+      </div>
+
+      <!-- ═══ JOB DETAILS MODAL ═══ -->
+      <div class="result-modal hidden" data-job-modal aria-hidden="true">
+        <div class="result-modal__backdrop" data-job-modal-close></div>
+        <div class="result-modal__panel glass-card" role="dialog" aria-modal="true" aria-labelledby="job-modal-title">
+          <div class="inline-actions" style="justify-content: space-between; margin-bottom: 1rem;">
+            <div>
+              <p class="small-note" style="margin: 0 0 0.4rem; text-transform: uppercase; letter-spacing: 0.12em;">Role details</p>
+              <h3 class="section-title" id="job-modal-title" data-job-modal-title style="margin: 0;">Job details</h3>
+            </div>
+            <button class="button-ghost" type="button" data-job-modal-close>Close</button>
+          </div>
+          <div data-job-modal-body></div>
+        </div>
+      </div>
+
+    </div><!-- /.dash-content -->
+  </div><!-- /.dash-main -->
+</div><!-- /.dash-layout -->
 {% endblock %}

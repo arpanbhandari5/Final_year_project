@@ -56,6 +56,156 @@
   </div>
 </section>
 
+<!-- ═══ RISK SCORE CARDS ═══ -->
+<section class="pr-section" id="risk-cards">
+  <div class="container">
+    <div class="pr-section__head">
+      <span class="pr-eyebrow">Key metrics</span>
+      <h2 class="pr-section__title">Risk & Compatibility Scores</h2>
+      <p class="pr-section__sub">Real-time scores updated after every resume analysis.</p>
+    </div>
+    <div class="risk-cards-grid">
+      <div class="risk-card" data-risk-card="career-risk">
+        <div class="risk-card__header">
+          <span class="risk-card__icon">⚠️</span>
+          <span class="risk-card__label">Career Risk</span>
+        </div>
+        <div class="risk-card__value">
+          <span class="risk-card__number" data-risk-card-value="career-risk">0</span>
+          <span class="risk-card__unit">/100</span>
+        </div>
+        <div class="risk-card__bar"><span data-risk-card-bar="career-risk" style="width:0%;"></span></div>
+        <span class="risk-card__status" data-risk-card-status="career-risk">Low Risk</span>
+      </div>
+      <div class="risk-card" data-risk-card="resume-strength">
+        <div class="risk-card__header">
+          <span class="risk-card__icon">📄</span>
+          <span class="risk-card__label">Resume Strength</span>
+        </div>
+        <div class="risk-card__value">
+          <span class="risk-card__number" data-risk-card-value="resume-strength">0</span>
+          <span class="risk-card__unit">/100</span>
+        </div>
+        <div class="risk-card__bar"><span data-risk-card-bar="resume-strength" style="width:0%;"></span></div>
+        <span class="risk-card__status" data-risk-card-status="resume-strength">Awaiting</span>
+      </div>
+      <div class="risk-card" data-risk-card="skill-match">
+        <div class="risk-card__header">
+          <span class="risk-card__icon">🎯</span>
+          <span class="risk-card__label">Skill Match</span>
+        </div>
+        <div class="risk-card__value">
+          <span class="risk-card__number" data-risk-card-value="skill-match">0</span>
+          <span class="risk-card__unit">%</span>
+        </div>
+        <div class="risk-card__bar"><span data-risk-card-bar="skill-match" style="width:0%;"></span></div>
+        <span class="risk-card__status" data-risk-card-status="skill-match">Awaiting</span>
+      </div>
+      <div class="risk-card" data-risk-card="job-compatibility">
+        <div class="risk-card__header">
+          <span class="risk-card__icon">💼</span>
+          <span class="risk-card__label">Job Compatibility</span>
+        </div>
+        <div class="risk-card__value">
+          <span class="risk-card__number" data-risk-card-value="job-compatibility">0</span>
+          <span class="risk-card__unit">%</span>
+        </div>
+        <div class="risk-card__bar"><span data-risk-card-bar="job-compatibility" style="width:0%;"></span></div>
+        <span class="risk-card__status" data-risk-card-status="job-compatibility">Awaiting</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PIE CHART SECTION ═══ -->
+<section class="pr-section" id="charts">
+  <div class="container">
+    <div class="pr-section__head">
+      <span class="pr-eyebrow">Distribution</span>
+      <h2 class="pr-section__title">Skill & Category Distribution</h2>
+      <p class="pr-section__sub">Visual breakdown of detected skills and job categories.</p>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3 class="chart-card__title">Skill Distribution</h3>
+        <div class="chart-card__canvas-wrap">
+          <canvas id="skillPieChart" data-skill-pie-chart width="300" height="300"></canvas>
+        </div>
+        <div class="chart-card__legend" data-skill-pie-legend></div>
+      </div>
+      <div class="chart-card">
+        <h3 class="chart-card__title">Job Category Distribution</h3>
+        <div class="chart-card__canvas-wrap">
+          <canvas id="jobPieChart" data-job-pie-chart width="300" height="300"></canvas>
+        </div>
+        <div class="chart-card__legend" data-job-pie-legend></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SKILL GAP BAR CHART ═══ -->
+<section class="pr-section" id="skill-gap-chart">
+  <div class="container">
+    <div class="pr-section__head">
+      <span class="pr-eyebrow">Gap analysis</span>
+      <h2 class="pr-section__title">Required Skills vs Your Skills</h2>
+      <p class="pr-section__sub">Compare what you have against what the market demands.</p>
+    </div>
+    <div class="chart-card">
+      <h3 class="chart-card__title">Skill Gap Comparison</h3>
+      <div class="chart-card__canvas-wrap">
+        <canvas id="skillGapChart" data-skill-gap-chart width="800" height="400"></canvas>
+      </div>
+      <div class="chart-card__legend">
+        <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#6366f1;"></span>Your Skills</span>
+        <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#f43f5e;"></span>Missing Skills</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATISTICS SECTION ═══ -->
+<section class="pr-section" id="statistics">
+  <div class="container">
+    <div class="pr-section__head">
+      <span class="pr-eyebrow">System overview</span>
+      <h2 class="pr-section__title">Platform Statistics</h2>
+      <p class="pr-section__sub">Aggregated stats from the AI analysis pipeline.</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-card__icon">📊</span>
+        <div class="stat-card__body">
+          <span class="stat-card__value" data-stat-value="total-resumes">0</span>
+          <span class="stat-card__label">Resumes Analyzed</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon">⚠️</span>
+        <div class="stat-card__body">
+          <span class="stat-card__value" data-stat-value="avg-risk">0%</span>
+          <span class="stat-card__label">Avg Risk Score</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon">💼</span>
+        <div class="stat-card__body">
+          <span class="stat-card__value" data-stat-value="total-jobs">0</span>
+          <span class="stat-card__label">Job Matches</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon">🔍</span>
+        <div class="stat-card__body">
+          <span class="stat-card__value" data-stat-value="top-missing">—</span>
+          <span class="stat-card__label">Top Missing Skill</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ START HERE: CHOOSE YOUR PATH ═══ -->
 <section class="pr-section" id="start-here">
   <div class="container">
@@ -161,6 +311,16 @@
           <div class="compare-results hidden" data-compare-results></div>
         </div>
       </form>
+
+      <!-- Resume file preview (TXT content is read in-browser; PDF/DOCX show metadata only) -->
+      <div class="resume-preview hidden" data-resume-preview style="margin-top:1rem;">
+        <div class="resume-preview__header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+          <strong>File Preview</strong>
+          <button type="button" class="button-ghost" data-resume-preview-close style="padding:0.3rem 0.7rem;font-size:0.8rem;">&times;</button>
+        </div>
+        <div class="resume-preview__info" data-resume-preview-info></div>
+        <pre class="resume-preview__content" data-resume-preview-content style="display:none;max-height:200px;overflow:auto;padding:0.75rem;background:var(--surface-container-low);border-radius:0.5rem;font-size:0.82rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;"></pre>
+      </div>
     </div>
   </div>
 </section>
@@ -330,6 +490,185 @@
   </div>
 </section>
 
+<!-- ═══ RESUME STRENGTH SCORE (animated meter) ═══ -->
+<section class="pr-section" id="resume-score">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">Resume quality</span>
+          <h3 class="pr-section__title">Resume Strength Score</h3>
+          <p class="pr-section__sub" style="text-align:left;">An animated 0&ndash;100 meter that updates automatically when the scoring API responds.</p>
+        </div>
+        <span class="status-pill" data-score-status>Awaiting analysis</span>
+      </div>
+
+      <div class="rs-meter-wrap" data-score-panel>
+        <div class="rs-ring" data-score-ring role="img" aria-label="Resume strength score" style="--rs-pct: 0;">
+          <div class="rs-ring__content">
+            <span class="rs-ring__value" id="score" data-score-final>--</span>
+            <span class="rs-ring__label">Final Score</span>
+          </div>
+        </div>
+
+        <div class="rs-scores">
+          <div class="rs-sub" data-score-sub="skill">
+            <div class="rs-sub__head"><span>Skill Score</span><span class="rs-sub__value" id="skillScore">--</span></div>
+            <div class="rs-sub__bar"><span></span></div>
+          </div>
+          <div class="rs-sub" data-score-sub="experience">
+            <div class="rs-sub__head"><span>Experience Score</span><span class="rs-sub__value" id="expScore">--</span></div>
+            <div class="rs-sub__bar"><span></span></div>
+          </div>
+          <div class="rs-sub" data-score-sub="quality">
+            <div class="rs-sub__head"><span>Quality Score</span><span class="rs-sub__value" id="qualityScore">--</span></div>
+            <div class="rs-sub__bar"><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="rs-feedback" id="feedback" data-score-feedback>Run an analysis to see your resume strength.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SKILL VISUALIZATION ═══ -->
+<section class="pr-section" id="skill-viz">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">Detected skills</span>
+          <h3 class="pr-section__title">Skill Visualization</h3>
+          <p class="pr-section__sub" style="text-align:left;">Skills detected in your resume, displayed as strength bars with proficiency levels.</p>
+        </div>
+        <span class="status-pill" data-skillviz-status>Awaiting analysis</span>
+      </div>
+      <div class="skill-viz-container" data-skillviz-container>
+        <div class="list-card is-placeholder">
+          <div><strong>Awaiting analysis</strong><p>Run a resume analysis to visualize detected skills.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ JOB MATCH DASHBOARD ═══ -->
+<section class="pr-section" id="job-dashboard">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">Recommendations</span>
+          <h3 class="pr-section__title">Job Match Dashboard</h3>
+          <p class="pr-section__sub" style="text-align:left;">Interactive role cards with search, filtering, and sorting &mdash; populated from your latest analysis.</p>
+        </div>
+        <span class="status-pill" data-jm-status>Awaiting analysis</span>
+      </div>
+
+      <div class="jm-toolbar">
+        <input type="search" class="jm-search" data-jm-search placeholder="Search job titles or skills..." aria-label="Search job titles or skills">
+        <div class="jm-filter-group" role="group" aria-label="Filter by match score">
+          <button type="button" class="jm-chip is-active" data-jm-filter-match="all">All matches <span class="jm-chip__count" data-chip-count="all">0</span></button>
+          <button type="button" class="jm-chip" data-jm-filter-match="high">High &gt; 80 <span class="jm-chip__count" data-chip-count="high">0</span></button>
+          <button type="button" class="jm-chip" data-jm-filter-match="medium">Medium 50&ndash;80 <span class="jm-chip__count" data-chip-count="medium">0</span></button>
+          <button type="button" class="jm-chip" data-jm-filter-match="low">Low &lt; 50 <span class="jm-chip__count" data-chip-count="low">0</span></button>
+        </div>
+        <div class="jm-filter-group" role="group" aria-label="Filter by risk level">
+          <button type="button" class="jm-chip is-active" data-jm-filter-risk="all">Any risk <span class="jm-chip__count" data-chip-count="risk-all">0</span></button>
+          <button type="button" class="jm-chip" data-jm-filter-risk="Low">Low risk <span class="jm-chip__count" data-chip-count="Low">0</span></button>
+          <button type="button" class="jm-chip" data-jm-filter-risk="Medium">Medium risk <span class="jm-chip__count" data-chip-count="Medium">0</span></button>
+          <button type="button" class="jm-chip" data-jm-filter-risk="High">High risk <span class="jm-chip__count" data-chip-count="High">0</span></button>
+        </div>
+        <label class="jm-sort-label">
+          <span>Sort by</span>
+          <select class="jm-sort" data-jm-sort aria-label="Sort jobs">
+            <option value="match-desc">Highest match</option>
+            <option value="risk-asc">Lowest risk</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="jm-grid" id="jobContainer" data-jm-grid>
+        <div class="list-card is-placeholder jm-placeholder">
+          <div><strong>Awaiting analysis</strong><p>Run a resume analysis to generate matched role cards.</p></div>
+        </div>
+      </div>
+      <p class="jm-empty hidden" data-jm-empty>No jobs match your current search or filters. Try clearing them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CAREER RISK METER (Low / Medium / High) ═══ -->
+<section class="pr-section" id="risk-meter">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">Automation exposure</span>
+          <h3 class="pr-section__title">Career Risk Meter</h3>
+          <p class="pr-section__sub" style="text-align:left;">Color-coded indicator of how exposed your profile is to automation.</p>
+        </div>
+        <span class="status-pill" data-riskmeter-status>Awaiting analysis</span>
+      </div>
+
+      <div class="rk-meter" data-riskmeter>
+        <div class="rk-meter__gauge">
+          <div class="rk-meter__track">
+            <div class="rk-meter__marker" data-riskmeter-marker></div>
+          </div>
+          <div class="rk-meter__zones" aria-hidden="true">
+            <span>Low</span><span>Medium</span><span>High</span>
+          </div>
+        </div>
+        <div class="rk-meter__value">
+          <span class="rk-meter__level" id="riskBox" data-riskmeter-level>--</span>
+          <span class="rk-meter__pct" data-riskmeter-pct></span>
+        </div>
+      </div>
+      <p class="rs-feedback" id="riskExplain" data-riskmeter-summary>Run an analysis to see your automation risk.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ATS RESUME CHECKER ═══ -->
+<section class="pr-section" id="ats-checker">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">ATS compatibility</span>
+          <h3 class="pr-section__title">ATS Resume Checker</h3>
+          <p class="pr-section__sub" style="text-align:left;">Basic local heuristic checks for ATS compatibility. This is a simplified checker — real ATS systems use more complex parsing.</p>
+        </div>
+        <span class="status-pill" data-ats-status>Awaiting analysis</span>
+      </div>
+
+      <div class="ats-score-wrap" data-ats-score-wrap>
+        <div class="ats-ring" data-ats-ring style="--ats-pct:0;">
+          <span class="ats-ring__value" data-ats-score>0%</span>
+        </div>
+        <div class="ats-score-info">
+          <p class="ats-verdict" data-ats-verdict>Run an analysis to check ATS compatibility.</p>
+        </div>
+      </div>
+
+      <div class="ats-checks" data-ats-checks style="margin-top:1.5rem;">
+        <div class="ats-check" data-ats-check="email"><span class="ats-check-icon">—</span><span>Email address detected</span></div>
+        <div class="ats-check" data-ats-check="phone"><span class="ats-check-icon">—</span><span>Phone number detected</span></div>
+        <div class="ats-check" data-ats-check="skills"><span class="ats-check-icon">—</span><span>Skills section present</span></div>
+        <div class="ats-check" data-ats-check="education"><span class="ats-check-icon">—</span><span>Education section present</span></div>
+        <div class="ats-check" data-ats-check="experience"><span class="ats-check-icon">—</span><span>Experience section present</span></div>
+        <div class="ats-check" data-ats-check="projects"><span class="ats-check-icon">—</span><span>Projects section present</span></div>
+        <div class="ats-check" data-ats-check="keywords"><span class="ats-check-icon">—</span><span>Important keywords found</span></div>
+        <div class="ats-check" data-ats-check="length"><span class="ats-check-icon">—</span><span>Adequate resume length</span></div>
+      </div>
+
+      <div class="ats-suggestions" data-ats-suggestions style="margin-top:1rem;"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ RISK INSIGHTS ═══ -->
 <section class="pr-section">
   <div class="container">
@@ -348,6 +687,67 @@
             <strong>Awaiting analysis</strong>
             <p>Run an assessment to see the evidence used to explain the prediction.</p>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CAREER PATH FLOWCHART ═══ -->
+<section class="pr-section" id="career-path">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">Career progression</span>
+          <h3 class="pr-section__title">Career Path Flowchart</h3>
+          <p class="pr-section__sub" style="text-align:left;">Typical career progression based on your selected path. Click any node for details.</p>
+        </div>
+        <span class="status-pill" data-career-path-status>Select a path</span>
+      </div>
+      <div class="career-flow" data-career-flow>
+        <div class="list-card is-placeholder">
+          <div><strong>No path selected</strong><p>Select a path above to see the career progression flowchart.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ INTERVIEW QUESTION GENERATOR ═══ -->
+<section class="pr-section" id="interview-gen">
+  <div class="container">
+    <div class="glass-card span-12 motion-fade-up">
+      <div class="pr-panel__head">
+        <div>
+          <span class="pr-eyebrow">Practice</span>
+          <h3 class="pr-section__title">Interview Question Generator</h3>
+          <p class="pr-section__sub" style="text-align:left;">Generate interview questions by category to practice for your next role.</p>
+        </div>
+        <span class="status-pill" data-interview-status>Ready</span>
+      </div>
+
+      <div class="interview-controls" style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <select class="jm-sort" data-interview-category style="padding:0.6rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+          <option value="python">Python</option>
+          <option value="web">Web Development</option>
+          <option value="ai-ml">AI / Machine Learning</option>
+          <option value="database">Database</option>
+          <option value="networking">Networking</option>
+          <option value="hr">General HR</option>
+        </select>
+        <select class="jm-sort" data-interview-difficulty style="padding:0.6rem 0.8rem;border-radius:0.6rem;border:1px solid var(--outline-variant);background:var(--surface-container-lowest);color:var(--on-surface);font:inherit;">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+        <button type="button" class="pr-btn pr-btn--primary" data-interview-generate>Generate Question</button>
+        <button type="button" class="pr-btn pr-btn--ghost" data-interview-regenerate>Regenerate</button>
+      </div>
+
+      <div class="interview-question-card" data-interview-card>
+        <div class="list-card is-placeholder">
+          <div><strong>Ready to practice</strong><p>Select a category and click Generate to get started.</p></div>
         </div>
       </div>
     </div>
@@ -511,6 +911,6 @@
         <div class="list-card is-placeholder"><div><strong>Run analysis</strong><p>Practical next actions will appear here.</p></div></div>
       </div>
     </div>
-  </div>
-</div>
+  </div><!-- /.result-modal__panel -->
+</div><!-- /.result-modal -->
 {% endblock %}

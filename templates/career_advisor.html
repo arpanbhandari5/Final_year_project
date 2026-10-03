@@ -1,0 +1,588 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='career-advisor.css', v=static_version) }}">
+{% endblock %}
+
+{% block content %}
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">🧠</div>
+      <div>
+        <h2>AI Career Advisor</h2>
+        <small>Career Risk &amp; Reskilling</small>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-page="dashboard">⌂ Dashboard</button>
+
+      <p class="nav-title">ANALYSIS</p>
+      <button class="nav-item" data-page="resume">▣ Resume Analysis</button>
+      <button class="nav-item" data-page="skills">◈ Skill Extraction</button>
+      <button class="nav-item" data-page="gap">◎ Skill Gap Analysis</button>
+      <button class="nav-item" data-page="risk">◇ Career Risk</button>
+
+      <p class="nav-title">CAREER</p>
+      <button class="nav-item" data-page="jobs">▤ Job Matching</button>
+      <button class="nav-item" data-page="career">◉ Career Path</button>
+      <button class="nav-item" data-page="roadmap">↗ Reskilling Roadmap</button>
+      <button class="nav-item" data-page="interview">▢ Interview Preparation</button>
+
+      <p class="nav-title">TOOLS</p>
+      <button class="nav-item" data-page="assistant">✦ AI Career Assistant</button>
+      <button class="nav-item" data-page="reports">▧ Reports</button>
+      <button class="nav-item" data-page="history">◷ History</button>
+
+      <p class="nav-title">ACCOUNT</p>
+      <button class="nav-item" data-page="profile">♙ Profile &amp; Settings</button>
+    </nav>
+    <button class="sidebar-collapse" id="sidebarCollapse" aria-label="Collapse sidebar" title="Collapse sidebar">◀</button>
+  </aside>
+  <div class="advisor-backdrop" id="advisorBackdrop" hidden></div>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="topbar">
+      <button id="menuBtn" aria-label="Toggle sidebar">☰</button>
+
+      <div class="search-wrap">
+        <input
+          id="globalSearch"
+          type="search"
+          placeholder="Search pages, jobs, or skills..."
+          autocomplete="off"
+          aria-label="Global search"
+        >
+        <div id="globalSearchResults" class="search-results" hidden></div>
+      </div>
+
+      <div class="top-actions">
+        <button id="themeBtn" aria-label="Toggle theme">☾</button>
+        <span>Student</span>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="page active">
+
+      <div class="hero">
+        <div>
+          <small>Welcome back</small>
+          <h1>Your Career Intelligence Dashboard</h1>
+          <p>
+            Analyze your resume, understand your skills,
+            evaluate career risk and discover your next career opportunity.
+          </p>
+
+          <button class="primary-btn" data-page="resume">
+            Analyze Resume
+          </button>
+        </div>
+
+        <div class="ai-box">
+          <h3>AI Powered Career Insights</h3>
+          <p>✓ Smart Analysis</p>
+          <p>✓ Career Recommendations</p>
+          <p>✓ Future-ready Skills</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <button class="stat-card" data-page="resume">
+          <span>Resume Score</span>
+          <strong id="dashResumeScore">--</strong>
+          <small>Resume Strength</small>
+        </button>
+
+        <button class="stat-card" data-page="resume">
+          <span>Skill Match</span>
+          <strong id="dashSkillMatch">--</strong>
+          <small>Target-role alignment</small>
+        </button>
+
+        <button class="stat-card" data-page="risk">
+          <span>Career Risk</span>
+          <strong id="dashRisk">--</strong>
+          <small>Automation exposure</small>
+        </button>
+
+        <button class="stat-card" data-page="skills">
+          <span>Skills Detected</span>
+          <strong id="dashSkills">0</strong>
+          <small>Technical &amp; soft skills</small>
+        </button>
+
+        <button class="stat-card" data-page="jobs">
+          <span>Job Matches</span>
+          <strong id="dashJobs">0</strong>
+          <small>Career opportunities</small>
+        </button>
+
+        <button class="stat-card" data-page="resume" data-subtab="atsTab">
+          <span>ATS Score</span>
+          <strong id="dashATS">--</strong>
+          <small>Basic local ATS check</small>
+        </button>
+      </div>
+
+      <div class="dashboard-grid">
+
+        <article class="panel">
+          <div class="panel-heading">
+            <h3>Skill Distribution</h3>
+          </div>
+          <div id="skillBars"></div>
+        </article>
+
+        <article class="panel">
+          <h3>Skill Gap Analysis</h3>
+          <div id="dashboardGap"></div>
+        </article>
+
+        <article class="panel">
+          <h3>Career Risk Analysis</h3>
+          <div class="risk-circle" id="riskCircle">
+            <strong id="riskCircleValue">--</strong>
+          </div>
+          <p id="riskDescription">Analyze a resume to calculate risk.</p>
+        </article>
+
+      </div>
+
+      <div class="two-column">
+        <div class="panel">
+          <h3>Top Career Recommendations</h3>
+          <div id="dashboardJobs" class="card-grid"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Job Match Distribution</h3>
+          <div id="jobMatchDistribution"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RESUME -->
+    <section id="resume" class="page">
+      <div class="page-heading">
+        <h1>Resume Analysis</h1>
+        <p>Upload and analyze your resume.</p>
+      </div>
+
+      <div class="two-column">
+        <div class="panel upload-panel">
+          <label class="upload-box" for="resumeInput" id="uploadBox">
+            <span class="upload-icon">☁</span>
+            <strong>Upload Resume</strong>
+            <small>TXT, PDF or DOCX — or drag &amp; drop here</small>
+            <input
+              type="file"
+              id="resumeInput"
+              accept=".txt,.pdf,.docx"
+              hidden
+            >
+          </label>
+
+          <div id="fileInfo" class="file-info">
+            No resume selected.
+          </div>
+
+          <div class="upload-actions">
+            <button id="analyzeBtn" class="primary-btn" disabled>
+              Analyze Resume
+            </button>
+            <button id="removeFileBtn" class="secondary-btn" disabled>
+              Remove File
+            </button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Resume Strength</h3>
+
+          <div class="score-meter">
+            <strong id="resumeScore">--</strong>
+            <span>/100</span>
+          </div>
+
+          <div id="resumeFeedback"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="tab-buttons">
+          <button class="tab active" data-tab="previewTab">Preview</button>
+          <button class="tab" data-tab="atsTab">ATS Checker</button>
+          <button class="tab" data-tab="suggestionTab">Suggestions</button>
+        </div>
+
+        <div id="previewTab" class="tab-content active">
+          <pre id="resumePreview">Resume preview will appear here.</pre>
+        </div>
+
+        <div id="atsTab" class="tab-content">
+          <div id="atsResults"></div>
+        </div>
+
+        <div id="suggestionTab" class="tab-content">
+          <div id="resumeSuggestions"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="page">
+      <div class="page-heading">
+        <h1>Skill Extraction</h1>
+        <p>Skills detected from your resume.</p>
+      </div>
+
+      <div class="stats-grid four">
+        <div class="stat-card">
+          <span>Total Skills</span>
+          <strong id="totalSkills">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Technical</span>
+          <strong id="technicalCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Soft Skills</span>
+          <strong id="softCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Tools</span>
+          <strong id="toolsCount">0</strong>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Extracted Skills</h3>
+        <div class="skill-filters" id="skillFilters" role="group" aria-label="Skill category filters">
+          <button class="skill-filter active" data-filter="all">All</button>
+          <button class="skill-filter" data-filter="technical">Technical</button>
+          <button class="skill-filter" data-filter="soft">Soft Skills</button>
+          <button class="skill-filter" data-filter="tools">Tools</button>
+          <button class="skill-filter" data-filter="other">Other</button>
+        </div>
+        <div id="skillChips" class="chips"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Skill Visualization</h3>
+        <div id="skillVisualization"></div>
+      </div>
+    </section>
+
+    <!-- SKILL GAP -->
+    <section id="gap" class="page">
+      <div class="page-heading">
+        <h1>Skill Gap Analysis</h1>
+        <p>Compare your skills with your target career.</p>
+      </div>
+
+      <div class="panel">
+        <label for="targetRole">Target Career</label>
+        <select id="targetRole">
+          <option value="">Loading roles…</option>
+          <option value="ai">AI/ML Engineer</option>
+          <option value="data">Data Analyst</option>
+          <option value="web">Full Stack Developer</option>
+        </select>
+      </div>
+
+      <div class="stats-grid four">
+        <div class="stat-card">
+          <span>Skill Match</span>
+          <strong id="gapPercentage">0%</strong>
+        </div>
+        <div class="stat-card">
+          <span>Matched</span>
+          <strong id="matchedCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Missing</span>
+          <strong id="missingCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Required</span>
+          <strong id="requiredCount">0</strong>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="panel">
+          <h3>Matched Skills</h3>
+          <div id="matchedSkills" class="chips"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Missing Skills</h3>
+          <div id="missingSkills" class="chips"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Skills to Learn</h3>
+        <div id="skillsToLearn"></div>
+      </div>
+    </section>
+
+    <!-- CAREER RISK -->
+    <section id="risk" class="page">
+      <div class="page-heading">
+        <h1>Career Risk Analysis</h1>
+        <p>Understand automation exposure and future career demand.</p>
+      </div>
+
+      <div class="two-column">
+        <div class="panel centered">
+          <div class="risk-circle large" id="careerRiskCircle">
+            <strong id="careerRiskScore">--</strong>
+          </div>
+          <h2 id="careerRiskLevel">Not analyzed</h2>
+        </div>
+
+        <div class="panel">
+          <h3>Risk Breakdown</h3>
+          <div id="riskBreakdown"></div>
+        </div>
+      </div>
+
+      <div class="two-column">
+        <div class="panel">
+          <h3>Risk Factors</h3>
+          <div id="riskFactors"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Recommendations</h3>
+          <div id="riskRecommendations"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOBS -->
+    <section id="jobs" class="page">
+      <div class="page-heading">
+        <h1>Job Matching</h1>
+        <p>Career opportunities based on your skills.</p>
+      </div>
+
+      <div class="filters">
+        <input id="jobSearch" placeholder="Search jobs or skills..." aria-label="Search jobs">
+
+        <select id="jobCategory" aria-label="Filter by category">
+          <option value="all">All Categories</option>
+        </select>
+
+        <select id="jobSort" aria-label="Sort jobs">
+          <option value="match">Highest Match</option>
+          <option value="matchAsc">Lowest Match</option>
+          <option value="risk">Lowest Risk</option>
+          <option value="title">Job Title (A–Z)</option>
+        </select>
+      </div>
+
+      <div id="jobCards" class="card-grid"></div>
+    </section>
+
+    <!-- CAREER PATH -->
+    <section id="career" class="page">
+      <div class="page-heading">
+        <h1>Career Path</h1>
+        <p>Explore your professional progression.</p>
+      </div>
+
+      <div class="panel">
+        <div id="careerFlow" class="career-flow"></div>
+      </div>
+
+      <div class="panel" id="careerDetails">
+        Select a career stage to view details.
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section id="roadmap" class="page">
+      <div class="page-heading">
+        <h1>Reskilling Roadmap</h1>
+        <p>Build the skills needed for your target career.</p>
+      </div>
+
+      <div id="roadmapCards" class="roadmap-grid"></div>
+    </section>
+
+    <!-- INTERVIEW -->
+    <section id="interview" class="page">
+      <div class="page-heading">
+        <h1>Interview Preparation</h1>
+        <p>Practice role-specific interview questions.</p>
+      </div>
+
+      <div class="panel">
+        <div class="filters">
+          <select id="questionCategory" aria-label="Question category">
+            <option value="python">Python</option>
+            <option value="web">Web Development</option>
+            <option value="ai">AI / ML</option>
+            <option value="database">Database</option>
+            <option value="hr">General HR</option>
+          </select>
+
+          <button id="generateQuestion" class="primary-btn">
+            Generate Question
+          </button>
+        </div>
+
+        <div class="question-card">
+          <small id="questionNumber"></small>
+          <h2 id="questionText">
+            Select a category and generate a question.
+          </h2>
+
+          <div class="question-actions">
+            <button id="prevQuestion" class="secondary-btn" disabled>← Previous</button>
+            <button id="showAnswer" class="secondary-btn" disabled>
+              Show Answer Guide
+            </button>
+            <button id="nextQuestion" class="secondary-btn" disabled>Next →</button>
+            <button id="resetInterview" class="secondary-btn" disabled>Reset</button>
+          </div>
+
+          <div id="answerGuide" class="answer-guide"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ASSISTANT -->
+    <section id="assistant" class="page">
+      <div class="page-heading">
+        <h1>AI Career Assistant</h1>
+        <p>Ask career-related questions.</p>
+      </div>
+
+      <div class="chat-panel">
+        <div id="chatMessages" class="chat-messages">
+          <div class="bot-message">
+            Hello! Ask me about your skills, career path or reskilling roadmap.
+          </div>
+        </div>
+
+        <div class="chat-chips" id="chatChips" aria-label="Suggested questions">
+          <button class="chat-chip">What skills am I missing?</button>
+          <button class="chat-chip">Which career best matches my skills?</button>
+          <button class="chat-chip">Explain my career risk.</button>
+          <button class="chat-chip">What should I learn next?</button>
+          <button class="chat-chip">How can I improve my resume?</button>
+        </div>
+
+        <div class="chat-input">
+          <input id="chatInput" placeholder="Ask your career question..." aria-label="Chat message">
+          <button id="sendChat" class="primary-btn">Send</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="reports" class="page">
+      <div class="page-heading">
+        <h1>Reports</h1>
+        <p>Career analysis summaries.</p>
+      </div>
+
+      <div class="panel">
+        <button id="printReportBtn" class="secondary-btn">🖨 Print Report</button>
+      </div>
+
+      <div id="reportList" class="card-grid"></div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="history" class="page">
+      <div class="page-heading">
+        <h1>Analysis History</h1>
+        <p>Your previous local analyses.</p>
+      </div>
+
+      <div class="panel">
+        <div id="historyList"></div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile" class="page">
+      <div class="page-heading">
+        <h1>Profile &amp; Settings</h1>
+      </div>
+
+      <div class="two-column">
+        <div class="panel settings">
+          <h3>Profile</h3>
+          <div class="profile-avatar" id="profileAvatar" aria-hidden="true">S</div>
+          <label>
+            Name
+            <input id="profileName" value="Student">
+          </label>
+          <label>
+            Email
+            <input id="profileEmail" value="{{ current_user.email if current_user.is_authenticated else '' }}" readonly>
+          </label>
+          <label>
+            Target Career
+            <input id="profileTargetCareer" readonly>
+          </label>
+          <label>
+            Experience Level
+            <input id="profileExperience" readonly>
+          </label>
+        </div>
+
+        <div class="panel settings">
+          <h3>Settings</h3>
+          <label class="switch-row">
+            Dark Theme
+            <input type="checkbox" id="darkToggle">
+          </label>
+          <label class="switch-row">
+            Collapsed Sidebar
+            <input type="checkbox" id="sidebarToggle">
+          </label>
+          <label class="switch-row">
+            Animations
+            <input type="checkbox" id="animationsToggle" checked>
+          </label>
+          <label class="switch-row">
+            Notifications
+            <input type="checkbox" id="notificationsToggle" checked>
+          </label>
+          <button id="saveSettings" class="primary-btn">
+            Save Settings
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- JOB DETAILS MODAL -->
+<div class="modal-backdrop" id="jobModal" hidden role="dialog" aria-modal="true" aria-labelledby="jobModalTitle">
+  <div class="modal-card">
+    <button class="modal-close" id="jobModalClose" aria-label="Close details">✕</button>
+    <div id="jobModalBody"></div>
+  </div>
+</div>
+
+<div id="advisorToastContainer" class="advisor-toast-container" role="status" aria-live="polite"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='career-advisor.js', v=static_version) }}"></script>
+{% endblock %}

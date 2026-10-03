@@ -30,6 +30,14 @@ def register_pages(app) -> None:
     @app.get("/workspace")
     @login_required
     def workspace() -> str:
+        """The authenticated workspace IS the AI Career Advisor dashboard.
+
+        Every "Workspace" link in the UI (navbar user menu, footer, and the
+        post-login landing URL) points at this endpoint, so it serves the
+        AI Career Advisor dashboard (templates/workspace.html) with the
+        grouped sidebar (Dashboard / Analysis / Career / Tools / Account).
+        The legacy guided-flow app remains available separately at /career.
+        """
         return render_template("workspace.html", active_page="workspace", title="Workspace | Prayash")
 
     @app.get("/workspace/skills-gap")
@@ -62,6 +70,19 @@ def register_pages(app) -> None:
     @app.get("/career")
     def career_analysis() -> str:
         return render_template("career.html", active_page="career", title="Career Analysis | Prayash")
+
+    @app.get("/career-advisor")
+    @login_required
+    def career_advisor() -> str:
+        """Standalone AI Career Advisor dashboard (single-page, connected pipeline).
+
+        Distinct from /workspace (the authenticated dashboard) and /career
+        (the legacy guided flow). Uses its own scoped assets:
+        templates/career_advisor.html + static/career-advisor.{css,js}
+        Several advisor endpoints (/api/skills-gap/*, /api/career-chat/context)
+        are login-required, so the page itself requires auth for consistency.
+        """
+        return render_template("career_advisor.html", active_page="career", title="AI Career Advisor | Prayash")
 
     @app.route("/partnerships", methods=["GET", "POST"])
     def partnerships() -> str:

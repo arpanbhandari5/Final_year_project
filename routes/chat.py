@@ -204,9 +204,23 @@ def _prepare_generation(
 
 
 def _resolve_context(conversation, payload: dict[str, Any]) -> str:
-    """Build LLM context from attached files (existing + freshly referenced)."""
+    """Build LLM context for a message send.
+
+    Two sources, combined:
+    1. Attached files (existing + freshly referenced via ``file_ids``).
+    2. An optional inline ``context`` string from the client (used by the
+       workspace AI Assistant page to pass a privacy-safe summary of the
+       user's latest resume analysis: risk, skills, top matches). This is
+       already-derived display data — no resume text or secrets — so the
+       assistant can answer "What skills am I missing?" from real results
+       instead of replying generically.
+    """
     chat_service.link_files(conversation, payload.get("file_ids") or [], current_user.id)
-    return chat_service.context_for_conversation(conversation, payload.get("file_ids"), current_user.id)
+    file_context = chat_service.context_for_conversation(conversation, payload.get("file_ids"), current_user.id)
+    inline_context = str(payload.get("context") or "").strip()
+    if file_context and inline_context:
+        return f"{file_context}\n\n{inline_context}"
+    return file_context or inline_context
 
 
 def _cancel_token(conversation_id: int) -> str:
