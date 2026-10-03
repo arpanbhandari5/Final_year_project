@@ -7,13 +7,18 @@ duplicate _clean_text, risk thresholds, or string-processing logic.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-import numpy as np
-import pandas as pd
+if TYPE_CHECKING:  # annotation-only; runtime imports are lazy (see below)
+    import pandas as pd
 
+# NOTE: numpy / pandas are imported lazily inside the few functions that
+# need them (clean_text, parse_listish, read_csv_any) — importing them at
+# module level dragged ~0.8s of pandas+numpy into every import of utils
+# (storage, routes, services), which is most of app startup.
 
 # ── Project Paths ──────────────────────────────────────────────────
 
@@ -22,7 +27,56 @@ DATA_DIR = BASE_DIR / "data"
 MODEL_DIR = BASE_DIR / "ml_models"
 
 
+# ── Static Asset Versioning ────────────────────────────────────────
+
+_CACHE_BUST_HASH: str | None = None
+
+
+def get_cache_bust_hash() -> str:
+    """Return a content-based hash of the versioned static assets for cache busting.
+
+    Covers every file that templates load with ``v=static_version`` (styles.css,
+    script.js, career-chat.*, auth-assistant.*, career-analysis.*,
+    skill-extraction.*, ui-refresh.css) so a change to ANY of them changes the
+    query string. This matters especially for the PWA service worker, which
+    serves static assets cache-first — a stale version would otherwise be served
+    forever, and /static/ responses are sent with ``immutable`` caching so an
+    unchanged query string would pin the browser to the old file.
+    """
+    global _CACHE_BUST_HASH
+    if _CACHE_BUST_HASH is None:
+        names = (
+            "styles.css",
+            "ui-refresh.css",
+            "script.js",
+            "roadmap-progress.js",
+            "auth-assistant.css",
+            "auth-assistant.js",
+            "career-chat.css",
+            "career-chat.js",
+            "career-advisor.css",
+            "career-advisor.js",
+            "career-analysis.css",
+            "career-analysis.js",
+            "skill-extraction.css",
+            "skill-extraction.js",
+            "chatbot.css",
+            "chatbot.js",
+            "manifest.json",
+        )
+        try:
+            digest = hashlib.md5()
+            for name in names:
+                digest.update((BASE_DIR / "static" / name).read_bytes())
+                digest.update(b"\0")
+            _CACHE_BUST_HASH = digest.hexdigest()[:12]
+        except OSError:
+            _CACHE_BUST_HASH = "v1"
+    return _CACHE_BUST_HASH
+
+
 # ── String / Text Helpers ──────────────────────────────────────────
+
 
 def clean_text(value: Any) -> str:
     """Normalise a raw CSV / form value into a clean string.
@@ -30,6 +84,8 @@ def clean_text(value: Any) -> str:
     Handles None, NaN (numpy), inline whitespace, and the literal
     string ``"nan"`` that often appears in CSV exports.
     """
+    import numpy as np
+
     if value is None:
         return ""
     if isinstance(value, float) and np.isnan(value):
@@ -46,6 +102,8 @@ normalize_text = clean_text
 def parse_listish(value: Any) -> list[str]:
     """Parse a CSV field that may contain a Python list literal or a
     comma-/semicolon-/pipe-delimited string into a clean string list."""
+    import numpy as np
+
     if value is None or (isinstance(value, float) and np.isnan(value)):
         return []
     if isinstance(value, list):
@@ -55,6 +113,7 @@ def parse_listish(value: Any) -> list[str]:
         return []
     try:
         import ast
+
         parsed = ast.literal_eval(text)
         if isinstance(parsed, list):
             return [clean_text(item) for item in parsed if clean_text(item)]
@@ -68,9 +127,28 @@ def split_keywords(text: str) -> list[str]:
     """Extract meaningful keyword tokens from a piece of text."""
     tokens = re.findall(r"[A-Za-z][A-Za-z0-9+#.-]{2,}", text.lower())
     stop_words: set[str] = {
-        "with", "from", "that", "this", "your", "have", "will",
-        "into", "about", "for", "and", "the", "are", "our", "you",
-        "role", "work", "team", "data", "skills", "career", "resume",
+        "with",
+        "from",
+        "that",
+        "this",
+        "your",
+        "have",
+        "will",
+        "into",
+        "about",
+        "for",
+        "and",
+        "the",
+        "are",
+        "our",
+        "you",
+        "role",
+        "work",
+        "team",
+        "data",
+        "skills",
+        "career",
+        "resume",
     }
     return [t for t in tokens if t not in stop_words]
 
@@ -122,24 +200,26 @@ def risk_label(score: float) -> str:
 
 # ── CSV / Data Helpers (shared by train_model, evaluation) ─────────
 
+
 def read_csv_any(*relative_paths: str) -> pd.DataFrame:
     """Read the first CSV that exists from *relative_paths* inside DATA_DIR.
 
     Normalises column names with ``normalize_text`` so callers do not have
     to handle inconsistent capitalisation.
     """
+    import pandas as pd
+
     for relative_path in relative_paths:
         candidate = DATA_DIR / relative_path
         if candidate.exists():
             frame = pd.read_csv(candidate, sep=None, engine="python")
             frame.columns = [normalize_text(column) for column in frame.columns]
             return frame
-    raise FileNotFoundError(
-        f"None of the expected files were found: {', '.join(relative_paths)}"
-    )
+    raise FileNotFoundError(f"None of the expected files were found: {', '.join(relative_paths)}")
 
 
 # ── ML Text-Building Helpers ───────────────────────────────────────
+
 
 def build_job_text(row: pd.Series) -> str:
     """Concatenate job attributes into a single TF-IDF-friendly string."""
@@ -177,6 +257,4 @@ def build_resume_text(row: pd.Series) -> str:
         " ".join(parse_listish(row.get("major_field_of_studies"))),
         " ".join(parse_listish(row.get("certification_skills"))),
     ]
-    return normalize_text(
-        " ".join(normalize_text(piece) for piece in pieces if normalize_text(piece))
-    )
+    return normalize_text(" ".join(normalize_text(piece) for piece in pieces if normalize_text(piece)))

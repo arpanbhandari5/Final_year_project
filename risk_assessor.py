@@ -6,10 +6,12 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-import joblib
+# NOTE: joblib is imported lazily inside the model-loading helpers — it
+# dragged ~0.4s into startup for modules that never touch the ML artifacts.
 import numpy as np
 import requests
 
+from llm_cooldown import is_ollama_on_cooldown, mark_ollama_unavailable
 from utils import RISK_LOW, RISK_MODERATE, clean_text, format_top_skills, risk_label, split_keywords
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -19,12 +21,16 @@ COURSES_PATH = BASE_DIR / "ml_models" / "courses.pkl"
 
 def _safe_load_bundle() -> dict[str, Any]:
     if MODEL_PATH.exists():
+        import joblib
+
         return joblib.load(MODEL_PATH)
     return {}
 
 
 def _safe_load_courses() -> dict[str, list[dict[str, Any]]]:
     if COURSES_PATH.exists():
+        import joblib
+
         return joblib.load(COURSES_PATH)
     return {}
 
@@ -88,7 +94,9 @@ def _skill_clusters(model_bundle: dict[str, Any], resume_text: str, limit: int =
     return clusters
 
 
-def _generate_roadmap(model_bundle: dict[str, Any], resume_text: str, matches: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _generate_roadmap(
+    model_bundle: dict[str, Any], resume_text: str, matches: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
     courses_index = model_bundle.get("courses", {})
     keywords = format_top_skills(split_keywords(resume_text), limit=12)
     roadmap: list[dict[str, Any]] = []
@@ -107,7 +115,10 @@ def _generate_roadmap(model_bundle: dict[str, Any], resume_text: str, matches: l
                         "skill": skill,
                         "course": title,
                         "url": course.get("url") or course.get("Course URL") or course.get("URL"),
-                        "reason": course.get("short_intro") or course.get("Course Short Intro") or course.get("What you learn") or "Aligned course recommendation",
+                        "reason": course.get("short_intro")
+                        or course.get("Course Short Intro")
+                        or course.get("What you learn")
+                        or "Aligned course recommendation",
                     }
                 )
                 if len(roadmap) >= 6:
@@ -124,7 +135,10 @@ def _generate_roadmap(model_bundle: dict[str, Any], resume_text: str, matches: l
                     "skill": keyword,
                     "course": title,
                     "url": course.get("url") or course.get("Course URL") or course.get("URL"),
-                    "reason": course.get("short_intro") or course.get("Course Short Intro") or course.get("What you learn") or "Aligned course recommendation",
+                    "reason": course.get("short_intro")
+                    or course.get("Course Short Intro")
+                    or course.get("What you learn")
+                    or "Aligned course recommendation",
                 }
             )
             if len(roadmap) >= 6:
@@ -175,10 +189,10 @@ You are generating a concise career intelligence narrative for Prayash.
 Resume:
 {resume_text}
 
-Local ML risk score: {analysis['risk_score']:.2f}
-Top matching roles: {json.dumps(analysis['top_roles'], ensure_ascii=False)}
-RIASEC fit: {json.dumps(analysis['riasec'], ensure_ascii=False)}
-Recommended learning roadmap: {json.dumps(analysis['roadmap'], ensure_ascii=False)}
+Local ML risk score: {analysis["risk_score"]:.2f}
+Top matching roles: {json.dumps(analysis["top_roles"], ensure_ascii=False)}
+RIASEC fit: {json.dumps(analysis["riasec"], ensure_ascii=False)}
+Recommended learning roadmap: {json.dumps(analysis["roadmap"], ensure_ascii=False)}
 
 Return a short structured response with two sections:
 1. Cognitive Career Narrative
@@ -187,15 +201,18 @@ Keep it specific, actionable, and suitable for an executive dashboard.
 """.strip()
 
     try:
+        if is_ollama_on_cooldown():
+            return None
         response = requests.post(
             f"{ollama_host}/api/generate",
             json={"model": model_name, "prompt": prompt, "stream": False, "options": {"temperature": 0.25}},
-            timeout=45,
+            timeout=(2, 15),
         )
         response.raise_for_status()
         data = response.json()
         return data.get("response")
     except Exception:
+        mark_ollama_unavailable()
         return None
 
 
@@ -216,9 +233,13 @@ def _build_reasoning(
     if risk_score < RISK_LOW:
         risk_drivers.append("The resume uses role-specific language that maps to lower-risk, knowledge-heavy work.")
     elif risk_score < RISK_MODERATE:
-        risk_drivers.append("The profile mixes analytical signals with adjacent skills, producing a mid-band automation risk.")
+        risk_drivers.append(
+            "The profile mixes analytical signals with adjacent skills, producing a mid-band automation risk."
+        )
     else:
-        risk_drivers.append("The profile aligns with repeatable tasks that the local model treats as higher automation risk.")
+        risk_drivers.append(
+            "The profile aligns with repeatable tasks that the local model treats as higher automation risk."
+        )
 
     if primary_role.get("job_role"):
         risk_drivers.append(
@@ -277,104 +298,253 @@ def _build_reasoning(
 
 _ROLE_SKILLS_DATABASE: dict[str, list[str]] = {
     "Data Scientist": [
-        "Python", "R", "SQL", "Machine Learning", "Statistics",
-        "Data Visualization", "Deep Learning", "Feature Engineering",
-        "A/B Testing", "Big Data Tools", "TensorFlow", "PyTorch"
+        "Python",
+        "R",
+        "SQL",
+        "Machine Learning",
+        "Statistics",
+        "Data Visualization",
+        "Deep Learning",
+        "Feature Engineering",
+        "A/B Testing",
+        "Big Data Tools",
+        "TensorFlow",
+        "PyTorch",
     ],
     "Data Analyst": [
-        "SQL", "Python", "Excel", "Data Visualization", "Statistical Analysis",
-        "Tableau", "Power BI", "Data Cleaning", "Reporting", "Dashboarding"
+        "SQL",
+        "Python",
+        "Excel",
+        "Data Visualization",
+        "Statistical Analysis",
+        "Tableau",
+        "Power BI",
+        "Data Cleaning",
+        "Reporting",
+        "Dashboarding",
     ],
     "Software Engineer": [
-        "Programming", "Data Structures", "Algorithms", "System Design",
-        "Version Control", "Testing", "CI/CD", "API Design",
-        "Problem Solving", "Object-Oriented Programming"
+        "Programming",
+        "Data Structures",
+        "Algorithms",
+        "System Design",
+        "Version Control",
+        "Testing",
+        "CI/CD",
+        "API Design",
+        "Problem Solving",
+        "Object-Oriented Programming",
     ],
     "Machine Learning Engineer": [
-        "Python", "Machine Learning", "Deep Learning", "MLOps",
-        "Data Engineering", "TensorFlow", "PyTorch", "Docker",
-        "Kubernetes", "Feature Engineering", "Model Deployment"
+        "Python",
+        "Machine Learning",
+        "Deep Learning",
+        "MLOps",
+        "Data Engineering",
+        "TensorFlow",
+        "PyTorch",
+        "Docker",
+        "Kubernetes",
+        "Feature Engineering",
+        "Model Deployment",
     ],
     "Frontend Developer": [
-        "HTML", "CSS", "JavaScript", "React", "TypeScript",
-        "Responsive Design", "Web Performance", "Testing",
-        "Version Control", "REST APIs"
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "React",
+        "TypeScript",
+        "Responsive Design",
+        "Web Performance",
+        "Testing",
+        "Version Control",
+        "REST APIs",
     ],
     "Backend Developer": [
-        "Python", "Node.js", "Java", "SQL", "NoSQL",
-        "API Design", "Docker", "Cloud Services", "CI/CD",
-        "Authentication", "Database Design"
+        "Python",
+        "Node.js",
+        "Java",
+        "SQL",
+        "NoSQL",
+        "API Design",
+        "Docker",
+        "Cloud Services",
+        "CI/CD",
+        "Authentication",
+        "Database Design",
     ],
     "Full Stack Developer": [
-        "JavaScript", "HTML", "CSS", "React", "Node.js",
-        "SQL", "NoSQL", "REST APIs", "Version Control",
-        "Docker", "Cloud Services", "Testing"
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "React",
+        "Node.js",
+        "SQL",
+        "NoSQL",
+        "REST APIs",
+        "Version Control",
+        "Docker",
+        "Cloud Services",
+        "Testing",
     ],
     "DevOps Engineer": [
-        "Linux", "Docker", "Kubernetes", "CI/CD", "Cloud Services",
-        "Terraform", "Ansible", "Monitoring", "Scripting",
-        "Networking", "Security", "Git"
+        "Linux",
+        "Docker",
+        "Kubernetes",
+        "CI/CD",
+        "Cloud Services",
+        "Terraform",
+        "Ansible",
+        "Monitoring",
+        "Scripting",
+        "Networking",
+        "Security",
+        "Git",
     ],
     "Product Manager": [
-        "Product Strategy", "User Research", "Data Analysis",
-        "Leadership", "Agile/Scrum", "Communication",
-        "Roadmapping", "Stakeholder Management", "A/B Testing",
-        "Market Analysis"
+        "Product Strategy",
+        "User Research",
+        "Data Analysis",
+        "Leadership",
+        "Agile/Scrum",
+        "Communication",
+        "Roadmapping",
+        "Stakeholder Management",
+        "A/B Testing",
+        "Market Analysis",
     ],
     "UX Designer": [
-        "User Research", "Wireframing", "Prototyping", "Figma",
-        "Information Architecture", "Usability Testing",
-        "Visual Design", "Interaction Design", "Design Systems"
+        "User Research",
+        "Wireframing",
+        "Prototyping",
+        "Figma",
+        "Information Architecture",
+        "Usability Testing",
+        "Visual Design",
+        "Interaction Design",
+        "Design Systems",
     ],
     "Data Engineer": [
-        "Python", "SQL", "ETL", "Data Warehousing", "Spark",
-        "Airflow", "Cloud Services", "NoSQL", "Docker",
-        "Data Modeling", "Big Data Tools"
+        "Python",
+        "SQL",
+        "ETL",
+        "Data Warehousing",
+        "Spark",
+        "Airflow",
+        "Cloud Services",
+        "NoSQL",
+        "Docker",
+        "Data Modeling",
+        "Big Data Tools",
     ],
     "AI Research Scientist": [
-        "Python", "Machine Learning", "Deep Learning", "NLP",
-        "Computer Vision", "Reinforcement Learning", "PyTorch",
-        "TensorFlow", "Research", "Mathematics", "Statistics"
+        "Python",
+        "Machine Learning",
+        "Deep Learning",
+        "NLP",
+        "Computer Vision",
+        "Reinforcement Learning",
+        "PyTorch",
+        "TensorFlow",
+        "Research",
+        "Mathematics",
+        "Statistics",
     ],
     "Business Intelligence Developer": [
-        "SQL", "Data Warehousing", "ETL", "Tableau", "Power BI",
-        "Data Modeling", "Reporting", "Dashboarding", "Python",
-        "Analytics"
+        "SQL",
+        "Data Warehousing",
+        "ETL",
+        "Tableau",
+        "Power BI",
+        "Data Modeling",
+        "Reporting",
+        "Dashboarding",
+        "Python",
+        "Analytics",
     ],
     "Cybersecurity Analyst": [
-        "Network Security", "Vulnerability Assessment", "SIEM",
-        "Security Tools", "Incident Response", "Risk Management",
-        "Python", "Scripting", "Compliance", "Firewalls"
+        "Network Security",
+        "Vulnerability Assessment",
+        "SIEM",
+        "Security Tools",
+        "Incident Response",
+        "Risk Management",
+        "Python",
+        "Scripting",
+        "Compliance",
+        "Firewalls",
     ],
     "Cloud Architect": [
-        "Cloud Services", "AWS", "Azure", "GCP", "Docker",
-        "Kubernetes", "Networking", "Security", "Terraform",
-        "Microservices", "System Design"
+        "Cloud Services",
+        "AWS",
+        "Azure",
+        "GCP",
+        "Docker",
+        "Kubernetes",
+        "Networking",
+        "Security",
+        "Terraform",
+        "Microservices",
+        "System Design",
     ],
     "Mobile Developer": [
-        "Kotlin", "Swift", "React Native", "Flutter", "Mobile UI",
-        "REST APIs", "Version Control", "App Architecture",
-        "Testing", "Performance Optimization"
+        "Kotlin",
+        "Swift",
+        "React Native",
+        "Flutter",
+        "Mobile UI",
+        "REST APIs",
+        "Version Control",
+        "App Architecture",
+        "Testing",
+        "Performance Optimization",
     ],
     "Technical Writer": [
-        "Technical Communication", "Documentation", "API Documentation",
-        "Markdown", "Content Management", "Information Architecture",
-        "Editing", "Research", "Subject Matter Expertise"
+        "Technical Communication",
+        "Documentation",
+        "API Documentation",
+        "Markdown",
+        "Content Management",
+        "Information Architecture",
+        "Editing",
+        "Research",
+        "Subject Matter Expertise",
     ],
     "QA Engineer": [
-        "Testing", "Automation", "Selenium", "Test Planning",
-        "Python", "CI/CD", "Bug Tracking", "Performance Testing",
-        "API Testing", "Agile/Scrum"
+        "Testing",
+        "Automation",
+        "Selenium",
+        "Test Planning",
+        "Python",
+        "CI/CD",
+        "Bug Tracking",
+        "Performance Testing",
+        "API Testing",
+        "Agile/Scrum",
     ],
     "Project Manager": [
-        "Agile/Scrum", "Project Planning", "Risk Management",
-        "Stakeholder Management", "Budgeting", "Communication",
-        "Leadership", "JIRA", "MS Project", "Team Management"
+        "Agile/Scrum",
+        "Project Planning",
+        "Risk Management",
+        "Stakeholder Management",
+        "Budgeting",
+        "Communication",
+        "Leadership",
+        "JIRA",
+        "MS Project",
+        "Team Management",
     ],
     "Database Administrator": [
-        "SQL", "Database Design", "Performance Tuning", "Backup & Recovery",
-        "Security", "NoSQL", "Cloud Databases", "Scripting",
-        "Monitoring", "Migration"
+        "SQL",
+        "Database Design",
+        "Performance Tuning",
+        "Backup & Recovery",
+        "Security",
+        "NoSQL",
+        "Cloud Databases",
+        "Scripting",
+        "Monitoring",
+        "Migration",
     ],
 }
 
@@ -394,15 +564,22 @@ def _normalize_skill(skill: str) -> str:
     return skill.strip().lower()
 
 
-def analyze_skills_gap(resume_text: str, target_role: str) -> dict[str, Any]:
+def analyze_skills_gap(
+    resume_text: str, target_role: str, user_skills: list[str] | None = None
+) -> dict[str, Any]:
     """Analyze skills gap between resume and target role.
 
     Extracts skills from the resume text, compares them against the
     target role's requirements, and generates learning recommendations.
 
     Args:
-        resume_text: The cleaned resume text.
+        resume_text: The cleaned resume text. May be empty when
+            ``user_skills`` carries the detected skill list instead (e.g. the
+            workspace reuses the skills extracted by a completed analysis).
         target_role: The target career role to analyze against.
+        user_skills: Optional already-extracted skills from a prior analysis.
+            They are seeded into the detected set the same way text keywords
+            are, so the comparison stays consistent.
 
     Returns:
         dict with current_skills, missing_skills, matched_skills,
@@ -417,7 +594,16 @@ def analyze_skills_gap(resume_text: str, target_role: str) -> dict[str, Any]:
 
     # Extract skills from resume using the same keyword extraction
     detected_keywords = set(split_keywords(resume_text))
-    
+
+    # Seed the detected set with skills already extracted by a prior
+    # analysis (workspace skill-gap runs after the main analysis, where the
+    # resume text is intentionally not persisted).
+    for s in user_skills or []:
+        name = str(s or "").strip()
+        if name:
+            detected_keywords.add(name)
+            detected_keywords.add(name.lower())
+
     # Also check detected skills from the analysis pipeline
     detected_skills = set()
     for kw in detected_keywords:
@@ -436,17 +622,12 @@ def analyze_skills_gap(resume_text: str, target_role: str) -> dict[str, Any]:
         # Check various forms of the skill
         skill_variations = {skill_normalized, skill.lower(), skill.title()}
         # Also check partial matches for skills like "Python" matching "python"
-        if any(
-            v in detected_keywords or v in detected_skills
-            for v in skill_variations
-        ):
+        if any(v in detected_keywords or v in detected_skills for v in skill_variations):
             matched_skills.append(skill)
         else:
             missing_skills.append(skill)
 
-    match_percentage = round(
-        (len(matched_skills) / len(required_skills)) * 100, 1
-    ) if required_skills else 0.0
+    match_percentage = round((len(matched_skills) / len(required_skills)) * 100, 1) if required_skills else 0.0
 
     # Generate recommendations for missing skills
     recommendations = _generate_gap_recommendations(missing_skills)
@@ -463,12 +644,23 @@ def analyze_skills_gap(resume_text: str, target_role: str) -> dict[str, Any]:
     }
 
 
-
 # ── Career Path Suggestion Engine ─────────────────────────────────
 
 _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
     "Data Scientist": {
-        "keywords": ["python", "machine learning", "deep learning", "statistics", "sql", "tensorflow", "pytorch", "data", "nlp", "analytics", "ai"],
+        "keywords": [
+            "python",
+            "machine learning",
+            "deep learning",
+            "statistics",
+            "sql",
+            "tensorflow",
+            "pytorch",
+            "data",
+            "nlp",
+            "analytics",
+            "ai",
+        ],
         "category": "Data & Analytics",
         "growing": True,
         "avg_salary": "$120K-$160K",
@@ -477,7 +669,18 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Python", "Machine Learning", "SQL", "Statistics", "Data Visualization"],
     },
     "Data Analyst": {
-        "keywords": ["sql", "excel", "tableau", "power bi", "analytics", "data", "python", "statistics", "reporting", "dashboard"],
+        "keywords": [
+            "sql",
+            "excel",
+            "tableau",
+            "power bi",
+            "analytics",
+            "data",
+            "python",
+            "statistics",
+            "reporting",
+            "dashboard",
+        ],
         "category": "Data & Analytics",
         "growing": True,
         "avg_salary": "$65K-$95K",
@@ -486,7 +689,21 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["SQL", "Excel", "Data Visualization", "Statistics", "Python"],
     },
     "Software Engineer": {
-        "keywords": ["python", "java", "javascript", "c++", "c#", "go", "rust", "programming", "algorithms", "data structures", "api", "backend", "frontend"],
+        "keywords": [
+            "python",
+            "java",
+            "javascript",
+            "c++",
+            "c#",
+            "go",
+            "rust",
+            "programming",
+            "algorithms",
+            "data structures",
+            "api",
+            "backend",
+            "frontend",
+        ],
         "category": "Software Development",
         "growing": True,
         "avg_salary": "$100K-$150K",
@@ -495,7 +712,19 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Programming", "Data Structures", "Algorithms", "System Design", "Version Control"],
     },
     "Frontend Developer": {
-        "keywords": ["html", "css", "javascript", "typescript", "react", "angular", "vue", "frontend", "web", "ui", "responsive"],
+        "keywords": [
+            "html",
+            "css",
+            "javascript",
+            "typescript",
+            "react",
+            "angular",
+            "vue",
+            "frontend",
+            "web",
+            "ui",
+            "responsive",
+        ],
         "category": "Software Development",
         "growing": True,
         "avg_salary": "$90K-$135K",
@@ -504,7 +733,19 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["HTML", "CSS", "JavaScript", "React", "TypeScript"],
     },
     "Backend Developer": {
-        "keywords": ["python", "java", "node.js", "sql", "nosql", "api", "docker", "backend", "server", "database", "rest"],
+        "keywords": [
+            "python",
+            "java",
+            "node.js",
+            "sql",
+            "nosql",
+            "api",
+            "docker",
+            "backend",
+            "server",
+            "database",
+            "rest",
+        ],
         "category": "Software Development",
         "growing": True,
         "avg_salary": "$95K-$140K",
@@ -513,7 +754,19 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Python", "Java", "SQL", "API Design", "Docker"],
     },
     "Full Stack Developer": {
-        "keywords": ["javascript", "html", "css", "react", "node.js", "python", "sql", "mongodb", "full stack", "web", "api"],
+        "keywords": [
+            "javascript",
+            "html",
+            "css",
+            "react",
+            "node.js",
+            "python",
+            "sql",
+            "mongodb",
+            "full stack",
+            "web",
+            "api",
+        ],
         "category": "Software Development",
         "growing": True,
         "avg_salary": "$100K-$150K",
@@ -522,7 +775,20 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["JavaScript", "HTML", "CSS", "React", "Node.js"],
     },
     "DevOps Engineer": {
-        "keywords": ["docker", "kubernetes", "aws", "azure", "gcp", "ci/cd", "linux", "terraform", "ansible", "jenkins", "cloud", "devops"],
+        "keywords": [
+            "docker",
+            "kubernetes",
+            "aws",
+            "azure",
+            "gcp",
+            "ci/cd",
+            "linux",
+            "terraform",
+            "ansible",
+            "jenkins",
+            "cloud",
+            "devops",
+        ],
         "category": "Infrastructure & Cloud",
         "growing": True,
         "avg_salary": "$110K-$160K",
@@ -531,7 +797,19 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Docker", "Kubernetes", "CI/CD", "Cloud", "Linux"],
     },
     "Machine Learning Engineer": {
-        "keywords": ["python", "machine learning", "deep learning", "tensorflow", "pytorch", "mlops", "docker", "kubernetes", "data", "model", "deployment"],
+        "keywords": [
+            "python",
+            "machine learning",
+            "deep learning",
+            "tensorflow",
+            "pytorch",
+            "mlops",
+            "docker",
+            "kubernetes",
+            "data",
+            "model",
+            "deployment",
+        ],
         "category": "Data & Analytics",
         "growing": True,
         "avg_salary": "$130K-$180K",
@@ -540,7 +818,18 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Python", "Machine Learning", "Deep Learning", "MLOps", "Docker"],
     },
     "Product Manager": {
-        "keywords": ["product", "strategy", "user research", "agile", "scrum", "roadmap", "stakeholder", "analytics", "a/b testing", "leadership"],
+        "keywords": [
+            "product",
+            "strategy",
+            "user research",
+            "agile",
+            "scrum",
+            "roadmap",
+            "stakeholder",
+            "analytics",
+            "a/b testing",
+            "leadership",
+        ],
         "category": "Product & Management",
         "growing": True,
         "avg_salary": "$100K-$160K",
@@ -549,7 +838,19 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Product Strategy", "User Research", "Agile", "Data Analysis", "Leadership"],
     },
     "UX Designer": {
-        "keywords": ["figma", "sketch", "adobe xd", "wireframing", "prototyping", "user research", "usability", "ui", "ux", "design", "interaction"],
+        "keywords": [
+            "figma",
+            "sketch",
+            "adobe xd",
+            "wireframing",
+            "prototyping",
+            "user research",
+            "usability",
+            "ui",
+            "ux",
+            "design",
+            "interaction",
+        ],
         "category": "Design",
         "growing": True,
         "avg_salary": "$85K-$130K",
@@ -558,7 +859,19 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Figma", "User Research", "Wireframing", "Prototyping", "Visual Design"],
     },
     "Data Engineer": {
-        "keywords": ["etl", "spark", "kafka", "airflow", "sql", "python", "data warehouse", "bigquery", "snowflake", "pipeline", "hadoop"],
+        "keywords": [
+            "etl",
+            "spark",
+            "kafka",
+            "airflow",
+            "sql",
+            "python",
+            "data warehouse",
+            "bigquery",
+            "snowflake",
+            "pipeline",
+            "hadoop",
+        ],
         "category": "Data & Analytics",
         "growing": True,
         "avg_salary": "$110K-$160K",
@@ -567,7 +880,18 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Python", "SQL", "ETL", "Spark", "Data Warehousing"],
     },
     "Cybersecurity Analyst": {
-        "keywords": ["security", "cybersecurity", "network security", "encryption", "authentication", "compliance", "gdpr", "hipaa", "risk", "vulnerability"],
+        "keywords": [
+            "security",
+            "cybersecurity",
+            "network security",
+            "encryption",
+            "authentication",
+            "compliance",
+            "gdpr",
+            "hipaa",
+            "risk",
+            "vulnerability",
+        ],
         "category": "Security",
         "growing": True,
         "avg_salary": "$90K-$140K",
@@ -576,7 +900,18 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Network Security", "Vulnerability Assessment", "SIEM", "Risk Management", "Python"],
     },
     "Cloud Architect": {
-        "keywords": ["aws", "azure", "gcp", "cloud", "docker", "kubernetes", "terraform", "microservices", "architecture", "serverless"],
+        "keywords": [
+            "aws",
+            "azure",
+            "gcp",
+            "cloud",
+            "docker",
+            "kubernetes",
+            "terraform",
+            "microservices",
+            "architecture",
+            "serverless",
+        ],
         "category": "Infrastructure & Cloud",
         "growing": True,
         "avg_salary": "$140K-$190K",
@@ -594,7 +929,18 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Kotlin", "Swift", "React Native", "Flutter", "Mobile UI"],
     },
     "AI Research Scientist": {
-        "keywords": ["machine learning", "deep learning", "nlp", "computer vision", "reinforcement learning", "pytorch", "tensorflow", "research", "mathematics", "statistics"],
+        "keywords": [
+            "machine learning",
+            "deep learning",
+            "nlp",
+            "computer vision",
+            "reinforcement learning",
+            "pytorch",
+            "tensorflow",
+            "research",
+            "mathematics",
+            "statistics",
+        ],
         "category": "Data & Analytics",
         "growing": True,
         "avg_salary": "$140K-$200K",
@@ -603,7 +949,16 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Python", "Machine Learning", "Deep Learning", "Research", "Mathematics"],
     },
     "Technical Writer": {
-        "keywords": ["writing", "documentation", "technical communication", "editing", "markdown", "api documentation", "content", "research"],
+        "keywords": [
+            "writing",
+            "documentation",
+            "technical communication",
+            "editing",
+            "markdown",
+            "api documentation",
+            "content",
+            "research",
+        ],
         "category": "Content",
         "growing": False,
         "avg_salary": "$65K-$100K",
@@ -612,7 +967,18 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Technical Communication", "Documentation", "Editing", "Research", "API Documentation"],
     },
     "QA Engineer": {
-        "keywords": ["testing", "automation", "selenium", "pytest", "jest", "ci/cd", "quality", "bug", "test planning", "performance testing"],
+        "keywords": [
+            "testing",
+            "automation",
+            "selenium",
+            "pytest",
+            "jest",
+            "ci/cd",
+            "quality",
+            "bug",
+            "test planning",
+            "performance testing",
+        ],
         "category": "Software Development",
         "growing": False,
         "avg_salary": "$70K-$110K",
@@ -621,7 +987,18 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Testing", "Automation", "Selenium", "Python", "CI/CD"],
     },
     "Project Manager": {
-        "keywords": ["project management", "agile", "scrum", "jira", "leadership", "budgeting", "stakeholder", "risk", "planning", "team"],
+        "keywords": [
+            "project management",
+            "agile",
+            "scrum",
+            "jira",
+            "leadership",
+            "budgeting",
+            "stakeholder",
+            "risk",
+            "planning",
+            "team",
+        ],
         "category": "Product & Management",
         "growing": False,
         "avg_salary": "$80K-$130K",
@@ -630,7 +1007,18 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["Agile/Scrum", "Project Planning", "Risk Management", "Leadership", "Communication"],
     },
     "Database Administrator": {
-        "keywords": ["sql", "database", "postgresql", "mysql", "oracle", "mongodb", "backup", "recovery", "performance tuning", "security"],
+        "keywords": [
+            "sql",
+            "database",
+            "postgresql",
+            "mysql",
+            "oracle",
+            "mongodb",
+            "backup",
+            "recovery",
+            "performance tuning",
+            "security",
+        ],
         "category": "Infrastructure & Cloud",
         "growing": False,
         "avg_salary": "$85K-$130K",
@@ -639,7 +1027,17 @@ _CAREER_PATH_MAPPING: dict[str, dict[str, object]] = {
         "skills_needed": ["SQL", "Database Design", "Performance Tuning", "Backup & Recovery", "Security"],
     },
     "Business Intelligence Developer": {
-        "keywords": ["sql", "etl", "tableau", "power bi", "data warehouse", "reporting", "dashboard", "analytics", "data modeling"],
+        "keywords": [
+            "sql",
+            "etl",
+            "tableau",
+            "power bi",
+            "data warehouse",
+            "reporting",
+            "dashboard",
+            "analytics",
+            "data modeling",
+        ],
         "category": "Data & Analytics",
         "growing": True,
         "avg_salary": "$80K-$120K",
@@ -670,18 +1068,20 @@ def suggest_career_paths(resume_text: str) -> list[dict[str, object]]:
             continue
 
         score = round(matches / len(keywords) * 100, 1)
-        scored.append({
-            "role": role,
-            "score": score,
-            "category": info["category"],
-            "growing": info["growing"],
-            "avg_salary": info["avg_salary"],
-            "demand": info["demand"],
-            "description": info["description"],
-            "skills_needed": info["skills_needed"],
-            "matched_keywords": matches,
-            "total_keywords": len(keywords),
-        })
+        scored.append(
+            {
+                "role": role,
+                "score": score,
+                "category": info["category"],
+                "growing": info["growing"],
+                "avg_salary": info["avg_salary"],
+                "demand": info["demand"],
+                "description": info["description"],
+                "skills_needed": info["skills_needed"],
+                "matched_keywords": matches,
+                "total_keywords": len(keywords),
+            }
+        )
 
     scored.sort(key=lambda x: x["score"], reverse=True)
     return scored[:8]
@@ -705,12 +1105,39 @@ def generate_learning_roadmap(resume_text: str) -> list[dict[str, object]]:
         "JavaScript": ["javascript", "js", "node.js", "react", "angular", "vue", "typescript"],
         "Java": ["java", "spring", "kotlin", "jvm"],
         "Web Development": ["html", "css", "sass", "scss", "bootstrap", "tailwind", "webpack", "frontend", "backend"],
-        "Data Science": ["machine learning", "deep learning", "nlp", "computer vision", "tensorflow", "pytorch", "scikit-learn", "data science"],
+        "Data Science": [
+            "machine learning",
+            "deep learning",
+            "nlp",
+            "computer vision",
+            "tensorflow",
+            "pytorch",
+            "scikit-learn",
+            "data science",
+        ],
         "Databases": ["sql", "mysql", "postgresql", "mongodb", "redis", "elasticsearch", "cassandra", "nosql"],
-        "Cloud & DevOps": ["aws", "azure", "gcp", "docker", "kubernetes", "terraform", "ansible", "ci/cd", "jenkins", "cloud"],
+        "Cloud & DevOps": [
+            "aws",
+            "azure",
+            "gcp",
+            "docker",
+            "kubernetes",
+            "terraform",
+            "ansible",
+            "ci/cd",
+            "jenkins",
+            "cloud",
+        ],
         "Data Engineering": ["etl", "spark", "kafka", "airflow", "data warehouse", "data pipeline", "big data"],
         "Mobile Development": ["android", "ios", "swift", "kotlin", "flutter", "react native"],
-        "Security": ["security", "cybersecurity", "encryption", "authentication", "penetration testing", "network security"],
+        "Security": [
+            "security",
+            "cybersecurity",
+            "encryption",
+            "authentication",
+            "penetration testing",
+            "network security",
+        ],
         "System Design": ["microservices", "system design", "architecture", "distributed systems", "api design"],
         "UI/UX Design": ["figma", "sketch", "adobe xd", "wireframing", "prototyping", "user research", "ux", "ui"],
         "Product Management": ["product", "agile", "scrum", "roadmap", "stakeholder", "product strategy"],
@@ -820,15 +1247,17 @@ def generate_learning_roadmap(resume_text: str) -> list[dict[str, object]]:
             continue
         seen_areas.add(area)
         tmpl = roadmap_templates[area]
-        roadmap.append({
-            "area": area,
-            "icon": tmpl["icon"],
-            "stages": [
-                {"level": "Beginner", "description": tmpl["beginner"], "duration": "2-4 weeks"},
-                {"level": "Intermediate", "description": tmpl["intermediate"], "duration": "4-8 weeks"},
-                {"level": "Advanced", "description": tmpl["advanced"], "duration": "8-12 weeks"},
-            ],
-        })
+        roadmap.append(
+            {
+                "area": area,
+                "icon": tmpl["icon"],
+                "stages": [
+                    {"level": "Beginner", "description": tmpl["beginner"], "duration": "2-4 weeks"},
+                    {"level": "Intermediate", "description": tmpl["intermediate"], "duration": "4-8 weeks"},
+                    {"level": "Advanced", "description": tmpl["advanced"], "duration": "8-12 weeks"},
+                ],
+            }
+        )
 
     roadmap.sort(key=lambda x: detected.index(x["area"]))
     return roadmap
@@ -930,25 +1359,29 @@ def _generate_gap_recommendations(missing_skills: list[str]) -> list[dict[str, s
         skill_key = _normalize_skill(skill)
         # Look for matching resources
         resource_keys = [k for k in resource_map if k in skill_key or skill_key in k]
-        
+
         if resource_keys:
             resources = resource_map[resource_keys[0]]
-            recommendations.append({
-                "skill": skill,
-                "resources": resources,
-                "priority": "High" if len(resource_keys) > 0 else "Medium",
-            })
+            recommendations.append(
+                {
+                    "skill": skill,
+                    "resources": resources,
+                    "priority": "High" if len(resource_keys) > 0 else "Medium",
+                }
+            )
         else:
             # Generic recommendation
-            recommendations.append({
-                "skill": skill,
-                "resources": [
-                    f"Research online courses for {skill}",
-                    f"Build a project using {skill}",
-                    f"Practice {skill} with hands-on exercises",
-                ],
-                "priority": "Medium",
-            })
+            recommendations.append(
+                {
+                    "skill": skill,
+                    "resources": [
+                        f"Research online courses for {skill}",
+                        f"Build a project using {skill}",
+                        f"Practice {skill} with hands-on exercises",
+                    ],
+                    "priority": "Medium",
+                }
+            )
 
     return recommendations
 
@@ -970,12 +1403,15 @@ def analyze_resume(resume_text: str, mode: str = "standard") -> dict[str, Any]:
     clusters = _skill_clusters(model_bundle, cleaned_resume)
     roadmap = _generate_roadmap(model_bundle, cleaned_resume, top_roles)
     riasec = _riasec_profile(clusters, cleaned_resume)
-    reasoning = _build_reasoning(cleaned_resume, risk_score, risk_label(risk_score), top_roles, clusters, roadmap, riasec)
+    reasoning = _build_reasoning(
+        cleaned_resume, risk_score, risk_label(risk_score), top_roles, clusters, roadmap, riasec
+    )
 
     # ── Rich skill extraction (SAHAY_AI-style categorized skills) ──
     rich_skills: dict[str, object] = {"by_category": {}, "all_skills": [], "count": 0, "categories_found": 0}
     try:
         from resume_parser import extract_skills_from_text as _rich_skills_fn
+
         rich_skills = _rich_skills_fn(cleaned_resume)
         all_skill_names = rich_skills.get("all_skills", [])
         if all_skill_names:

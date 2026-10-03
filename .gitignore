@@ -36,6 +36,16 @@ node_modules/
 
 # Database files (auto-created)
 instance/*.db
+/prayash.db
+
+# Temp / debug artifacts
+.tmp_pipeline_block.txt
+_ws_rendered.html
+routes_list.txt
+/static/reference-ui*.png
+
+# Chat file attachments (saved by /api/career-chat/context)
+uploads/
 
 # IDE
 .idea/

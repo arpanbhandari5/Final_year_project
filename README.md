@@ -1,233 +1,280 @@
-# Prayash
+﻿# AI-Based Career and Skill
 
-**Learning for better future** — An AI-powered career intelligence platform that turns resumes into actionable learning strategies.
-
-## Overview
-
-Prayash combines local machine learning, O\*NET occupational intelligence, and an optional Llama 3 narrative layer to analyze resumes and provide:
-
-- **Automation Risk Scoring** — Predicts how susceptible a career profile is to automation using a local Ridge regression model trained on O\*NET data.
-- **Role Matching** — Maps resumes to the closest O\*NET job profiles using TF-IDF cosine similarity.
-- **Skill Clustering** — Groups skills into meaningful competency clusters for targeted upskilling.
-- **Learning Roadmap** — Recommends Coursera courses aligned to the strongest skill intersections in the resume.
-- **RIASEC Personality Profiling** — Derives a Holland Code (RIASEC) profile from resume content and O\*NET interest data.
-- **Skills Gap Analysis** — Compares resume skills against target roles to identify missing skills and learning priorities.
-- **Career Path Suggestion** — Discovers suitable career trajectories based on detected skills.
-- **Resume Quality Scoring** — Evaluates completeness and provides actionable improvements.
-- **Contact & Section Extraction** — Parses resumes for email, phone, LinkedIn, GitHub, and structural sections.
-- **Cognitive Career Narrative** — In Advanced mode, generates a structured career narrative using a local Llama 3 model via Ollama.
-
-### Privacy-First Design
-
-Resume data is **never** written to a permanent database. Files are read, analyzed in memory, and discarded after response generation. The SQLite database only stores anonymized metadata (filename, mode, risk score) for admin analytics.
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Backend** | Flask 3.x, Flask-Login, Flask-SQLAlchemy, Flask-WTF |
-| **ML Pipeline** | scikit-learn (Ridge regression, TF-IDF vectorizer) |
-| **Data** | O\*NET occupation profiles, automation risk dataset, Coursera course catalog |
-| **Resume Parsing** | pypdf (PDF), python-docx (DOCX), plain text |
-| **LLM (optional)** | Ollama with Llama 3 for advanced narrative generation |
-| **Database** | SQLite (metadata only) |
-| **Frontend** | Vanilla HTML/CSS/JS with Inter font, glassmorphism UI |
-| **Auth** | Email/Password, OAuth (Google, GitHub, LinkedIn, Microsoft) |
-| **PWA** | Service worker, manifest, offline page, install prompt |
+This repository contains a Flask-based application for career assessment and skill recommendation using resume parsing, risk analysis, and machine learning models.
 
 ## Project Structure
 
+- `app.py` — main Flask application entry point
+- `bootstrap.py` — app initialization helpers
+- `evaluation.py` — evaluation routines
+- `risk_assessor.py` — risk assessment logic
+- `resume_parser.py` — resume parsing utilities
+- `train_model.py` — model training scripts
+- `routes/` — route registration (`api.py`, `auth.py`, `chat.py`, `pages.py`, `admin.py`)
+- `services/` — career intelligence services (`resume_service.py`)
+- `tests/` — pytest suite (`test_app.py`, `test_score_resume.py`, `test_match_risk.py`, `test_role_enrichment.py`)
+- `data/` — datasets used for training and analysis
+- `static/` — static frontend assets (`script.js`, `styles.css`)
+- `templates/` — Flask HTML templates
+- `.vscode/` — VS Code workspace settings
+
+## Setup
+
+1. Create and activate a Python virtual environment:
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   ```
+2. Install dependencies:
+   ```powershell
+   pip install -r requirements.txt
+   ```
+3. Run the application:
+   ```powershell
+   python app.py
+   ```
+
+## API Reference
+
+All scoring/matching/risk endpoints accept `multipart/form-data` (file upload, field `resume` or `resume_file`) **or** `application/json` with `resume_text`, unless noted otherwise.
+
+### Authentication
+
+The API does not use JWT bearer tokens. Requests are authenticated with the **session cookie + CSRF token header** (Flask-WTF):
+
+| Header | Value |
+|---|---|
+| `X-CSRFToken` | Token from `GET /api/csrf-token` → `{ "csrf_token": "..." }` |
+| `Content-Type` | `application/json` for JSON bodies; omit for multipart (the browser sets the boundary) |
+
+A missing/expired token returns `400` with a CSRF error body; clients should refresh via `/api/csrf-token` and retry once (the bundled frontend `apiCall()` wrapper does this automatically).
+
+### OAuth Sign-In Setup (Google / GitHub / LinkedIn)
+
+OAuth callbacks are registered per provider. **`localhost` and `127.0.0.1` are different origins for cookies** — register **both** redirect URIs in each provider's console and access the app consistently, or state validation will fail at the callback (`MismatchingStateError`).
+
+| Provider | Console | Redirect URIs to register |
+|---|---|---|
+| Google | [Google Cloud Console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials) | `http://localhost:5000/login/google/authorized` · `http://127.0.0.1:5000/login/google/authorized` |
+| GitHub | [GitHub → Developer settings → OAuth Apps](https://github.com/settings/developers) | `http://localhost:5000/login/github/authorized` · `http://127.0.0.1:5000/login/github/authorized` |
+| LinkedIn | [LinkedIn Developer Portal → Products → Sign In](https://www.linkedin.com/developers/apps) | `http://localhost:5000/login/linkedin/authorized` · `http://127.0.0.1:5000/login/linkedin/authorized` |
+
+Then set the matching `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` (etc.) in `.env` and restart. Broken callbacks (state mismatch, cancelled consent, invalid grant) redirect back to `/login` with a friendly error instead of a 500 — this is covered by `tests/test_oauth_errors.py`.
+
+### `POST /score_resume`
+
+Scores resume strength on a 0–100 scale with three sub-scores. Deterministic (rule-based), no LLM calls.
+
+**Request** — multipart file **or** JSON body:
+
+```json
+{ "resume_text": "John Doe\nData analyst with 3 years of experience..." }
 ```
-Final_year_project/
-├── app.py                 # Flask application entry point & routes
-├── bootstrap.py           # Model artifact initialization
-├── risk_assessor.py       # Core ML pipeline: risk scoring, role matching, RIASEC, roadmap
-├── resume_parser.py       # PDF/DOCX/text resume extraction
-├── storage.py             # SQLAlchemy models, auth, database helpers
-├── utils.py               # Shared utilities (text cleaning, validation, ML helpers)
-├── evaluation.py          # Model evaluation & cross-validation scripts
-├── train_model.py         # Trains and serializes ML artifacts (model.pkl, courses.pkl)
-├── requirements.txt       # Python dependencies
-├── setup.ps1              # Windows PowerShell setup script
-├── start.sh               # Unix/macOS setup script
-├── Dockerfile             # Container build instructions
-├── docker-compose.yml     # Multi-service container orchestration
-├── .env.example           # Environment configuration template
-├── data/
-│   ├── automation_risk.csv       # O*NET automation risk scores
-│   ├── coursera_catalog.csv      # Coursera course recommendations
-│   ├── onet_interests.csv        # O*NET interest profiles
-│   ├── onet_interest_keywords.csv
-│   ├── onet_skils.csv            # O*NET skill mappings
-│   └── resume_corpus.csv         # Resume training corpus
-├── ml_models/              # Generated after training
-│   ├── model.pkl           # Trained Ridge model + vectorizer + job vectors
-│   └── courses.pkl         # Skill-to-course mapping index
-├── instance/
-│   └── prayash.db          # SQLite database (auto-created)
-├── static/
-│   ├── styles.css          # Full stylesheet (glassmorphism, animations, dark mode)
-│   ├── script.js           # Client-side interactions & API calls
-│   ├── auth-assistant.css  # Auth assistant chat widget styles
-│   ├── auth-assistant.js   # Auth assistant chat widget logic
-│   ├── manifest.json       # PWA manifest
-│   ├── sw.js               # Service worker (offline support)
-│   ├── offline.html        # Offline fallback page
-│   └── icons/              # PWA icons (72x72 to 512x512)
-├── templates/
-│   ├── base.html           # Base layout with navbar, footer, PWA support
-│   ├── index.html          # Landing page with dual-mode dashboard
-│   ├── auth.html           # Combined login/signup page
-│   ├── auth_assistant.html # Auth chat widget template
-│   ├── workspace.html      # Authenticated analysis workspace
-│   ├── admin.html          # Admin analytics dashboard
-│   ├── verify_otp.html     # Email verification via OTP
-│   ├── forgot_password.html
-│   ├── reset_password.html
-│   ├── 404.html / 500.html # Error pages
-│   ├── methodology.html    # ML methodology documentation
-│   ├── privacy.html        # Privacy policy
-│   ├── insights.html       # Platform insights
-│   └── partnerships.html   # Partnership information
-└── tests/
-    ├── test_app.py         # Pytest integration tests
-    ├── test_auth_e2e.py    # End-to-end auth tests
-    └── test_forgot_password.py  # Password reset flow tests
+
+**Response `200`**:
+
+```json
+{
+  "success": true,
+  "result": {
+    "final_score": 54,
+    "skill_score": 48,
+    "experience_score": 60,
+    "quality_score": 55,
+    "feedback": "Average resume. List more skills, quantify achievements...",
+    "skills": ["Python", "SQL", "Power BI"],
+    "strengths": ["Contact info", "Skill keywords"],
+    "improvements": ["No phone detected", "No metrics found"],
+    "word_count": 186
+  }
+}
 ```
 
-## Getting Started
+`final_score = round(0.4·skill + 0.3·experience + 0.3·quality)`. Banding: `≥ 80` strong · `70–79` good · `40–69` average · `< 40` needs work.
 
-### Prerequisites
+**Errors**: `400` — no file / text under 20 chars / unreadable file.
 
-- **Python 3.11+**
-- **pip** (Python package manager)
-- **Ollama** (optional, for Advanced mode narratives)
+### `POST /match_jobs`
 
-### Quick Start
+Returns ranked role matches for a resume **or** an explicit skill list.
+
+**Request** — JSON body (one of):
+
+```json
+{ "skills": ["python", "sql", "power bi"] }
+```
+
+```json
+{ "resume_text": "..." }
+```
+
+- With `resume_text` (≥ 20 chars): full ML similarity over the bundled corpus.
+- With only `skills` (array or comma-separated string): curated skill → archetype coverage scoring (5 covered keywords ⇒ 100%).
+
+**Response `200`**:
+
+```json
+{
+  "success": true,
+  "total": 4,
+  "jobs": [
+    {
+      "title": "Data Analyst",
+      "score": 80,
+      "skills": ["python", "sql"],
+      "risk_level": "Moderate",
+      "risk_score": 0.512,
+      "industry": "Tech",
+      "trait_chips": ["Skill complexity 53%", "Domain knowledge 53%"],
+      "job_board_links": [
+        { "label": "Indeed", "url": "https://www.indeed.com/jobs?q=Data%20Analyst" },
+        { "label": "LinkedIn", "url": "https://www.linkedin.com/jobs/search/?keywords=Data%20Analyst" },
+        { "label": "Naukri", "url": "https://www.naukri.com/data-analyst-jobs" }
+      ]
+    }
+  ]
+}
+```
+
+Jobs are sorted by descending `score`. `risk_level` ∈ `Low | Moderate | Elevated`.
+
+**Errors**: `400` — neither skills nor resume text provided · `503` — model artifacts unavailable.
+
+### `POST /predict_risk`
+
+Automation-risk prediction for a resume, using the local ML model.
+
+**Request** — multipart file **or** JSON body:
+
+```json
+{ "resume_text": "..." }
+```
+
+**Response `200`**:
+
+```json
+{
+  "success": true,
+  "risk_level": "Moderate",
+  "risk_score": 0.475,
+  "explanation": "Moderate exposure (48%). Parts of this role can be automated; strengthening transferable skills will keep you ahead.",
+  "bands": { "low": 0.35, "moderate": 0.7 }
+}
+```
+
+Banding: `risk_score < 0.35` → Low · `< 0.70` → Moderate · `≥ 0.70` → Elevated. Deterministic: identical input yields identical output.
+
+**Errors**: `400` — no file / text under 20 chars · `503` — model artifacts unavailable.
+
+### `POST /api/upload`
+
+The original full-analysis endpoint (also aliased at `POST /api/analyze`). Runs the complete ML pipeline in one call and feeds every dashboard section (risk ring, role bars, reasoning cards, next steps).
+
+**Request** — multipart file **or** JSON body:
+
+```json
+{ "resume_text": "...", "mode": "standard" }
+```
+
+`mode` ∈ `standard` (local ML) | `advanced` (adds LLM narrative when configured; falls back silently to standard).
+
+**Response `200`** (key fields; full payload includes roadmap, RIASEC, reasoning):
+
+```json
+{
+  "success": true,
+  "mode": "standard",
+  "risk_score": 0.475,
+  "risk_label": "Moderate",
+  "top_roles": [
+    {
+      "job_role": "Data Analyst",
+      "industry": "Tech",
+      "similarity": 0.68,
+      "risk_score": 0.41,
+      "trait_chips": ["Skill complexity 53%", "Domain knowledge 53%"],
+      "job_board_links": ["Indeed", "LinkedIn", "Naukri objects with url"]
+    }
+  ],
+  "skill_clusters": [],
+  "roadmap": [],
+  "riasec": { "scores": {} },
+  "reasoning": { "summary": "...", "skills_detected": ["Python", "SQL"] },
+  "guided_next_steps": {}
+}
+```
+
+Note: role objects carry `trait_chips` and `job_board_links` (training internals `text`/`skills` are stripped server-side).
+
+**Errors**: `400` — no file/text · `500` — analysis failure (message in `error`).
+
+### `POST /api/compare`
+
+Side-by-side risk comparison of two resume texts.
+
+**Request** — JSON body:
+
+```json
+{ "text_a": "resume A text", "text_b": "resume B text", "mode": "standard" }
+```
+
+**Response `200`**:
+
+```json
+{
+  "success": true,
+  "mode": "standard",
+  "risk_a": 0.41,
+  "risk_b": 0.68,
+  "risk_delta": 0.27,
+  "label_a": "Moderate",
+  "label_b": "Elevated",
+  "top_role_a": "Data Analyst",
+  "top_role_b": "Customer Support",
+  "riasec_a": "Investigative",
+  "riasec_b": "Enterprising"
+}
+```
+
+`risk_delta` is `abs(risk_a - risk_b)`, rounded to 3 decimals.
+
+**Errors**: `400` — either text missing · `500` — analysis failure.
+
+### Example (curl)
+
+> **Important:** the CSRF token is bound to the server-side session, so every
+> request must carry the **same cookie jar** that obtained the token. Without
+> `-b cookies.txt -c cookies.txt` the POST fails with `400 — The CSRF session
+> token is missing.`
 
 ```bash
-# Clone and enter the project directory
-cd Final_year_project
+# 0. Start from a clean cookie jar
+rm -f cookies.txt
 
-# Install dependencies
-pip install -r requirements.txt
+# 1. Get a CSRF token (and keep the session cookie that issued it)
+TOKEN=$(curl -s -c cookies.txt http://localhost:5000/api/csrf-token \
+  | python -c "import sys,json;print(json.load(sys.stdin)['csrf_token'])")
 
-# Train the ML model
-python train_model.py
+# 2. Score an uploaded resume (multipart: do NOT set Content-Type manually)
+curl -X POST http://localhost:5000/score_resume \
+  -b cookies.txt -c cookies.txt \
+  -H "X-CSRFToken: $TOKEN" \
+  -F "resume=@resume.txt"
 
-# Run the application
-python app.py
+# 3. Match jobs from extracted skills
+curl -X POST http://localhost:5000/match_jobs \
+  -b cookies.txt -c cookies.txt \
+  -H "X-CSRFToken: $TOKEN" -H "Content-Type: application/json" \
+  -d '{"skills":["python","sql","power bi"]}'
+
+# 4. Predict automation risk
+curl -X POST http://localhost:5000/predict_risk \
+  -b cookies.txt -c cookies.txt \
+  -H "X-CSRFToken: $TOKEN" -H "Content-Type: application/json" \
+  -d '{"resume_text":"..."}'
 ```
 
-The server starts at **http://127.0.0.1:5000**.
+## Notes
 
-### Windows Quick Setup
-
-```powershell
-.\setup.ps1
-```
-
-### Unix/macOS Quick Setup
-
-```bash
-./start.sh
-```
-
-### Docker Setup
-
-```bash
-docker-compose up --build
-```
-
-## Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `FLASK_SECRET_KEY` | `prayash-local-development-secret` | Flask session secret |
-| `DATABASE_URL` | `sqlite:///instance/prayash.db` | SQLAlchemy database URI |
-| `ADMIN_EMAIL` | `admin@prayash.local` | Default admin account email |
-| `ADMIN_PASSWORD` | `prayash-admin` | Default admin account password |
-| `PORT` | `5000` | Server port |
-| `OLLAMA_HOST` | `http://localhost:11434` | Ollama API endpoint |
-| `OLLAMA_MODEL` | `llama3` | Ollama model name |
-| `GOOGLE_OAUTH_CLIENT_ID` | (empty) | Google OAuth client ID |
-| `GITHUB_OAUTH_CLIENT_ID` | (empty) | GitHub OAuth client ID |
-| `SMTP_HOST` | `smtp.gmail.com` | Email SMTP host |
-| `SMTP_USERNAME` | (empty) | SMTP username |
-
-Copy `.env.example` to `.env` and fill in your values.
-
-## Default Accounts
-
-| Role | Email / Username | Password |
-|------|-----------------|----------|
-| Admin | `admin@prayash.local` | `prayash-admin` |
-| Student | `student` | `Student@123` |
-
-> **Note:** The default student password was strengthened as part of a code cleanup. Run `python app.py` and use `/forgot-password` if you need to update credentials.
-
-## API Endpoints
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| `GET` | `/` | No | Landing page |
-| `GET/POST` | `/login` | No | Login form |
-| `GET/POST` | `/signup` | No | Registration form |
-| `GET/POST` | `/verify-otp` | No | Email verification |
-| `GET/POST` | `/forgot-password` | No | Password reset request |
-| `GET/POST` | `/reset-password/<token>` | No | Password reset with token |
-| `GET` | `/workspace` | Yes | Analysis workspace |
-| `GET` | `/admin` | Admin | Admin dashboard |
-| `POST` | `/api/upload` | No | Submit resume for analysis |
-| `POST` | `/api/analyze` | No | Alias for upload |
-| `GET` | `/api/analyze-stream` | No | SSE streaming analysis |
-| `POST` | `/api/skills-gap/analyze` | No | Skills gap analysis |
-| `GET` | `/api/skills-gap/roles` | No | Available target roles |
-| `POST` | `/api/career-paths` | No | Career path suggestions |
-| `POST` | `/api/learning-roadmap` | No | Learning roadmap generation |
-| `POST` | `/api/insights-summary` | No | Full insights summary |
-| `POST` | `/api/feedback` | No | Submit user feedback |
-| `POST` | `/api/check-password` | No | Password strength checker |
-| `GET` | `/api/csrf-token` | No | CSRF token endpoint |
-| `GET` | `/healthz` | No | Health check |
-| `POST` | `/logout` | Yes | User logout |
-| `GET` | `/methodology` | No | ML methodology page |
-| `GET` | `/privacy` | No | Privacy policy |
-| `GET` | `/insights` | No | Platform insights |
-| `GET` | `/partnerships` | No | Partnerships page |
-
-## How It Works
-
-### ML Pipeline
-
-1. **Vectorization** — Resume text is converted to TF-IDF features using a vocabulary trained on O\*NET job descriptions and the resume corpus.
-2. **Risk Prediction** — A Ridge regression model predicts an automation risk score (0.0–1.0) from the TF-IDF vector.
-3. **Role Matching** — Cosine similarity between the resume vector and pre-computed job vectors identifies the closest O\*NET occupations.
-4. **Skill Clustering** — The resume is matched against O\*NET skill cluster profiles for competency grouping.
-5. **Course Recommendation** — A skill-to-course index maps detected skills to relevant Coursera courses.
-6. **RIASEC Profiling** — Keyword analysis combined with O\*NET interest cluster scores produces a Holland Code profile.
-
-### Dual-Mode Architecture
-
-| Mode | Components | Latency |
-|------|-----------|---------|
-| **Standard** | Local scikit-learn model | < 100ms |
-| **Advanced** | Local ML + Ollama Llama 3 narrative | 10–45s |
-
-## Running Tests
-
-```bash
-# Install test dependencies
-pip install pytest requests
-
-# Run integration tests
-pytest tests/test_app.py -v
-
-# Run end-to-end auth tests (requires server running)
-python test_auth_e2e.py
-python test_forgot_password.py
-```
-
-## License
-
-This project was developed as a Final Year Project by **Arpan, Umanga, and Samir**.
+- The `.env` file is intentionally excluded from version control.
+- The repository contains preprocessed datasets and model files under `data/` and `ml_models/`.

@@ -28,7 +28,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v=static_version) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ui-refresh.css', v=static_version) }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='auth-assistant.css', v=static_version) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='career-chat.css', v=static_version) }}">
+  {% block extra_css %}{% endblock %}
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <!-- Prevent flash of wrong theme on load -->
   <script nonce="{{ csp_nonce }}">
@@ -45,17 +48,18 @@
   <div class="site-shell">
     <header class="navbar">
       <div class="container navbar__inner">
-        <a class="brand" href="{{ url_for('index') }}" aria-label="Prayash home">
-          <span class="brand__name">Prayash</span>
-          <span class="brand__tagline">Learning for better future</span>
-        </a>
-
-        <!-- Mobile hamburger menu -->
-        <button class="mobile-menu-toggle" aria-label="Toggle navigation" aria-expanded="false" data-mobile-menu>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
+        <div class="nav-left">
+          <a class="brand" href="{{ url_for('index') }}" aria-label="Prayash home">
+            <span class="brand__name">Prayash</span>
+            <span class="brand__tagline">Learning for better future</span>
+          </a>
+          <!-- Mobile hamburger menu -->
+          <button class="mobile-menu-toggle" aria-label="Toggle navigation" aria-expanded="false" data-mobile-menu>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+        </div>
 
         <nav class="nav-links" aria-label="Primary" data-nav-links>
           <a class="nav-link {% if active_page == 'home' %}is-active{% endif %}" href="{{ url_for('index') }}">Home</a>
@@ -64,22 +68,16 @@
           <a class="nav-link {% if active_page == 'methodology' %}is-active{% endif %}" href="{{ url_for('methodology') }}">Methodology</a>
           <a class="nav-link {% if active_page == 'privacy' %}is-active{% endif %}" href="{{ url_for('privacy') }}">Privacy</a>
           <a class="nav-link {% if active_page == 'insights' %}is-active{% endif %}" href="{{ url_for('insights') }}">Insights</a>
+          <a class="nav-link {% if active_page == 'performance' %}is-active{% endif %}" href="{{ url_for('performance') }}">Performance</a>
           <a class="nav-link {% if active_page == 'partnerships' %}is-active{% endif %}" href="{{ url_for('partnerships') }}">Partnerships</a>
-          {% if is_authenticated %}
-          <a class="nav-link {% if active_page == 'workspace' %}is-active{% endif %}" href="{{ url_for('workspace') }}">Workspace</a>
-          {% else %}
+
+          {% if not is_authenticated %}
           <a class="nav-link {% if active_page == 'login' %}is-active{% endif %}" href="{{ url_for('login') }}">Login</a>
           <a class="nav-link {% if active_page == 'signup' %}is-active{% endif %}" href="{{ url_for('signup') }}">Sign Up</a>
           {% endif %}
-          {% if admin_authenticated %}
-          <a class="nav-link {% if active_page == 'admin' %}is-active{% endif %}" href="{{ url_for('admin_dashboard') }}">Admin</a>
-          {% endif %}
-          {% if is_authenticated %}
-          <form method="post" action="{{ url_for('logout') }}" style="display: inline; margin: 0;">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="nav-link" style="background: transparent; border: 0; padding: 0.65rem 0.15rem;">Logout</button>
-          </form>
-          {% endif %}
+        </nav>
+
+        <div class="nav-right" data-nav-right>
           <div class="nav-theme-controls">
             <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
               <span class="theme-toggle-icon" data-icon="auto" aria-hidden="true">🌓</span>
@@ -88,7 +86,34 @@
             </button>
             <span class="theme-mode-label" data-theme-mode-label>Auto</span>
           </div>
-        </nav>
+          {% if is_authenticated %}
+          <div class="user-menu" data-user-menu>
+            <button type="button" class="user-chip" data-user-menu-toggle aria-haspopup="menu" aria-expanded="false" title="{{ current_user.email }}">
+              <span class="user-chip__avatar" aria-hidden="true">{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span>
+              <span class="user-chip__name">{{ (current_user.full_name or current_user.username or current_user.email).split('@')[0] }}</span>
+              <span class="user-chip__caret" aria-hidden="true">▾</span>
+            </button>
+            <div class="user-menu__dropdown" role="menu" aria-label="Account menu" data-user-menu-dropdown>
+              <span class="user-menu__label">Signed in as {{ current_user.email }}</span>
+              <a class="user-menu__item {% if active_page == 'workspace' %}is-active{% endif %}" role="menuitem" href="{{ url_for('workspace') }}">
+                <span aria-hidden="true">💼</span> Workspace
+              </a>
+              {% if admin_authenticated %}
+              <a class="user-menu__item {% if active_page == 'admin' %}is-active{% endif %}" role="menuitem" href="{{ url_for('admin_dashboard') }}">
+                <span aria-hidden="true">🛠️</span> Admin dashboard
+              </a>
+              {% endif %}
+              <div class="user-menu__divider" role="separator"></div>
+              <form method="post" action="{{ url_for('logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="user-menu__item user-menu__item--danger" role="menuitem">
+                  <span aria-hidden="true">↩</span> Logout
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+        </div>
       </div>
     </header>
 
@@ -99,6 +124,7 @@
       {% block content %}{% endblock %}
     </main>
 
+    {% block footer %}
     <footer class="footer">
       <div class="container footer__inner">
         <div class="brand">
@@ -111,6 +137,7 @@
           <a href="{{ url_for('privacy') }}">Privacy Policy</a>
           <a href="{{ url_for('methodology') }}">Methodology</a>
           <a href="{{ url_for('insights') }}">Insights</a>
+          <a href="{{ url_for('performance') }}">Performance</a>
           <a href="{{ url_for('partnerships') }}">Partnerships</a>
           {% if is_authenticated %}
           <a href="{{ url_for('workspace') }}">Workspace</a>
@@ -121,10 +148,16 @@
         </div>
       </div>
     </footer>
+    {% endblock footer %}
   </div>
 
   <!-- Toast Notifications -->
   <div class="toast-container" data-toast-container role="status" aria-live="polite"></div>
+
+  <!-- Floating AI Career Chat (shown on every page except auth pages, which have their own assistant) -->
+  {% block career_chat_widget %}
+  {% include 'partials/career_chat.html' %}
+  {% endblock %}
 
   <!-- Keyboard Shortcuts Panel -->
   <div class="shortcuts-panel" data-shortcuts-panel role="dialog" aria-label="Keyboard shortcuts"></div>
@@ -148,6 +181,10 @@
     </div>
   </div>
 
+  <!-- Shared roadmap-progress engine: loaded before the page bundles so both
+       the Workplace (script.js) and the guided flow (career-analysis.js) use
+       the same progress store and API calls instead of diverging copies. -->
+  <script src="{{ url_for('static', filename='roadmap-progress.js', v=static_version) }}"></script>
   <script src="{{ url_for('static', filename='script.js', v=static_version) }}"></script>
   {% block scripts %}{% endblock %}
 </body>

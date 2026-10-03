@@ -4,21 +4,17 @@ import json
 import logging
 import os
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from flask_login import UserMixin
-
-log = logging.getLogger("prayash.storage")
-from flask_mail import Mail, Message
-from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from extensions import db, mail
 from utils import RISK_LOW, RISK_MODERATE
 
-
-db = SQLAlchemy()
-mail = Mail()
+log = logging.getLogger("prayash.storage")
 
 # ── OTP Policy (single source of truth) ──────────────────────────────
 OTP_LENGTH = 6
@@ -29,7 +25,7 @@ OTP_RESEND_COOLDOWN_SECONDS = 60
 
 def _utc_now() -> datetime:
     """Naive UTC datetime, consistent with what SQLite stores/returns."""
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 def _as_naive_utc(value: datetime | None) -> datetime | None:
@@ -37,7 +33,7 @@ def _as_naive_utc(value: datetime | None) -> datetime | None:
     if value is None:
         return None
     if value.tzinfo is not None:
-        return value.astimezone(timezone.utc).replace(tzinfo=None)
+        return value.astimezone(UTC).replace(tzinfo=None)
     return value
 
 
@@ -54,8 +50,8 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(20), nullable=False, default="student")
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     email_verified = db.Column(db.Boolean, nullable=False, default=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
-    updated_at = db.Column(db.DateTime, nullable=True, onupdate=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(UTC))
+    updated_at = db.Column(db.DateTime, nullable=True, onupdate=lambda: datetime.now(UTC))
     last_login = db.Column(db.DateTime, nullable=True)
 
     @property
@@ -70,7 +66,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def touch_last_login(self) -> None:
-        self.last_login = datetime.now(timezone.utc)
+        self.last_login = datetime.now(UTC)
         db.session.commit()
 
 
@@ -85,7 +81,7 @@ class Upload(db.Model):
     risk_score = db.Column(db.Float, nullable=False, default=0.0)
     risk_label = db.Column(db.String(20), nullable=False, default="Low")
     reasoning_json = db.Column(db.Text, nullable=False, default="{}")
-    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(UTC), index=True)
 
 
 class Feedback(db.Model):
@@ -96,7 +92,7 @@ class Feedback(db.Model):
     upload_id = db.Column(db.Integer, db.ForeignKey("uploads.id"), nullable=True)
     rating = db.Column(db.Integer, nullable=True)
     message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc), index=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(UTC), index=True)
 
 
 class VerificationOTP(db.Model):
@@ -114,21 +110,79 @@ class VerificationOTP(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
 
 
-class PasswordResetToken(db.Model):
-    __tablename__ = "password_reset_tokens"
+class RoadmapProgress(db.Model):
+    """Stores personalized learning roadmap progress per user."""
+    __tablename__ = "roadmap_progress"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    token = db.Column(db.String(255), unique=True, nullable=False, index=True)
-    expires_at = db.Column(db.DateTime, nullable=False)
-    used = db.Column(db.Boolean, nullable=False, default=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    target_role = db.Column(db.String(120), nullable=False)
+    # JSON blob: {"phaseIdx-itemIdx": {"status": "completed"|"in_progress", "completed_at": "..."}}
+    progress_data = db.Column(db.Text, nullable=False, default="{}")
+    weekly_hours = db.Column(db.Integer, nullable=False, default=8)
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=_utc_now, onupdate=_utc_now)
+
+    user = db.relationship("User", backref=db.backref("roadmap_progress", lazy="dynamic"))
+
+    def get_progress(self) -> dict:
+        """Parse the JSON progress data."""
+        try:
+            return json.loads(self.progress_data) if self.progress_data else {}
+        except (json.JSONDecodeError, TypeError):
+            return {}
+
+    def set_progress(self, data: dict) -> None:
+        """Set the JSON progress data."""
+        self.progress_data = json.dumps(data)
+        self.updated_at = _utc_now()
 
 
 def _default_admin_credentials() -> tuple[str, str]:
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@prayash.local")
     password = os.environ.get("ADMIN_PASSWORD", "prayash-admin")
     return admin_email, password
+
+
+# ── Roadmap Progress Helpers ──────────────────────────────────────
+
+def get_roadmap_progress(user_id: int, target_role: str) -> dict | None:
+    """Get the roadmap progress for a user and target role."""
+    record = RoadmapProgress.query.filter_by(
+        user_id=user_id, target_role=target_role
+    ).first()
+    if not record:
+        return None
+    return {
+        "target_role": record.target_role,
+        "progress": record.get_progress(),
+        "weekly_hours": record.weekly_hours,
+        "updated_at": record.updated_at.isoformat() if record.updated_at else None,
+    }
+
+
+def save_roadmap_progress(user_id: int, target_role: str, progress: dict, weekly_hours: int = 8) -> bool:
+    """Save or update roadmap progress for a user."""
+    try:
+        record = RoadmapProgress.query.filter_by(
+            user_id=user_id, target_role=target_role
+        ).first()
+        if record:
+            record.set_progress(progress)
+            record.weekly_hours = weekly_hours
+        else:
+            record = RoadmapProgress(
+                user_id=user_id,
+                target_role=target_role,
+                weekly_hours=weekly_hours,
+            )
+            record.set_progress(progress)
+            db.session.add(record)
+        db.session.commit()
+        return True
+    except Exception:
+        db.session.rollback()
+        return False
 
 
 def init_database(app) -> None:
@@ -188,6 +242,73 @@ def get_user_by_email(email: str) -> User | None:
     return User.query.filter_by(email=email.strip().lower()).first()
 
 
+# ── Linked OAuth Accounts ───────────────────────────────────────────
+
+class OAuthAccount(UserMixin, db.Model):
+    """A provider identity (e.g. Google sub) attached to a local user.
+
+    lets an existing email/password user sign in with Google (or GitHub /
+    LinkedIn) without creating a duplicate account: the provider identity
+    is matched first, then email as a fallback for backward compatibility.
+    """
+
+    __tablename__ = "oauth_accounts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    provider = db.Column(db.String(32), nullable=False, index=True)
+    provider_user_id = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(UTC))
+
+    __table_args__ = (db.UniqueConstraint("provider", "provider_user_id", name="uq_oauth_provider_uid"),)
+
+    user = db.relationship("User", backref=db.backref("oauth_accounts", cascade="all, delete-orphan"))
+
+
+def get_user_by_oauth(provider: str, provider_user_id: str) -> User | None:
+    """Find the user linked to a provider identity (e.g. Google ``sub``)."""
+    account = OAuthAccount.query.filter_by(
+        provider=provider, provider_user_id=str(provider_user_id)
+    ).first()
+    return account.user if account else None
+
+
+def link_oauth_account(user: User, provider: str, provider_user_id: str) -> OAuthAccount:
+    """Attach a provider identity to a user (idempotent)."""
+    existing = OAuthAccount.query.filter_by(
+        provider=provider, provider_user_id=str(provider_user_id)
+    ).first()
+    if existing:
+        return existing
+    account = OAuthAccount(user_id=user.id, provider=provider, provider_user_id=str(provider_user_id))
+    db.session.add(account)
+    db.session.commit()
+    log.info("Linked %s account %s to user %s", provider, provider_user_id, user.email)
+    return account
+
+
+def unlink_oauth_account(user: User, provider: str) -> bool:
+    """Detach a provider identity from a user. Returns True if removed.
+
+    Refuses when the user has no password (OAuth-only account) so they
+    cannot lock themselves out.
+    """
+    account = OAuthAccount.query.filter_by(user_id=user.id, provider=provider).first()
+    if not account:
+        return False
+    if not user.password_hash:
+        log.warning("Refusing to unlink %s from %s — account has no password", provider, user.email)
+        return False
+    db.session.delete(account)
+    db.session.commit()
+    log.info("Unlinked %s from user %s", provider, user.email)
+    return True
+
+def get_linked_providers(user: User) -> list[str]:
+    """Providers currently attached to a user, sorted for stable UI."""
+    return sorted(a.provider for a in user.oauth_accounts)
+
+
 def get_user_by_username(username: str) -> User | None:
     return User.query.filter_by(username=username.strip().lower()).first()
 
@@ -216,6 +337,10 @@ def create_user(
 def create_oauth_user(email: str, provider: str) -> User:
     existing = get_user_by_email(email)
     if existing:
+        # Ensure email_verified is True for existing OAuth users
+        if not existing.email_verified:
+            existing.email_verified = True
+            db.session.commit()
         return existing
 
     random_password = secrets.token_urlsafe(32)
@@ -232,6 +357,7 @@ def create_oauth_user(email: str, provider: str) -> User:
         username=username,
         full_name=email.split("@")[0],
         role="student",
+        email_verified=True,  # OAuth providers have already verified the email
     )
     user.set_password(random_password)
     db.session.add(user)
@@ -248,8 +374,12 @@ _mail_server = os.environ.get("MAIL_SERVER") or os.environ.get("SMTP_HOST") or "
 _mail_port = int(os.environ.get("MAIL_PORT") or os.environ.get("SMTP_PORT") or "587")
 _mail_use_tls = (os.environ.get("MAIL_USE_TLS") or os.environ.get("SMTP_USE_TLS") or "true").lower() in ("1", "true", "yes", "on")
 _mail_use_ssl = (os.environ.get("MAIL_USE_SSL") or os.environ.get("SMTP_USE_SSL") or "false").lower() in ("1", "true", "yes", "on")
-_mail_username = os.environ.get("MAIL_USERNAME") or os.environ.get("SMTP_USERNAME") or ""
-_mail_password = os.environ.get("MAIL_PASSWORD") or os.environ.get("SMTP_PASSWORD") or ""
+_mail_username = (os.environ.get("MAIL_USERNAME") or os.environ.get("SMTP_USERNAME") or "").strip()
+# Gmail App Passwords are 16 characters, often pasted with display-only
+# spaces (e.g. "abcd efgh ijkl mnop"). Strip them so SMTP AUTH receives the
+# exact password — a 535 error otherwise fails silently and the email never
+# arrives.
+_mail_password = (os.environ.get("MAIL_PASSWORD") or os.environ.get("SMTP_PASSWORD") or "").replace(" ", "")
 _mail_from_name = os.environ.get("MAIL_FROM_NAME") or os.environ.get("SMTP_FROM_NAME") or "Prayash"
 
 
@@ -332,7 +462,7 @@ def send_email(to_email: str, subject: str, html_body: str, text_body: str | Non
     log.info("=" * 50)
     log.info("EMAIL TO: %s", to_email)
     log.info("SUBJECT: %s", subject)
-    log.info("BODY:\n%s\n", html_body if not text_body else text_body)
+    log.info("BODY:\n%s\n", text_body if text_body else html_body)
     log.info("=" * 50)
 
     # 1) Flask-Mail (preferred transport)
@@ -513,43 +643,6 @@ def mark_email_verified(user: User) -> None:
     db.session.commit()
 
 
-def create_password_reset_token(user: User) -> PasswordResetToken:
-    from datetime import timedelta
-    token = secrets.token_urlsafe(48)
-    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
-    reset = PasswordResetToken(user_id=user.id, token=token, expires_at=expires_at)
-    db.session.add(reset)
-    db.session.commit()
-    return reset
-
-
-def verify_reset_token(token: str) -> User | None:
-    """Look up a user by a valid, unused, non-expired reset token.
-    Does NOT mark the token as used so the same token can be
-    verified on GET and later consumed on POST."""
-    now = datetime.now(timezone.utc)
-    record = PasswordResetToken.query.filter_by(
-        token=token, used=False
-    ).filter(PasswordResetToken.expires_at > now).first()
-    if record:
-        return User.query.get(record.user_id)
-    return None
-
-
-def consume_reset_token(token: str) -> bool:
-    """Mark a reset token as used so it cannot be replayed.
-    Returns True if the token was found and consumed."""
-    now = datetime.now(timezone.utc)
-    record = PasswordResetToken.query.filter_by(
-        token=token, used=False
-    ).filter(PasswordResetToken.expires_at > now).first()
-    if record:
-        record.used = True
-        db.session.commit()
-        return True
-    return False
-
-
 def update_user_password(user: User, new_password: str) -> None:
     user.set_password(new_password)
     db.session.commit()
@@ -637,6 +730,97 @@ def get_detailed_metrics() -> dict[str, Any]:
         "all_uploads": uploads,
         "recent_feedback": feedback_items,
     }
+
+
+# ── Career Profile helpers (models/profile.py UserProfile) ─────────
+
+def get_user_profile(user_id: int) -> dict[str, str | None] | None:
+    """Return the user's career profile as a dict, or None when unset."""
+    try:
+        from models.profile import UserProfile
+
+        record = UserProfile.query.filter_by(user_id=user_id).first()
+        return record.to_dict() if record else None
+    except Exception:
+        log.exception("Could not load career profile for user %s", user_id)
+        return None
+
+
+def save_user_profile(user_id: int, data: dict[str, Any]) -> dict[str, str | None] | None:
+    """Create or update the user's career profile and return the saved dict.
+
+    Only whitelisted fields are written; values are trimmed and length-capped
+    by the calling route. Returns None on a database failure.
+    """
+    try:
+        from models.profile import UserProfile
+
+        record = UserProfile.query.filter_by(user_id=user_id).first()
+        if record is None:
+            record = UserProfile(user_id=user_id)
+            db.session.add(record)
+        for field in ("education", "occupation", "experience_level", "preferred_roles", "preferred_industry", "skills", "career_goal"):
+            if field in data:
+                setattr(record, field, data[field])
+        db.session.commit()
+        return record.to_dict()
+    except Exception:
+        db.session.rollback()
+        log.exception("Could not save career profile for user %s", user_id)
+        return None
+
+
+def get_user_history(user_id: int, limit: int = 30) -> list[dict[str, Any]]:
+    """Return the user's recent analysis records (Upload rows) for the History page.
+
+    Deliberately excludes resume contents — Upload rows only ever store the
+    filename, mode, risk score/label and the reasoning summary.
+    """
+    try:
+        rows = (
+            Upload.query.filter_by(user_id=user_id)
+            .order_by(Upload.created_at.desc())
+            .limit(max(1, min(100, int(limit))))
+            .all()
+        )
+        history: list[dict[str, Any]] = []
+        for row in rows:
+            reasoning: dict[str, Any] = {}
+            try:
+                reasoning = json.loads(row.reasoning_json or "{}")
+            except (json.JSONDecodeError, TypeError):
+                reasoning = {}
+            history.append(
+                {
+                    "id": row.id,
+                    "filename": row.filename,
+                    "file_type": row.file_type,
+                    "mode": row.mode,
+                    "risk_score": round(float(row.risk_score or 0.0), 3),
+                    "risk_label": row.risk_label,
+                    "skills": (reasoning.get("skills_detected") or [])[:8],
+                    "created_at": row.created_at.isoformat() if row.created_at else None,
+                }
+            )
+        return history
+    except Exception:
+        log.exception("Could not load history for user %s", user_id)
+        return []
+
+
+def delete_user_history_entry(user_id: int, upload_id: int) -> bool:
+    """Delete one of the user's own analysis records. Returns True on success."""
+    try:
+        row = Upload.query.filter_by(id=upload_id, user_id=user_id).first()
+        if row is None:
+            return False
+        db.session.delete(row)
+        db.session.commit()
+        return True
+    except Exception:
+        db.session.rollback()
+        log.exception("Could not delete history entry %s for user %s", upload_id, user_id)
+        return False
 
 
 def dashboard_metrics() -> dict[str, Any]:

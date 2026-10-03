@@ -11,9 +11,11 @@ Run with::
 
 from __future__ import annotations
 
+import io
 import os
 import sys
 import tempfile
+from contextlib import suppress
 from pathlib import Path
 
 import pytest
@@ -22,42 +24,19 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+# Ensure send_email is always mocked to avoid real SMTP calls in tests
+os.environ.setdefault("MAIL_USERNAME", "")
+os.environ.setdefault("MAIL_PASSWORD", "")
+os.environ.setdefault("SMTP_USERNAME", "")
+os.environ.setdefault("SMTP_PASSWORD", "")
+
 # Point the database to a temporary file so tests don't touch the real DB.
-os.environ.setdefault("DATABASE_URL",
-                       f"sqlite:///{PROJECT_ROOT / 'instance' / 'test_prayash.db'}")
+# Use a unique temp dir per test invocation to prevent cross-test contamination.
+_TEST_DB_DIR = Path(tempfile.mkdtemp())
+os.environ.setdefault("DATABASE_URL", f"sqlite:///{(_TEST_DB_DIR / 'test_prayash.db').as_posix()}")
 
 
-@pytest.fixture
-def app():
-    """Create and configure a fresh Flask application for each test."""
-    from app import app as flask_app
-
-    # Disable CSRF for testing; we'll test CSRF separately via the API endpoint.
-    flask_app.config["WTF_CSRF_ENABLED"] = False
-    flask_app.config["TESTING"] = True
-
-    with flask_app.app_context():
-        from storage import db, init_database
-        # Create tables inside the test DB
-        db.create_all()
-        from storage import seed_default_users
-        seed_default_users()
-        yield flask_app
-        # Clean up test DB after the test
-        db.drop_all()
-        # Windows may hold a lock on the file; ignore cleanup errors
-        try:
-            db_path = PROJECT_ROOT / "instance" / "test_prayash.db"
-            if db_path.exists():
-                db_path.unlink()
-        except PermissionError:
-            pass
-
-
-@pytest.fixture
-def client(app):
-    """A Flask test client bound to the fresh app instance."""
-    return app.test_client()
+# The session-scoped ``app`` and ``client`` fixtures come from conftest.py.
 
 
 # ── Page Existence Tests ───────────────────────────────────────────
@@ -75,7 +54,7 @@ def client(app):
         ("/partnerships", 200),
         ("/healthz", 200),
         ("/api/csrf-token", 200),
-        ("/verify-otp", 302),     # Redirects to signup without session
+        ("/verify-otp", 302),  # Redirects to signup without session
         ("/forgot-password/otp", 200),
         ("/reset-password/otp", 302),  # Redirects to forgot-password without session
         ("/nonexistent-route", 404),
@@ -113,7 +92,9 @@ def test_signup_flow(client) -> None:
     )
     # Should redirect to OTP verification page
     assert resp.status_code in (302, 303), f"Expected redirect, got {resp.status_code}"
-    assert "verify-otp" in resp.headers.get("Location", ""), f"Expected redirect to verify-otp, got {resp.headers.get('Location','')}"
+    assert "verify-otp" in resp.headers.get("Location", ""), (
+        f"Expected redirect to verify-otp, got {resp.headers.get('Location', '')}"
+    )
 
 
 def test_signup_rejects_missing_fields(client) -> None:
@@ -185,23 +166,29 @@ def test_signup_rejects_duplicate_email(client) -> None:
 
 
 def test_login_flow(client) -> None:
-    """Default student credentials should log in and redirect to workspace.
-    First verify the default student's email, then test login."""
+    """Default student credentials (seeded with 'Student@123') log in and
+    land on the authenticated workspace page."""
     # First, verify the default student's email
     with client.application.app_context():
         from storage import User, db
+
         student = User.query.filter_by(email="student@prayash.local").first()
         assert student is not None, "Default student user not found"
         student.email_verified = True
         db.session.commit()
-    
+
     resp = client.post(
         "/login",
-        data={"email": "student@prayash.local", "password": "student"},
-        follow_redirects=True,
+        data={"email": "student@prayash.local", "password": "Student@123"},
+        follow_redirects=False,
     )
-    assert resp.status_code == 200
-    assert b"Workspace" in resp.data or b"workspace" in resp.data
+    assert resp.status_code in (302, 303), "Login should redirect after success"
+    assert "workspace" in resp.headers.get("Location", ""), resp.headers.get("Location", "")
+
+    # Following the redirect lands on the authenticated workspace page.
+    page = client.get(resp.headers["Location"])
+    assert page.status_code == 200
+    assert b"Welcome back" in page.data
 
 
 def test_verify_otp_flow(client) -> None:
@@ -218,18 +205,21 @@ def test_verify_otp_flow(client) -> None:
             "terms": "on",
         },
     )
-    
+
     # Get the OTP from the database
     with client.application.app_context():
         from storage import User, VerificationOTP
+
         user = User.query.filter_by(email="otpuser@example.com").first()
         assert user is not None
-        otp = VerificationOTP.query.filter_by(
-            user_id=user.id, purpose="verify_email", used=False
-        ).order_by(VerificationOTP.id.desc()).first()
+        otp = (
+            VerificationOTP.query.filter_by(user_id=user.id, purpose="verify_email", used=False)
+            .order_by(VerificationOTP.id.desc())
+            .first()
+        )
         assert otp is not None, "OTP not found in database"
         otp_code = otp.otp
-    
+
     # Submit OTP for verification
     resp = client.post(
         "/verify-otp",
@@ -246,11 +236,15 @@ def test_login_with_unverified_email_then_verify_otp(client, monkeypatch) -> Non
     """Login with an unverified email sends a fresh OTP and the verify
     flow must complete (regression: OTP page was shown but verification
     could never succeed because no session was set)."""
-    import app as app_module
-    monkeypatch.setattr(app_module, "send_email", lambda *a, **k: True)
+    # Patch the name routes.auth actually calls — storage.send_email is
+    # imported there by direct reference, so patching storage would no-op.
+    import routes.auth as auth_module
+
+    monkeypatch.setattr(auth_module, "send_email", lambda *a, **k: True)
 
     with client.application.app_context():
         from storage import VerificationOTP, create_user, db
+
         u = create_user(
             email="unverified@example.com",
             password="StrongP@ss1",
@@ -272,9 +266,12 @@ def test_login_with_unverified_email_then_verify_otp(client, monkeypatch) -> Non
 
     with client.application.app_context():
         from storage import User
-        otp = VerificationOTP.query.filter_by(
-            user_id=u_id, purpose="verify_email", used=False
-        ).order_by(VerificationOTP.id.desc()).first()
+
+        otp = (
+            VerificationOTP.query.filter_by(user_id=u_id, purpose="verify_email", used=False)
+            .order_by(VerificationOTP.id.desc())
+            .first()
+        )
         assert otp is not None
         otp_code = otp.otp
 
@@ -289,6 +286,7 @@ def test_login_with_unverified_email_then_verify_otp(client, monkeypatch) -> Non
 
     with client.application.app_context():
         from storage import User
+
         fresh = db.session.get(User, u_id)
         assert fresh.email_verified is True
 
@@ -399,9 +397,9 @@ def test_upload_no_file(client) -> None:
 
 
 def test_large_file_rejected(client) -> None:
-    """The 8 MB limit should be enforced (413 in production, 400 in testing)."""
-    # Simulate a file larger than MAX_CONTENT_LENGTH (8 MB).
-    big_data = b"x" * (9 * 1024 * 1024)
+    """The 20 MB limit should be enforced (413 in production, 400 in testing)."""
+    # Simulate a file larger than MAX_CONTENT_LENGTH (20 MB).
+    big_data = b"x" * (21 * 1024 * 1024)
     resp = client.post(
         "/api/upload",
         data={"resume_file": (big_data, "resume.pdf")},
@@ -431,6 +429,39 @@ def test_feedback_rejects_empty(client) -> None:
     """Feedback without a message should return 400."""
     resp = client.post("/api/feedback", json={"rating": 3})
     assert resp.status_code == 400
+
+
+# ── Report Export Endpoint ───────────────────────────────────────
+
+
+def test_export_report(client) -> None:
+    """POST /api/export renders the printable report for an analysis payload
+    (regression: static/script.js called this route but it did not exist)."""
+    resp = client.post(
+        "/api/export",
+        json={
+            "analysis": {
+                "risk_score": 0.42,
+                "risk_label": "Moderate",
+                "mode": "standard",
+                "top_roles": [{"job_role": "Data Analyst", "industry": "Tech", "similarity": 0.8, "risk_score": 0.4}],
+                "riasec": {"scores": {"Investigative": 80}, "primary": "Investigative", "secondary": "Artistic", "tertiary": "Social"},
+            }
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["success"] is True
+    assert "Prayash Career Intelligence Report" in data["html"]
+    assert "42%" in data["html"]
+    assert "Data Analyst" in data["html"]
+
+
+def test_export_report_rejects_missing_analysis(client) -> None:
+    """POST /api/export without an analysis payload returns 400."""
+    resp = client.post("/api/export", json={})
+    assert resp.status_code == 400
+    assert resp.get_json()["success"] is False
 
 
 # ── Career Chat API Tests ────────────────────────────────────────────
@@ -465,8 +496,8 @@ def test_career_chat_returns_valid_response(client) -> None:
     assert isinstance(data["llm_powered"], bool)
     # llm_powered may be True if an API key is configured in .env
     # or False if using the rule-based fallback - both are valid
-        # llm_powered may be True if an API key is configured in .env
-        # or False if using the rule-based fallback — both are valid
+    # llm_powered may be True if an API key is configured in .env
+    # or False if using the rule-based fallback — both are valid
 
 
 def test_career_chat_session_continuity(client) -> None:
@@ -522,6 +553,29 @@ def test_career_chat_fallback_topics(client) -> None:
         assert len(data["answer"]) > 20, f"Topic '{topic}' returned too-short answer"
 
 
+def test_career_chat_interview_vs_career_path_distinct(client) -> None:
+    """Regression: 'Tips for job interviews?' and 'Help me plan my career path'
+    must return different, topic-specific answers. The old fallback matched
+    'job' before 'interview' and returned the identical job-search text for
+    both questions."""
+    interview_resp = client.post("/api/career-chat", json={"message": "Tips for job interviews?"})
+    career_resp = client.post("/api/career-chat", json={"message": "Help me plan my career path"})
+
+    assert interview_resp.status_code == 200
+    assert career_resp.status_code == 200
+
+    interview_answer = interview_resp.get_json()["answer"].lower()
+    career_answer = career_resp.get_json()["answer"].lower()
+
+    assert interview_answer != career_answer, "Interview and career-path answers must differ"
+    assert "interview" in interview_answer and "star" in interview_answer, (
+        f"Interview answer missing interview guidance: {interview_answer[:100]}"
+    )
+    assert "career" in career_answer and "path" in career_answer, (
+        f"Career-path answer missing career guidance: {career_answer[:100]}"
+    )
+
+
 def test_career_chat_resume_context(client) -> None:
     """Resume text can be sent as context."""
     resp = client.post(
@@ -540,6 +594,7 @@ def test_career_chat_resume_context(client) -> None:
 
 try:
     import fitz as _fitz_module  # noqa: F401 (check availability)
+
     _HAS_PYMUPDF = True
 except Exception:
     _HAS_PYMUPDF = False
@@ -603,11 +658,13 @@ def _make_test_pdf_with_metadata() -> bytes:
     page = doc.new_page()
     page.insert_text(fitz.Point(72, 100), "Hello World", fontsize=12)
 
-    doc.set_metadata({
-        "title": "Test Resume",
-        "author": "John Doe",
-        "subject": "Resume",
-    })
+    doc.set_metadata(
+        {
+            "title": "Test Resume",
+            "author": "John Doe",
+            "subject": "Resume",
+        }
+    )
 
     data: bytes = doc.tobytes()
     doc.close()
@@ -742,8 +799,13 @@ def test_parse_resume_enhanced_with_layout_sections() -> None:
 def test_career_chat_ttl_cleanup(client) -> None:
     """Stale sessions are cleaned up based on TTL."""
     import time as time_module
-    from app import _CAREER_CHAT_TTL, _cleanup_stale_career_sessions
-    from app import _CAREER_CHAT_SESSIONS, _CAREER_CHAT_LAST_ACTIVE
+
+    from routes.api import (
+        _CAREER_CHAT_LAST_ACTIVE,
+        _CAREER_CHAT_SESSIONS,
+        _CAREER_CHAT_TTL,
+        _cleanup_stale_career_sessions,
+    )
 
     # Create a session with a timestamp far in the past
     old_time = time_module.time() - _CAREER_CHAT_TTL - 60  # 60s past TTL
@@ -778,7 +840,6 @@ def test_career_chat_stream_rejects_empty_message(client) -> None:
 
 def test_career_chat_stream_returns_sse(client) -> None:
     """POST /api/career-chat/stream returns SSE events with meta, token, done."""
-    import json
 
     resp = client.post(
         "/api/career-chat/stream",
@@ -921,13 +982,46 @@ def test_career_chat_stream_fallback_topics(client) -> None:
                 except json.JSONDecodeError:
                     pass
 
-        assert len(full_answer) > 30, (
-            f"Topic '{topic}' returned too-short answer ({len(full_answer)} chars)"
-        )
+        assert len(full_answer) > 30, f"Topic '{topic}' returned too-short answer ({len(full_answer)} chars)"
         assert any(kw in full_answer.lower() for kw in keywords), (
             f"Topic '{topic}' answer missing expected keywords. "
             f"Keywords: {keywords}, Answer preview: {full_answer[:80]}"
         )
+
+
+def test_career_chat_stream_interview_vs_career_path_distinct(client) -> None:
+    """Regression for the streaming endpoint: interview and career-path
+    questions must stream different, topic-specific fallback answers."""
+    import json as _json
+
+    def _stream_answer(message: str) -> str:
+        resp = client.post("/api/career-chat/stream", json={"message": message})
+        assert resp.status_code == 200, f"Message '{message}' failed"
+        body = resp.get_data(as_text=True)
+        events = body.split("\n\n")
+        full = ""
+        for event_str in events:
+            if not event_str.strip():
+                continue
+            lines = event_str.strip().split("\n")
+            event_type = ""
+            data_str = ""
+            for line in lines:
+                if line.startswith("event: "):
+                    event_type = line[7:].strip()
+                elif line.startswith("data: "):
+                    data_str = line[6:].strip()
+            if event_type == "token" and data_str:
+                with suppress(_json.JSONDecodeError):
+                    full += _json.loads(data_str).get("content", "")
+        return full.lower()
+
+    interview_answer = _stream_answer("Tips for job interviews?")
+    career_answer = _stream_answer("Help me plan my career path")
+
+    assert interview_answer != career_answer, "Stream: interview and career-path answers must differ"
+    assert "interview" in interview_answer and "star" in interview_answer
+    assert "career" in career_answer and "path" in career_answer
 
 
 def test_career_chat_stream_session_continuity(client) -> None:
@@ -974,7 +1068,7 @@ def test_career_chat_stream_session_continuity(client) -> None:
         json={"message": "Tell me about Python", "session_id": session_id},
     )
     assert resp1.status_code == 200
-    answer1, sid1 = _extract_answer(resp1)
+    answer1, _ = _extract_answer(resp1)
     assert len(answer1) > 0, "First answer should not be empty"
 
     # Second message with same session
@@ -983,7 +1077,7 @@ def test_career_chat_stream_session_continuity(client) -> None:
         json={"message": "What about SQL?", "session_id": session_id},
     )
     assert resp2.status_code == 200
-    answer2, sid2 = _extract_answer(resp2)
+    answer2, _ = _extract_answer(resp2)
     assert len(answer2) > 0, "Second answer should not be empty"
 
 
@@ -1159,3 +1253,215 @@ def test_career_chat_stream_rejects_bad_json(client) -> None:
     assert resp.status_code == 400, f"Expected 400 for bad JSON, got {resp.status_code}"
     data = resp.get_json()
     assert data["success"] is False
+
+
+# ── Career Chat Document Context Tests ────────────────────────────
+
+
+@pytest.fixture
+def auth_client(app):
+    """A test client already logged in as a verified user."""
+    from storage import create_user, db
+
+    with app.app_context():
+        u = create_user("chatctx@example.com", "CorrectPass1!", full_name="Chat Tester", username="chatctx")
+        u.email_verified = True
+        db.session.commit()
+
+    c = app.test_client()
+    login = c.post("/login", data={"email": "chatctx@example.com", "password": "CorrectPass1!"})
+    assert login.status_code == 302, "Login should redirect after success"
+    return c
+
+
+def test_career_chat_context_requires_login(client) -> None:
+    """The context (file upload) endpoint is login-only for signed-in features."""
+    resp = client.post(
+        "/api/career-chat/context",
+        data={"file": (io.BytesIO(b"Python, Django, teamwork, leadership skills."), "notes.txt")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code == 401
+    assert resp.get_json().get("success") is False
+
+
+def test_career_chat_context_txt(auth_client) -> None:
+    """A TXT upload to the context endpoint returns extracted text + skills."""
+    resp = auth_client.post(
+        "/api/career-chat/context",
+        data={"file": (io.BytesIO(b"Python, Django, teamwork, leadership skills."), "notes.txt")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["success"] is True
+    assert data["filename"] == "notes.txt"
+    assert data["is_image"] is False
+    assert "Python" in data["text"]
+    assert data["char_count"] >= 20
+    assert data["skill_count"] >= 1
+
+
+def test_career_chat_context_xlsx(auth_client) -> None:
+    """An XLSX upload is parsed into readable table text via pandas/openpyxl."""
+    from openpyxl import Workbook
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Skills"
+    ws.append(["Skill", "Level"])
+    ws.append(["Python", "Advanced"])
+    ws.append(["Leadership", "Intermediate"])
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    resp = auth_client.post(
+        "/api/career-chat/context",
+        data={"file": (buf, "skills.xlsx")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["success"] is True
+    assert data["is_image"] is False
+    assert "Python" in data["text"]
+    assert "Sheet: Skills" in data["text"]
+    assert data["char_count"] >= 20
+
+
+def test_career_chat_context_image(auth_client) -> None:
+    """An image upload is accepted with image metadata instead of text."""
+    from PIL import Image
+
+    img_buf = io.BytesIO()
+    Image.new("RGB", (40, 25), (10, 120, 200)).save(img_buf, format="PNG")
+    img_buf.seek(0)
+
+    resp = auth_client.post(
+        "/api/career-chat/context",
+        data={"file": (img_buf, "photo.png")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["success"] is True
+    assert data["is_image"] is True
+    assert "40x25" in data["text"]
+    assert data["char_count"] > 0
+
+
+def test_career_chat_context_rejects_bad_extension(auth_client) -> None:
+    """Disallowed file extensions are rejected with a 400."""
+    resp = auth_client.post(
+        "/api/career-chat/context",
+        data={"file": (io.BytesIO(b"MZ..."), "evil.exe")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code == 400
+    data = resp.get_json()
+    assert data["success"] is False
+
+
+def test_career_chat_context_rejects_unreadable_text(auth_client) -> None:
+    """Uploads with no readable text are rejected with a 400."""
+    resp = auth_client.post(
+        "/api/career-chat/context",
+        data={"file": (io.BytesIO(b"hi"), "tiny.txt")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code == 400
+    data = resp.get_json()
+    assert data["success"] is False
+
+
+def test_career_chat_context_saves_file_securely(auth_client) -> None:
+    """Uploads are stored with a UUID prefix + sanitised name in the uploads dir."""
+    from pathlib import Path as _Path
+
+    upload_dir = _Path(auth_client.application.config["CAREER_CHAT_UPLOAD_DIR"])
+    before = set(upload_dir.glob("*")) if upload_dir.exists() else set()
+
+    resp = auth_client.post(
+        "/api/career-chat/context",
+        data={"file": (io.BytesIO(b"Python, Django, teamwork, leadership skills."), "notes.txt")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code == 200
+
+    new_files = set(upload_dir.glob("*")) - before
+    assert len(new_files) == 1
+    stored = new_files.pop()
+    # e.g. "3f2a9c..._notes.txt" — uuid hex + underscore + sanitised original name
+    stem, suffix = stored.stem, stored.suffix
+    assert suffix == ".txt"
+    uuid_part, _, safe_part = stem.partition("_")
+    assert len(uuid_part) == 32  # uuid4().hex
+    assert safe_part == "notes"
+    assert ".." not in stored.name
+
+
+def test_career_chat_context_sanitises_hostile_filename(auth_client) -> None:
+    """Hostile paths in filenames are neutralised by secure_filename."""
+    from pathlib import Path as _Path
+
+    upload_dir = _Path(auth_client.application.config["CAREER_CHAT_UPLOAD_DIR"])
+    before = set(upload_dir.glob("*")) if upload_dir.exists() else set()
+
+    resp = auth_client.post(
+        "/api/career-chat/context",
+        data={"file": (io.BytesIO(b"Python, Django, teamwork, leadership skills."), "../../evil resume.txt")},
+        content_type="multipart/form-data",
+    )
+    assert resp.status_code == 200
+
+    new_files = set(upload_dir.glob("*")) - before
+    assert len(new_files) == 1
+    stored = new_files.pop()
+    assert ".." not in stored.name
+    assert stored.name.endswith("_evil resume.txt") or stored.name.endswith("_evil_resume.txt")
+
+
+# ── Skills Gap Login Gate Tests ────────────────────────────────────
+
+
+def test_skills_gap_roles_requires_login(client) -> None:
+    """GET /api/skills-gap/roles is login-only."""
+    resp = client.get("/api/skills-gap/roles")
+    assert resp.status_code == 401
+    assert resp.get_json().get("success") is False
+    assert "Authentication required" in resp.get_json().get("error", "")
+
+
+def test_skills_gap_analyze_requires_login(client) -> None:
+    """POST /api/skills-gap/analyze is login-only."""
+    resp = client.post(
+        "/api/skills-gap/analyze",
+        json={"resume_text": "Python, Django, teamwork, leadership skills.", "target_role": "Data Analyst"},
+    )
+    assert resp.status_code == 401
+    assert resp.get_json().get("success") is False
+
+
+def test_skills_gap_api_available_after_login(client, app) -> None:
+    """The skills-gap APIs work once the user is authenticated."""
+    from storage import create_user, db
+
+    with app.app_context():
+        u = create_user("skillsuser@example.com", "CorrectPass1!", full_name="Skills Tester", username="skillsuser")
+        u.email_verified = True
+        db.session.commit()
+
+    login = client.post("/login", data={"email": "skillsuser@example.com", "password": "CorrectPass1!"})
+    assert login.status_code == 302
+
+    roles = client.get("/api/skills-gap/roles")
+    assert roles.status_code == 200
+    data = roles.get_json()
+    assert data["success"] is True
+    assert isinstance(data["roles"], list) and len(data["roles"]) > 0
+
+    # Passes the login gate (hits validation, not 401) with a short resume.
+    invalid = client.post("/api/skills-gap/analyze", json={"resume_text": "short", "target_role": "Data Analyst"})
+    assert invalid.status_code == 400
+    assert invalid.get_json().get("success") is False

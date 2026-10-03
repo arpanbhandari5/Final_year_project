@@ -1,0 +1,68 @@
+role,skill,importance,category,learning_order,estimated_weeks
+Backend Developer,Python,5,Programming,1,3
+Backend Developer,Flask,5,Backend,2,2
+Backend Developer,REST API,5,Backend,3,2
+Backend Developer,PostgreSQL,4,Database,4,2
+Backend Developer,Git,4,Tools,5,1
+Backend Developer,Testing,4,Development,6,2
+Backend Developer,Docker,4,DevOps,7,2
+Backend Developer,Redis,3,Database,8,1
+Backend Developer,AWS,3,Cloud,9,3
+Python Developer,Python,5,Programming,1,3
+Python Developer,Flask,4,Backend,2,2
+Python Developer,PostgreSQL,4,Database,3,2
+Python Developer,Git,4,Tools,4,1
+Python Developer,Testing,4,Development,5,2
+Python Developer,Docker,3,DevOps,6,2
+Frontend Developer,JavaScript,5,Frontend,1,3
+Frontend Developer,React,5,Frontend,2,3
+Frontend Developer,HTML,4,Frontend,3,1
+Frontend Developer,CSS,4,Frontend,4,2
+Frontend Developer,Git,4,Tools,5,1
+Frontend Developer,TypeScript,3,Frontend,6,2
+Full Stack Developer,Python,5,Programming,1,3
+Full Stack Developer,Flask,5,Backend,2,2
+Full Stack Developer,JavaScript,5,Frontend,3,3
+Full Stack Developer,PostgreSQL,4,Database,4,2
+Full Stack Developer,Git,4,Tools,5,1
+Full Stack Developer,Docker,3,DevOps,6,2
+Data Analyst,Python,5,Programming,1,3
+Data Analyst,SQL,5,Database,2,3
+Data Analyst,Pandas,5,Data Science,3,2
+Data Analyst,Excel,4,Analytics,4,2
+Data Analyst,Power BI,4,Analytics,5,3
+Data Scientist,Python,5,Programming,1,3
+Data Scientist,Pandas,5,Data Science,2,2
+Data Scientist,Machine Learning,5,Machine Learning,3,4
+Data Scientist,SQL,4,Database,4,3
+Data Scientist,Statistics,4,Data Science,5,3
+ML Engineer,Python,5,Programming,1,3
+ML Engineer,Pandas,5,Data Science,2,2
+ML Engineer,Scikit-learn,5,Machine Learning,3,3
+ML Engineer,Machine Learning,5,Machine Learning,4,4
+ML Engineer,Docker,3,DevOps,5,2
+DevOps Engineer,Linux,5,Cloud,1,2
+DevOps Engineer,Docker,5,DevOps,2,2
+DevOps Engineer,Kubernetes,4,DevOps,3,3
+DevOps Engineer,AWS,4,Cloud,4,3
+DevOps Engineer,CI/CD,4,DevOps,5,2
+Network Engineer,Networking,5,Networking,1,3
+Network Engineer,Cisco,4,Networking,2,3
+Network Engineer,Linux,4,Cloud,3,2
+Network Engineer,Security,3,Cybersecurity,4,2
+Cybersecurity Analyst,Networking,5,Networking,1,3
+Cybersecurity Analyst,Security,5,Cybersecurity,2,3
+Cybersecurity Analyst,Python,4,Programming,3,3
+Cybersecurity Analyst,Linux,4,Cloud,4,2
+Database Administrator,SQL,5,Database,1,3
+Database Administrator,PostgreSQL,5,Database,2,3
+Database Administrator,Backup,4,Database,3,2
+Database Administrator,Performance Tuning,4,Database,4,3
+QA Engineer,Testing,5,Development,1,2
+QA Engineer,Python,4,Programming,2,3
+QA Engineer,Selenium,4,Tools,3,3
+QA Engineer,Git,3,Tools,4,1
+Cloud Engineer,AWS,5,Cloud,1,3
+Cloud Engineer,Docker,4,DevOps,2,2
+Cloud Engineer,Linux,4,Cloud,3,2
+Cloud Engineer,CI/CD,3,DevOps,4,2

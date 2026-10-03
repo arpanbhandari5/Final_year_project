@@ -90,6 +90,12 @@
       </div>
     </div>
 
+    <!-- AI-powered banner (SAHAY_AI-inspired) -->
+    <div class="skills-gap-ai-banner hidden" data-ai-banner role="status">
+      <span aria-hidden="true">🤖</span>
+      <span><strong>AI-powered analysis:</strong> your skills were matched against <strong data-ai-role-name></strong> using the local ML skill engine.</span>
+    </div>
+
     <!-- Stats Cards Row (SAHAY_AI-inspired) -->
     <div class="skills-gap-stats" data-stats-row>
       <div class="stats-card glass-card">
@@ -114,11 +120,18 @@
       </div>
     </div>
 
-    <!-- Match Progress Bar -->
+    <!-- Match Progress Bar + Score Ring (SAHAY_AI-inspired) -->
     <div class="glass-card" style="margin-bottom: 2rem;">
-      <div class="inline-actions" style="justify-content: space-between; margin-bottom: 0.75rem;">
-        <h3 class="section-title" style="margin: 0;">Overall skill match</h3>
-        <span class="match-label" data-match-label>0%</span>
+      <div class="inline-actions" style="justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap;">
+        <div>
+          <h3 class="section-title" style="margin: 0;">Overall skill match</h3>
+          <p class="section-subtitle" style="margin: 0.3rem 0 0;">for <strong data-role-match-name>your target role</strong></p>
+        </div>          <div class="skills-gap-score">
+          <div class="skills-gap-ring" data-match-ring style="--pct: 0%; --color: var(--primary);" aria-hidden="true">
+            <span class="skills-gap-ring__value" data-match-ring-value>0%</span>
+          </div>
+          <span class="match-label" data-match-label>0%</span>
+        </div>
       </div>
       <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
         <div class="progress-fill" data-progress-fill style="width: 0%;"></div>
@@ -211,7 +224,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
+<script nonce="{{ csp_nonce }}">
 (function() {
   'use strict';
 
@@ -242,6 +255,11 @@
   const recommendationsList = document.querySelector('[data-recommendations-list]');
   const recommendationsCard = document.querySelector('[data-recommendations-card]');
   const retryBtn = document.querySelector('[data-retry-btn]');
+  const aiBanner = document.querySelector('[data-ai-banner]');
+  const aiRoleName = document.querySelector('[data-ai-role-name]');
+  const roleMatchName = document.querySelector('[data-role-match-name]');
+  const matchRing = document.querySelector('[data-match-ring]');
+  const matchRingValue = document.querySelector('[data-match-ring-value]');
 
   // ── Fetch roles on load ──
   async function loadRoles() {
@@ -337,16 +355,31 @@
     // Progress bar
     progressFill.style.width = pct + '%';
     matchLabel.textContent = pct + '%';
+    let matchColor = 'var(--success)';
     if (pct >= 70) {
-      progressFill.style.background = 'var(--success)';
+      matchColor = 'var(--success)';
       matchHint.textContent = 'Strong match! You have most of the required skills.';
     } else if (pct >= 40) {
-      progressFill.style.background = 'var(--warning)';
+      matchColor = 'var(--warning)';
       matchHint.textContent = 'Moderate match — focus on closing the gaps below.';
     } else {
-      progressFill.style.background = 'var(--error)';
+      matchColor = 'var(--error)';
       matchHint.textContent = 'Low match — consider developing the missing skills listed below.';
     }
+    progressFill.style.background = matchColor;
+
+    // Score ring (SAHAY_AI-inspired)
+    if (matchRing && matchRingValue) {
+      matchRing.style.setProperty('--pct', pct);
+      matchRing.style.setProperty('--color', matchColor);
+      matchRingValue.textContent = pct + '%';
+      matchRingValue.style.color = matchColor;
+    }
+
+    // AI-powered banner + role labels
+    if (aiBanner) aiBanner.classList.remove('hidden');
+    if (aiRoleName) aiRoleName.textContent = analysis.target_role || '';
+    if (roleMatchName) roleMatchName.textContent = analysis.target_role || '';
 
     // Role name
     roleName.textContent = analysis.target_role || '';
@@ -400,6 +433,7 @@
   function showError(msg) {
     errorCard.classList.remove('hidden');
     errorMsg.textContent = msg;
+    if (aiBanner) aiBanner.classList.add('hidden');
     errorCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 

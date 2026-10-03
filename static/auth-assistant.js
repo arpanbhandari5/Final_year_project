@@ -422,7 +422,7 @@
         return "You're asking a lot of questions — great! 😊 Let me catch up for a moment. Try again in a few seconds.";
       }
       if (err.message.includes('fetch') || err.message.includes('Network')) {
-        return "I'm having trouble connecting to the AI service. Make sure Ollama is running, or try again later. Here's a quick tip: focus on building skills aligned with your target career! 🚀";
+        return "I couldn't reach the server just now — it may be restarting. Please try again in a moment. Tip: focus on building skills aligned with your target career! 🚀";
       }
       return `I encountered an issue: ${err.message}. Could you try asking a different way?`;
     }

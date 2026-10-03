@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import os
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -24,51 +24,33 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-os.environ.setdefault("DATABASE_URL",
-                       f"sqlite:///{PROJECT_ROOT / 'instance' / 'test_prayash.db'}")
+os.environ.setdefault("MAIL_USERNAME", "")
+os.environ.setdefault("MAIL_PASSWORD", "")
+os.environ.setdefault("SMTP_USERNAME", "")
+os.environ.setdefault("SMTP_PASSWORD", "")
+
+from security import _OTP_REQUEST_STORE  # noqa: E402
 
 STRONG_PASSWORD = "NewStrongP@ss1"
 
 
 @pytest.fixture
-def app():
-    """Create and configure a fresh Flask application for each test."""
-    from app import app as flask_app
-
-    flask_app.config["WTF_CSRF_ENABLED"] = False
-    flask_app.config["TESTING"] = True
-
-    with flask_app.app_context():
-        from storage import db, init_database
-        db.create_all()
-        from storage import seed_default_users
-        seed_default_users()
-        yield flask_app
-        db.drop_all()
-        try:
-            db_path = PROJECT_ROOT / "instance" / "test_prayash.db"
-            if db_path.exists():
-                db_path.unlink()
-        except PermissionError:
-            pass
-
-
-@pytest.fixture
 def client(app, monkeypatch):
-    """A Flask test client with fresh global OTP/cooldown state."""
-    import app as app_module
+    """A Flask test client with email sending neutralised.
 
-    app_module._OTP_REQUEST_STORE.clear()
-    app_module._RATE_LIMIT_STORE.clear()
-    app_module._LOGIN_ATTEMPT_STORE.clear()
-    monkeypatch.setattr(app_module, "send_email", lambda *a, **k: True)
+    The in-memory OTP/rate-limit/lockout stores are cleared per-test by the
+    shared autouse fixture in conftest.py.
+    """
+    import storage
+
+    monkeypatch.setattr(storage, "send_email", lambda *a, **k: True)
     return app.test_client()
 
 
 @pytest.fixture
 def user(app):
     """A verified student user for the password-reset flow."""
-    from storage import User, create_user, db
+    from storage import create_user, db
 
     u = create_user("resetuser@example.com", "OldPass123!")
     u.email_verified = True
@@ -178,7 +160,7 @@ def test_otp_invalid_code_decrements_attempts(client, user) -> None:
 
 def test_otp_max_attempts_locks_code(client, user) -> None:
     """Five wrong codes lock the OTP and tell the user to request a new one."""
-    from app import OTP_MAX_ATTEMPTS
+    from storage import OTP_MAX_ATTEMPTS
 
     _request_reset(client, user.email)
     for _ in range(OTP_MAX_ATTEMPTS - 1):
@@ -201,7 +183,7 @@ def test_otp_expired_code(client, user) -> None:
         row = db.session.get(VerificationOTP, otp.id)
         assert row is not None
         code = row.otp
-        row.expires_at = datetime.now(timezone.utc) - timedelta(minutes=1)
+        row.expires_at = datetime.now(UTC) - timedelta(minutes=1)
         db.session.commit()
 
     db.session.expire_all()
@@ -253,6 +235,7 @@ def test_password_reset_full_flow(client, user) -> None:
 
     with client.application.app_context():
         from storage import User, db
+
         fresh = db.session.get(User, user.id)
         assert fresh is not None
         assert fresh.check_password(STRONG_PASSWORD)
@@ -306,8 +289,7 @@ def test_resend_otp_reset_password(client, user) -> None:
     old_otp = _latest_otp(client.application, user)
 
     # Cooldown applies; bypass it to prove the resend itself works.
-    import app as app_module
-    app_module._OTP_REQUEST_STORE.clear()
+    _OTP_REQUEST_STORE.clear()
 
     resp = client.post("/resend-otp", data={"purpose": "reset_password"})
     assert resp.status_code == 200
@@ -321,6 +303,7 @@ def test_resend_otp_reset_password(client, user) -> None:
 
     with client.application.app_context():
         from storage import VerificationOTP, db
+
         fresh_old = db.session.get(VerificationOTP, old_otp.id)
         assert fresh_old is not None
         assert fresh_old.used is True

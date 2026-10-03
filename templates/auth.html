@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block career_chat_widget %}{% endblock %}
+
 {% block content %}
 {% include "auth_assistant.html" %}
 
@@ -62,16 +64,35 @@
       <div class="auth-split__orb auth-split__orb--2" aria-hidden="true"></div>
       <div class="auth-split__orb auth-split__orb--3" aria-hidden="true"></div>
 
+      <!-- Floating AI stat card -->
+      <div class="auth-split__floatcard" aria-hidden="true">
+        <span class="auth-split__floatcard-icon">⚡</span>
+        <div class="auth-split__floatcard-body">
+          <strong>AI-Powered Guidance</strong>
+          <span>Resume · Skills · Roadmaps</span>
+        </div>
+      </div>
+
       <div class="auth-split__accent" aria-hidden="true">
         <svg width="120" height="60" viewBox="0 0 120 60" fill="none">
           <path d="M0 60 Q30 20 60 40 Q90 60 120 30 V60 H0 Z" fill="rgba(211,187,255,0.08)"/>
         </svg>
+      </div>
+
+      <!-- Floating Particles -->
+      <div class="auth-split__particles" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
       </div>
     </div>
   </aside>
 
   <!-- ═══ Right Panel: Form Side ═══ -->
   <main class="auth-split__form">
+    <!-- Ambient glowing blobs behind the card -->
+    <div class="auth-form__glow auth-form__glow--1" aria-hidden="true"></div>
+    <div class="auth-form__glow auth-form__glow--2" aria-hidden="true"></div>
+
     <div class="auth-split__card">
       <!-- Tabs -->
       <div class="auth-tabs" role="tablist">
@@ -91,7 +112,7 @@
         >
           Sign Up
         </a>
-        <div class="auth-tabs__indicator" aria-hidden="true">
+        <div class="auth-tabs__indicator" aria-hidden="true" style="transform: translateX({% if mode == 'signup' %}100%{% else %}0{% endif %});">
           <span></span>
         </div>
       </div>
@@ -100,7 +121,7 @@
       <div class="auth-form-pane {% if mode == 'login' %}is-active{% endif %}" data-form-pane="login">
         <!-- Social Login -->
         <div class="auth-social">
-          <a href="{{ url_for('google_login') }}" class="auth-social-btn {% if not oauth_google_configured %}auth-social-btn--unconfigured{% endif %}" aria-label="Sign in with Google" {% if not oauth_google_configured %}title="Google OAuth not configured (set GOOGLE_OAUTH_CLIENT_ID)"{% endif %}>
+          <a href="{{ url_for('google_login') }}" class="auth-social-btn auth-social-btn--google {% if not oauth_google_configured %}auth-social-btn--unconfigured{% endif %}" aria-label="Sign in with Google" {% if not oauth_google_configured %}title="Google OAuth not configured (set GOOGLE_OAUTH_CLIENT_ID)"{% endif %}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -110,7 +131,7 @@
             <span>Google</span>
             {% if not oauth_google_configured %}<small class="auth-social-btn__note">Setup</small>{% endif %}
           </a>
-          <a href="{{ url_for('github_login') }}" class="auth-social-btn {% if not oauth_github_configured %}auth-social-btn--unconfigured{% endif %}" aria-label="Sign in with GitHub" {% if not oauth_github_configured %}title="GitHub OAuth not configured (set GITHUB_OAUTH_CLIENT_ID)"{% endif %}>
+          <a href="{{ url_for('github_login') }}" class="auth-social-btn auth-social-btn--github {% if not oauth_github_configured %}auth-social-btn--unconfigured{% endif %}" aria-label="Sign in with GitHub" {% if not oauth_github_configured %}title="GitHub OAuth not configured (set GITHUB_OAUTH_CLIENT_ID)"{% endif %}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
             </svg>
@@ -213,7 +234,7 @@
       <div class="auth-form-pane {% if mode == 'signup' %}is-active{% endif %}" data-form-pane="signup">
         <!-- Social Login -->
         <div class="auth-social">
-          <a href="{{ url_for('google_login') }}" class="auth-social-btn {% if not oauth_google_configured %}auth-social-btn--unconfigured{% endif %}" aria-label="Sign up with Google" {% if not oauth_google_configured %}title="Google OAuth not configured (set GOOGLE_OAUTH_CLIENT_ID)"{% endif %}>
+          <a href="{{ url_for('google_login') }}" class="auth-social-btn auth-social-btn--google {% if not oauth_google_configured %}auth-social-btn--unconfigured{% endif %}" aria-label="Sign up with Google" {% if not oauth_google_configured %}title="Google OAuth not configured (set GOOGLE_OAUTH_CLIENT_ID)"{% endif %}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -223,7 +244,7 @@
             <span>Google</span>
             {% if not oauth_google_configured %}<small class="auth-social-btn__note">Setup</small>{% endif %}
           </a>
-          <a href="{{ url_for('github_login') }}" class="auth-social-btn {% if not oauth_github_configured %}auth-social-btn--unconfigured{% endif %}" aria-label="Sign up with GitHub" {% if not oauth_github_configured %}title="GitHub OAuth not configured (set GITHUB_OAUTH_CLIENT_ID)"{% endif %}>
+          <a href="{{ url_for('github_login') }}" class="auth-social-btn auth-social-btn--github {% if not oauth_github_configured %}auth-social-btn--unconfigured{% endif %}" aria-label="Sign up with GitHub" {% if not oauth_github_configured %}title="GitHub OAuth not configured (set GITHUB_OAUTH_CLIENT_ID)"{% endif %}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
             </svg>
@@ -661,6 +682,22 @@
       input.classList.add('is-autofilled');
     });
   }, 500);
+
+  // ─── Button Ripple ───
+  document.querySelectorAll('.auth-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var rect = this.getBoundingClientRect();
+      var size = Math.max(rect.width, rect.height);
+      var ripple = document.createElement('span');
+      ripple.className = 'auth-btn__ripple';
+      ripple.style.width = size + 'px';
+      ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      this.appendChild(ripple);
+      setTimeout(function() { ripple.remove(); }, 650);
+    });
+  });
 })();
 </script>
 {% endblock %}

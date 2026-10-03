@@ -4,7 +4,6 @@ import re
 from typing import Any
 
 import joblib
-import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import Ridge
@@ -16,7 +15,6 @@ from utils import (
     normalize_text,
     read_csv_any,
 )
-
 
 MODEL_DIR.mkdir(exist_ok=True)
 
@@ -130,7 +128,7 @@ def main() -> None:
                 ],
                 "text": text,
             }
-            for text, (_, row) in zip(job_texts, automation.iterrows())
+            for text, (_, row) in zip(job_texts, automation.iterrows(), strict=False)
         ],
         "cluster_vectors": cluster_vectors,
         "cluster_profiles": onet_profiles,

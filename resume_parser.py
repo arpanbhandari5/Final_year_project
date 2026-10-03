@@ -12,6 +12,7 @@ Features:
 """
 
 from __future__ import annotations
+
 import logging
 import re
 from io import BytesIO
@@ -27,14 +28,37 @@ try:
 except Exception:
     PdfReader = None
 
-# PyMuPDF – SAHAY_AI-style enhanced PDF extraction (3x better quality)
-try:
-    import fitz  # PyMuPDF
-    HAS_PYMUPDF = True
-except Exception:
-    HAS_PYMUPDF = False
-
 from utils import clean_text as _clean_text
+
+# PyMuPDF - SAHAY_AI-style enhanced PDF extraction (3x better quality)
+# Imported lazily - PyMuPDF is heavy (~0.6s) and only needed for PDF parsing.
+HAS_PYMUPDF: bool | None = None
+HAS_PDFPLUMBER: bool | None = None
+
+
+def _pymupdf_available() -> bool:
+    global HAS_PYMUPDF
+    if HAS_PYMUPDF is None:
+        try:
+            import fitz  # noqa: F401
+
+            HAS_PYMUPDF = True
+        except Exception:
+            HAS_PYMUPDF = False
+    return HAS_PYMUPDF
+
+
+def _pdfplumber_available() -> bool:
+    global HAS_PDFPLUMBER
+    if HAS_PDFPLUMBER is None:
+        try:
+            import pdfplumber  # noqa: F401
+
+            HAS_PDFPLUMBER = True
+        except Exception:
+            HAS_PDFPLUMBER = False
+    return HAS_PDFPLUMBER
+
 
 log = logging.getLogger("prayash.parser")
 
@@ -45,8 +69,10 @@ log = logging.getLogger("prayash.parser")
 def _extract_pdf_with_pymupdf(payload: bytes) -> str | None:
     """Extract text from PDF bytes using PyMuPDF (3x better extraction).
     Returns None if PyMuPDF is unavailable or fails."""
-    if not HAS_PYMUPDF:
+    if not _pymupdf_available():
         return None
+    import fitz
+
     try:
         doc = fitz.open(stream=payload, filetype="pdf")
         text_parts: list[str] = []
@@ -54,9 +80,9 @@ def _extract_pdf_with_pymupdf(payload: bytes) -> str | None:
             page = doc.load_page(page_num)
             page_text = page.get_text("text")
             # Clean PDF-specific noise
-            page_text = re.sub(r'\s+', ' ', page_text)
-            page_text = re.sub(r'([a-z])([A-Z])', r'\1 \2', page_text)
-            page_text = re.sub(r'\b\d+\s*$', '', page_text, flags=re.MULTILINE)
+            page_text = re.sub(r"\s+", " ", page_text)
+            page_text = re.sub(r"([a-z])([A-Z])", r"\1 \2", page_text)
+            page_text = re.sub(r"\b\d+\s*$", "", page_text, flags=re.MULTILINE)
             text_parts.append(page_text.strip())
         doc.close()
         result = " ".join(text_parts)
@@ -88,8 +114,10 @@ def extract_pdf_layout(payload: bytes) -> dict[str, Any]:
           - "metadata": PDF metadata dict from doc.metadata
           - "page_count": int
     """
-    if not HAS_PYMUPDF:
+    if not _pymupdf_available():
         return {"text": "", "spans": [], "metadata": {}, "page_count": 0}
+    import fitz
+
     try:
         doc = fitz.open(stream=payload, filetype="pdf")
         spans: list[dict[str, Any]] = []
@@ -105,13 +133,15 @@ def extract_pdf_layout(payload: bytes) -> dict[str, Any]:
                             raw = (span.get("text") or "").strip()
                             if not raw:
                                 continue
-                            spans.append({
-                                "text": raw,
-                                "font_size": span.get("size", 12.0),
-                                "font_name": span.get("font", ""),
-                                "bbox": span.get("bbox", [0, 0, 0, 0]),
-                                "page": page_num,
-                            })
+                            spans.append(
+                                {
+                                    "text": raw,
+                                    "font_size": span.get("size", 12.0),
+                                    "font_name": span.get("font", ""),
+                                    "bbox": span.get("bbox", [0, 0, 0, 0]),
+                                    "page": page_num,
+                                }
+                            )
                             text_parts.append(raw)
                     text_parts.append("\n")
 
@@ -196,8 +226,10 @@ def get_pdf_metadata(payload: bytes) -> dict[str, Any]:
         dict with keys: title, author, subject, creator, producer, pages.
         Returns an empty dict if extraction fails.
     """
-    if not HAS_PYMUPDF:
+    if not _pymupdf_available():
         return {}
+    import fitz
+
     try:
         doc = fitz.open(stream=payload, filetype="pdf")
         meta = dict(doc.metadata) if doc.metadata else {}
@@ -226,10 +258,26 @@ def extract_resume_text(uploaded_file) -> str:
 
     if filename.endswith(".pdf"):
         # Try PyMuPDF first (SAHAY_AI-style enhanced extraction)
-        if HAS_PYMUPDF:
+        if _pymupdf_available():
             text = _extract_pdf_with_pymupdf(payload)
             if text:
                 return _clean_text(text)
+        # Fallback to pdfplumber (layout-aware page-by-page extraction)
+        if _pdfplumber_available():
+            try:
+                import pdfplumber
+
+                parts: list[str] = []
+                with pdfplumber.open(BytesIO(payload), unicode_norm="NFKC") as pdf:
+                    for page in pdf.pages:
+                        page_text = page.extract_text() or ""
+                        if page_text:
+                            parts.append(page_text)
+                text = "\n".join(parts).strip()
+                if text:
+                    return _clean_text(text)
+            except Exception:
+                pass
         # Fallback to pypdf
         if PdfReader is not None:
             reader = PdfReader(BytesIO(payload))
@@ -243,6 +291,7 @@ def extract_resume_text(uploaded_file) -> str:
 
 
 # ─── 2. Contact Info Extraction ─────────────────────────────────────
+
 
 def extract_contact_info(text: str) -> dict[str, str]:
     """Extract contact information from resume text."""
@@ -275,13 +324,37 @@ def extract_contact_info(text: str) -> dict[str, str]:
 # ─── 3. Section Detection ─────────────────────────────────────────
 
 _SECTION_HEADERS: set[str] = {
-    "education", "experience", "skills", "projects", "work", "employment",
-    "academic", "qualifications", "certifications", "languages", "interests",
-    "achievements", "awards", "publications", "references", "contact",
-    "professional summary", "summary", "objective", "career objective",
-    "technical skills", "technical experience", "professional experience",
-    "work experience", "open source", "leadership", "volunteer",
-    "extracurricular", "activities", "honors", "training",
+    "education",
+    "experience",
+    "skills",
+    "projects",
+    "work",
+    "employment",
+    "academic",
+    "qualifications",
+    "certifications",
+    "languages",
+    "interests",
+    "achievements",
+    "awards",
+    "publications",
+    "references",
+    "contact",
+    "professional summary",
+    "summary",
+    "objective",
+    "career objective",
+    "technical skills",
+    "technical experience",
+    "professional experience",
+    "work experience",
+    "open source",
+    "leadership",
+    "volunteer",
+    "extracurricular",
+    "activities",
+    "honors",
+    "training",
 }
 
 
@@ -292,11 +365,27 @@ def _is_section_header(line: str) -> bool:
     if cleaned.lower() in _SECTION_HEADERS:
         return True
     if len(cleaned.split()) <= 4:
-        if cleaned.isupper() or re.match(r'^[A-Z][A-Z\s]+$', cleaned):
+        if cleaned.isupper() or re.match(r"^[A-Z][A-Z\s]+$", cleaned):
             return True
         if cleaned.istitle() and cleaned.replace(" & ", " ").istitle():
             return True
     return False
+
+
+def _is_section_boundary(line: str) -> bool:
+    """Stricter header check used inside a section body.
+
+    A line that follows an already-detected section header is treated as a
+    boundary only if it is a known section keyword or an ALL-CAPS short line.
+    Plain title-case lines (e.g. project or degree names) are content, not
+    headers, so they must not truncate the current section.
+    """
+    cleaned = line.strip()
+    if not cleaned:
+        return False
+    if cleaned.lower() in _SECTION_HEADERS:
+        return True
+    return len(cleaned.split()) <= 4 and cleaned.isupper()
 
 
 def extract_section(lines: list[str], keywords: list[str]) -> list[str]:
@@ -312,7 +401,7 @@ def extract_section(lines: list[str], keywords: list[str]) -> list[str]:
             found = True
             continue
         if found:
-            if _is_section_header(lc):
+            if _is_section_boundary(lc):
                 break
             section.append(lc)
     return section
@@ -368,17 +457,43 @@ def _normalize_skill_name(skill: str) -> str:
 def _skill_display_name(kw: str) -> str:
     """Return a display-friendly version of a skill keyword."""
     special = {
-        "c++": "C++", "c#": "C#", "f#": "F#", ".net": ".NET",
-        "node.js": "Node.js", "next.js": "Next.js", "nuxt.js": "Nuxt.js",
-        "vue.js": "Vue.js", "express.js": "Express.js", "d3.js": "D3.js",
-        "react native": "React Native", "machine learning": "Machine Learning",
-        "deep learning": "Deep Learning", "azure": "Azure", "aws": "AWS",
-        "gcp": "GCP", "ci/cd": "CI/CD", "docker": "Docker",
-        "chromadb": "ChromaDB", "pgvector": "pgvector", "autogpt": "AutoGPT",
-        "k8s": "k8s", "mlops": "MLOps", "genai": "GenAI", "llmops": "LLMOps",
-        "rag": "RAG", "rlhf": "RLHF", "dpo": "DPO", "lora": "LoRA",
-        "qlora": "QLoRA", "gptq": "GPTQ", "awq": "AWQ", "gguf": "GGUF",
-        "wandb": "WandB", "dvc": "DVC", "cot": "CoT", "autogen": "AutoGen",
+        "c++": "C++",
+        "c#": "C#",
+        "f#": "F#",
+        ".net": ".NET",
+        "node.js": "Node.js",
+        "next.js": "Next.js",
+        "nuxt.js": "Nuxt.js",
+        "vue.js": "Vue.js",
+        "express.js": "Express.js",
+        "d3.js": "D3.js",
+        "react native": "React Native",
+        "machine learning": "Machine Learning",
+        "deep learning": "Deep Learning",
+        "azure": "Azure",
+        "aws": "AWS",
+        "gcp": "GCP",
+        "ci/cd": "CI/CD",
+        "docker": "Docker",
+        "chromadb": "ChromaDB",
+        "pgvector": "pgvector",
+        "autogpt": "AutoGPT",
+        "k8s": "k8s",
+        "mlops": "MLOps",
+        "genai": "GenAI",
+        "llmops": "LLMOps",
+        "rag": "RAG",
+        "rlhf": "RLHF",
+        "dpo": "DPO",
+        "lora": "LoRA",
+        "qlora": "QLoRA",
+        "gptq": "GPTQ",
+        "awq": "AWQ",
+        "gguf": "GGUF",
+        "wandb": "WandB",
+        "dvc": "DVC",
+        "cot": "CoT",
+        "autogen": "AutoGen",
     }
     if kw in special:
         return special[kw]
@@ -418,6 +533,7 @@ def extract_skills_from_text(text: str) -> dict[str, object]:
 
 # ─── 5. Main Parsing Entry Point ─────────────────────────────────
 
+
 def parse_resume_enhanced(raw_text: str, layout_sections: dict[str, str] | None = None) -> dict[str, object]:
     """Parse resume text into a structured dictionary.
 
@@ -445,25 +561,16 @@ def parse_resume_enhanced(raw_text: str, layout_sections: dict[str, str] | None 
             return [c.strip() for c in content.split("\n") if c.strip()]
         return extract_section(lines, keywords)
 
-    education = _sec("education", [
-        "education", "academic", "qualifications", "degree", "university", "college"
-    ])
-    experience = _sec("experience", [
-        "experience", "work", "employment", "career", "professional experience"
-    ])
-    projects_lines = _sec("projects", [
-        "projects", "project", "portfolio", "works", "personal projects"
-    ])
-    skills_lines = _sec("skills", [
-        "skills", "technical skills", "technologies", "programming",
-        "core competencies", "expertise"
-    ])
-    certifications = _sec("certifications", [
-        "certifications", "certificates", "licenses", "professional certifications"
-    ])
-    achievements = _sec("achievements", [
-        "achievements", "awards", "honors", "publications", "recognition"
-    ])
+    education = _sec("education", ["education", "academic", "qualifications", "degree", "university", "college"])
+    experience = _sec("experience", ["experience", "work", "employment", "career", "professional experience"])
+    projects_lines = _sec("projects", ["projects", "project", "portfolio", "works", "personal projects"])
+    skills_lines = _sec(
+        "skills", ["skills", "technical skills", "technologies", "programming", "core competencies", "expertise"]
+    )
+    certifications = _sec(
+        "certifications", ["certifications", "certificates", "licenses", "professional certifications"]
+    )
+    achievements = _sec("achievements", ["achievements", "awards", "honors", "publications", "recognition"])
 
     projects: list[dict[str, object]] = []
     if projects_lines:
@@ -471,15 +578,15 @@ def parse_resume_enhanced(raw_text: str, layout_sections: dict[str, str] | None 
         for line in projects_lines:
             if not line.strip():
                 continue
-            if len(line.split()) <= 6 and (line.istitle() or line.isupper() or line[0].isupper()):
-                if not _is_section_header(line):
-                    if current and current.get('name'):
+            if len(line.split()) <= 6 and (line.istitle() or line.isupper() or line[0].isupper()) and not _is_section_boundary(line):
+                    if current and current.get("name"):
                         projects.append(current)
                     current = {"name": line}
                     continue
-            if current is not None:
-                current.setdefault('description', [])
-                current['description'].append(line)
+            if current is None:
+                current = {"name": f"Project {len(projects) + 1}"}
+            current.setdefault("description", [])
+            current["description"].append(line)
         if current and current.get("name"):
             projects.append(current)
 
@@ -488,9 +595,12 @@ def parse_resume_enhanced(raw_text: str, layout_sections: dict[str, str] | None 
 
     sections_found: list[str] = []
     for name, val in [
-        ("education", education), ("experience", experience),
-        ("projects", projects), ("skills", skill_data["all_skills"]),
-        ("certifications", certifications), ("achievements", achievements),
+        ("education", education),
+        ("experience", experience),
+        ("projects", projects),
+        ("skills", skill_data["all_skills"]),
+        ("certifications", certifications),
+        ("achievements", achievements),
     ]:
         if val:
             sections_found.append(name)
@@ -506,7 +616,7 @@ def parse_resume_enhanced(raw_text: str, layout_sections: dict[str, str] | None 
         "certifications": certifications,
         "achievements": achievements,
         "sections_found": sections_found,
-        'metadata': {
+        "metadata": {
             "total_characters": len(raw_text),
             "total_lines": len(lines),
             "sections_found_count": len(sections_found),
@@ -516,6 +626,7 @@ def parse_resume_enhanced(raw_text: str, layout_sections: dict[str, str] | None 
 
 
 # ─── 6. Resume Quality Scoring ───────────────────────────────────
+
 
 def analyze_resume_quality(parsed: dict[str, object]) -> dict[str, object]:
     """Score resume completeness and quality (0-100)."""
@@ -540,10 +651,10 @@ def analyze_resume_quality(parsed: dict[str, object]) -> dict[str, object]:
             strengths.append("Phone number provided")
         else:
             missing.append("Phone number")
-        if contact.get('linkedin'):
+        if contact.get("linkedin"):
             score += 2
             strengths.append("LinkedIn profile linked")
-        if contact.get('github'):
+        if contact.get("github"):
             score += 1
             strengths.append("GitHub profile linked")
 
@@ -633,7 +744,7 @@ def analyze_resume_quality(parsed: dict[str, object]) -> dict[str, object]:
 
 # ─── 7. Backward-compatible alias ────────────────────────────────
 
+
 def parse_resume(raw_text: str) -> dict[str, object]:
     """Alias for parse_resume_enhanced for backward compatibility."""
     return parse_resume_enhanced(raw_text)
-

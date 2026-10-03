@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container">
+    <div class="page-hero__grid">
+      <div>
+        <span class="eyebrow">Account Access</span>
+        <h1>Welcome back</h1>
+        <p class="lead">Sign in to access your Prayash workspace, view analytics, and continue your career intelligence journey.</p>
+      </div>
+      <div class="glass-card">
+        <h2 class="section-title">Login</h2>
+        {% if error %}
+        <div style="padding: 1rem; background: rgba(242, 102, 92, 0.1); border: 1px solid rgba(242, 102, 92, 0.3); border-radius: 0.9rem; color: #f97316; font-size: 0.95rem; margin-bottom: 1rem;">
+          {{ error }}
+        </div>
+        {% endif %}
+        <form method="post" class="results-shell">
+          <input type="hidden" name="next" value="{{ next_url }}">
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="your@email.com" required>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+          </div>
+          <button class="button" type="submit" style="min-width: auto; width: 100%;">Sign In</button>
+        </form>
+        <p style="margin: 1.5rem 0 0; text-align: center; color: var(--text-muted); font-size: 0.95rem;">
+          New to Prayash? <a href="{{ url_for('signup') }}" style="color: var(--accent-alt); text-decoration: none; font-weight: 600; transition: color 200ms ease;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--accent-alt)'">Create an account</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -50,14 +50,14 @@ if ($TrainOnly -or -not $modelExists) {
         throw 'Model training failed.'
     }
 } else {
-    Write-Host "Model artifacts already exist — skipping training." -ForegroundColor Green
+    Write-Host "Model artifacts already exist - skipping training." -ForegroundColor Green
 }
 
 Write-Host "`n=== Initializing database ===" -ForegroundColor Cyan
-& $python -c "from app import initialize_database; initialize_database()"
+& $python -c 'from app import initialize_database; initialize_database()'
 
 if ($SkipServer) {
-    Write-Host "`nSetup complete. Run '.\venv\Scripts\python app.py' to start the server." -ForegroundColor Green
+    Write-Host "`nSetup complete. Run '.venv\Scripts\python app.py' to start the server." -ForegroundColor Green
 } elseif (-not $TrainOnly) {
     Write-Host "`n=== Starting Prayash Flask Server ===" -ForegroundColor Cyan
     & $python app.py

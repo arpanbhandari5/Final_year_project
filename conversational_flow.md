@@ -9,7 +9,7 @@ The conversational AI auth assistant is a floating chat widget that guides users
 ## 1. Welcome & Onboarding
 
 ### Entry Point
-When a user visits any auth page (`/login`, `/signup`, `/forgot-password`, `/verify-otp`, `/reset-password`), the chat assistant greets them with a contextual message based on the current page.
+When a user visits any auth page (`/login`, `/signup`, `/forgot-password/otp`, `/verify-otp`, `/reset-password/otp`), the chat assistant greets them with a contextual message based on the current page.
 
 **Sign In Page Greeting:**
 > "Hi there! 👋 Welcome back to Prayash. I can help you sign in, or if you're new here, you can create an account. What would you like to do?"
@@ -260,8 +260,8 @@ When a user struggles:
 | `/login` | Sign-in guidance | Help users log in or suggest alternatives |
 | `/signup` | Registration walkthrough | Collect all fields with validation help |
 | `/verify-otp` | Code entry guidance | Help with OTP entry, resend, errors |
-| `/forgot-password` | Password recovery | Walk through email→code→password flow |
-| `/reset-password` | New password creation | Guide strong password creation |
+| `/forgot-password/otp` | Password recovery | Walk through email→code→password flow |
+| `/reset-password/otp` | New password creation | Guide strong password creation |
 
 ---
 

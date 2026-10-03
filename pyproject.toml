@@ -1,0 +1,32 @@
+[tool.ruff]
+# ── Ruff (lint + formatter) ────────────────────────────────────────────
+# ruff's formatter is black-compatible, so `ruff format` and `black`
+# agree on output; run `python -m ruff check .` and `python -m ruff format .`.
+line-length = 120
+target-version = "py311"
+src = ["."]
+
+[tool.ruff.lint]
+# E4/E7/E9/F  → pyflakes + basic correctness (imports not at top, syntax, undefined names)
+# I           → isort (import sorting)
+# UP          → pyupgrade (modern syntax)
+# SIM         → flake8-simplify (simplifiable constructs)
+# RUF         → ruff-specific rules (unused noqa, unpacking hygiene)
+# B           → flake8-bugbear (common bugs and gotchas)
+select = ["E4", "E7", "E9", "F", "I", "UP", "SIM", "RUF", "B"]
+ignore = [
+    # Deliberate pattern across this codebase: request boundaries and
+    # optional-import guards catch broad Exception so a failure in one
+    # provider/parser degrades to a logged fallback instead of a 500.
+    "BLE001",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+# ── Black (optional; ruff format already produces black-compatible output) ──
+[tool.black]
+line-length = 120
+target-version = ["py311"]

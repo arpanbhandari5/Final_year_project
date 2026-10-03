@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container">
+    <div class="page-hero__grid">
+      <div>
+        <span class="eyebrow">Get Started</span>
+        <h1>Create your account</h1>
+        <p class="lead">Join Prayash to unlock session persistence, protected workspace access, and personalized career intelligence powered by AI.</p>
+      </div>
+      <div class="glass-card">
+        <h2 class="section-title">Sign Up</h2>
+        {% if error %}
+        <div style="padding: 1rem; background: rgba(242, 102, 92, 0.1); border: 1px solid rgba(242, 102, 92, 0.3); border-radius: 0.9rem; color: #f97316; font-size: 0.95rem; margin-bottom: 1rem;">
+          {{ error }}
+        </div>
+        {% endif %}
+        <form method="post" class="results-shell">
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="your@email.com" required>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="new-password" placeholder="••••••••" required>
+          </div>
+          <div class="field">
+            <label for="confirm_password">Confirm Password</label>
+            <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" placeholder="••••••••" required>
+          </div>
+          <button class="button" type="submit" style="min-width: auto; width: 100%;">Create Account</button>
+        </form>
+        <p style="margin: 1.5rem 0 0; text-align: center; color: var(--text-muted); font-size: 0.95rem;">
+          Already have an account? <a href="{{ url_for('login') }}" style="color: var(--accent-alt); text-decoration: none; font-weight: 600; transition: color 200ms ease;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--accent-alt)'">Sign in here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
