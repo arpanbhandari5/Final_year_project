@@ -45,7 +45,7 @@
 
       <div class="hero-mini-grid">
         <div class="kpi">
-          <div class="kpi__label">Historical occupation reference</div>
+          <div class="kpi__label">Initial model-derived historical reference</div>
           <div class="kpi__value">Low-to-moderate</div>
         </div>
         <div class="kpi">
@@ -196,7 +196,6 @@
           </div>
           <div class="inline-actions">
             <button class="button-secondary" type="submit" data-assess-button>Run analysis</button>
-            <button class="button-ghost" type="button" data-export-button>Export PDF</button>
             <button class="button-ghost compare-toggle" type="button" data-compare-toggle>Compare</button>
           </div>
         </div>
@@ -305,7 +304,7 @@
 <section class="content-section">
   <div class="container dashboard-grid">
     <div class="span-4 glass-card">
-      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Historical occupation reference</div>
+      <div class="section-subtitle" style="margin-top: 0; letter-spacing: 0.12em; text-transform: uppercase;">Initial model-derived historical reference</div>
       <div class="score-ring" data-risk-ring style="--score: 0.08; margin-top: 1.2rem; width: 11rem;">
         <div class="score-ring__content">
           <p class="score-ring__value" data-risk-score-display>--</p>
@@ -448,7 +447,10 @@
         <p class="small-note" style="margin: 0 0 0.4rem; text-transform: uppercase; letter-spacing: 0.12em;">Assessment result</p>
         <h3 class="section-title" id="result-modal-title" data-modal-title style="margin: 0;">Analysis output</h3>
       </div>
-      <button class="button-ghost" type="button" data-modal-close>Close</button>
+      <div class="result-modal__header-actions">
+        <button class="button-secondary hidden" type="button" data-print-report aria-hidden="true" disabled>Print / Save PDF</button>
+        <button class="button-ghost" type="button" data-modal-close>Close</button>
+      </div>
     </div>
 
     <!-- SSE Progress Bar -->
@@ -462,7 +464,7 @@
 
     <div class="modal-kpis">
       <div class="kpi">
-        <div class="kpi__label">Historical occupation reference</div>
+        <div class="kpi__label">Initial model-derived historical reference</div>
         <div class="kpi__value" data-modal-risk-score>--</div>
       </div>
       <div class="kpi">
@@ -493,7 +495,8 @@
       </div>
 
       <div class="roadmap-card">
-        <h3 class="section-title" style="margin: 0 0 1rem;">Learning roadmap</h3>
+        <h3 class="section-title" style="margin: 0 0 1rem;">Initial analysis learning roadmap</h3>
+        <p class="small-note">These recommendations come from the original resume analysis and are not recalculated when the benchmark occupation is changed.</p>
         <div class="compact-list" data-roadmap-list></div>
       </div>
 

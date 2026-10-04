@@ -117,6 +117,8 @@
   };
 
   document.addEventListener('keydown', (e) => {
+    // Leave browser shortcuts such as Ctrl/Cmd+R and hard refresh untouched.
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
       if (e.key === 'Escape') { closeModal(); closeComparison(); setShortcutsOpen(false); }
       return;
@@ -308,7 +310,7 @@
   const fileInput = $('[data-file-input]');
   const dropZone = $('[data-drop-zone]');
   const submitButton = $('[data-assess-button]');
-  const exportButton = $('[data-export-button]');
+  const printReportButton = $('[data-print-report]');
   const modal = $('[data-result-modal]');
   const modalTitle = $('[data-modal-title]');
   const modalRiskScore = $('[data-modal-risk-score]');
@@ -367,6 +369,13 @@
   let selectedFile = null;
   let lastAnalysis = null;
   let lastResumeText = '';
+  const setPrintReportAvailable = (available) => {
+    if (!printReportButton) return;
+    printReportButton.disabled = !available;
+    printReportButton.classList.toggle('hidden', !available);
+    printReportButton.setAttribute('aria-hidden', String(!available));
+  };
+  setPrintReportAvailable(false);
   const originalSubmitLabel = submitButton.textContent.trim();
 
   // ─── PATHWAYS ───
@@ -481,6 +490,14 @@
     const band = hist.band || payload.risk_label || 'Moderate';
     return `${Math.round((payload.risk_score || 0) * 100)}/100 — ${band}`;
   };
+  const occupationChoiceLabel = (occupation) =>
+    occupation.confirmation_method === 'user_selected_occupation' || occupation.source === 'user_selection'
+      ? 'User-selected occupation' : 'User-confirmed occupation';
+  const occupationReviewNote = 'Review this suggestion before confirming. Confirming authorizes benchmark lookup; it does not prove the suggested occupation is correct.';
+  const occupationChoiceNote = 'This reflects your choice, not independent model validation of the occupation’s fit to your resume.';
+  const historicalReferenceTitle = 'Initial model-derived historical reference';
+  const initialRecommendationsNote = 'These recommendations come from the original resume analysis and are not recalculated when the benchmark occupation is changed.';
+  const historicalReferenceNote = 'Computed from the original resume text by the local historical-reference model. Confirming or changing the benchmark occupation does not recalculate this reference; it is not a historical benchmark lookup for the occupation you chose.';
   const renderLayered = (payload) => {
     if (!layeredList) return;
     const occ = payload.occupation_match || payload.occupation_candidate || {};
@@ -491,26 +508,37 @@
     const ollama = payload.ollama || {};
     const cards = [];
     const picker = payload.analysis_id
-      ? `<p class="small-note">Choose another occupation from the server allowlist (800 ∩ published benchmark).</p><button type="button" class="button-ghost" data-choose-occupation>Choose another occupation</button><div data-occupation-picker hidden></div>`
+      ? `<p class="small-note">Choose another occupation from the server allowlist (800 ∩ published benchmark).</p><button type="button" class="button-secondary" data-choose-occupation>Choose another occupation</button><div data-occupation-picker hidden></div>`
       : '';
     if (occ.status === 'confirmed') {
-      cards.push(`<div class="list-card"><div><strong>Confirmed occupation</strong><p>${escapeHtml(occ.verified_occupation_title || 'Confirmed')} ${occ.verified_occupation_code ? `(${escapeHtml(occ.verified_occupation_code)})` : ''}</p><p class="small-note">Accepted by ${escapeHtml(occ.confirmation_method || 'user_confirmation')} (${escapeHtml(occ.source || 'server')}). This is not a personal job-loss probability.</p></div><span class="status-pill">${occ.matcher_score == null && occ.confidence == null ? '—' : escapeHtml(String(occ.matcher_score ?? occ.confidence))}</span></div>`);
+      const score = occ.matcher_score ?? occ.confidence;
+      cards.push(`<div class="list-card"><div><strong>${occupationChoiceLabel(occ)}</strong><p>${escapeHtml(occ.verified_occupation_title || 'Occupation')} ${occ.verified_occupation_code ? `(${escapeHtml(occ.verified_occupation_code)})` : ''}</p><p class="small-note">${escapeHtml(occupationChoiceNote)}</p>${score == null ? '' : `<p>Occupation-match similarity: ${escapeHtml(String(score))}</p><p class="small-note">${escapeHtml(occ.score_interpretation || 'uncalibrated matcher score')}. Not a job-loss probability.</p>`}</div></div>`);
     } else if (occ.status === 'candidate') {
       const score = occ.matcher_score == null && occ.confidence == null ? '—' : escapeHtml(String(occ.matcher_score ?? occ.confidence));
-      cards.push(`<div class="list-card"><div><strong>Suggested occupation</strong><p>Candidate match: ${escapeHtml(occ.candidate_title || 'No title')} ${occ.candidate_code ? `(${escapeHtml(occ.candidate_code)})` : ''}</p><p class="small-note">${escapeHtml(occ.score_interpretation || 'uncalibrated candidate score')}. This suggestion does not authorize benchmark lookup until you confirm it.</p>${occ.candidate_code ? '<button type="button" class="button-ghost" data-confirm-occupation>Confirm this candidate occupation</button>' : ''}${picker}</div><span class="status-pill">${score}</span></div>`);
+      cards.push(`<div class="list-card"><div><strong>Suggested occupation</strong><p>${escapeHtml(occ.candidate_title || 'No title')} ${occ.candidate_code ? `(${escapeHtml(occ.candidate_code)})` : ''}</p><p>Occupation-match similarity: ${score}</p><p class="small-note">${escapeHtml(occ.score_interpretation || 'uncalibrated candidate score')}. Not a job-loss probability.</p><p>${escapeHtml(occupationReviewNote)}</p>${occ.candidate_code ? '<button type="button" class="button-ghost" data-confirm-occupation>Confirm this candidate occupation</button>' : ''}${picker}</div></div>`);
     } else {
       cards.push(`<div class="list-card"><div><strong>Candidate occupation</strong><p>${escapeHtml(occ.candidate_title || 'Unresolved')}</p><p class="small-note">No confirmed occupation yet. Labels are never invented.</p>${picker}</div></div>`);
     }
-    cards.push(`<div class="list-card"><div><strong>Match confidence</strong><p>Occupation-match similarity only. Not a job-loss probability.</p></div></div>`);
-    cards.push(`<div class="list-card"><div><strong>Historical occupation reference</strong><p>${escapeHtml(historicalDisplay(payload))}</p><p class="small-note">${escapeHtml(hist.interpretation || 'Occupation-level reference only. This is not a validated personal probability of job loss, unemployment, replacement, or displacement.')}</p></div></div>`);
-    if (te.status === 'verified' && dist.E0 != null) {
-      cards.push(`<div class="list-card"><div><strong>Verified benchmark occupation</strong><p>Published lookup for ${escapeHtml(te.occupation_code || occ.verified_occupation_code || '')}.</p></div></div>`);
-      cards.push(`<div class="list-card"><div><strong>Contextual task-exposure profile</strong><p>E0 — No direct LLM exposure: ${Math.round(dist.E0 * 100)}%<br>E1 — Direct LLM exposure: ${Math.round(dist.E1 * 100)}%<br>E2 — Exposure through an LLM-powered application: ${Math.round(dist.E2 * 100)}%</p><p class="small-note">${escapeHtml(te.disclaimer || '')}</p></div></div>`);
+    cards.push(`<div class="list-card"><div><strong>${historicalReferenceTitle}</strong><p>${escapeHtml(historicalDisplay(payload))}</p><p class="small-note">${historicalReferenceNote}</p><p class="small-note">${escapeHtml(hist.interpretation || 'Occupation-level reference only. This is not a validated personal probability of job loss, unemployment, replacement, or displacement.')}</p></div></div>`);
+    const exposureKeys = ['E0', 'E1', 'E2'];
+    const hasVerifiedDistribution = occ.status === 'confirmed' && te.status === 'verified' && exposureKeys.every((key) =>
+      typeof dist[key] === 'number' && Number.isFinite(dist[key]) && dist[key] >= 0 && dist[key] <= 1
+    );
+    if (hasVerifiedDistribution) {
+      const exposureLabels = { E0: 'No direct LLM exposure', E1: 'Direct LLM exposure', E2: 'Exposure through an LLM-powered application' };
+      const exposurePercent = (value) => `${(Number(value) * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+      const denominator = Number.isInteger(te.labelled_task_count) && te.labelled_task_count >= 0
+        ? te.labelled_task_count
+        : (Number.isInteger(te.normalization_denominator) && te.normalization_denominator >= 0 ? te.normalization_denominator : null);
+      const segments = exposureKeys.map((key) => `<span class="task-exposure-bar__segment task-exposure-bar__segment--${key.toLowerCase()}" style="width:${Number(dist[key]) * 100}%" aria-hidden="true"></span>`).join('');
+      const legend = exposureKeys.map((key) => `<li class="task-exposure-legend__item"><span class="task-exposure-legend__swatch task-exposure-legend__swatch--${key.toLowerCase()}" aria-hidden="true"></span><span><strong>${key}</strong> — ${exposureLabels[key]}</span><strong>${exposurePercent(dist[key])}</strong></li>`).join('');
+      cards.push(`<div class="list-card"><div><strong>Published benchmark lookup</strong><p>Task labels for the occupation you chose (${escapeHtml(te.occupation_code || occ.verified_occupation_code || '')}). This lookup does not validate its fit to your resume.</p></div></div>`);
+      cards.push(`<div class="list-card task-exposure-card"><div><strong>Contextual task-exposure profile</strong><div class="task-exposure-bar" role="img" aria-label="Verified task distribution: E0 ${exposurePercent(dist.E0)}, E1 ${exposurePercent(dist.E1)}, E2 ${exposurePercent(dist.E2)}">${segments}</div><ul class="task-exposure-legend">${legend}</ul>${denominator === null ? '' : `<p class="small-note">Based on ${denominator} labelled tasks.</p>`}<p class="small-note">${escapeHtml(te.disclaimer || 'These percentages describe published task-exposure shares. They are not probabilities of job loss.')}</p></div></div>`);
     } else {
-      cards.push(`<div class="list-card"><div><strong>Contextual task-exposure profile</strong><p>Waiting for occupation confirmation (${escapeHtml(te.reason || te.status || 'candidate occupation does not authorize benchmark lookup')}). Labels are never invented.</p></div></div>`);
+      cards.push(`<div class="list-card"><div><strong>Contextual task-exposure profile</strong><p>Waiting for occupation confirmation. Confirm or choose an occupation to load the published task-exposure benchmark.</p></div></div>`);
     }
     const tasks = te.relevant_tasks || te.tasks || [];
-    if (tasks.length) {
+    if (hasVerifiedDistribution && tasks.length) {
       cards.push(`<div class="list-card"><div><strong>Relevant tasks</strong><p>${tasks.map((t) => `${escapeHtml(t.task)} — ${escapeHtml(t.category)}`).join('<br>')}</p></div></div>`);
     }
     const evidence = (payload.resume_analysis && payload.resume_analysis.evidence) || [];
@@ -519,7 +547,7 @@
     }
     const recs = career.recommendations || [];
     if (recs.length) {
-      cards.push(`<div class="list-card"><div><strong>Career-development actions</strong><p>${recs.map(escapeHtml).join('<br>')}</p></div></div>`);
+      cards.push(`<div class="list-card"><div><strong>Initial analysis career-development recommendations</strong><p class="small-note">${initialRecommendationsNote}</p><p>${recs.map(escapeHtml).join('<br>')}</p></div></div>`);
     }
     const ollamaNote = ollama.enabled
       ? (ollama.available ? 'Deep analysis with Ollama is enabled and available.' : (ollama.message || 'Optional deep explanation is unavailable because the local Ollama model is not running.'))
@@ -547,7 +575,7 @@
           if (!res.ok || !data.success) throw new Error(data.error || 'Selection failed.');
           lastAnalysis = { ...lastAnalysis, ...data };
           renderResults(lastAnalysis);
-          toast('Occupation selected.', 'success');
+          toast('User-selected occupation saved for benchmark lookup.', 'success');
         } catch (error) {
           toast(error.message || 'Selection failed.', 'error');
           apply.disabled = false;
@@ -591,7 +619,7 @@
         if (!res.ok || !data.success) throw new Error(data.error || 'Confirmation failed.');
         lastAnalysis = { ...lastAnalysis, ...data };
         renderResults(lastAnalysis);
-        toast('Occupation confirmed.', 'success');
+        toast('User-confirmed occupation saved for benchmark lookup.', 'success');
       } catch (error) {
         toast(error.message || 'Confirmation failed.', 'error');
         button.disabled = false;
@@ -607,7 +635,7 @@
     if (dashboardRiskRing) dashboardRiskRing.style.setProperty('--score', `${Math.max(0.05, Math.min(0.95, histScore))}`);
     if (dashboardRiskScore) dashboardRiskScore.textContent = historicalDisplay(payload).split(' — ')[0];
     if (dashboardRiskLabel) dashboardRiskLabel.textContent = payload.historical_occupation_reference?.band || payload.risk_label || 'Reference';
-    if (dashboardRiskSummary) dashboardRiskSummary.textContent = payload.historical_occupation_reference?.interpretation || payload.cognitive_career_narrative || 'Analysis ready.';
+    if (dashboardRiskSummary) dashboardRiskSummary.textContent = `${historicalReferenceNote} ${payload.historical_occupation_reference?.interpretation || 'This is not a personal job-loss probability.'}`;
     if (dashboardRoleStatus) dashboardRoleStatus.textContent = roles.length ? 'Live' : 'No matches';
     if (dashboardRoleBars) dashboardRoleBars.innerHTML = roles.slice(0, 3).map((r, i) => `<div class="motion-fade-up motion-stagger-${Math.min(i + 1, 5)}"><div class="inline-actions" style="justify-content: space-between;"><strong>${escapeHtml(r.job_role)}</strong><strong class="muted">${Math.round((r.similarity || 0) * 100)}%</strong></div><div class="bar"><span style="width: ${Math.round((r.similarity || 0) * 100)}%;"></span></div><p class="small-note">${escapeHtml(r.industry)} · Match ${Math.round((r.similarity || 0) * 100)}%</p></div>`).join('');
   };
@@ -625,13 +653,19 @@
   // ─── RENDER RESULTS ───
   const renderResults = (payload) => {
     lastAnalysis = payload;
+    setPrintReportAvailable(payload?.success === true);
     const roles = dedupeRoles(payload.top_roles || []);
     if (modalTitle) modalTitle.textContent = payload.mode === 'advanced' ? 'Deep AI narrative' : 'Analysis complete';
     if (modalRiskScore) modalRiskScore.textContent = historicalDisplay(payload).split(' — ')[0];
     if (modalRiskLabel) modalRiskLabel.textContent = payload.historical_occupation_reference?.band || payload.risk_label || 'Reference';
     if (modalMode) modalMode.textContent = `${payload.mode === 'advanced' ? 'Advanced' : 'Standard'} mode`;
     if (resultStatus) resultStatus.textContent = payload.mode === 'advanced' ? 'Deep AI narrative' : 'Analysis complete';
-    if (narrative) narrative.textContent = payload.cognitive_career_narrative || payload.ollama?.message || '';
+    if (narrative) {
+      const occupation = payload.occupation_match || payload.occupation_candidate || {};
+      narrative.textContent = occupation.status === 'confirmed'
+        ? `${occupationChoiceLabel(occupation)}: ${occupation.verified_occupation_title || 'Occupation'}${occupation.verified_occupation_code ? ` (${occupation.verified_occupation_code})` : ''}. ${occupationChoiceNote} ${historicalReferenceTitle}: ${historicalDisplay(payload)}. ${historicalReferenceNote} ${payload.historical_occupation_reference?.interpretation || 'This is not a personal job-loss probability.'}`
+        : `${payload.cognitive_career_narrative || payload.ollama?.message || ''} ${historicalReferenceNote}`;
+    }
     updateDashboard(payload);
     renderReasoning(payload);
     renderLayered(payload);
@@ -643,6 +677,8 @@
   };
 
   const renderError = (msg) => {
+    lastAnalysis = null;
+    setPrintReportAvailable(false);
     hideProgress();
     openModal();
     if (resultBanner) { resultBanner.style.background = 'rgba(186,26,26,0.08)'; resultBanner.style.borderColor = 'rgba(186,26,26,0.35)'; resultBanner.style.color = 'var(--error)'; }
@@ -739,26 +775,107 @@
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    lastAnalysis = null;
+    setPrintReportAvailable(false);
     const fd = new FormData(form);
     if (selectedFile && !fd.get('resume_file')) fd.set('resume_file', selectedFile);
     fd.set('mode', activeMode);
     const text = (fd.get('resume_text') || '').toString().trim();
     if (text) lastResumeText = text;
-    if (!(fileInput?.files?.length > 0) && !text) { renderError('Add resume text or a file.'); return; }
+    if (!(fileInput?.files?.length > 0) && !text) { toast('Add resume text or a file.', 'warning'); return; }
     if (activeMode === 'advanced' && text) await streamAnalysis(text);
     else await submitStandard(fd);
   });
+  form.addEventListener('reset', () => {
+    lastAnalysis = null;
+    setPrintReportAvailable(false);
+  });
 
   // ─── EXPORT ───
-  exportButton?.addEventListener('click', async () => {
+  const makeReportElement = (tag, className, textContent) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (textContent !== undefined) element.textContent = String(textContent ?? '');
+    return element;
+  };
+  const appendReportList = (parent, title, values, format = (value) => value, note = '') => {
+    if (!Array.isArray(values) || values.length === 0) return;
+    const section = makeReportElement('section', 'print-report__section');
+    section.append(makeReportElement('h2', '', title));
+    if (note) section.append(makeReportElement('p', 'print-report__note', note));
+    const list = makeReportElement('ul');
+    values.forEach((value) => list.append(makeReportElement('li', '', format(value))));
+    section.append(list);
+    parent.append(section);
+  };
+  const buildPrintReport = (payload) => {
+    const report = makeReportElement('main', 'print-report');
+    report.id = 'print-report';
+    const occupation = payload.occupation_match || payload.occupation_candidate || {};
+    const historical = payload.historical_occupation_reference || {};
+    const exposure = payload.task_exposure || payload.contextual_task_exposure || {};
+    const development = payload.career_development || {};
+    report.append(makeReportElement('p', 'print-report__eyebrow', 'PRAYASH · CAREER ANALYSIS'));
+    report.append(makeReportElement('h1', '', 'Career analysis report'));
+    report.append(makeReportElement('p', 'print-report__meta', `Generated ${new Date().toLocaleDateString()}`));
+
+    const occupationSection = makeReportElement('section', 'print-report__section');
+    occupationSection.append(makeReportElement('h2', '', 'Occupation match'));
+    if (occupation.status === 'confirmed') {
+      occupationSection.append(makeReportElement('p', '', `${occupationChoiceLabel(occupation)}: ${occupation.verified_occupation_title || 'Occupation'}${occupation.verified_occupation_code ? ` (${occupation.verified_occupation_code})` : ''}`));
+      occupationSection.append(makeReportElement('p', 'print-report__note', occupationChoiceNote));
+    } else {
+      occupationSection.append(makeReportElement('p', '', `Suggested occupation: ${occupation.candidate_title || 'Unresolved'}${occupation.candidate_code ? ` (${occupation.candidate_code})` : ''} · ${occupation.status || 'unconfirmed'}`));
+      occupationSection.append(makeReportElement('p', 'print-report__note', occupationReviewNote));
+    }
+    const occupationScore = occupation.matcher_score ?? occupation.confidence;
+    if (occupationScore != null) {
+      occupationSection.append(makeReportElement('p', '', `Occupation-match similarity: ${occupationScore}`));
+      occupationSection.append(makeReportElement('p', 'print-report__note', occupation.score_interpretation || 'uncalibrated matcher score'));
+    }
+    report.append(occupationSection);
+
+    const historicalSection = makeReportElement('section', 'print-report__section');
+    historicalSection.append(makeReportElement('h2', '', historicalReferenceTitle));
+    historicalSection.append(makeReportElement('p', '', historicalDisplay(payload)));
+    historicalSection.append(makeReportElement('p', 'print-report__note', historicalReferenceNote));
+    historicalSection.append(makeReportElement('p', 'print-report__note', historical.interpretation || 'Occupation-level historical reference only. This is not a personal job-loss probability.'));
+    report.append(historicalSection);
+
+    const distribution = exposure.distribution || {};
+    if (occupation.status === 'confirmed' && exposure.status === 'verified' && ['E0', 'E1', 'E2'].every((key) => typeof distribution[key] === 'number' && Number.isFinite(distribution[key]) && distribution[key] >= 0 && distribution[key] <= 1)) {
+      const labels = { E0: 'No direct LLM exposure', E1: 'Direct LLM exposure', E2: 'Exposure through an LLM-powered application' };
+      const exposureSection = makeReportElement('section', 'print-report__section');
+      exposureSection.append(makeReportElement('h2', '', 'Published task-exposure shares'));
+      const exposureList = makeReportElement('ul');
+      ['E0', 'E1', 'E2'].forEach((key) => exposureList.append(makeReportElement('li', '', `${key} — ${labels[key]}: ${(Number(distribution[key]) * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%`)));
+      exposureSection.append(exposureList);
+      const labelledCount = Number.isInteger(exposure.labelled_task_count) && exposure.labelled_task_count >= 0 ? exposure.labelled_task_count : exposure.normalization_denominator;
+      if (Number.isInteger(labelledCount) && labelledCount >= 0) exposureSection.append(makeReportElement('p', 'print-report__note', `Based on ${labelledCount} labelled tasks.`));
+      exposureSection.append(makeReportElement('p', 'print-report__note', exposure.disclaimer || 'These are published task-exposure shares, not probabilities of job loss.'));
+      report.append(exposureSection);
+      appendReportList(report, 'Relevant published tasks', exposure.relevant_tasks || exposure.tasks, (task) => `${task.task || 'Task'} — ${task.category || 'Label unavailable'}`);
+    }
+
+    const resumeAnalysis = payload.resume_analysis || {};
+    appendReportList(report, 'Skills findings', resumeAnalysis.evidence || resumeAnalysis.skills || []);
+    appendReportList(report, 'Initial analysis career-development recommendations', development.recommendations || [], undefined, initialRecommendationsNote);
+    appendReportList(report, 'Initial analysis learning roadmap', payload.roadmap || [], (item) => [item.course, item.skill, item.reason].filter(Boolean).join(' — '), initialRecommendationsNote);
+
+    const boundaries = makeReportElement('section', 'print-report__section print-report__boundaries');
+    boundaries.append(makeReportElement('h2', '', 'How to interpret this report'));
+    boundaries.append(makeReportElement('p', '', 'The historical occupation reference is not a personal job-loss probability. E0/E1/E2 values are published task-exposure shares, not probabilities. Skill and job evidence matching does not predict hiring.'));
+    report.append(boundaries);
+    return report;
+  };
+  printReportButton?.addEventListener('click', () => {
     if (!lastAnalysis) { toast('Run analysis first.', 'warning'); return; }
-    try {
-      const res = await apiPost('/api/export', { analysis: lastAnalysis });
-      const d = await res.json();
-      if (!d.success) throw new Error(d.error);
-      const w = window.open('', '_blank'); w.document.write(d.html); w.document.close(); w.print();
-      toast('Report opened for printing.', 'success');
-    } catch (err) { toast('Export: ' + err.message, 'error'); }
+    document.getElementById('print-report')?.remove();
+    const report = buildPrintReport(lastAnalysis);
+    document.body.append(report);
+    window.addEventListener('afterprint', () => report.remove(), { once: true });
+    window.print();
+    toast('Use your browser’s print dialog to print or save as PDF.', 'success');
   });
 
   // ─── PASSWORD STRENGTH ───
@@ -796,7 +913,7 @@
       const d = await res.json();
       if (!d.success) throw new Error(d.error);
       if (compareResults) {
-        compareResults.innerHTML = `<div class="compare-result-grid"><div class="compare-col"><h4>A</h4><div class="kpi"><div class="kpi__label">Historical occupation reference</div><div class="kpi__value">${Math.round(d.risk_a * 100)}/100</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${escapeHtml(d.label_a)}</div></div></div><div class="compare-vs"><span>VS</span><div class="compare-delta">Historical difference ${Math.round((d.historical_occupation_reference_delta || d.risk_delta) * 100)}</div></div><div class="compare-col"><h4>B</h4><div class="kpi"><div class="kpi__label">Historical occupation reference</div><div class="kpi__value">${Math.round(d.risk_b * 100)}/100</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${escapeHtml(d.label_b)}</div></div></div></div><p class="small-note">${escapeHtml(d.risk_delta_interpretation || 'Historical occupation reference difference')}</p>`;
+        compareResults.innerHTML = `<div class="compare-result-grid"><div class="compare-col"><h4>A</h4><div class="kpi"><div class="kpi__label">${historicalReferenceTitle}</div><div class="kpi__value">${Math.round(d.risk_a * 100)}/100</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${escapeHtml(d.label_a)}</div></div></div><div class="compare-vs"><span>VS</span><div class="compare-delta">Historical difference ${Math.round((d.historical_occupation_reference_delta || d.risk_delta) * 100)}</div></div><div class="compare-col"><h4>B</h4><div class="kpi"><div class="kpi__label">${historicalReferenceTitle}</div><div class="kpi__value">${Math.round(d.risk_b * 100)}/100</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${escapeHtml(d.label_b)}</div></div></div></div><p class="small-note">${escapeHtml(d.risk_delta_interpretation || 'Historical occupation reference difference')}</p>`;
         compareResults.classList.remove('hidden');
       }
       toast('Comparison complete!', 'success');

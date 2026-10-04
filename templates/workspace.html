@@ -22,6 +22,22 @@
   </div>
 </section>
 
+<section class="content-section" aria-labelledby="journey-heading">
+  <div class="container">
+    <div class="glass-card workspace-journey">
+      <h2 class="section-title" id="journey-heading">Your career journey</h2>
+      <p class="small-note">A checklist of the workflow steps already supported by your workspace.</p>
+      <ol class="workspace-journey__list" data-workspace-journey>
+        <li class="workspace-journey__item" data-journey-step="goal" data-state="pending"><a href="#career-goal">Career goal set</a><span class="workspace-journey__status" data-journey-status>Loading</span></li>
+        <li class="workspace-journey__item" data-journey-step="evidence" data-state="pending"><a href="#resume-evidence">Resume/evidence available</a><span class="workspace-journey__status" data-journey-status>Loading</span></li>
+        <li class="workspace-journey__item" data-journey-step="review" data-state="pending"><a href="#resume-evidence">Evidence reviewed</a><span class="workspace-journey__status" data-journey-status>Loading</span></li>
+        <li class="workspace-journey__item" data-journey-step="gap" data-state="pending"><a href="#learning-actions">Skill gap available</a><span class="workspace-journey__status" data-journey-status>Loading</span></li>
+        <li class="workspace-journey__item" data-journey-step="action" data-state="pending"><a href="#next-action">Next action</a><span class="workspace-journey__status" data-journey-status>Loading</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
 <section class="content-section" id="career-goal">
   <div class="container loop-grid">
     <article class="glass-card loop-card" aria-labelledby="goal-heading">
@@ -104,7 +120,7 @@
       <p class="small-note">Contextual task exposure for a confirmed occupation is shown after analysis. It is not a personal probability of job loss.</p>
     </article>
 
-    <article class="glass-card loop-card loop-card--primary" aria-labelledby="action-heading">
+    <article class="glass-card loop-card loop-card--primary" id="next-action" aria-labelledby="action-heading">
       <h2 class="section-title" id="action-heading">One next action</h2>
       <p class="small-note" data-action-empty>Your next action will appear here.</p>
       <div data-action-card hidden>
@@ -130,7 +146,7 @@
           <h3 class="section-title">Have feedback?</h3>
           <p class="section-subtitle" style="margin-top: 0.4rem;">Your input helps improve the platform. Share your thoughts with the team.</p>
         </div>
-        <a class="button-ghost" href="{{ url_for('index') }}#analysis" data-export-button>Send feedback</a>
+        <a class="button-ghost" href="{{ url_for('index') }}#analysis">Send feedback</a>
       </div>
     </div>
   </div>

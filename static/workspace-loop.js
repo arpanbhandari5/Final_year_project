@@ -107,6 +107,28 @@
     const skills = (data.profile && data.profile.extracted_skills) || [];
     const gap = data.gap || {};
     const action = data.action || {};
+    const journey = {
+      goal: { complete: Boolean(goal), current: !goal, label: goal ? 'Complete' : 'Up next' },
+      evidence: { complete: skills.length > 0, current: Boolean(goal) && skills.length === 0, label: skills.length ? 'Available' : (goal ? 'Up next' : 'Not started') },
+      review: {
+        complete: skills.some((item) => String(item.status || '').toLowerCase() === 'confirmed'),
+        current: skills.length > 0 && !skills.some((item) => String(item.status || '').toLowerCase() === 'confirmed'),
+        label: skills.some((item) => String(item.status || '').toLowerCase() === 'confirmed') ? 'Confirmed evidence' : (skills.length ? 'Review evidence' : 'Not started'),
+      },
+      gap: { complete: Boolean(gap.mapped_role), current: Boolean(goal) && !gap.mapped_role, label: gap.mapped_role ? 'Available' : (goal ? 'Preparing' : 'Not started') },
+      action: {
+        complete: action.status === 'completed',
+        current: action.status !== 'completed' && Boolean((data.recommendation && data.recommendation.title) || action.title),
+        label: action.status === 'completed' ? 'Completed' : (action.status === 'in_progress' ? 'In progress' : ((data.recommendation && data.recommendation.title) || action.title ? 'Available' : 'Not available')),
+      },
+    };
+    document.querySelectorAll('[data-journey-step]').forEach((item) => {
+      const state = journey[item.dataset.journeyStep];
+      if (!state) return;
+      item.dataset.state = state.complete ? 'complete' : (state.current ? 'current' : 'pending');
+      const status = item.querySelector('[data-journey-status]');
+      text(status, state.label);
+    });
     text(statusEl, goal ? `Goal: ${goal.target_role}` : 'Logged in. Set a career goal to continue.');
     show(document.querySelector('[data-goal-empty]'), !goal);
     const summary = document.querySelector('[data-goal-summary]');
@@ -213,5 +235,6 @@
 
   fillOccupations().then(() => refresh(false)).catch((error) => {
     text(statusEl, error.message || 'Workspace could not load.');
+    document.querySelectorAll('[data-journey-status]').forEach((item) => text(item, 'Unavailable'));
   });
 })();
