@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-10-03T04:33:11Z",
+  "repository": "openai/GPTs-are-GPTs",
+  "commit": "0471612fef3cc22b74fb884d27bff9dbd3770582",
+  "license": "MIT",
+  "source_url": "https://github.com/openai/GPTs-are-GPTs",
+  "source_file_url": "https://raw.githubusercontent.com/openai/GPTs-are-GPTs/0471612fef3cc22b74fb884d27bff9dbd3770582/data/full_labelset.tsv",
+  "source_file": "C:/4th project/experiments/task_exposure/data/public_benchmark/raw/full_labelset.tsv",
+  "source_file_sha256": "094378905e1f3349e50a9a83dc69643a2ef227954d611c8316a46da08cb3d8de",
+  "derived_dataset": "C:/4th project/experiments/task_exposure/data/public_benchmark/public_gpts_are_gpts_benchmark.csv",
+  "derived_dataset_sha256": "bfc3b219d132449a17105dfc6efc2f0254a3dc613f6192405741c36be10d1299",
+  "source_rows": 19265,
+  "source_occupations": 923,
+  "rows_with_non_empty_human_labels": 19265,
+  "human_derived_labelled_task_rows": 19265,
+  "direct_task_level_human_annotation_count": "not separately recoverable from released file",
+  "paper_note": "Eloundou et al. describe annotation of detailed work activities, annotation of a subset of O*NET tasks, and aggregation to task and occupation levels. The released file's non-empty human_labels count is not a count of independent direct task reviews.",
+  "source_onet_version_documented": "27.2",
+  "project_onet_version": "31.0",
+  "package_versions": {
+    "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+    "pandas": "2.3.3",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1"
+  },
+  "human_review_track_status": "deferred_due_to_unavailable_independent_reviewers",
+  "claim_boundary": "This experiment evaluates task-level classification against a published GPTs-are-GPTs exposure taxonomy using human-derived benchmark labels. The benchmark provides an external reference and does not constitute new human validation of Prayash's original 0-1 scoring rubric."
+}

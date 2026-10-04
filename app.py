@@ -8,16 +8,17 @@ import re
 import secrets
 import time
 import uuid
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Generator
 
+import requests
 from flask import Flask, Response, g, jsonify, redirect, render_template, request, session, stream_with_context, url_for
 
 from flask_compress import Compress
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_wtf.csrf import CSRFError, CSRFProtect, generate_csrf
 
 # ── Project root ─────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent
@@ -59,16 +60,41 @@ except ImportError:
     make_linkedin_blueprint = None  # type: ignore[assignment]
 
 from bootstrap import ensure_model_artifacts
-from risk_assessor import analyze_resume as assess_resume, analyze_skills_gap, get_available_roles, suggest_career_paths, generate_learning_roadmap
+from risk_assessor import analyze_resume as assess_resume, analyze_skills_gap, get_available_roles, suggest_career_paths, generate_learning_roadmap, _extract_skills
+from next_action import IMMEDIATE_GOALS, SKILL_STATUSES, recommend_next_action
+from job_match import analyze_target_job, skills_from_resume_text
+from occupation_authorization import (
+    AuthorizationError,
+    attach_pending_analysis,
+    confirm_server_candidate,
+    selectable_occupations,
+    select_supported_occupation,
+    allowlist_inventory,
+    is_selectable,
+    canonical_title,
+)
 from resume_parser import extract_resume_text as parse_resume_file
 from storage import (
-    User, authenticate_user, create_user, create_oauth_user,
+    User, Application, AnalysisSnapshot, JobPosting, OnetOccupation, OnetSkill, ResumeVersion,
+    authenticate_user, create_user, create_oauth_user,
     dashboard_metrics, get_detailed_metrics, get_all_users,
     get_user_by_email, get_user_by_username, init_database, record_feedback, record_upload,
     create_password_reset_token, verify_reset_token, consume_reset_token, update_user_password,
     create_otp, verify_otp, mark_email_verified, send_email,
     check_otp, invalidate_user_otps, get_otp_attempts_remaining,
     OTP_LENGTH, OTP_MAX_ATTEMPTS,
+    get_career_profile, save_career_profile, career_goal_payload, get_career_goal, save_career_goal,
+    delete_career_goal, get_resume_profile, resume_profile_payload, correct_resume_skill,
+    replace_resume_skills, action_item_payload, get_current_action, save_action_item, update_action_status,
+    create_job_posting, get_owned_job, job_posting_payload,
+    create_resume_version, get_owned_resume_version, resume_version_payload,
+    save_target_job_match, get_owned_target_job_match, target_job_match_payload,
+    list_owned_target_job_matches, update_owned_target_job_match, delete_owned_target_job_match,
+    create_application, get_owned_application, list_owned_applications, application_payload,
+    create_analysis_snapshot, snapshot_payload,
+    save_application_from_target_job_match,
+    create_partnership_request, record_partnership_response,
+    db,
 )
 from utils import clean_text, is_valid_email, split_keywords, format_top_skills
 from resume_parser import extract_skills_from_text, analyze_resume_quality, parse_resume_enhanced
@@ -254,10 +280,46 @@ def _get_cache_bust_hash() -> str:
     return _CACHE_BUST_HASH
 
 
+def ensure_sqlite_parent_directory(database_uri: str) -> str:
+    """Create the parent folder for a SQLite file without rewriting the URI.
+
+    In-memory SQLite and non-SQLite URLs are left untouched. A failure to
+    create the directory is logged and re-raised so startup does not continue
+    with a database path that SQLite cannot open.
+    """
+    if not database_uri or not str(database_uri).lower().startswith("sqlite:"):
+        return database_uri
+    try:
+        from sqlalchemy.engine.url import make_url
+        parsed = make_url(database_uri)
+    except Exception as exc:
+        log.error("Could not parse SQLite URL while preparing its directory (%s)", type(exc).__name__)
+        raise
+    if parsed.drivername != "sqlite":
+        return database_uri
+    database = parsed.database
+    if not database or database == ":memory:":
+        return database_uri
+    parent = Path(database).expanduser().resolve().parent
+    try:
+        parent.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        log.error("Failed to create SQLite directory %s: %s", parent, exc.strerror or exc)
+        raise
+    return database_uri
+
+
 app = Flask(__name__, template_folder="templates", static_folder="static")
+_database_uri = os.environ.get(
+    "DATABASE_URL",
+    f"sqlite:///{(BASE_DIR / 'instance' / 'prayash.db').as_posix()}",
+)
+ensure_sqlite_parent_directory(_database_uri)
 app.config.update(
     SECRET_KEY=os.environ.get("FLASK_SECRET_KEY", "prayash-local-development-secret"),
-    SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL", f"sqlite:///{(BASE_DIR / 'instance' / 'prayash.db').as_posix()}"),
+    SQLALCHEMY_DATABASE_URI=_database_uri,
+    ADMIN_EMAIL=os.environ.get("ADMIN_EMAIL", "admin@prayash.local"),
+    ADMIN_PASSWORD=os.environ.get("ADMIN_PASSWORD", "prayash-admin"),
     WTF_CSRF_ENABLED=True,
     WTF_CSRF_TIME_LIMIT=3600,
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
@@ -344,6 +406,18 @@ def unauthorized_handler():
     if request.path.startswith("/api/"):
         return jsonify({"success": False, "error": "Authentication required."}), 401
     return redirect(url_for("login", next=request.path))
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(error: CSRFError):
+    """Keep CSRF enabled. Target Job Match unauthenticated mutations return 401."""
+    if (
+        request.path.startswith("/api/target-job-match") or request.path.startswith("/api/applications")
+    ) and not current_user.is_authenticated:
+        return jsonify({"success": False, "error": "Authentication required."}), 401
+    if request.path.startswith("/api/"):
+        return jsonify({"success": False, "error": "CSRF validation failed."}), 400
+    return error.description or "CSRF validation failed.", 400
 
 
 # ── OAuth Callback Routes ────────────────────────────────────────
@@ -954,6 +1028,12 @@ def workspace() -> str:
     return render_template("workspace.html", active_page="workspace", title="Workspace | Prayash")
 
 
+@app.get("/workspace/job-match")
+@login_required
+def target_job_match_page() -> str:
+    return render_template("job_match.html", active_page="workspace", title="Target Job Match | Prayash")
+
+
 @app.get("/workspace/skills-gap")
 @login_required
 def skills_gap() -> str:
@@ -961,9 +1041,784 @@ def skills_gap() -> str:
     return render_template("skills_gap.html", active_page="workspace", title="Skills Gap Analysis | Prayash")
 
 
+@app.get("/workspace/applications")
+@login_required
+def applications_page() -> str:
+    return render_template(
+        "applications.html",
+        active_page="workspace",
+        title="Saved jobs | Prayash",
+        application_statuses=Application.STATUSES,
+    )
+
+
 @app.get("/methodology")
 def methodology() -> str:
     return render_template("methodology.html", active_page="methodology", title="Methodology | Prayash")
+
+
+@app.post("/admin/partnerships/<int:request_id>/reply")
+@login_required
+def admin_reply_to_partnership(request_id: int):
+    if not getattr(current_user, "is_admin_email", False):
+        return jsonify({"success": False, "error": "Administrator access required."}), 403
+    payload = request.get_json(silent=True) or {}
+    message = clean_text(request.form.get("message") or payload.get("message"))
+    if not message:
+        return jsonify({"success": False, "error": "A response message is required."}), 400
+    item = record_partnership_response(request_id, message)
+    if item is None:
+        return jsonify({"success": False, "error": "Partnership request not found."}), 404
+    delivered = False
+    if not os.environ.get("PYTEST_CURRENT_TEST"):
+        delivered = send_email(
+            item.contact_email,
+            "Reply from Prayash",
+            f"<p>{message}</p>",
+            message,
+        )
+    return jsonify({"success": True, "email_sent": delivered})
+
+
+def _optional_number(value: Any, *, minimum: float = 0.0, maximum: float = 1000000.0) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        raise ValueError("Numeric fields must contain numbers.")
+    if not minimum <= number <= maximum:
+        raise ValueError("Numeric fields are outside the allowed range.")
+    return number
+
+
+@app.get("/api/career-profile")
+@login_required
+def api_get_career_profile():
+    profile = get_career_profile(current_user.id)
+    return jsonify({
+        "success": True,
+        "profile": {
+            "intent": profile.intent,
+            "target_role": profile.target_role,
+            "target_role_source": profile.target_role_source,
+            "confidence": profile.confidence,
+        } if profile else None,
+    })
+
+
+@app.put("/api/career-profile")
+@login_required
+def api_save_career_profile():
+    payload = request.get_json(silent=True) or {}
+    intent = clean_text(payload.get("intent"))
+    target_role = clean_text(payload.get("target_role"))
+    if not intent or not target_role:
+        return jsonify({"success": False, "error": "Intent and target role are required."}), 400
+    if len(intent) > 80 or len(target_role) > 160:
+        return jsonify({"success": False, "error": "Intent or target role is too long."}), 400
+    try:
+        profile = save_career_profile(user_id=current_user.id, intent=intent, target_role=target_role)
+    except Exception:
+        log.exception("Could not save career profile")
+        return jsonify({"success": False, "error": "Could not save career profile."}), 500
+    return jsonify({
+        "success": True,
+        "profile": {
+            "intent": profile.intent,
+            "target_role": profile.target_role,
+            "target_role_source": profile.target_role_source,
+            "confidence": profile.confidence,
+        },
+    })
+
+
+@app.get("/api/career-goal")
+@login_required
+def api_get_career_goal():
+    return jsonify({"success": True, "goal": career_goal_payload(get_career_goal(current_user.id))})
+
+
+@app.post("/api/career-goal")
+@login_required
+def api_save_career_goal():
+    payload = request.get_json(silent=True) or {}
+    occupation_code = clean_text(payload.get("target_occupation_code") or "")
+    target_role = clean_text(payload.get("target_role"))
+    if occupation_code:
+        if not is_selectable(occupation_code):
+            return jsonify({"success": False, "error": "Target occupation must be selected from the server allowlist."}), 400
+        target_role = canonical_title(occupation_code) or target_role
+    if not target_role or len(target_role) > 160:
+        return jsonify({"success": False, "error": "A target role is required."}), 400
+    alternative_roles = payload.get("alternative_roles", [])
+    if isinstance(alternative_roles, str):
+        alternative_roles = [item.strip() for item in alternative_roles.split(",") if item.strip()]
+    if not isinstance(alternative_roles, list) or len(alternative_roles) > 10:
+        return jsonify({"success": False, "error": "Alternative roles must be a list of up to 10 roles."}), 400
+    alternative_code = clean_text(payload.get("alternative_occupation_code") or "")
+    if alternative_code:
+        if not is_selectable(alternative_code):
+            return jsonify({"success": False, "error": "Alternative occupation must be selected from the server allowlist."}), 400
+        alt_title = canonical_title(alternative_code)
+        if alt_title:
+            alternative_roles = [alt_title]
+    immediate_goal = clean_text(payload.get("immediate_goal") or "")
+    if immediate_goal and immediate_goal not in IMMEDIATE_GOALS:
+        return jsonify({"success": False, "error": "immediate_goal is not a supported value."}), 400
+    try:
+        values = {
+            "target_role": target_role,
+            "target_occupation_code": occupation_code,
+            "alternative_roles": [clean_text(item)[:160] for item in alternative_roles if clean_text(item)],
+            "geography": clean_text(payload.get("geography"))[:120],
+            "seniority": clean_text(payload.get("seniority"))[:60],
+            "time_per_week": _optional_number(payload.get("time_per_week"), maximum=168),
+            "learning_budget": _optional_number(payload.get("learning_budget")),
+            "immediate_goal": immediate_goal,
+        }
+        goal = save_career_goal(user_id=current_user.id, values=values)
+    except ValueError as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
+    return jsonify({"success": True, "goal": career_goal_payload(goal)})
+
+
+@app.delete("/api/career-goal")
+@login_required
+def api_delete_career_goal():
+    deleted = delete_career_goal(current_user.id)
+    return jsonify({"success": True, "deleted": deleted})
+
+
+@app.get("/api/evidence-profile")
+@login_required
+def api_get_evidence_profile():
+    return jsonify({"success": True, "profile": resume_profile_payload(get_resume_profile(current_user.id))})
+
+
+@app.patch("/api/evidence-profile/correct")
+@login_required
+def api_correct_evidence_profile():
+    payload = request.get_json(silent=True) or {}
+    action = clean_text(payload.get("action")).lower()
+    if action not in {"add", "edit", "delete"}:
+        return jsonify({"success": False, "error": "Action must be add, edit, or delete."}), 400
+    skill_id = clean_text(payload.get("skill_id")) or None
+    skill = clean_text(payload.get("skill")) or None
+    if skill and len(skill) > 120:
+        return jsonify({"success": False, "error": "Skill mention is too long."}), 400
+    status = clean_text(payload.get("status") or "")
+    if status and status not in SKILL_STATUSES:
+        return jsonify({"success": False, "error": "Evidence status is not supported."}), 400
+    try:
+        confidence = _optional_number(payload.get("confidence"), maximum=1)
+    except ValueError as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
+    profile = correct_resume_skill(
+        user_id=current_user.id,
+        action=action,
+        skill_id=skill_id,
+        skill=skill,
+        evidence_span=clean_text(payload.get("evidence_span"))[:280] or None,
+        confidence=confidence,
+        status=status or None,
+    )
+    if profile is None:
+        return jsonify({"success": False, "error": "Skill mention was not found or is invalid."}), 404
+    return jsonify({"success": True, "profile": resume_profile_payload(profile)})
+
+
+@app.post("/api/evidence-profile/import")
+@login_required
+def api_import_evidence_profile():
+    payload = request.get_json(silent=True) or {}
+    items = payload.get("skills") or payload.get("items") or []
+    if not isinstance(items, list):
+        return jsonify({"success": False, "error": "skills must be a list."}), 400
+    profile = replace_resume_skills(current_user.id, items)
+    return jsonify({"success": True, "profile": resume_profile_payload(profile)})
+
+
+def _workspace_loop_payload(*, persist: bool = False):
+    goal = career_goal_payload(get_career_goal(current_user.id))
+    profile = resume_profile_payload(get_resume_profile(current_user.id))
+    skills = profile.get("extracted_skills") or []
+    recommendation = recommend_next_action(goal=goal, skills=skills)
+    action = get_current_action(current_user.id)
+    if persist:
+        action = save_action_item(
+            user_id=current_user.id,
+            values={
+                "source_type": recommendation["source_type"],
+                "source_id": recommendation["source_id"],
+                "action_type": recommendation["action_type"],
+                "title": recommendation["title"],
+                "description": recommendation["description"],
+                "status": "not_started",
+                "priority": 1,
+            },
+        )
+    return {
+        "success": True,
+        "goal": goal,
+        "profile": profile,
+        "gap": recommendation.get("gap"),
+        "recommendation": {key: recommendation[key] for key in ("action_type", "title", "description")},
+        "action": action_item_payload(action),
+        "immediate_goals": list(IMMEDIATE_GOALS),
+        "skill_statuses": list(SKILL_STATUSES),
+    }
+
+
+@app.get("/api/workspace-loop")
+@login_required
+def api_get_workspace_loop():
+    return jsonify(_workspace_loop_payload(persist=False))
+
+
+@app.post("/api/actions/refresh")
+@login_required
+def api_refresh_action():
+    return jsonify(_workspace_loop_payload(persist=True))
+
+
+@app.patch("/api/actions/<int:action_id>")
+@login_required
+def api_update_action(action_id: int):
+    payload = request.get_json(silent=True) or {}
+    status = clean_text(payload.get("status") or "")
+    item = update_action_status(user_id=current_user.id, action_id=action_id, status=status)
+    if item is None:
+        return jsonify({"success": False, "error": "Action was not found or status is invalid."}), 404
+    return jsonify({"success": True, "action": action_item_payload(item)})
+
+
+MAX_TARGET_JOB_DESCRIPTION = 20000
+
+
+def _target_job_json_payload():
+    if request.data and request.mimetype == "application/json":
+        payload = request.get_json(silent=True)
+        if payload is None:
+            return None, (jsonify({"success": False, "error": "Malformed JSON."}), 400)
+        if not isinstance(payload, dict):
+            return None, (jsonify({"success": False, "error": "Malformed JSON."}), 400)
+        return payload, None
+    return {}, None
+
+
+def _resolve_target_job_evidence(payload: dict):
+    # Client-supplied user_id / owner_id / labels are ignored; ownership is session-derived.
+    source = clean_text(payload.get("evidence_source") or "profile").lower()
+    if source in {"", "profile", "current", "current_evidence_profile"}:
+        profile = resume_profile_payload(get_resume_profile(current_user.id))
+        return {
+            "skills": profile.get("extracted_skills") or [],
+            "evidence_source_type": "profile",
+            "evidence_source_key": "profile",
+            "evidence_source_label": "Current evidence profile",
+            "resume_version_id": None,
+        }, None
+    if source in {"resume_version", "resume"}:
+        try:
+            version_id = int(payload.get("resume_version_id"))
+        except (TypeError, ValueError):
+            return None, (jsonify({"success": False, "error": "A resume version is required."}), 400)
+        version = get_owned_resume_version(current_user.id, version_id)
+        if version is None:
+            return None, (jsonify({"success": False, "error": "Resume version was not found."}), 404)
+        created = version.created_at.isoformat() if version.created_at else ""
+        label = f"Resume: {version.name} · Version: {version.id} · {created}"
+        return {
+            "skills": skills_from_resume_text(version.content_text),
+            "evidence_source_type": "resume_version",
+            "evidence_source_key": f"resume:{version.id}",
+            "evidence_source_label": label[:240],
+            "resume_version_id": version.id,
+        }, None
+    return None, (jsonify({"success": False, "error": "Unknown evidence source."}), 400)
+
+
+@app.get("/api/target-job-match")
+@login_required
+def api_list_target_job_matches():
+    rows = list_owned_target_job_matches(current_user.id)
+    return jsonify({
+        "success": True,
+        "count": len(rows),
+        "matches": [
+            {
+                "id": row.id,
+                "title": row.title,
+                "company": row.company,
+                "content_hash": row.content_hash,
+                "evidence_source_label": getattr(row, "evidence_source_label", None) or "Current evidence profile",
+                "created_at": row.created_at.isoformat() if row.created_at else None,
+                "updated_at": row.updated_at.isoformat() if row.updated_at else None,
+            }
+            for row in rows
+        ],
+        "export_supported": False,
+    })
+
+
+@app.post("/api/target-job-match")
+@login_required
+def api_create_target_job_match():
+    payload, error = _target_job_json_payload()
+    if error is not None:
+        return error
+    description = clean_text(payload.get("description") or payload.get("description_raw") or "")
+    if not description:
+        return jsonify({"success": False, "error": "A pasted job description is required."}), 400
+    if len(description) < 40:
+        return jsonify({"success": False, "error": "Paste a fuller job description (at least 40 characters)."}), 400
+    if len(description) > MAX_TARGET_JOB_DESCRIPTION:
+        return jsonify({
+            "success": False,
+            "error": f"Job description is too long. Maximum length is {MAX_TARGET_JOB_DESCRIPTION} characters.",
+        }), 400
+    evidence, evidence_error = _resolve_target_job_evidence(payload)
+    if evidence_error is not None:
+        return evidence_error
+    result = analyze_target_job(
+        description=description,
+        skills=evidence["skills"],
+        evidence_source_label=evidence["evidence_source_label"],
+    )
+    row, created = save_target_job_match(
+        user_id=current_user.id,
+        values={
+            "title": clean_text(payload.get("title"))[:200],
+            "company": clean_text(payload.get("company"))[:160],
+            "location": clean_text(payload.get("location"))[:160],
+            "description_raw": description,
+            "result": result,
+            "evidence_source_type": evidence["evidence_source_type"],
+            "evidence_source_key": evidence["evidence_source_key"],
+            "evidence_source_label": evidence["evidence_source_label"],
+            "resume_version_id": evidence["resume_version_id"],
+        },
+    )
+    log.info(
+        "target job match %s id=%s length=%s hash=%s",
+        "created" if created else "reused",
+        row.id,
+        len(description),
+        row.content_hash,
+    )
+    body = target_job_match_payload(row)
+    body["success"] = True
+    body["created"] = created
+    body["occupation_unchanged"] = True
+    return jsonify(body), (201 if created else 200)
+
+
+@app.patch("/api/target-job-match/<int:match_id>")
+@login_required
+def api_update_target_job_match(match_id: int):
+    payload, error = _target_job_json_payload()
+    if error is not None:
+        return error
+    values = {}
+    if "title" in payload:
+        values["title"] = clean_text(payload.get("title"))[:200]
+    if "company" in payload:
+        values["company"] = clean_text(payload.get("company"))[:160]
+    if "location" in payload:
+        values["location"] = clean_text(payload.get("location"))[:160]
+    if not values:
+        return jsonify({"success": False, "error": "No updatable fields were provided."}), 400
+    row = update_owned_target_job_match(
+        user_id=current_user.id,
+        match_id=match_id,
+        values=values,
+    )
+    if row is None:
+        return jsonify({"success": False, "error": "Job match was not found."}), 404
+    body = target_job_match_payload(row)
+    body["success"] = True
+    return jsonify(body)
+
+
+@app.delete("/api/target-job-match/<int:match_id>")
+@login_required
+def api_delete_target_job_match(match_id: int):
+    deleted = delete_owned_target_job_match(user_id=current_user.id, match_id=match_id)
+    if not deleted:
+        return jsonify({"success": False, "error": "Job match was not found."}), 404
+    return jsonify({"success": True, "deleted": True})
+
+
+@app.post("/api/target-job-match/<int:match_id>/save-application")
+@login_required
+def api_save_application_from_target_job_match(match_id: int):
+    payload, error = _target_job_json_payload()
+    if error is not None:
+        return error
+    match = get_owned_target_job_match(current_user.id, match_id)
+    if match is None:
+        return jsonify({"success": False, "error": "Job match was not found."}), 404
+    application, created = save_application_from_target_job_match(user_id=current_user.id, match=match)
+    log.info(
+        "application save-from-match %s application_id=%s match_id=%s job_hash=%s",
+        "created" if created else "reused",
+        application.id,
+        match.id,
+        match.content_hash,
+    )
+    body = application_payload(application)
+    body["success"] = True
+    body["created"] = created
+    return jsonify(body), (201 if created else 200)
+
+
+@app.get("/api/target-job-match/<int:match_id>")
+@login_required
+def api_get_target_job_match(match_id: int):
+    row = get_owned_target_job_match(current_user.id, match_id)
+    if row is None:
+        return jsonify({"success": False, "error": "Job match was not found."}), 404
+    body = target_job_match_payload(row)
+    body["success"] = True
+    return jsonify(body)
+
+
+def _onet_provenance(occupation: OnetOccupation) -> dict[str, str]:
+    return {
+        "source": f"O*NET {occupation.release_version} Database",
+        "release_version": occupation.release_version,
+        "release_date": occupation.release_date,
+        "imported_at": occupation.imported_at.isoformat(),
+    }
+
+
+@app.get("/api/occupations/search")
+def api_search_occupations():
+    query = clean_text(request.args.get("q"))
+    raw_limit = request.args.get("limit", "")
+    limit = min(max(int(raw_limit), 1), 50) if str(raw_limit).isdigit() else 20
+    statement = OnetOccupation.query
+    if query:
+        statement = statement.filter(
+            (OnetOccupation.title.ilike(f"%{query}%")) | (OnetOccupation.onet_soc_code.ilike(f"%{query}%"))
+        )
+    occupations = statement.order_by(OnetOccupation.title.asc()).limit(limit).all()
+    return jsonify({
+        "success": True,
+        "query": query,
+        "occupations": [
+            {"onet_soc_code": item.onet_soc_code, "title": item.title, "provenance": _onet_provenance(item)}
+            for item in occupations
+        ],
+        "fallback": not occupations,
+    })
+
+
+@app.get("/api/occupations/<onet_soc_code>")
+def api_occupation_detail(onet_soc_code: str):
+    occupation = OnetOccupation.query.filter_by(onet_soc_code=onet_soc_code).first()
+    if occupation is None:
+        return jsonify({"success": False, "error": "Occupation not found.", "fallback": True}), 404
+    from storage import OnetInterest, OnetTask, OnetTechnology
+    skills = OnetSkill.query.filter_by(occupation_id=occupation.id).order_by(OnetSkill.name.asc()).all()
+    tasks = OnetTask.query.filter_by(occupation_id=occupation.id).order_by(OnetTask.id.asc()).all()
+    technologies = OnetTechnology.query.filter_by(occupation_id=occupation.id).order_by(OnetTechnology.name.asc()).all()
+    interests = OnetInterest.query.filter_by(occupation_id=occupation.id).order_by(OnetInterest.score.desc()).all()
+    return jsonify({
+        "success": True,
+        "occupation": {
+            "onet_soc_code": occupation.onet_soc_code,
+            "title": occupation.title,
+            "description": occupation.description or "Occupation description is not available in the imported release.",
+            "job_zone": occupation.job_zone or "Not available",
+            "tasks": [{"task_id": task.task_id, "statement": task.statement} for task in tasks] or [{"task_id": "unavailable", "statement": "Task data is not available in the imported release."}],
+            "skills": [{"element_id": skill.element_id, "name": skill.name, "scale_id": skill.scale_id, "value": skill.value} for skill in skills],
+            "technology": [{"name": item.name, "category": item.category} for item in technologies] or [{"name": "Technology data unavailable", "category": "Not imported"}],
+            "interests_riasec": [{"name": item.name, "score": item.score} for item in interests] or [{"name": "RIASEC data unavailable", "score": None}],
+            "provenance": _onet_provenance(occupation),
+        },
+    })
+
+
+@app.get("/api/occupations/<onet_soc_code>/compare")
+def api_compare_occupations(onet_soc_code: str):
+    other_code = clean_text(request.args.get("compare_to") or request.args.get("other"))
+    if not other_code:
+        return jsonify({"success": False, "error": "compare_to is required."}), 400
+    left = OnetOccupation.query.filter_by(onet_soc_code=onet_soc_code).first()
+    right = OnetOccupation.query.filter_by(onet_soc_code=other_code).first()
+    if left is None or right is None:
+        return jsonify({"success": False, "error": "One or both occupations were not found.", "fallback": True}), 404
+    left_skills = {item.name for item in OnetSkill.query.filter_by(occupation_id=left.id).all()}
+    right_skills = {item.name for item in OnetSkill.query.filter_by(occupation_id=right.id).all()}
+    return jsonify({
+        "success": True,
+        "shared_skills": sorted(left_skills & right_skills),
+        "only_left": sorted(left_skills - right_skills),
+        "only_right": sorted(right_skills - left_skills),
+    })
+
+
+def _job_skill_breakdown(description: str, resume_text: str) -> dict[str, Any]:
+    preferred_markers = ("preferred", "nice to have", "bonus", "desired", "plus")
+    required_markers = ("required", "must have", "minimum qualifications", "qualifications")
+    preferred_text = " ".join(line for line in description.splitlines() if any(marker in line.lower() for marker in preferred_markers))
+    required_text = " ".join(line for line in description.splitlines() if any(marker in line.lower() for marker in required_markers))
+    all_skills = _extract_skills(description)
+    preferred_skills = set(_extract_skills(preferred_text))
+    required_skills = set(_extract_skills(required_text)) or set(all_skills) - preferred_skills
+    if not required_skills and all_skills:
+        required_skills = set(all_skills)
+    resume_skills = set(_extract_skills(resume_text))
+    aliases = {"js": "javascript", "py": "python", "postgres": "sql", "postgresql": "sql", "powerbi": "power bi"}
+    semantic_matches = []
+    exact_matches = []
+    for required_skill in sorted(required_skills | preferred_skills):
+        normalized = aliases.get(required_skill.replace(" ", ""), required_skill)
+        if required_skill in resume_skills:
+            exact_matches.append(required_skill)
+        elif normalized in {aliases.get(skill.replace(" ", ""), skill) for skill in resume_skills}:
+            semantic_matches.append({"job_skill": required_skill, "resume_skill": normalized})
+    sentences = re.split(r"(?<=[.!?])\s+|\n+", resume_text)
+    evidence = []
+    for skill in exact_matches + [item["resume_skill"] for item in semantic_matches]:
+        quote = next((sentence.strip() for sentence in sentences if skill.lower() in sentence.lower()), "")
+        if quote:
+            evidence.append({"skill": skill, "quote": quote[:280]})
+    matched = set(exact_matches) | {item["job_skill"] for item in semantic_matches}
+    return {
+        "required": {"skills": sorted(required_skills), "matched": sorted(matched & required_skills), "missing": sorted(required_skills - matched)},
+        "preferred": {"skills": sorted(preferred_skills), "matched": sorted(matched & preferred_skills), "missing": sorted(preferred_skills - matched)},
+        "exact_matches": exact_matches,
+        "semantic_matches": semantic_matches,
+        "resume_evidence_quotes": evidence,
+        "missing_skill_requirements": sorted((required_skills | preferred_skills) - matched),
+    }
+
+
+@app.post("/api/jobs")
+@login_required
+def api_create_job():
+    payload = request.get_json(silent=True) or {}
+    title = clean_text(payload.get("title"))
+    description = clean_text(payload.get("description_raw") or payload.get("description"))
+    if not title or not description:
+        return jsonify({"success": False, "error": "Job title and pasted job description are required."}), 400
+    if len(description) > 50000:
+        return jsonify({"success": False, "error": "Job description is too long."}), 400
+    job = create_job_posting(
+        user_id=current_user.id,
+        title=title[:200],
+        company=clean_text(payload.get("company"))[:160],
+        description_raw=description,
+        source_url=clean_text(payload.get("source_url"))[:1000],
+    )
+    application = create_application(user_id=current_user.id, job_posting_id=job.id, status="Bookmarked")
+    return jsonify({"success": True, "job": job_posting_payload(job), "application": application_payload(application)}), 201
+
+
+@app.get("/api/jobs")
+@login_required
+def api_list_jobs():
+    jobs = JobPosting.query.filter_by(user_id=current_user.id).order_by(JobPosting.created_at.desc()).all()
+    return jsonify({"success": True, "jobs": [job_posting_payload(job) for job in jobs]})
+
+
+@app.post("/api/resume-versions")
+@login_required
+def api_create_resume_version():
+    uploaded = request.files.get("resume_file")
+    if uploaded and uploaded.filename:
+        name = clean_text(request.form.get("name")) or (uploaded.filename or "Resume version")
+        try:
+            content = clean_text(parse_resume_file(uploaded))
+        except Exception:
+            return jsonify({"success": False, "error": "That resume file could not be parsed."}), 400
+    else:
+        payload = request.get_json(silent=True) or {}
+        name = clean_text(payload.get("name")) or "Resume version"
+        content = clean_text(payload.get("content_text") or payload.get("resume_text"))
+    if not content:
+        return jsonify({"success": False, "error": "Resume content is required."}), 400
+    version = create_resume_version(user_id=current_user.id, name=name[:160], content_text=content)
+    return jsonify({"success": True, "resume_version": resume_version_payload(version)}), 201
+
+
+@app.get("/api/resume-versions")
+@login_required
+def api_list_resume_versions():
+    versions = ResumeVersion.query.filter_by(user_id=current_user.id).order_by(ResumeVersion.created_at.desc()).all()
+    return jsonify({"success": True, "resume_versions": [resume_version_payload(version) for version in versions]})
+
+
+@app.get("/api/applications")
+@login_required
+def api_list_applications():
+    return jsonify({"success": True, "applications": [application_payload(item) for item in list_owned_applications(current_user.id)]})
+
+
+@app.post("/api/applications")
+@login_required
+def api_create_application():
+    payload = request.get_json(silent=True) or {}
+    try:
+        job_id = int(payload.get("job_posting_id"))
+    except (TypeError, ValueError):
+        return jsonify({"success": False, "error": "A job posting is required."}), 400
+    if get_owned_job(current_user.id, job_id) is None:
+        return jsonify({"success": False, "error": "Job posting not found for the current user."}), 404
+    resume_version_id = payload.get("resume_version_id")
+    if resume_version_id is not None:
+        try:
+            resume_version_id = int(resume_version_id)
+        except (TypeError, ValueError):
+            return jsonify({"success": False, "error": "Resume version is invalid."}), 400
+        if get_owned_resume_version(current_user.id, resume_version_id) is None:
+            return jsonify({"success": False, "error": "Resume version not found for the current user."}), 404
+    status = clean_text(payload.get("status")) or "Bookmarked"
+    if status not in Application.STATUSES:
+        return jsonify({"success": False, "error": "Invalid application status."}), 400
+    application = create_application(
+        user_id=current_user.id,
+        job_posting_id=job_id,
+        resume_version_id=resume_version_id,
+        status=status,
+        notes=clean_text(payload.get("notes")),
+    )
+    return jsonify({"success": True, "application": application_payload(application)}), 201
+
+
+@app.get("/api/applications/<int:application_id>")
+@login_required
+def api_get_application(application_id: int):
+    application = get_owned_application(current_user.id, application_id)
+    if application is None:
+        return jsonify({"success": False, "error": "Application not found for the current user."}), 404
+    body = application_payload(application)
+    body["success"] = True
+    return jsonify(body)
+
+
+@app.delete("/api/applications/<int:application_id>")
+@login_required
+def api_delete_application(application_id: int):
+    application = get_owned_application(current_user.id, application_id)
+    if application is None:
+        return jsonify({"success": False, "error": "Application not found for the current user."}), 404
+    db.session.delete(application)
+    db.session.commit()
+    log.info("application deleted id=%s", application_id)
+    return jsonify({"success": True, "deleted": True})
+
+
+@app.patch("/api/applications/<int:application_id>")
+@login_required
+def api_update_application(application_id: int):
+    application = get_owned_application(current_user.id, application_id)
+    if application is None:
+        return jsonify({"success": False, "error": "Application not found for the current user."}), 404
+    payload = request.get_json(silent=True) or {}
+    payload.pop("user_id", None)
+    payload.pop("owner_id", None)
+    payload.pop("account_id", None)
+    payload.pop("job_posting_id", None)
+    payload.pop("target_job_match_id", None)
+    status = clean_text(payload.get("status"))
+    if status and status not in Application.STATUSES:
+        return jsonify({"success": False, "error": "Invalid application status."}), 400
+    if status:
+        application.status = status
+    if "notes" in payload:
+        notes = clean_text(payload.get("notes"))
+        if len(notes) > 4000:
+            return jsonify({"success": False, "error": "Notes are too long. Maximum length is 4000 characters."}), 400
+        application.notes = notes
+    if "resume_version_id" in payload:
+        raw_version = payload.get("resume_version_id")
+        if raw_version in (None, ""):
+            application.resume_version_id = None
+        else:
+            try:
+                version_id = int(raw_version)
+            except (TypeError, ValueError):
+                return jsonify({"success": False, "error": "Resume version is invalid."}), 400
+            if get_owned_resume_version(current_user.id, version_id) is None:
+                return jsonify({"success": False, "error": "Resume version was not found."}), 404
+            application.resume_version_id = version_id
+    if "follow_up_date" in payload:
+        try:
+            application.follow_up_date = date.fromisoformat(payload.get("follow_up_date")) if payload.get("follow_up_date") else None
+        except (TypeError, ValueError):
+            return jsonify({"success": False, "error": "Follow-up date must be YYYY-MM-DD."}), 400
+    db.session.commit()
+    return jsonify({"success": True, "application": application_payload(application)})
+
+
+@app.post("/api/jobs/analyze")
+@login_required
+def api_analyze_job():
+    payload = request.get_json(silent=True) or {}
+    try:
+        job_id = int(payload.get("job_posting_id"))
+        version_id = int(payload.get("resume_version_id"))
+    except (TypeError, ValueError):
+        return jsonify({"success": False, "error": "A job posting and resume version are required."}), 400
+    job = get_owned_job(current_user.id, job_id)
+    version = get_owned_resume_version(current_user.id, version_id)
+    if job is None or version is None:
+        return jsonify({"success": False, "error": "Job posting or resume version not found for the current user."}), 404
+    result = _job_skill_breakdown(job.description_raw, version.content_text)
+    result["job_posting_id"] = job.id
+    result["resume_version_id"] = version.id
+    result["comparison_timestamp"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    snapshot_hash = hashlib.sha256(
+        json.dumps({"job": job.content_hash, "resume": version.content_hash, "result": result}, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+    result["snapshot_hash"] = snapshot_hash
+    snapshot = AnalysisSnapshot.query.filter_by(user_id=current_user.id, snapshot_hash=snapshot_hash).first()
+    if snapshot is None:
+        snapshot = create_analysis_snapshot(
+            user_id=current_user.id,
+            job_posting_id=job.id,
+            resume_version_id=version.id,
+            result=result,
+            snapshot_hash=snapshot_hash,
+        )
+    application = Application.query.filter_by(user_id=current_user.id, job_posting_id=job.id).order_by(Application.updated_at.desc()).first()
+    if application is not None:
+        application.analysis_snapshot_id = snapshot.id
+        application.resume_version_id = version.id
+        db.session.commit()
+    return jsonify({"success": True, "analysis": result, "snapshot": snapshot_payload(snapshot)})
+
+
+@app.post("/api/applications/<int:application_id>/export-apply")
+@login_required
+def api_export_and_mark_applied(application_id: int):
+    application = get_owned_application(current_user.id, application_id)
+    if application is None:
+        return jsonify({"success": False, "error": "Application not found for the current user."}), 404
+    payload = request.get_json(silent=True) or {}
+    snapshot_id = payload.get("analysis_snapshot_id") or application.analysis_snapshot_id
+    try:
+        snapshot_id = int(snapshot_id)
+    except (TypeError, ValueError):
+        return jsonify({"success": False, "error": "Analyze the job before marking it applied."}), 400
+    snapshot = AnalysisSnapshot.query.filter_by(id=snapshot_id, user_id=current_user.id).first()
+    if snapshot is None or snapshot.job_posting_id != application.job_posting_id:
+        return jsonify({"success": False, "error": "Analysis snapshot is not valid for this application."}), 400
+    application.analysis_snapshot_id = snapshot.id
+    application.resume_version_id = snapshot.resume_version_id
+    application.status = "Applied"
+    db.session.commit()
+    return jsonify({
+        "success": True,
+        "export_format": "pdf",
+        "snapshot_locked": True,
+        "application": application_payload(application),
+        "snapshot": snapshot_payload(snapshot),
+    })
 
 
 @app.get("/privacy")
@@ -989,7 +1844,8 @@ def partnerships() -> str:
         elif not is_valid_email(contact):
             error = "Please enter a valid email address."
         else:
-            log.info("Partnership inquiry: org=%s, contact=%s, use_case=%s", org, contact, use_case)
+            log.info("Partnership inquiry received from %s", contact)
+            create_partnership_request(organization=org, contact_email=contact, use_case=use_case)
             submitted = True
     return render_template(
         "partnerships.html",
@@ -1438,11 +2294,11 @@ def _build_guided_next_steps(analysis: dict[str, Any]) -> dict[str, list[str]]:
         "Set a realistic 4, 8, or 12-week timeline and add deadlines to your calendar.",
     ]
     if risk_label.lower() == "elevated":
-        education_actions.insert(0, "Prioritize transferable digital and analytical skills to reduce automation exposure.")
+        education_actions.insert(0, "Prioritize transferable digital and analytical skills as career-development actions.")
     elif risk_label.lower() == "low":
-        education_actions.insert(0, "Deepen specialization in your strongest areas to preserve your low-risk profile.")
+        education_actions.insert(0, "Deepen specialization in your strongest areas.")
     else:
-        education_actions.insert(0, "Build adjacent skills that improve resilience and role flexibility.")
+        education_actions.insert(0, "Build adjacent skills that improve role flexibility.")
 
     support_resources = [
         "Review the methodology page to understand how scores and role matches are produced.",
@@ -1465,11 +2321,11 @@ def _build_report_guide(analysis: dict[str, Any]) -> dict[str, list[str]]:
     return {
         "how_this_works": [
             "Upload or paste your resume.",
-            "Prayash runs local ML scoring for risk, role match, roadmap, and RIASEC fit.",
-            "Advanced mode adds optional narrative guidance while preserving core ML outputs.",
+            "Prayash runs local ML for historical occupation reference, role match, E0/E1/E2 task retrieval, roadmap, and RIASEC fit.",
+            "Advanced mode adds optional local Ollama explanation while preserving deterministic outputs.",
         ],
         "what_your_report_means": [
-            f"Your current automation band is {risk_label}.",
+            f"Historical occupation reference band: {risk_label}. Occupation-level only; not a personal job-loss probability.",
             "Top role matches show where your profile aligns today.",
             "Roadmap items suggest practical learning moves based on detected skills.",
         ],
@@ -1486,14 +2342,25 @@ def _build_report_guide(analysis: dict[str, Any]) -> dict[str, list[str]]:
     }
 
 
-def _run_analysis_workflow(resume_text: str, mode: str) -> dict[str, Any]:
+def _run_analysis_workflow(
+    resume_text: str,
+    mode: str,
+    *,
+    confirmed_occupation_code: str | None = None,
+    confirmation_method: str | None = None,
+) -> dict[str, Any]:
     """Run the full analysis pipeline.
 
     Model artifacts are expected to have been prepared at startup via
     ``ensure_model_artifacts()``.  If the artifacts are missing the
     analysis will raise ``RuntimeError``, which the caller should handle.
     """
-    analysis = assess_resume(resume_text, mode=mode)
+    analysis = assess_resume(
+        resume_text,
+        mode=mode,
+        confirmed_occupation_code=confirmed_occupation_code,
+        confirmation_method=confirmation_method,
+    )
     analysis.setdefault("guided_next_steps", _build_guided_next_steps(analysis))
     analysis.setdefault("support_resources", _build_support_resources())
     analysis.setdefault("report_guide", _build_report_guide(analysis))
@@ -1518,17 +2385,87 @@ def api_analyze_stream():
         try:
             yield from emit("parse", "Parsing resume text...", 10)
             analysis = _run_analysis_workflow(text, mode)
-            yield from emit("risk", "Running automation risk prediction...", 40)
+            yield from emit("risk", "Computing historical occupation reference...", 40)
             yield from emit("roles", "Matching to O*NET roles...", 60)
             yield from emit("roadmap", "Generating learning roadmap...", 80)
-            if mode == "advanced": yield from emit("llama", "Running Llama 3 narrative...", 95)
-            record_upload(filename="streamed_resume.txt", file_type="text", mode=mode, risk_score=analysis.get("risk_score", 0.0), risk_label=analysis.get("risk_label", "Low"), reasoning=analysis.get("reasoning", {}), user_id=current_user.id if current_user.is_authenticated else None)
+            if mode == "advanced":
+                yield from emit("llama", "Running Llama 3 narrative...", 95)
+            record_upload(
+                filename="streamed_resume.txt",
+                file_type="text",
+                mode=mode,
+                risk_score=analysis.get("risk_score", 0.0),
+                risk_label=analysis.get("risk_label", "Low"),
+                reasoning=analysis.get("reasoning", {}),
+                user_id=current_user.id if current_user.is_authenticated else None,
+            )
             analysis.update({"success": True})
-            yield from emit("complete", "Analysis complete!", 100, analysis)
+            yield from emit("complete", "Analysis complete!", 100, _attach_occupation_pending(analysis))
         except Exception as exc:
             log.exception("Stream analysis failed")
             yield from emit("error", str(exc), -1, {"error": str(exc)})
     return Response(stream_with_context(generate()), mimetype="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+def _attach_occupation_pending(analysis: dict[str, Any]) -> dict[str, Any]:
+    occ = analysis.get("occupation_match") or analysis.get("occupation_candidate") or {}
+    bound = attach_pending_analysis(
+        session,
+        candidate_code=occ.get("candidate_code"),
+        candidate_title=occ.get("candidate_title"),
+        matcher_score=occ.get("matcher_score", occ.get("confidence")),
+        user_id=current_user.id if current_user.is_authenticated else None,
+    )
+    analysis["analysis_id"] = bound["analysis_id"]
+    analysis["candidate_id"] = bound["candidate_id"]
+    return analysis
+
+
+def _authorization_response(exc: AuthorizationError):
+    body = {
+        "success": False,
+        "error": exc.message,
+        "error_code": exc.code,
+        "status": exc.extra.get("status") or "error",
+    }
+    body.update({key: value for key, value in exc.extra.items() if key != "status"})
+    if exc.code == "allowlist_unavailable":
+        status_code = 503
+    elif exc.code in {
+        "analysis_not_owned",
+        "candidate_not_owned",
+        "candidate_consumed",
+        "analysis_expired",
+    }:
+        status_code = 403
+    else:
+        status_code = 400
+    return jsonify(body), status_code
+
+
+@app.get("/api/occupations/selectable")
+@rate_limit
+def api_occupations_selectable():
+    try:
+        occupations = selectable_occupations()
+        stats = allowlist_inventory()
+    except AuthorizationError as exc:
+        return _authorization_response(exc)
+    return jsonify(
+        {
+            "success": True,
+            "occupations": occupations,
+            "count": len(occupations),
+            "inventory": {
+                "source_rows": stats["source_rows"],
+                "unique_source_codes": stats["unique_source_codes"],
+                "duplicates": stats["duplicates"],
+                "benchmark_covered_codes": stats["benchmark_covered_codes"],
+                "benchmark_uncovered_codes": stats["benchmark_uncovered_codes"],
+                "selectable_codes": stats["selectable_codes"],
+            },
+        }
+    )
 
 
 @rate_limit
@@ -1562,9 +2499,10 @@ def _handle_upload_request():
             user_id=current_user.id if current_user.is_authenticated else None,
         )
         analysis.update({"success": True})
-        return jsonify(analysis)
+        return jsonify(_attach_occupation_pending(analysis))
     except Exception as exc:
         return jsonify({"success": False, "error": str(exc)}), 500
+
 
 @app.post("/api/upload")
 def api_upload():
@@ -1574,6 +2512,54 @@ def api_upload():
 @app.post("/api/analyze")
 def api_analyze():
     return _handle_upload_request()
+
+
+@app.post("/api/confirm-occupation")
+@rate_limit
+def api_confirm_occupation():
+    data = request.get_json(silent=True) if request.is_json else {}
+    data = data or {}
+    action = clean_text(data.get("action") or "confirm_candidate").lower() or "confirm_candidate"
+    if action != "confirm_candidate":
+        return jsonify({"success": False, "error": "action must be confirm_candidate"}), 400
+    try:
+        result = confirm_server_candidate(
+            session,
+            analysis_id=clean_text(data.get("analysis_id") or ""),
+            candidate_id=clean_text(data.get("candidate_id") or ""),
+            user_id=current_user.id if current_user.is_authenticated else None,
+        )
+        return jsonify(result)
+    except AuthorizationError as exc:
+        return _authorization_response(exc)
+    except ValueError as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"success": False, "error": str(exc)}), 500
+
+
+@app.post("/api/select-occupation")
+@rate_limit
+def api_select_occupation():
+    data = request.get_json(silent=True) if request.is_json else {}
+    data = data or {}
+    action = clean_text(data.get("action") or "select_occupation").lower() or "select_occupation"
+    if action != "select_occupation":
+        return jsonify({"success": False, "error": "action must be select_occupation"}), 400
+    try:
+        result = select_supported_occupation(
+            session,
+            analysis_id=clean_text(data.get("analysis_id") or ""),
+            selected_code=clean_text(data.get("selected_code") or ""),
+            user_id=current_user.id if current_user.is_authenticated else None,
+        )
+        return jsonify(result)
+    except AuthorizationError as exc:
+        return _authorization_response(exc)
+    except ValueError as exc:
+        return jsonify({"success": False, "error": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"success": False, "error": str(exc)}), 500
 
 
 # ── Comparison Mode ──
@@ -1787,19 +2773,21 @@ def api_career_chat():
     # Limit history to last 10 messages to manage context window
     recent_history = history[-10:] if len(history) > 10 else history
 
-    # Try Ollama for AI-powered response (same pipeline as Advanced mode)
-    ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-    ollama_model = os.environ.get("OLLAMA_MODEL", "llama3")
+    # Try Ollama for AI-powered response (same pipeline as Advanced mode).
+    # Ollama is optional: connection, timeout, HTTP, and payload failures fall
+    # through to the configured API provider and then the local rule-based answer.
+    ollama_host = (os.environ.get("OLLAMA_HOST") or "http://localhost:11434").strip()
+    ollama_model = (os.environ.get("OLLAMA_MODEL") or "llama3").strip()
     llm_available = False
     answer = ""
+    system_prompt = (
+        "You are a helpful AI career advisor assistant. "
+        "Answer career-related questions concisely and practically. "
+        "Give specific, actionable advice based on the user's resume and question."
+    )
 
     # If Ollama is running, use it
     try:
-        system_prompt = (
-            "You are a helpful AI career advisor assistant. "
-            "Answer career-related questions concisely and practically. "
-            "Give specific, actionable advice based on the user's resume and question."
-        )
 
         # Build RAG-enhanced context from resume if provided
         context_parts = [system_prompt]
@@ -1835,10 +2823,16 @@ def api_career_chat():
         )
         if resp.ok:
             result = resp.json()
-            answer = (result.get("response") or "").strip()
-            llm_available = bool(answer)
-    except Exception:
-        log.debug("Ollama not available for career chat, using fallback")    # ── Try API Key Provider (DeepSeek / OpenAI) as second LLM tier ──
+            if isinstance(result, dict):
+                answer = (result.get("response") or "").strip()
+                llm_available = bool(answer)
+            else:
+                log.warning("Ollama career chat returned a non-object response")
+        else:
+            log.warning("Ollama career chat returned HTTP %s", resp.status_code)
+    except Exception as exc:
+        log.warning("Ollama career chat unavailable (%s)", type(exc).__name__)
+    # ── Try API Key Provider (DeepSeek / OpenAI) as second LLM tier ──
     if not llm_available:
         try:
             _llm_provider = os.environ.get("LLM_PROVIDER", "").strip().lower()
@@ -1935,8 +2929,7 @@ def api_career_chat():
                         session_id,
                     )
         except Exception as _llm_err:
-            _log_openai.warning("API provider (%s) failed: %s", _llm_provider or "auto", _llm_err)
-            _log_openai.debug("API provider not available for career chat, using rule-based fallback")
+            _log_openai.warning("API provider (%s) failed (%s)", _llm_provider or "auto", type(_llm_err).__name__)
 
     # ── Fallback: rule-based response when no LLM is available ──
     if not llm_available:
@@ -2064,7 +3057,7 @@ def api_career_chat_stream():
                     return
 
         except Exception as exc:
-            log.warning("Streaming career chat failed: %s", exc)
+            log.warning("Streaming career chat failed (%s)", type(exc).__name__)
 
         # Fallback: rule-based answer (sent as one event)
         full_answer = _rule_based_career_answer(question)
@@ -2094,6 +3087,10 @@ def api_insights_summary():
     skills = extract_skills_from_text(resume_text)
     paths = suggest_career_paths(resume_text)
     roadmap = generate_learning_roadmap(resume_text)
+    try:
+        layered = assess_resume(resume_text, mode="standard")
+    except Exception:
+        layered = {}
     total_weeks = sum(
         int(s.get("duration", "0").split("-")[0] or "0")
         for area in roadmap
@@ -2125,6 +3122,11 @@ def api_insights_summary():
         },
         "career_paths": {"paths": paths, "total": len(paths)},
         "learning_roadmap": {"roadmap": roadmap, "areas": len(roadmap), "total_weeks": total_weeks},
+        "occupation_candidate": layered.get("occupation_candidate"),
+        "occupation_match": layered.get("occupation_match"),
+        "historical_occupation_reference": layered.get("historical_occupation_reference"),
+        "task_exposure": layered.get("task_exposure"),
+        "contextual_task_exposure": layered.get("contextual_task_exposure"),
     })
 
 
@@ -2140,14 +3142,34 @@ def api_compare():
     try:
         ra = _run_analysis_workflow(a, mode)
         rb = _run_analysis_workflow(b, mode)
+        dist_a = (ra.get("task_exposure") or {}).get("distribution")
+        dist_b = (rb.get("task_exposure") or {}).get("distribution")
+        exposure_delta = None
+        if isinstance(dist_a, dict) and isinstance(dist_b, dict):
+            exposure_delta = {
+                key: round(float(dist_a.get(key) or 0) - float(dist_b.get(key) or 0), 4)
+                for key in ("E0", "E1", "E2")
+            }
+        hist_a = ra.get("historical_occupation_reference") or {}
+        hist_b = rb.get("historical_occupation_reference") or {}
         return jsonify({"success": True, "mode": mode,
             "risk_delta": round(abs(ra["risk_score"] - rb["risk_score"]), 3),
+            "historical_occupation_reference_delta": round(abs(ra["risk_score"] - rb["risk_score"]), 3),
+            "risk_delta_interpretation": "Historical occupation reference difference, not personal job-loss probability.",
             "risk_a": ra["risk_score"], "risk_b": rb["risk_score"],
             "label_a": ra["risk_label"], "label_b": rb["risk_label"],
+            "historical_occupation_reference_a": hist_a,
+            "historical_occupation_reference_b": hist_b,
+            "task_exposure_a": ra.get("task_exposure"),
+            "task_exposure_b": rb.get("task_exposure"),
+            "task_exposure_distribution_delta": exposure_delta,
+            "occupation_match_a": ra.get("occupation_match"),
+            "occupation_match_b": rb.get("occupation_match"),
             "top_role_a": (ra.get("top_roles") or [{}])[0].get("job_role", "N/A"),
             "top_role_b": (rb.get("top_roles") or [{}])[0].get("job_role", "N/A"),
             "riasec_a": ra.get("riasec", {}).get("primary", "N/A"),
             "riasec_b": rb.get("riasec", {}).get("primary", "N/A"),
+            "legacy_fields": {"risk_delta": round(abs(ra["risk_score"] - rb["risk_score"]), 3), "note": "Alias of historical_occupation_reference_delta."},
         })
     except Exception as exc:
         log.exception("Comparison failed")
@@ -2157,4 +3179,5 @@ def api_compare():
 if __name__ == "__main__":
     log.info("Prayash starting up...")
     ensure_model_artifacts()
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", "5000")))
+    _debug = os.environ.get("FLASK_DEBUG", "1") == "1"
+    app.run(debug=_debug, use_reloader=_debug, host="0.0.0.0", port=int(os.environ.get("PORT", "5000")))

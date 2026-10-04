@@ -1,0 +1,68 @@
+{
+  "schema_version": "human-v2.0",
+  "rubric_version": "human-task-exposure-v2.0",
+  "target_name": "adjudicated_exposure_score",
+  "target_definition": "Human-reviewed contextual task-exposure estimate. Not personal job-loss probability and not a Frey-Osborne occupation probability.",
+  "assigned_reviewer_ids": {
+    "reviewer_1": "HUMAN_REVIEWER_A",
+    "reviewer_2": "HUMAN_REVIEWER_B",
+    "third_reviewer": "HUMAN_REVIEWER_C"
+  },
+  "forbidden_reviewer_ids": ["AI_1", "unknown", "reviewer", "test"],
+  "allowed_reviewer_scores": [0.0, 0.25, 0.5, 0.75, 1.0],
+  "canonical_reviewer_score_text": ["0.00", "0.25", "0.50", "0.75", "1.00"],
+  "allowed_reviewer_confidence": ["high", "medium", "low"],
+  "reviewer_confidence_definitions": {
+    "high": "The task wording clearly supports the selected score.",
+    "medium": "The task is reasonably interpretable but contains some uncertainty.",
+    "low": "The task is ambiguous, underspecified, or needs adjudication."
+  },
+  "one_level_disagreement": 0.25,
+  "large_disagreement": 0.5,
+  "kappa_gate": 0.7,
+  "blank_is_not_zero": true,
+  "blank_must_not_be_stored_as": ["0", "0.0", "NaN", "None"],
+  "score_cell_status": ["blank", "valid_score", "invalid_score", "unresolved", "not_scorable"],
+  "unresolved_excluded_from_training": true,
+  "ai_pass_kappa_is_not_human_irr": true,
+  "stable_row_identifier": "task_id",
+  "frozen_identity_fields": [
+    "task_id",
+    "occupation_code",
+    "occupation_title",
+    "soc_code",
+    "soc_major_group",
+    "task_text",
+    "split",
+    "reviewer_slot"
+  ],
+  "row_order_must_be_preserved": true,
+  "independent_score_fields": [
+    "reviewer_1_score",
+    "reviewer_2_score",
+    "third_reviewer_score"
+  ],
+  "adjudication_field": "adjudicated_exposure_score",
+  "third_reviewer_score_must_remain_separate_from_adjudicated_exposure_score": true,
+  "do_not_silently_import_external_labels": true,
+  "external_label_sources_not_human_ground_truth": [
+    "BLS employment projections",
+    "Frey-Osborne occupation probabilities",
+    "AI-generated task scores",
+    "external automation estimates"
+  ],
+  "required_reviewer_fields": [
+    "reviewer_id",
+    "reviewer_role",
+    "relevant_experience",
+    "rubric_version",
+    "review_date",
+    "task_id",
+    "occupation_code",
+    "task_text",
+    "reviewer_score",
+    "reviewer_confidence",
+    "reviewer_evidence",
+    "reviewer_notes"
+  ]
+}

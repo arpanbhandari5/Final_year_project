@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -20,8 +21,10 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-os.environ.setdefault("DATABASE_URL",
-                       f"sqlite:///{PROJECT_ROOT / 'instance' / 'test_prayash.db'}")
+os.environ.setdefault(
+    "DATABASE_URL",
+    f"sqlite:///{Path(tempfile.mkdtemp(prefix='prayash-mail-env-')) / 'mail.db'}",
+)
 
 
 def test_resolve_from_email_explicit_wins() -> None:

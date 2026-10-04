@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-10-03T03:02:37.522325+00:00",
+  "target_n": 800,
+  "written_n": 800,
+  "unique_occupation_code": 800,
+  "eligible_with_ge3_tasks": 923,
+  "exact_bls_mapped_eligible": 923,
+  "unmapped_eligible": 0,
+  "stratum_counts": {
+    "employment_openings_70pct": 488,
+    "strategic_coverage_10pct": 177,
+    "soc_diversity_20pct": 135
+  },
+  "soc_major_groups": 22,
+  "min_onet_task_count": 4,
+  "sha256": "26eeee1a06e4919eaf699f7a9da2d0a5f417e625f4d968326ef12daec93c4aa5",
+  "gate_exactly_800": true,
+  "commonness_is_not_exposure_label": true
+}

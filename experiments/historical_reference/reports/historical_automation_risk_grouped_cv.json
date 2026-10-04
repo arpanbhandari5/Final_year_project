@@ -1,0 +1,221 @@
+{
+  "evaluator_version": "1.0.0",
+  "protocol": "corrected_leakage_aware_re-evaluation",
+  "exact_old_metric_reproducible": 0,
+  "exact_old_metric_reason": "evaluation.py still imports missing train_model.build_risk_pipeline; ml_models/model.pkl has no out-of-fold predictions or split manifest (reports/data_quality/historical_baseline_reproducibility.json).",
+  "limitation": "This is a corrected, leakage-aware re-evaluation of the historical occupation-level automation_risk_score. It is not a personal job-loss, unemployment, or replacement probability.",
+  "dataset": {
+    "path": "C:\\4th project\\data\\automation_risk.csv",
+    "sha256": "d28ca4cbc2ca746c9a033d1953d49d565c3e64a2d8ae54b6ce52bed1826a18f1",
+    "rows": 3000,
+    "columns": [
+      "job_role",
+      "industry",
+      "avg_salary_usd",
+      "experience_required_years",
+      "education_level",
+      "task_repetition_level",
+      "creativity_requirement",
+      "physical_labor_level",
+      "analytical_complexity",
+      "social_interaction_level",
+      "ai_tool_availability",
+      "ai_tool_maturity_score",
+      "percent_tasks_automatable",
+      "job_growth_rate",
+      "skill_complexity_score",
+      "regulation_strictness_level",
+      "ethical_risk_level",
+      "communication_requirement",
+      "domain_specific_knowledge_level",
+      "team_collaboration_level",
+      "ai_dependency_current",
+      "ai_dependency_future",
+      "training_hours_needed",
+      "job_demand_index",
+      "automation_risk_score"
+    ],
+    "target": "automation_risk_score",
+    "group": "job_role",
+    "unique_groups": 20,
+    "target_min": 0.0007387055240245,
+    "target_max": 0.9996188950868437,
+    "target_mean": 0.5013233346708564,
+    "n_splits": 5,
+    "dataset_identity": "historical_automation_risk_csv",
+    "not_frey_osborne_618": 1,
+    "not_gpts_are_gpts": 1,
+    "not_personal_job_loss": 1
+  },
+  "tfidf_inside_pipeline": 1,
+  "group_kfold": 1,
+  "n_splits": 5,
+  "alpha_candidates": [
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0,
+    1000.0
+  ],
+  "selected_alphas": [
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    100.0
+  ],
+  "folds": [
+    {
+      "fold": 1,
+      "n_train": 2400,
+      "n_test": 600,
+      "n_train_groups": 16,
+      "n_test_groups": 4,
+      "selected_alpha": 1000.0,
+      "ridge": {
+        "mae": 0.24357064633363193,
+        "rmse": 0.2828160012995201,
+        "r2": -0.0001326167017332569
+      },
+      "mean_baseline": {
+        "mae": 0.24358658457345986,
+        "rmse": 0.2828281558687706,
+        "r2": -0.00021858384865058866
+      },
+      "median_baseline": {
+        "mae": 0.24344711114281628,
+        "rmse": 0.2828221685863198,
+        "r2": -0.0001762363831490088
+      }
+    },
+    {
+      "fold": 2,
+      "n_train": 2408,
+      "n_test": 592,
+      "n_train_groups": 16,
+      "n_test_groups": 4,
+      "selected_alpha": 1000.0,
+      "ridge": {
+        "mae": 0.24588178167334448,
+        "rmse": 0.2866006659847262,
+        "r2": -0.0004520373271186262
+      },
+      "mean_baseline": {
+        "mae": 0.24583986715047682,
+        "rmse": 0.28653654190111105,
+        "r2": -4.404778432887113e-06
+      },
+      "median_baseline": {
+        "mae": 0.2461569700369514,
+        "rmse": 0.2867799487148107,
+        "r2": -0.0017040921495250494
+      }
+    },
+    {
+      "fold": 3,
+      "n_train": 2394,
+      "n_test": 606,
+      "n_train_groups": 16,
+      "n_test_groups": 4,
+      "selected_alpha": 1000.0,
+      "ridge": {
+        "mae": 0.2577554797548549,
+        "rmse": 0.2975557618674121,
+        "r2": 0.00028929722437853744
+      },
+      "mean_baseline": {
+        "mae": 0.25780199753350896,
+        "rmse": 0.2975995776956294,
+        "r2": -5.144242367860485e-06
+      },
+      "median_baseline": {
+        "mae": 0.25773234439642895,
+        "rmse": 0.2976065828540232,
+        "r2": -5.222278281125092e-05
+      }
+    },
+    {
+      "fold": 4,
+      "n_train": 2400,
+      "n_test": 600,
+      "n_train_groups": 16,
+      "n_test_groups": 4,
+      "selected_alpha": 1000.0,
+      "ridge": {
+        "mae": 0.24461015077848486,
+        "rmse": 0.28293623834818743,
+        "r2": -0.00015366471982503072
+      },
+      "mean_baseline": {
+        "mae": 0.24456901370806766,
+        "rmse": 0.28293196658551345,
+        "r2": -0.000123464368921411
+      },
+      "median_baseline": {
+        "mae": 0.24485781784308472,
+        "rmse": 0.2830591519901144,
+        "r2": -0.0010228303835406738
+      }
+    },
+    {
+      "fold": 5,
+      "n_train": 2398,
+      "n_test": 602,
+      "n_train_groups": 16,
+      "n_test_groups": 4,
+      "selected_alpha": 100.0,
+      "ridge": {
+        "mae": 0.24720035534434184,
+        "rmse": 0.2845167380889126,
+        "r2": -0.0013383038001211212
+      },
+      "mean_baseline": {
+        "mae": 0.24711568987068144,
+        "rmse": 0.2844182473902174,
+        "r2": -0.000645160473393469
+      },
+      "median_baseline": {
+        "mae": 0.24704727647135966,
+        "rmse": 0.2845947486373234,
+        "r2": -0.0018874852631705075
+      }
+    }
+  ],
+  "pooled_out_of_fold": {
+    "ridge": {
+      "mae": 0.24782830922220864,
+      "rmse": 0.28695887532872055,
+      "r2": -0.000220405400805479
+    },
+    "mean_baseline": {
+      "mae": 0.24780740537648513,
+      "rmse": 0.28693737752079007,
+      "r2": -7.054601278988493e-05
+    },
+    "median_baseline": {
+      "mae": 0.2478720482644701,
+      "rmse": 0.28704583542088863,
+      "r2": -0.0008267113577198337
+    }
+  },
+  "mean_fold": {
+    "ridge": {
+      "mae": 0.2478036827769316,
+      "rmse": 0.28688508111775174,
+      "r2": -0.00035746506488389953
+    },
+    "mean_baseline": {
+      "mae": 0.24778263056723895,
+      "rmse": 0.2868628978882484,
+      "r2": -0.00019935154235324327
+    },
+    "median_baseline": {
+      "mae": 0.2478483039781282,
+      "rmse": 0.2869725201565183,
+      "r2": -0.0009685733924392981
+    }
+  },
+  "wrote_pickle": 0,
+  "modified_source_dataset": 0
+}

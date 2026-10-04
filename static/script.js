@@ -103,24 +103,31 @@
     { key: 'C', label: 'Open comparison mode' },
     { key: 'Esc', label: 'Close modal / panel' },
   ];
+  const setShortcutsOpen = (open) => {
+    if (!shortcutsPanel) return;
+    shortcutsPanel.classList.toggle('shortcuts--visible', Boolean(open));
+    shortcutsPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (open) shortcutsPanel.removeAttribute('inert');
+    else shortcutsPanel.setAttribute('inert', '');
+  };
   const renderShortcuts = () => {
     if (!shortcutsPanel) return;
     shortcutsPanel.innerHTML = `<div class="shortcuts__header"><strong>Keyboard Shortcuts</strong><button class="shortcuts__close" data-shortcuts-close aria-label="Close">&times;</button></div><div class="shortcuts__list">${SHORTCUTS.map(s => `<div class="shortcuts__row"><kbd>${s.key}</kbd><span>${s.label}</span></div>`).join('')}</div>`;
-    shortcutsPanel.querySelector('[data-shortcuts-close]').addEventListener('click', () => shortcutsPanel.classList.remove('shortcuts--visible'));
+    shortcutsPanel.querySelector('[data-shortcuts-close]').addEventListener('click', () => setShortcutsOpen(false));
   };
 
   document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
-      if (e.key === 'Escape') { closeModal(); closeComparison(); shortcutsPanel?.classList.remove('shortcuts--visible'); }
+      if (e.key === 'Escape') { closeModal(); closeComparison(); setShortcutsOpen(false); }
       return;
     }
     switch (e.key) {
-      case '?': e.preventDefault(); shortcutsPanel?.classList.toggle('shortcuts--visible'); break;
+      case '?': e.preventDefault(); setShortcutsOpen(!shortcutsPanel?.classList.contains('shortcuts--visible')); break;
       case 'E': case 'e': e.preventDefault(); $('[data-resume-text]')?.focus(); break;
       case 'R': case 'r': e.preventDefault(); $('[data-assess-button]')?.click(); break;
       case 'M': case 'm': e.preventDefault(); setMode({ standard: 'advanced', advanced: 'standard' }[activeMode] || 'standard'); break;
       case 'C': case 'c': e.preventDefault(); toggleComparison(); break;
-      case 'Escape': closeModal(); closeComparison(); shortcutsPanel?.classList.remove('shortcuts--visible'); break;
+      case 'Escape': closeModal(); closeComparison(); setShortcutsOpen(false); break;
     }
   });
 
@@ -211,6 +218,8 @@
   const resultBanner = $('[data-result-banner]');
   const resultStatus = $('[data-result-status]');
   const narrative = $('[data-narrative]');
+  const layeredList = $('[data-layered-list]');
+  const layeredCopy = $('[data-layered-copy]');
   const rolesList = $('[data-roles-list]');
   const roadmapList = $('[data-roadmap-list]');
   const riasecList = $('[data-riasec-list]');
@@ -257,12 +266,13 @@
   let activePath = load(STORAGE.path, 'student');
   let selectedFile = null;
   let lastAnalysis = null;
+  let lastResumeText = '';
   const originalSubmitLabel = submitButton.textContent.trim();
 
   // ─── PATHWAYS ───
   const P = {
     student: { h: 'Turn your student experience into a confident career launch plan.', l: 'Use your resume, projects, and coursework to identify roles and skill priorities.', ai: 'Upload your student resume or paste a profile summary.', pt: 'Student path selected', pd: 'Start with standard mode for fast role alignment.', a: ['Run standard analysis and review top three role matches.', 'Pick one roadmap course and schedule weekly blocks.', 'Update one project bullet with stronger keywords.'], c: ['Student-ready roles', 'Project-to-job translation', 'Interview preparation'], cta: 'Start student assessment' },
-    'job-seeker': { h: 'Focus your job search with clearer role fit.', l: 'Identify roles where your profile aligns and prioritize application actions.', ai: 'Upload your resume for top role matches and automation risk.', pt: 'Job-seeker path selected', pd: 'Use role similarity and risk indicators to focus your search.', a: ['Track requirements across 10 recent job postings.', 'Tailor your resume to your top matched role.', 'Use one roadmap item to close a skill gap.'], c: ['Role match clarity', 'Resume optimization', 'Application focus'], cta: 'Start job-search assessment' },
+    'job-seeker': { h: 'Focus your job search with clearer role fit.', l: 'Identify roles where your profile aligns and prioritize application actions.', ai: 'Upload your resume for top role matches and a historical occupation reference.', pt: 'Job-seeker path selected', pd: 'Use role similarity and the historical occupation reference to focus your search.', a: ['Track requirements across 10 recent job postings.', 'Tailor your resume to your top matched role.', 'Use one roadmap item to close a skill gap.'], c: ['Role match clarity', 'Resume optimization', 'Application focus'], cta: 'Start job-search assessment' },
     'career-switcher': { h: 'Plan your career transition with transferable skill mapping.', l: 'See where your background overlaps with target roles.', ai: 'Upload your resume to uncover transferable strengths.', pt: 'Career-switcher path selected', pd: 'Combine targeted roles with proof projects and short-cycle gains.', a: ['Pick two transferable skills from your strongest role match.', 'Build one portfolio proof item.', 'Commit to a 4\u20138 week transition plan.'], c: ['Transferable strengths', 'Transition roadmap', 'Targeted training'], cta: 'Start transition assessment' },
     'new-workforce': { h: 'Get a clear first-career direction.', l: 'Use your early experience to identify entry-level roles.', ai: 'Upload your resume for approachable role options.', pt: 'New-workforce path selected', pd: 'One role focus, one milestone, one weekly routine.', a: ['Choose one target role and build your resume around it.', 'Take one beginner-friendly roadmap course.', 'Apply to entry-level opportunities weekly.'], c: ['Entry-level pathways', 'Beginner support', 'First-job strategy'], cta: 'Start first-career assessment' },
   };
@@ -325,10 +335,10 @@
     if (!c) return;
     const safe = (items || []).filter(Boolean);
     if (!safe.length) { c.innerHTML = '<div class="list-card"><div><strong>No actions yet</strong><p>Run analysis to generate next steps.</p></div></div>'; return; }
-    c.innerHTML = safe.map(i => `<div class="list-card motion-fade-up"><div><strong>${heading}</strong><p>${i}</p></div></div>`).join('');
+    c.innerHTML = safe.map(i => `<div class="list-card motion-fade-up"><div><strong>${heading}</strong><p>${escapeHtml(i)}</p></div></div>`).join('');
   };
   const fallbackSteps = (payload) => {
-    const band = (payload.risk_label || 'Moderate').toLowerCase();
+    const band = (payload.historical_occupation_reference?.band || payload.risk_label || 'Moderate').toLowerCase();
     const top = dedupeRoles(payload.top_roles || []).slice(0, 2);
     const road = payload.roadmap || [];
     const learn = road.slice(0, 3).map(i => `Start '${i.course}' and focus on ${i.skill || 'core skill'} this week.`);
@@ -363,24 +373,152 @@
   };
 
   // ─── DASHBOARD ───
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const historicalDisplay = (payload) => {
+    const hist = payload.historical_occupation_reference || {};
+    if (hist.display_score) return hist.display_score;
+    if (typeof hist.score === 'number') return `${Math.round(hist.score * 100)}/100 — ${hist.band || 'Moderate'}`;
+    const band = hist.band || payload.risk_label || 'Moderate';
+    return `${Math.round((payload.risk_score || 0) * 100)}/100 — ${band}`;
+  };
+  const renderLayered = (payload) => {
+    if (!layeredList) return;
+    const occ = payload.occupation_match || payload.occupation_candidate || {};
+    const hist = payload.historical_occupation_reference || {};
+    const te = payload.task_exposure || payload.contextual_task_exposure || {};
+    const dist = te.distribution || {};
+    const career = payload.career_development || {};
+    const ollama = payload.ollama || {};
+    const cards = [];
+    const picker = payload.analysis_id
+      ? `<p class="small-note">Choose another occupation from the server allowlist (800 ∩ published benchmark).</p><button type="button" class="button-ghost" data-choose-occupation>Choose another occupation</button><div data-occupation-picker hidden></div>`
+      : '';
+    if (occ.status === 'confirmed') {
+      cards.push(`<div class="list-card"><div><strong>Confirmed occupation</strong><p>${escapeHtml(occ.verified_occupation_title || 'Confirmed')} ${occ.verified_occupation_code ? `(${escapeHtml(occ.verified_occupation_code)})` : ''}</p><p class="small-note">Accepted by ${escapeHtml(occ.confirmation_method || 'user_confirmation')} (${escapeHtml(occ.source || 'server')}). This is not a personal job-loss probability.</p></div><span class="status-pill">${occ.matcher_score == null && occ.confidence == null ? '—' : escapeHtml(String(occ.matcher_score ?? occ.confidence))}</span></div>`);
+    } else if (occ.status === 'candidate') {
+      const score = occ.matcher_score == null && occ.confidence == null ? '—' : escapeHtml(String(occ.matcher_score ?? occ.confidence));
+      cards.push(`<div class="list-card"><div><strong>Suggested occupation</strong><p>Candidate match: ${escapeHtml(occ.candidate_title || 'No title')} ${occ.candidate_code ? `(${escapeHtml(occ.candidate_code)})` : ''}</p><p class="small-note">${escapeHtml(occ.score_interpretation || 'uncalibrated candidate score')}. This suggestion does not authorize benchmark lookup until you confirm it.</p>${occ.candidate_code ? '<button type="button" class="button-ghost" data-confirm-occupation>Confirm this candidate occupation</button>' : ''}${picker}</div><span class="status-pill">${score}</span></div>`);
+    } else {
+      cards.push(`<div class="list-card"><div><strong>Candidate occupation</strong><p>${escapeHtml(occ.candidate_title || 'Unresolved')}</p><p class="small-note">No confirmed occupation yet. Labels are never invented.</p>${picker}</div></div>`);
+    }
+    cards.push(`<div class="list-card"><div><strong>Match confidence</strong><p>Occupation-match similarity only. Not a job-loss probability.</p></div></div>`);
+    cards.push(`<div class="list-card"><div><strong>Historical occupation reference</strong><p>${escapeHtml(historicalDisplay(payload))}</p><p class="small-note">${escapeHtml(hist.interpretation || 'Occupation-level reference only. This is not a validated personal probability of job loss, unemployment, replacement, or displacement.')}</p></div></div>`);
+    if (te.status === 'verified' && dist.E0 != null) {
+      cards.push(`<div class="list-card"><div><strong>Verified benchmark occupation</strong><p>Published lookup for ${escapeHtml(te.occupation_code || occ.verified_occupation_code || '')}.</p></div></div>`);
+      cards.push(`<div class="list-card"><div><strong>Contextual task-exposure profile</strong><p>E0 — No direct LLM exposure: ${Math.round(dist.E0 * 100)}%<br>E1 — Direct LLM exposure: ${Math.round(dist.E1 * 100)}%<br>E2 — Exposure through an LLM-powered application: ${Math.round(dist.E2 * 100)}%</p><p class="small-note">${escapeHtml(te.disclaimer || '')}</p></div></div>`);
+    } else {
+      cards.push(`<div class="list-card"><div><strong>Contextual task-exposure profile</strong><p>Waiting for occupation confirmation (${escapeHtml(te.reason || te.status || 'candidate occupation does not authorize benchmark lookup')}). Labels are never invented.</p></div></div>`);
+    }
+    const tasks = te.relevant_tasks || te.tasks || [];
+    if (tasks.length) {
+      cards.push(`<div class="list-card"><div><strong>Relevant tasks</strong><p>${tasks.map((t) => `${escapeHtml(t.task)} — ${escapeHtml(t.category)}`).join('<br>')}</p></div></div>`);
+    }
+    const evidence = (payload.resume_analysis && payload.resume_analysis.evidence) || [];
+    if (evidence.length) {
+      cards.push(`<div class="list-card"><div><strong>Resume evidence</strong><p>${escapeHtml(evidence.join(', '))}</p></div></div>`);
+    }
+    const recs = career.recommendations || [];
+    if (recs.length) {
+      cards.push(`<div class="list-card"><div><strong>Career-development actions</strong><p>${recs.map(escapeHtml).join('<br>')}</p></div></div>`);
+    }
+    const ollamaNote = ollama.enabled
+      ? (ollama.available ? 'Deep analysis with Ollama is enabled and available.' : (ollama.message || 'Optional deep explanation is unavailable because the local Ollama model is not running.'))
+      : 'Deep analysis with Ollama: Optional (currently disabled).';
+    cards.push(`<div class="list-card"><div><strong>Optional deep analysis</strong><p>${escapeHtml(ollamaNote)}</p></div></div>`);
+    layeredList.innerHTML = cards.join('');
+    if (layeredCopy) layeredCopy.textContent = te.interpretation || hist.interpretation || '';
+  };
+  if (layeredList && !layeredList.dataset.confirmBound) {
+    layeredList.dataset.confirmBound = '1';
+    layeredList.addEventListener('click', async (event) => {
+      const apply = event.target.closest('[data-apply-occupation]');
+      if (apply && lastAnalysis) {
+        const picker = layeredList.querySelector('[data-occupation-select]');
+        const selected = picker ? picker.value : '';
+        if (!selected) { toast('Select an occupation from the server list.', 'warning'); return; }
+        apply.disabled = true;
+        try {
+          const res = await apiPost('/api/select-occupation', {
+            analysis_id: lastAnalysis.analysis_id,
+            selected_code: selected,
+            action: 'select_occupation',
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.error || 'Selection failed.');
+          lastAnalysis = { ...lastAnalysis, ...data };
+          renderResults(lastAnalysis);
+          toast('Occupation selected.', 'success');
+        } catch (error) {
+          toast(error.message || 'Selection failed.', 'error');
+          apply.disabled = false;
+        }
+        return;
+      }
+      const choose = event.target.closest('[data-choose-occupation]');
+      if (choose && lastAnalysis) {
+        const host = layeredList.querySelector('[data-occupation-picker]');
+        if (!host) return;
+        choose.disabled = true;
+        try {
+          const res = await fetch('/api/occupations/selectable');
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.error || 'Could not load occupations.');
+          const options = (data.occupations || []).map((item) =>
+            `<option value="${escapeHtml(item.occupation_code)}">${escapeHtml(item.occupation_title)} (${escapeHtml(item.occupation_code)})</option>`
+          ).join('');
+          host.hidden = false;
+          host.innerHTML = `<label class="small-note" for="occupation-select-list">Server allowlist</label><select id="occupation-select-list" data-occupation-select>${options}</select><button type="button" class="button-ghost" data-apply-occupation>Use selected occupation</button>`;
+        } catch (error) {
+          toast(error.message || 'Could not load occupations.', 'error');
+          choose.disabled = false;
+        }
+        return;
+      }
+      const button = event.target.closest('[data-confirm-occupation]');
+      if (!button || !lastAnalysis) return;
+      if (!lastAnalysis.analysis_id || !lastAnalysis.candidate_id) {
+        toast('No server-issued candidate to confirm.', 'warning');
+        return;
+      }
+      button.disabled = true;
+      try {
+        const res = await apiPost('/api/confirm-occupation', {
+          analysis_id: lastAnalysis.analysis_id,
+          candidate_id: lastAnalysis.candidate_id,
+          action: 'confirm_candidate',
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Confirmation failed.');
+        lastAnalysis = { ...lastAnalysis, ...data };
+        renderResults(lastAnalysis);
+        toast('Occupation confirmed.', 'success');
+      } catch (error) {
+        toast(error.message || 'Confirmation failed.', 'error');
+        button.disabled = false;
+      }
+    });
+  };
   const resetStyles = () => { if (!resultBanner) return; resultBanner.style.background = ''; resultBanner.style.borderColor = ''; resultBanner.style.color = ''; };
   const updateDashboard = (payload) => {
     const roles = dedupeRoles(payload.top_roles || []);
-    if (dashboardRiskRing) dashboardRiskRing.style.setProperty('--score', `${Math.max(0.05, Math.min(0.95, payload.risk_score || 0))}`);
-    if (dashboardRiskScore) dashboardRiskScore.textContent = `${Math.round((payload.risk_score || 0) * 100)}%`;
-    if (dashboardRiskLabel) dashboardRiskLabel.textContent = payload.risk_label ? `${payload.risk_label} risk` : 'Risk';
-    if (dashboardRiskSummary) dashboardRiskSummary.textContent = payload.cognitive_career_narrative || 'Prediction ready.';
+    const histScore = (payload.historical_occupation_reference && typeof payload.historical_occupation_reference.score === 'number')
+      ? payload.historical_occupation_reference.score
+      : (payload.risk_score || 0);
+    if (dashboardRiskRing) dashboardRiskRing.style.setProperty('--score', `${Math.max(0.05, Math.min(0.95, histScore))}`);
+    if (dashboardRiskScore) dashboardRiskScore.textContent = historicalDisplay(payload).split(' — ')[0];
+    if (dashboardRiskLabel) dashboardRiskLabel.textContent = payload.historical_occupation_reference?.band || payload.risk_label || 'Reference';
+    if (dashboardRiskSummary) dashboardRiskSummary.textContent = payload.historical_occupation_reference?.interpretation || payload.cognitive_career_narrative || 'Analysis ready.';
     if (dashboardRoleStatus) dashboardRoleStatus.textContent = roles.length ? 'Live' : 'No matches';
-    if (dashboardRoleBars) dashboardRoleBars.innerHTML = roles.slice(0, 3).map((r, i) => `<div class="motion-fade-up motion-stagger-${Math.min(i + 1, 5)}"><div class="inline-actions" style="justify-content: space-between;"><strong>${r.job_role}</strong><strong class="muted">${Math.round((r.similarity || 0) * 100)}%</strong></div><div class="bar"><span style="width: ${Math.round((r.similarity || 0) * 100)}%;"></span></div><p class="small-note">${r.industry} \u00B7 Risk ${Math.round((r.risk_score || 0) * 100)}%</p></div>`).join('');
+    if (dashboardRoleBars) dashboardRoleBars.innerHTML = roles.slice(0, 3).map((r, i) => `<div class="motion-fade-up motion-stagger-${Math.min(i + 1, 5)}"><div class="inline-actions" style="justify-content: space-between;"><strong>${escapeHtml(r.job_role)}</strong><strong class="muted">${Math.round((r.similarity || 0) * 100)}%</strong></div><div class="bar"><span style="width: ${Math.round((r.similarity || 0) * 100)}%;"></span></div><p class="small-note">${escapeHtml(r.industry)} · Match ${Math.round((r.similarity || 0) * 100)}%</p></div>`).join('');
   };
   const renderReasoning = (payload) => {
     if (!riskInsights) return;
     const r = payload.reasoning || {};
     const cards = [];
-    if (r.summary) cards.push(`<div class="list-card pivot-card"><div><strong>Why this score</strong><p>${r.summary}</p></div></div>`);
-    (r.risk_drivers || []).forEach((d, i) => cards.push(`<div class="list-card"><div><strong>Risk driver ${i + 1}</strong><p>${d}</p></div></div>`));
-    if (r.skills_detected?.length) cards.push(`<div class="list-card"><div><strong>Skills</strong><p>${r.skills_detected.join(', ')}</p></div></div>`);
-    cards.push(`<div class="list-card"><div><strong>Confidence</strong><p>${r.confidence_note || 'Local feature trace.'}</p></div></div>`);
+    if (r.summary) cards.push(`<div class="list-card pivot-card"><div><strong>Why this reference</strong><p>${escapeHtml(r.summary)}</p></div></div>`);
+    (r.risk_drivers || []).forEach((d, i) => cards.push(`<div class="list-card"><div><strong>Reference driver ${i + 1}</strong><p>${escapeHtml(d)}</p></div></div>`));
+    if (r.skills_detected?.length) cards.push(`<div class="list-card"><div><strong>Skills</strong><p>${escapeHtml(r.skills_detected.join(', '))}</p></div></div>`);
+    cards.push(`<div class="list-card"><div><strong>Confidence</strong><p>${escapeHtml(r.confidence_note || 'Occupation match similarity is separate from the historical reference and from retrieved task labels.')}</p></div></div>`);
     riskInsights.innerHTML = cards.join('');
   };
 
@@ -389,15 +527,16 @@
     lastAnalysis = payload;
     const roles = dedupeRoles(payload.top_roles || []);
     if (modalTitle) modalTitle.textContent = payload.mode === 'advanced' ? 'Deep AI narrative' : 'Analysis complete';
-    if (modalRiskScore) modalRiskScore.textContent = `${Math.round((payload.risk_score || 0) * 100)}%`;
-    if (modalRiskLabel) modalRiskLabel.textContent = payload.risk_label ? `${payload.risk_label} risk` : 'Risk';
+    if (modalRiskScore) modalRiskScore.textContent = historicalDisplay(payload).split(' — ')[0];
+    if (modalRiskLabel) modalRiskLabel.textContent = payload.historical_occupation_reference?.band || payload.risk_label || 'Reference';
     if (modalMode) modalMode.textContent = `${payload.mode === 'advanced' ? 'Advanced' : 'Standard'} mode`;
     if (resultStatus) resultStatus.textContent = payload.mode === 'advanced' ? 'Deep AI narrative' : 'Analysis complete';
-    if (narrative) narrative.textContent = payload.cognitive_career_narrative || '';
+    if (narrative) narrative.textContent = payload.cognitive_career_narrative || payload.ollama?.message || '';
     updateDashboard(payload);
     renderReasoning(payload);
+    renderLayered(payload);
     nextSteps(payload);
-    renderList(rolesList, roles, (r) => { const l = roleLinks(r); return `<div class="list-card pivot-card"><div><strong>${r.job_role}</strong><p>${r.industry} \u00B7 Risk ${Math.round((r.risk_score || 0) * 100)}%</p><div class="pill-row">${l.map(x => `<a class="button-ghost" href="${x.url}" target="_blank" rel="noreferrer">${x.label}</a>`).join('')}</div></div><span class="status-pill">${Math.round((r.similarity || 0) * 100)}%</span></div>`; });
+    renderList(rolesList, roles, (r) => { const l = roleLinks(r); return `<div class="list-card pivot-card"><div><strong>${escapeHtml(r.job_role)}</strong><p>${escapeHtml(r.industry)} · Occupation match ${Math.round((r.similarity || 0) * 100)}%</p><div class="pill-row">${l.map(x => `<a class="button-ghost" href="${x.url}" target="_blank" rel="noreferrer">${escapeHtml(x.label)}</a>`).join('')}</div></div><span class="status-pill">${Math.round((r.similarity || 0) * 100)}%</span></div>`; });
     renderList(roadmapList, payload.roadmap || [], (c) => `<div class="roadmap-item"><div><strong>${c.course}</strong><p>${c.skill} \u00B7 ${c.reason}</p></div>${c.url ? `<a class="button-ghost" href="${c.url}" target="_blank" rel="noreferrer">Open</a>` : ''}</div>`);
     renderList(riasecList, Object.entries(payload.riasec?.scores || {}), ([n, s]) => `<div class="list-card"><div><strong>${n}</strong></div><span class="status-pill">${s}</span></div>`);
     toast('Analysis complete!', 'success');
@@ -418,9 +557,9 @@
     if (riasecList) riasecList.innerHTML = '';
     if (dashboardRiskSummary) dashboardRiskSummary.textContent = msg;
     if (dashboardRoleStatus) dashboardRoleStatus.textContent = 'Error';
-    if (riskInsights) riskInsights.innerHTML = `<div class="list-card"><div><strong>Unavailable</strong><p>${msg}</p></div></div>`;
+    if (riskInsights) riskInsights.innerHTML = `<div class="list-card"><div><strong>Unavailable</strong><p>${escapeHtml(msg)}</p></div></div>`;
     if (nextStepsStatus) nextStepsStatus.textContent = 'Unavailable';
-    [nextStepsLearning, nextStepsJobs, nextStepsEducation, nextStepsSupport, modalNextSteps].forEach(c => { if (c) c.innerHTML = `<div class="list-card"><div><strong>Unavailable</strong><p>${msg}</p></div></div>`; });
+    [nextStepsLearning, nextStepsJobs, nextStepsEducation, nextStepsSupport, modalNextSteps].forEach(c => { if (c) c.innerHTML = `<div class="list-card"><div><strong>Unavailable</strong><p>${escapeHtml(msg)}</p></div></div>`; });
     toast(msg, 'error', 6000);
   };
 
@@ -504,6 +643,7 @@
     if (selectedFile && !fd.get('resume_file')) fd.set('resume_file', selectedFile);
     fd.set('mode', activeMode);
     const text = (fd.get('resume_text') || '').toString().trim();
+    if (text) lastResumeText = text;
     if (!(fileInput?.files?.length > 0) && !text) { renderError('Add resume text or a file.'); return; }
     if (activeMode === 'advanced' && text) await streamAnalysis(text);
     else await submitStandard(fd);
@@ -556,7 +696,7 @@
       const d = await res.json();
       if (!d.success) throw new Error(d.error);
       if (compareResults) {
-        compareResults.innerHTML = `<div class="compare-result-grid"><div class="compare-col"><h4>A</h4><div class="kpi"><div class="kpi__label">Risk</div><div class="kpi__value">${Math.round(d.risk_a * 100)}%</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${d.label_a}</div></div></div><div class="compare-vs"><span>VS</span><div class="compare-delta">\u0394 ${Math.round(d.risk_delta * 100)}%</div></div><div class="compare-col"><h4>B</h4><div class="kpi"><div class="kpi__label">Risk</div><div class="kpi__value">${Math.round(d.risk_b * 100)}%</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${d.label_b}</div></div></div></div>`;
+        compareResults.innerHTML = `<div class="compare-result-grid"><div class="compare-col"><h4>A</h4><div class="kpi"><div class="kpi__label">Historical occupation reference</div><div class="kpi__value">${Math.round(d.risk_a * 100)}/100</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${escapeHtml(d.label_a)}</div></div></div><div class="compare-vs"><span>VS</span><div class="compare-delta">Historical difference ${Math.round((d.historical_occupation_reference_delta || d.risk_delta) * 100)}</div></div><div class="compare-col"><h4>B</h4><div class="kpi"><div class="kpi__label">Historical occupation reference</div><div class="kpi__value">${Math.round(d.risk_b * 100)}/100</div></div><div class="kpi"><div class="kpi__label">Band</div><div class="kpi__value">${escapeHtml(d.label_b)}</div></div></div></div><p class="small-note">${escapeHtml(d.risk_delta_interpretation || 'Historical occupation reference difference')}</p>`;
         compareResults.classList.remove('hidden');
       }
       toast('Comparison complete!', 'success');

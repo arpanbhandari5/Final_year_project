@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-10-03T03:02:46.235353+00:00",
+  "row_count": 2400,
+  "occupations": 800,
+  "tasks_per_occupation_min": 3,
+  "tasks_per_occupation_max": 3,
+  "shortfall_occupations_lt_3_tasks": [],
+  "split_occupation_counts": {
+    "train": 560,
+    "validation": 120,
+    "test": 120
+  },
+  "filled_reviewer_scores": 0,
+  "sha256": "11f95caab319db080c7115d97d23c1c6ad844d840d93aa5609097e7527fd3d8c"
+}

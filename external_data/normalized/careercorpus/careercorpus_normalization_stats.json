@@ -1,0 +1,4289 @@
+{
+  "input_path": "external_data/raw/careercorpus/CareerCorpus.xlsx",
+  "input_sha256": "97b1fa6cca1232912dd3f7bc312d71a2478249787168fd41dfbf6c1da90479d3",
+  "source_version": "CareerCorpus-xlsx-raw",
+  "transformation_version": "norm-v1.0-esco-careercorpus",
+  "workbook_sheets": [
+    {
+      "name": "Sheet1",
+      "path": "xl/worksheets/sheet1.xml",
+      "header": [
+        "ID",
+        "Domain",
+        "Education",
+        "Skills and Achievements",
+        "Experience",
+        "Job_type",
+        "Annotator-1",
+        "Annotator-2"
+      ],
+      "xml_row_count": 999,
+      "data_row_count": 998
+    }
+  ],
+  "unused_or_unexpected_sheets": [],
+  "input_row_count": 998,
+  "excluded_row_count": 696,
+  "excluded_rows": [
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "304",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "305",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "306",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "307",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "308",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "309",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "310",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "311",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "312",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "313",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "314",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "315",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "316",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "317",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "318",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "319",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "320",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "321",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "322",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "323",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "324",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "325",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "326",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "327",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "328",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "329",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "330",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "331",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "332",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "333",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "334",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "335",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "336",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "337",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "338",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "339",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "340",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "341",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "342",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "343",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "344",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "345",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "346",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "347",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "348",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "349",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "350",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "351",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "352",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "353",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "354",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "355",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "356",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "357",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "358",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "359",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "360",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "361",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "362",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "363",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "364",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "365",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "366",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "367",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "368",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "369",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "370",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "371",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "372",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "373",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "374",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "375",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "376",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "377",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "378",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "379",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "380",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "381",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "382",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "383",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "384",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "385",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "386",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "387",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "388",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "389",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "390",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "391",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "392",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "393",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "394",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "395",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "396",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "397",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "398",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "399",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "400",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "401",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "402",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "403",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "404",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "405",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "406",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "407",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "408",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "409",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "410",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "411",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "412",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "413",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "414",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "415",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "416",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "417",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "418",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "419",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "420",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "421",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "422",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "423",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "424",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "425",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "426",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "427",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "428",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "429",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "430",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "431",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "432",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "433",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "434",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "435",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "436",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "437",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "438",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "439",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "440",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "441",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "442",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "443",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "444",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "445",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "446",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "447",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "448",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "449",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "450",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "451",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "452",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "453",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "454",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "455",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "456",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "457",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "458",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "459",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "460",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "461",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "462",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "463",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "464",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "465",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "466",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "467",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "468",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "469",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "470",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "471",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "472",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "473",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "474",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "475",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "476",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "477",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "478",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "479",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "480",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "481",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "482",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "483",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "484",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "485",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "486",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "487",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "488",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "489",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "490",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "491",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "492",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "493",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "494",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "495",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "496",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "497",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "498",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "499",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "500",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "501",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "502",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "503",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "504",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "505",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "506",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "507",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "508",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "509",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "510",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "511",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "512",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "513",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "514",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "515",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "516",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "517",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "518",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "519",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "520",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "521",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "522",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "523",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "524",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "525",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "526",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "527",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "528",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "529",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "530",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "531",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "532",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "533",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "534",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "535",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "536",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "537",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "538",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "539",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "540",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "541",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "542",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "543",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "544",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "545",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "546",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "547",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "548",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "549",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "550",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "551",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "552",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "553",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "554",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "555",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "556",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "557",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "558",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "559",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "560",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "561",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "562",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "563",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "564",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "565",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "566",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "567",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "568",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "569",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "570",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "571",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "572",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "573",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "574",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "575",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "576",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "577",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "578",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "579",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "580",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "581",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "582",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "583",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "584",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "585",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "586",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "587",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "588",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "589",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "590",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "591",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "592",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "593",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "594",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "595",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "596",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "597",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "598",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "599",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "600",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "601",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "602",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "603",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "604",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "605",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "606",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "607",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "608",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "609",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "610",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "611",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "612",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "613",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "614",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "615",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "616",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "617",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "618",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "619",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "620",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "621",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "622",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "623",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "624",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "625",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "626",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "627",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "628",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "629",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "630",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "631",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "632",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "633",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "634",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "635",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "636",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "637",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "638",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "639",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "640",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "641",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "642",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "643",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "644",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "645",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "646",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "647",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "648",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "649",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "650",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "651",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "652",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "653",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "654",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "655",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "656",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "657",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "658",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "659",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "660",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "661",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "662",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "663",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "664",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "665",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "666",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "667",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "668",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "669",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "670",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "671",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "672",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "673",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "674",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "675",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "676",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "677",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "678",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "679",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "680",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "681",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "682",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "683",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "684",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "685",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "686",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "687",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "688",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "689",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "690",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "691",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "692",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "693",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "694",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "695",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "696",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "697",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "698",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "699",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "700",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "701",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "702",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "703",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "704",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "705",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "706",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "707",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "708",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "709",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "710",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "711",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "712",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "713",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "714",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "715",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "716",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "717",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "718",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "719",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "720",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "721",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "722",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "723",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "724",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "725",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "726",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "727",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "728",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "729",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "730",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "731",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "732",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "733",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "734",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "735",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "736",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "737",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "738",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "739",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "740",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "741",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "742",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "743",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "744",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "745",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "746",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "747",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "748",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "749",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "750",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "751",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "752",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "753",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "754",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "755",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "756",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "757",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "758",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "759",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "760",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "761",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "762",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "763",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "764",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "765",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "766",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "767",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "768",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "769",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "770",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "771",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "772",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "773",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "774",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "775",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "776",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "777",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "778",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "779",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "780",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "781",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "782",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "783",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "784",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "785",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "786",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "787",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "788",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "789",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "790",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "791",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "792",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "793",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "794",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "795",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "796",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "797",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "798",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "799",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "800",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "801",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "802",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "803",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "804",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "805",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "806",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "807",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "808",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "809",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "810",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "811",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "812",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "813",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "814",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "815",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "816",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "817",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "818",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "819",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "820",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "821",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "822",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "823",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "824",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "825",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "826",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "827",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "828",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "829",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "830",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "831",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "832",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "833",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "834",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "835",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "836",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "837",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "838",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "839",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "840",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "841",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "842",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "843",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "844",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "845",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "846",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "847",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "848",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "849",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "850",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "851",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "852",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "853",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "854",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "855",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "856",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "857",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "858",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "859",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "860",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "861",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "862",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "863",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "864",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "865",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "866",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "867",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "868",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "869",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "870",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "871",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "872",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "873",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "874",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "875",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "876",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "877",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "878",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "879",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "880",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "881",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "882",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "883",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "884",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "885",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "886",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "887",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "888",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "889",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "890",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "891",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "892",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "893",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "894",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "895",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "896",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "897",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "898",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "899",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "900",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "901",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "902",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "903",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "904",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "905",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "906",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "907",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "908",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "909",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "910",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "911",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "912",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "913",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "914",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "915",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "916",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "917",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "918",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "919",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "920",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "921",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "922",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "923",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "924",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "925",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "926",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "927",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "928",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "929",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "930",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "931",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "932",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "933",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "934",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "935",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "936",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "937",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "938",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "939",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "940",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "941",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "942",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "943",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "944",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "945",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "946",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "947",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "948",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "949",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "950",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "951",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "952",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "953",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "954",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "955",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "956",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "957",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "958",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "959",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "960",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "961",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "962",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "963",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "964",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "965",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "966",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "967",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "968",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "969",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "970",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "971",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "972",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "973",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "974",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "975",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "976",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "977",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "978",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "979",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "980",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "981",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "982",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "983",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "984",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "985",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "986",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "987",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "988",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "989",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "990",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "991",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "992",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "993",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "994",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "995",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "996",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "997",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "998",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    },
+    {
+      "source_sheet": "Sheet1",
+      "source_row_number": "999",
+      "reason": "empty_row",
+      "raw_preview": "| | | | | | |"
+    }
+  ],
+  "invalid_identifier_counts": 0,
+  "invalid_annotation_value_counts": 0,
+  "tables": [
+    {
+      "dataset": "careercorpus_resumes.csv",
+      "input_path": "external_data/raw/careercorpus/CareerCorpus.xlsx",
+      "input_sha256": "97b1fa6cca1232912dd3f7bc312d71a2478249787168fd41dfbf6c1da90479d3",
+      "output_path": "external_data/normalized/careercorpus/careercorpus_resumes.csv",
+      "input_row_count": 998,
+      "output_row_count": 302,
+      "column_names": [
+        "resume_id",
+        "domain",
+        "education",
+        "skills_and_achievements",
+        "experience",
+        "job_type",
+        "source_sheet",
+        "source_row_number",
+        "source_version",
+        "transformation_version",
+        "not_onet_task_label"
+      ],
+      "missing_value_counts": {
+        "resume_id": 0,
+        "domain": 0,
+        "education": 0,
+        "skills_and_achievements": 0,
+        "experience": 0,
+        "job_type": 0,
+        "source_sheet": 0,
+        "source_row_number": 0,
+        "source_version": 0,
+        "transformation_version": 0,
+        "not_onet_task_label": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_identifier_values": 1,
+        "duplicate_identifier_row_extra": 1
+      },
+      "invalid_identifier_counts": 0,
+      "transformation_version": "norm-v1.0-esco-careercorpus",
+      "source_version": "CareerCorpus-xlsx-raw"
+    },
+    {
+      "dataset": "careercorpus_annotations.csv",
+      "input_path": "external_data/raw/careercorpus/CareerCorpus.xlsx",
+      "input_sha256": "97b1fa6cca1232912dd3f7bc312d71a2478249787168fd41dfbf6c1da90479d3",
+      "output_path": "external_data/normalized/careercorpus/careercorpus_annotations.csv",
+      "input_row_count": 998,
+      "output_row_count": 302,
+      "column_names": [
+        "resume_id",
+        "annotator_1_score",
+        "annotator_2_score",
+        "label_source",
+        "source_sheet",
+        "source_row_number",
+        "source_version",
+        "transformation_version",
+        "not_onet_task_label"
+      ],
+      "missing_value_counts": {
+        "resume_id": 0,
+        "annotator_1_score": 0,
+        "annotator_2_score": 0,
+        "label_source": 0,
+        "source_sheet": 0,
+        "source_row_number": 0,
+        "source_version": 0,
+        "transformation_version": 0,
+        "not_onet_task_label": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_identifier_values": 1,
+        "duplicate_identifier_row_extra": 1
+      },
+      "invalid_identifier_counts": 0,
+      "transformation_version": "norm-v1.0-esco-careercorpus",
+      "source_version": "CareerCorpus-xlsx-raw"
+    }
+  ],
+  "exclusion_log_path": "external_data/normalized/careercorpus/careercorpus_excluded.csv",
+  "note": "CareerCorpus annotator scores are resume-domain labels, not O*NET task-exposure labels."
+}

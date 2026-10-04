@@ -2,6 +2,8 @@ from app import app
 
 
 def login(client, email, password):
+    app.config["TESTING"] = True
+    app.config["WTF_CSRF_ENABLED"] = False
     response = client.post("/login", data={"email": email, "password": password})
     assert response.status_code == 302
 
@@ -59,7 +61,7 @@ def test_job_application_data_isolation_between_users():
     application_id = job_response.json["application"]["id"]
 
     other = app.test_client()
-    login(other, "student", "student")
+    login(other, "student", "Student@123")
     assert all(item["id"] != job_id for item in other.get("/api/jobs").json["jobs"])
     assert all(item["id"] != application_id for item in other.get("/api/applications").json["applications"])
     assert other.post("/api/jobs/analyze", json={"job_posting_id": job_id, "resume_version_id": 1}).status_code == 404
@@ -67,6 +69,8 @@ def test_job_application_data_isolation_between_users():
 
 
 def test_tracker_endpoints_require_authentication():
+    app.config["TESTING"] = True
+    app.config["WTF_CSRF_ENABLED"] = False
     client = app.test_client()
     assert client.post("/api/jobs", json={"title": "Role", "description_raw": "JD"}).status_code == 401
     assert client.get("/api/applications").status_code == 401

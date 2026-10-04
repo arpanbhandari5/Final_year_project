@@ -1,0 +1,221 @@
+{
+  "generated_at": "2026-10-02T07:20:51.000139+00:00",
+  "transformation_version": "normalize-esco-careercorpus-v1.0",
+  "source_version": "ESCO v1.2.1",
+  "tables": {
+    "esco_occupations.csv": {
+      "input_path": "external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/occupations_en.csv",
+      "input_sha256": "8034348d84b6d1dd24a5bcf9609186ecbba0a85457ee2eacd65bddec33a51b4a",
+      "output_path": "external_data/normalized/esco/esco_occupations.csv",
+      "input_row_count": 3043,
+      "output_row_count": 3043,
+      "excluded_row_count": 0,
+      "excluded_rows": [],
+      "column_names": [
+        "occupation_uri",
+        "concept_type",
+        "isco_group",
+        "preferred_label",
+        "alt_labels",
+        "hidden_labels",
+        "status",
+        "modified_date",
+        "regulated_profession_note",
+        "scope_note",
+        "definition",
+        "in_scheme",
+        "description",
+        "esco_occupation_code",
+        "nace_code",
+        "identifier_valid",
+        "source_version",
+        "transformation_version",
+        "source_file",
+        "source_sha256"
+      ],
+      "missing_value_counts": {
+        "occupation_uri": 0,
+        "concept_type": 0,
+        "isco_group": 0,
+        "preferred_label": 0,
+        "alt_labels": 0,
+        "hidden_labels": 3035,
+        "status": 0,
+        "modified_date": 0,
+        "regulated_profession_note": 0,
+        "scope_note": 2733,
+        "definition": 3035,
+        "in_scheme": 0,
+        "description": 0,
+        "esco_occupation_code": 0,
+        "nace_code": 0,
+        "identifier_valid": 0,
+        "source_version": 0,
+        "transformation_version": 0,
+        "source_file": 0,
+        "source_sha256": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_key_count": 4,
+        "duplicate_row_count": 4
+      },
+      "invalid_identifier_counts": 0,
+      "identifier_fields": [
+        "occupation_uri"
+      ],
+      "transformation_version": "normalize-esco-careercorpus-v1.0",
+      "source_version": "ESCO v1.2.1"
+    },
+    "esco_skills.csv": {
+      "input_path": "external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/skills_en.csv",
+      "input_sha256": "d03b10efca94b4bcfa260a992cfde89c375f0fa12095d6662a663cfd2f9f2950",
+      "output_path": "external_data/normalized/esco/esco_skills.csv",
+      "input_row_count": 13960,
+      "output_row_count": 13960,
+      "excluded_row_count": 0,
+      "excluded_rows": [],
+      "column_names": [
+        "skill_uri",
+        "concept_type",
+        "skill_type",
+        "reuse_level",
+        "preferred_label",
+        "alt_labels",
+        "hidden_labels",
+        "status",
+        "modified_date",
+        "scope_note",
+        "definition",
+        "in_scheme",
+        "description",
+        "identifier_valid",
+        "source_version",
+        "transformation_version",
+        "source_file",
+        "source_sha256"
+      ],
+      "missing_value_counts": {
+        "skill_uri": 0,
+        "concept_type": 0,
+        "skill_type": 5,
+        "reuse_level": 5,
+        "preferred_label": 0,
+        "alt_labels": 18,
+        "hidden_labels": 13807,
+        "status": 0,
+        "modified_date": 0,
+        "scope_note": 13724,
+        "definition": 13958,
+        "in_scheme": 0,
+        "description": 0,
+        "identifier_valid": 0,
+        "source_version": 0,
+        "transformation_version": 0,
+        "source_file": 0,
+        "source_sha256": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_key_count": 21,
+        "duplicate_row_count": 21
+      },
+      "invalid_identifier_counts": 0,
+      "identifier_fields": [
+        "skill_uri"
+      ],
+      "transformation_version": "normalize-esco-careercorpus-v1.0",
+      "source_version": "ESCO v1.2.1"
+    },
+    "esco_occupation_skill_relations.csv": {
+      "input_path": "external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/occupationSkillRelations_en.csv",
+      "input_sha256": "e1a46511f0ef4d505f106f1d41f528ef76d289f93e59d4d0cbaac38986102c44",
+      "output_path": "external_data/normalized/esco/esco_occupation_skill_relations.csv",
+      "input_row_count": 126051,
+      "output_row_count": 126051,
+      "excluded_row_count": 0,
+      "excluded_rows": [],
+      "column_names": [
+        "occupation_uri",
+        "occupation_label",
+        "relation_type",
+        "skill_type",
+        "skill_uri",
+        "skill_label",
+        "identifier_valid",
+        "source_version",
+        "transformation_version",
+        "source_file",
+        "source_sha256"
+      ],
+      "missing_value_counts": {
+        "occupation_uri": 0,
+        "occupation_label": 0,
+        "relation_type": 0,
+        "skill_type": 59,
+        "skill_uri": 0,
+        "skill_label": 0,
+        "identifier_valid": 0,
+        "source_version": 0,
+        "transformation_version": 0,
+        "source_file": 0,
+        "source_sha256": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_key_count": 0,
+        "duplicate_row_count": 0
+      },
+      "invalid_identifier_counts": 0,
+      "identifier_fields": [
+        "occupation_uri",
+        "skill_uri",
+        "relation_type"
+      ],
+      "transformation_version": "normalize-esco-careercorpus-v1.0",
+      "source_version": "ESCO v1.2.1"
+    },
+    "esco_skill_relations.csv": {
+      "input_path": "external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/skillSkillRelations_en.csv",
+      "input_sha256": "64a5f8fb7b8dda4932ff06db4738ce1beed3906e45a49b14453349056c609439",
+      "output_path": "external_data/normalized/esco/esco_skill_relations.csv",
+      "input_row_count": 5818,
+      "output_row_count": 5818,
+      "excluded_row_count": 0,
+      "excluded_rows": [],
+      "column_names": [
+        "original_skill_uri",
+        "original_skill_type",
+        "relation_type",
+        "related_skill_type",
+        "related_skill_uri",
+        "identifier_valid",
+        "source_version",
+        "transformation_version",
+        "source_file",
+        "source_sha256"
+      ],
+      "missing_value_counts": {
+        "original_skill_uri": 0,
+        "original_skill_type": 0,
+        "relation_type": 0,
+        "related_skill_type": 0,
+        "related_skill_uri": 0,
+        "identifier_valid": 0,
+        "source_version": 0,
+        "transformation_version": 0,
+        "source_file": 0,
+        "source_sha256": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_key_count": 0,
+        "duplicate_row_count": 0
+      },
+      "invalid_identifier_counts": 0,
+      "identifier_fields": [
+        "original_skill_uri",
+        "related_skill_uri",
+        "relation_type"
+      ],
+      "transformation_version": "normalize-esco-careercorpus-v1.0",
+      "source_version": "ESCO v1.2.1"
+    }
+  }
+}

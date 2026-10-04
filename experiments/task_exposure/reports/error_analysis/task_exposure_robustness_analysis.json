@@ -1,0 +1,3197 @@
+{
+  "limitation": "Weak-supervision sensitivity analysis; labels are provisional AI-generated labels and not human-validated ground truth.",
+  "limitation_long": "The target labels are provisional AI-generated weak supervision and are not human-validated ground truth, personal job-loss probabilities, or employment outcomes.",
+  "inspector": {
+    "task_text_required": 1,
+    "no_task_statement_fallback": 1,
+    "grouping": "occupation_code",
+    "tfidf_inside_pipeline": 1,
+    "grouped_outer_cv": 1,
+    "grouped_inner_alpha": 1,
+    "baselines_from_outer_train_only": 1,
+    "raw_predictions_preserved": 1,
+    "silent_clipping": 0
+  },
+  "dataset": {
+    "path": "C:\\4th project\\project_data\\task_exposure_labels\\task_exposure_training.csv",
+    "n_rows": 248,
+    "n_occupations": 224,
+    "target_counts_verified": {
+      "0.00": 86,
+      "0.25": 66,
+      "0.50": 81,
+      "0.75": 15,
+      "1.00": 0
+    },
+    "resolution_method_counts": {
+      "identical_scores": 205,
+      "deterministic_mean_snap": 43
+    },
+    "subset_b_exclude_snap": {
+      "n_rows": 205,
+      "n_occupations": 188
+    },
+    "subset_c_identical_scores": {
+      "n_rows": 205,
+      "n_occupations": 188
+    },
+    "subsets_b_and_c_identical": 1,
+    "occupation_size_histogram": {
+      "1": 201,
+      "2": 22,
+      "3": 1
+    },
+    "n_single_task_occupations": 201,
+    "n_multi_task_occupations": 23,
+    "n_multi_task_rows": 47
+  },
+  "fold_construction_variants": [
+    {
+      "variant_id": "gkf_noshuffle",
+      "fold_construction": {
+        "splitter": "GroupKFold",
+        "n_splits": 5,
+        "shuffle": 0,
+        "random_state": null,
+        "grouping": "occupation_code",
+        "note": "shuffle=False is deterministic fold construction, not a random seed. shuffle=True with random_state shuffles occupation groups, not rows."
+      },
+      "usable": 1,
+      "n_rows": 248,
+      "n_occupations": 224,
+      "number_of_folds": 5,
+      "folds": [
+        {
+          "fold": 1,
+          "train_row_count": 198,
+          "test_row_count": 50,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.21303030303030304,
+              "rmse": 0.2519221333048213,
+              "r2": -0.01543617998163449
+            },
+            "global_median": {
+              "mae": 0.21,
+              "rmse": 0.25495097567963926,
+              "r2": -0.040000000000000036
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.17186783777314665,
+              "rmse": 0.2105247674374644,
+              "r2": 0.29086915672642444
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.17186783777314665,
+              "rmse": 0.2105247674374644,
+              "r2": 0.29086915672642444
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.04116246525715639,
+            "rmse": -0.04139736586735693,
+            "r2": 0.30630533670805893
+          },
+          "ridge_minus_median": {
+            "mae": -0.03813216222685334,
+            "rmse": -0.04442620824217486,
+            "r2": 0.3308691567264245
+          }
+        },
+        {
+          "fold": 2,
+          "train_row_count": 198,
+          "test_row_count": 50,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.19671717171717173,
+              "rmse": 0.2379834475633791,
+              "r2": -0.0006381857623962706
+            },
+            "global_median": {
+              "mae": 0.19,
+              "rmse": 0.23979157616563598,
+              "r2": -0.01590106007067149
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1634754137675116,
+              "rmse": 0.19228018832652327,
+              "r2": 0.3467902681469387
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1634754137675116,
+              "rmse": 0.19228018832652327,
+              "r2": 0.3467902681469387
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.03324175794966014,
+            "rmse": -0.04570325923685584,
+            "r2": 0.34742845390933497
+          },
+          "ridge_minus_median": {
+            "mae": -0.026524586232488406,
+            "rmse": -0.04751138783911271,
+            "r2": 0.3626913282176102
+          }
+        },
+        {
+          "fold": 3,
+          "train_row_count": 198,
+          "test_row_count": 50,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.20944444444444443,
+              "rmse": 0.23170729726303027,
+              "r2": -0.003050380288430965
+            },
+            "global_median": {
+              "mae": 0.205,
+              "rmse": 0.2318404623873926,
+              "r2": -0.004203643157402848
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.16340520278855458,
+              "rmse": 0.18440900606335206,
+              "r2": 0.3646579819285677
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1603194875852805,
+              "rmse": 0.18376233218440033,
+              "r2": 0.3691061236833276
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.04603924165588985,
+            "rmse": -0.04729829119967821,
+            "r2": 0.36770836221699865
+          },
+          "ridge_minus_median": {
+            "mae": -0.041594797211445406,
+            "rmse": -0.04743145632404053,
+            "r2": 0.36886162508597053
+          }
+        },
+        {
+          "fold": 4,
+          "train_row_count": 199,
+          "test_row_count": 49,
+          "train_occupation_count": 180,
+          "test_occupation_count": 44,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.1912367962260281,
+              "rmse": 0.2261528009072287,
+              "r2": -0.028685734441895594
+            },
+            "global_median": {
+              "mae": 0.17857142857142858,
+              "rmse": 0.22303564279994278,
+              "r2": -0.0005235602094242342
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.14737244414045633,
+              "rmse": 0.18875732893561661,
+              "r2": 0.28338413006234564
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1455766200777521,
+              "rmse": 0.18853504704866622,
+              "r2": 0.28507091952663177
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.04386435208557177,
+            "rmse": -0.03739547197161208,
+            "r2": 0.31206986450424123
+          },
+          "ridge_minus_median": {
+            "mae": -0.031198984430972243,
+            "rmse": -0.03427831386432617,
+            "r2": 0.2839076902717699
+          }
+        },
+        {
+          "fold": 5,
+          "train_row_count": 199,
+          "test_row_count": 49,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.21241411137319252,
+              "rmse": 0.24258011328919965,
+              "r2": -0.0029253762805725447
+            },
+            "global_median": {
+              "mae": 0.20918367346938777,
+              "rmse": 0.24484480715718013,
+              "r2": -0.021739130434782705
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1789375051374259,
+              "rmse": 0.22113643761545881,
+              "r2": 0.16655134677512018
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1782502747074023,
+              "rmse": 0.22110865495159282,
+              "r2": 0.16676075567630466
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.03347660623576662,
+            "rmse": -0.021443675673740836,
+            "r2": 0.16947672305569272
+          },
+          "ridge_minus_median": {
+            "mae": -0.030246168331961865,
+            "rmse": -0.023708369541721314,
+            "r2": 0.18829047720990288
+          }
+        }
+      ],
+      "pooled_oof": {
+        "global_mean": {
+          "mae": 0.20459068722563617,
+          "rmse": 0.23826470729200908,
+          "r2": -0.003491636464569181
+        },
+        "global_median": {
+          "mae": 0.19858870967741934,
+          "rmse": 0.23918123105779554,
+          "r2": -0.011226670977708464
+        },
+        "tfidf_ridge_raw": {
+          "mae": 0.16502665415756804,
+          "rmse": 0.1998684397174096,
+          "r2": 0.2938730840632441
+        },
+        "tfidf_ridge_clipped": {
+          "mae": 0.16391393064826412,
+          "rmse": 0.19970076126760683,
+          "r2": 0.2950573891026357
+        }
+      },
+      "fold_statistics": {
+        "global_mean": {
+          "mae": {
+            "mean": 0.20456856535822796,
+            "std": 0.009953746077086245,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.2380691584655318,
+            "std": 0.009933954739869848,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.010147171350985973,
+            "std": 0.011880567201519946,
+            "n": 5
+          }
+        },
+        "global_median": {
+          "mae": {
+            "mean": 0.19855102040816325,
+            "std": 0.013766134375469455,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.23889269283795816,
+            "std": 0.012199222251493143,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.016473478774456263,
+            "std": 0.015704304504314804,
+            "n": 5
+          }
+        },
+        "tfidf_ridge_raw": {
+          "mae": {
+            "mean": 0.165011680721419,
+            "std": 0.011800625299587185,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.19942154567568302,
+            "std": 0.015691708913680755,
+            "n": 5
+          },
+          "r2": {
+            "mean": 0.2904505767278794,
+            "std": 0.07759192753823152,
+            "n": 5
+          }
+        }
+      },
+      "ridge_minus_baseline_pooled": {
+        "vs_mean": {
+          "mae": -0.03956403306806813,
+          "rmse": -0.03839626757459946,
+          "r2": 0.29736472052781326
+        },
+        "vs_median": {
+          "mae": -0.03356205551985131,
+          "rmse": -0.03931279134038593,
+          "r2": 0.30509975504095255
+        }
+      },
+      "prediction_range_raw": {
+        "raw_min": -0.07821327172285225,
+        "raw_max": 0.6386714473460542,
+        "below_zero_count": 7,
+        "above_one_count": 0
+      },
+      "descriptive_uncertainty": {
+        "kind": "descriptive uncertainty, not formal prediction intervals",
+        "residual_quantiles": {
+          "p10": -0.2421750530646577,
+          "p50": 0.015676963574744185,
+          "p90": 0.27472501074076267
+        },
+        "abs_error_quantiles": {
+          "p10": 0.03632585946469275,
+          "p50": 0.1551997450864584,
+          "p90": 0.3200941216087887
+        }
+      }
+    },
+    {
+      "variant_id": "gkf_shuffle_rs0",
+      "fold_construction": {
+        "splitter": "GroupKFold",
+        "n_splits": 5,
+        "shuffle": 1,
+        "random_state": 0,
+        "grouping": "occupation_code",
+        "note": "shuffle=False is deterministic fold construction, not a random seed. shuffle=True with random_state shuffles occupation groups, not rows."
+      },
+      "usable": 1,
+      "n_rows": 248,
+      "n_occupations": 224,
+      "number_of_folds": 5,
+      "folds": [
+        {
+          "fold": 1,
+          "train_row_count": 199,
+          "test_row_count": 49,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.20221002974053945,
+              "rmse": 0.23182551746318697,
+              "r2": -0.0032039835453889776
+            },
+            "global_median": {
+              "mae": 0.1989795918367347,
+              "rmse": 0.23419423301078574,
+              "r2": -0.023809523809523725
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.16977164658843327,
+              "rmse": 0.20721554233939085,
+              "r2": 0.1984854215758528
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.16840573476760434,
+              "rmse": 0.2069948331408206,
+              "r2": 0.20019192898940508
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.032438383152106176,
+            "rmse": -0.02460997512379612,
+            "r2": 0.20168940512124178
+          },
+          "ridge_minus_median": {
+            "mae": -0.02920794524830142,
+            "rmse": -0.026978690671394884,
+            "r2": 0.22229494538537653
+          }
+        },
+        {
+          "fold": 2,
+          "train_row_count": 196,
+          "test_row_count": 52,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.200206043956044,
+              "rmse": 0.23061025868818602,
+              "r2": -0.007367223668480083
+            },
+            "global_median": {
+              "mae": 0.19230769230769232,
+              "rmse": 0.22996655275194997,
+              "r2": -0.0017513134851139256
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.14372998957172015,
+              "rmse": 0.17579973346542538,
+              "r2": 0.41458075545544315
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1421278326206264,
+              "rmse": 0.1755775009692489,
+              "r2": 0.4160599038793398
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.05647605438432385,
+            "rmse": -0.05481052522276064,
+            "r2": 0.42194797912392323
+          },
+          "ridge_minus_median": {
+            "mae": -0.04857770273597217,
+            "rmse": -0.05416681928652459,
+            "r2": 0.4163320689405571
+          }
+        },
+        {
+          "fold": 3,
+          "train_row_count": 199,
+          "test_row_count": 49,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.19098041226540868,
+              "rmse": 0.23501235311692278,
+              "r2": -0.0008238904773225642
+            },
+            "global_median": {
+              "mae": 0.1836734693877551,
+              "rmse": 0.23690177073967142,
+              "r2": -0.016981132075471583
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.16179143416821673,
+              "rmse": 0.20519272773315253,
+              "r2": 0.23704273743029014
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.16064138177202533,
+              "rmse": 0.20503474610267006,
+              "r2": 0.23821711464425144
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.029188978097191953,
+            "rmse": -0.029819625383770254,
+            "r2": 0.2378666279076127
+          },
+          "ridge_minus_median": {
+            "mae": -0.02188203521953838,
+            "rmse": -0.03170904300651889,
+            "r2": 0.2540238695057617
+          }
+        },
+        {
+          "fold": 4,
+          "train_row_count": 196,
+          "test_row_count": 52,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.22630494505494506,
+              "rmse": 0.25414779334753684,
+              "r2": -0.0008844512016839001
+            },
+            "global_median": {
+              "mae": 0.22115384615384615,
+              "rmse": 0.25476233268253407,
+              "r2": -0.005730659025787954
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.17798559409573309,
+              "rmse": 0.21000800774254275,
+              "r2": 0.3165874246049163
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.17798559409573309,
+              "rmse": 0.21000800774254275,
+              "r2": 0.3165874246049163
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.04831935095921197,
+            "rmse": -0.0441397856049941,
+            "r2": 0.3174718758066002
+          },
+          "ridge_minus_median": {
+            "mae": -0.04316825205811306,
+            "rmse": -0.04475432493999132,
+            "r2": 0.32231808363070424
+          }
+        },
+        {
+          "fold": 5,
+          "train_row_count": 202,
+          "test_row_count": 46,
+          "train_occupation_count": 180,
+          "test_occupation_count": 44,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.20076409814894533,
+              "rmse": 0.2368218494161854,
+              "r2": -0.0014767001828646098
+            },
+            "global_median": {
+              "mae": 0.1956521739130435,
+              "rmse": 0.23888327147647728,
+              "r2": -0.018987341772151778
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1546532320520086,
+              "rmse": 0.18539991178448906,
+              "r2": 0.3862148747257601
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.15325945620290216,
+              "rmse": 0.18527745958452513,
+              "r2": 0.3870253877157658
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.04611086609693674,
+            "rmse": -0.051421937631696335,
+            "r2": 0.3876915749086247
+          },
+          "ridge_minus_median": {
+            "mae": -0.04099894186103489,
+            "rmse": -0.053483359691988225,
+            "r2": 0.4052022164979119
+          }
+        }
+      ],
+      "pooled_oof": {
+        "global_mean": {
+          "mae": 0.20435504678110636,
+          "rmse": 0.23796656226465437,
+          "r2": -0.0009818325049861798
+        },
+        "global_median": {
+          "mae": 0.19858870967741934,
+          "rmse": 0.23918123105779554,
+          "r2": -0.011226670977708242
+        },
+        "tfidf_ridge_raw": {
+          "mae": 0.16165262089587018,
+          "rmse": 0.19724617870326255,
+          "r2": 0.31228021554576735
+        },
+        "tfidf_ridge_clipped": {
+          "mae": 0.16056105598800827,
+          "rmse": 0.19710503535451818,
+          "r2": 0.3132640860054655
+        }
+      },
+      "fold_statistics": {
+        "global_mean": {
+          "mae": {
+            "mean": 0.20409310583317647,
+            "std": 0.013181863032068569,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.2376835544064036,
+            "std": 0.009530177397027629,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.002751249815148027,
+            "std": 0.002753920400566775,
+            "n": 5
+          }
+        },
+        "global_median": {
+          "mae": {
+            "mean": 0.19835335471981436,
+            "std": 0.013960659258023835,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.2389416321322837,
+            "std": 0.009454481142162163,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.013451994033609794,
+            "std": 0.0093126023828601,
+            "n": 5
+          }
+        },
+        "tfidf_ridge_raw": {
+          "mae": {
+            "mean": 0.16158637929522235,
+            "std": 0.01325607482335189,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.19672318461300012,
+            "std": 0.015201287547274957,
+            "n": 5
+          },
+          "r2": {
+            "mean": 0.3105822427584525,
+            "std": 0.09293250781299832,
+            "n": 5
+          }
+        }
+      },
+      "ridge_minus_baseline_pooled": {
+        "vs_mean": {
+          "mae": -0.04270242588523618,
+          "rmse": -0.04072038356139182,
+          "r2": 0.3132620480507535
+        },
+        "vs_median": {
+          "mae": -0.036936088781549165,
+          "rmse": -0.04193505235453299,
+          "r2": 0.3235068865234756
+        }
+      },
+      "prediction_range_raw": {
+        "raw_min": -0.06692967922061743,
+        "raw_max": 0.5985487587828993,
+        "below_zero_count": 6,
+        "above_one_count": 0
+      },
+      "descriptive_uncertainty": {
+        "kind": "descriptive uncertainty, not formal prediction intervals",
+        "residual_quantiles": {
+          "p10": -0.2531108724631484,
+          "p50": 0.004399554747609363,
+          "p90": 0.2673497805639462
+        },
+        "abs_error_quantiles": {
+          "p10": 0.031185212886837607,
+          "p50": 0.146526253972013,
+          "p90": 0.3038779386724073
+        }
+      }
+    },
+    {
+      "variant_id": "gkf_shuffle_rs1",
+      "fold_construction": {
+        "splitter": "GroupKFold",
+        "n_splits": 5,
+        "shuffle": 1,
+        "random_state": 1,
+        "grouping": "occupation_code",
+        "note": "shuffle=False is deterministic fold construction, not a random seed. shuffle=True with random_state shuffles occupation groups, not rows."
+      },
+      "usable": 1,
+      "n_rows": 248,
+      "n_occupations": 224,
+      "number_of_folds": 5,
+      "folds": [
+        {
+          "fold": 1,
+          "train_row_count": 198,
+          "test_row_count": 50,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.21929292929292926,
+              "rmse": 0.25196668021380425,
+              "r2": -0.11576815356705605
+            },
+            "global_median": {
+              "mae": 0.22,
+              "rmse": 0.25495097567963926,
+              "r2": -0.14235500878734597
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.16655249067158756,
+              "rmse": 0.196467553007645,
+              "r2": 0.32162566986271013
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.16522195807804557,
+              "rmse": 0.19624215534815123,
+              "r2": 0.3231813086873828
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.0527404386213417,
+            "rmse": -0.05549912720615924,
+            "r2": 0.4373938234297662
+          },
+          "ridge_minus_median": {
+            "mae": -0.05344750932841244,
+            "rmse": -0.058483422671994245,
+            "r2": 0.4639806786500561
+          }
+        },
+        {
+          "fold": 2,
+          "train_row_count": 200,
+          "test_row_count": 48,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.239375,
+              "rmse": 0.258831508901061,
+              "r2": -0.009259337964854897
+            },
+            "global_median": {
+              "mae": 0.234375,
+              "rmse": 0.2576941016011038,
+              "r2": -0.000408663669799747
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1914586122794036,
+              "rmse": 0.23334929148561853,
+              "r2": 0.17968347336604984
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.19093581377166205,
+              "rmse": 0.23332117897742316,
+              "r2": 0.17988111498558867
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.04791638772059639,
+            "rmse": -0.02548221741544246,
+            "r2": 0.18894281133090474
+          },
+          "ridge_minus_median": {
+            "mae": -0.04291638772059639,
+            "rmse": -0.024344810115485255,
+            "r2": 0.1800921370358496
+          }
+        },
+        {
+          "fold": 3,
+          "train_row_count": 199,
+          "test_row_count": 49,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.20195364577992003,
+              "rmse": 0.2343533027177458,
+              "r2": -0.09660250027286232
+            },
+            "global_median": {
+              "mae": 0.1836734693877551,
+              "rmse": 0.22587697572631282,
+              "r2": -0.01871101871101888
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1515458054916353,
+              "rmse": 0.18184192569174817,
+              "r2": 0.3397702059025436
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1514618638136013,
+              "rmse": 0.18184097633708146,
+              "r2": 0.3397770996988734
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.05040784028828474,
+            "rmse": -0.05251137702599762,
+            "r2": 0.4363727061754059
+          },
+          "ridge_minus_median": {
+            "mae": -0.03212766389611982,
+            "rmse": -0.04403505003456465,
+            "r2": 0.35848122461356247
+          }
+        },
+        {
+          "fold": 4,
+          "train_row_count": 196,
+          "test_row_count": 52,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.189217032967033,
+              "rmse": 0.22819680180918714,
+              "r2": -0.0004085405503775341
+            },
+            "global_median": {
+              "mae": 0.18269230769230768,
+              "rmse": 0.22996655275194997,
+              "r2": -0.01598579040852588
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.13755371020708698,
+              "rmse": 0.1660203202759864,
+              "r2": 0.4704819382078925
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1369110968702534,
+              "rmse": 0.16597749952864604,
+              "r2": 0.47075505459460243
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.05166332275994601,
+            "rmse": -0.06217648153320074,
+            "r2": 0.47089047875827006
+          },
+          "ridge_minus_median": {
+            "mae": -0.0451385974852207,
+            "rmse": -0.06394623247596357,
+            "r2": 0.4864677286164184
+          }
+        },
+        {
+          "fold": 5,
+          "train_row_count": 199,
+          "test_row_count": 49,
+          "train_occupation_count": 180,
+          "test_occupation_count": 44,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.1807763306327556,
+              "rmse": 0.22389454057932426,
+              "r2": -0.0009078211080686405
+            },
+            "global_median": {
+              "mae": 0.17346938775510204,
+              "rmse": 0.22587697572631282,
+              "r2": -0.01871101871101888
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1667320211931987,
+              "rmse": 0.19598095261342416,
+              "r2": 0.23310694700021817
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1667320211931987,
+              "rmse": 0.19598095261342416,
+              "r2": 0.23310694700021817
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.014044309439556923,
+            "rmse": -0.0279135879659001,
+            "r2": 0.2340147681082868
+          },
+          "ridge_minus_median": {
+            "mae": -0.006737366561903352,
+            "rmse": -0.029896023112888664,
+            "r2": 0.25181796571123705
+          }
+        }
+      ],
+      "pooled_oof": {
+        "global_mean": {
+          "mae": 0.2058375041256181,
+          "rmse": 0.23966844141882887,
+          "r2": -0.015350589080356025
+        },
+        "global_median": {
+          "mae": 0.19858870967741934,
+          "rmse": 0.23918123105779554,
+          "r2": -0.011226670977708464
+        },
+        "tfidf_ridge_raw": {
+          "mae": 0.1623630821020812,
+          "rmse": 0.1955060078146879,
+          "r2": 0.3243612697362632
+        },
+        "tfidf_ridge_clipped": {
+          "mae": 0.16184231599809853,
+          "rmse": 0.19544606638371217,
+          "r2": 0.3247755029803683
+        }
+      },
+      "fold_statistics": {
+        "global_mean": {
+          "mae": {
+            "mean": 0.20612298773452756,
+            "std": 0.023583847361725543,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.23944856684422447,
+            "std": 0.015222460963029342,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.04458927069264389,
+            "std": 0.05674508683330532,
+            "n": 5
+          }
+        },
+        "global_median": {
+          "mae": {
+            "mean": 0.19884203296703296,
+            "std": 0.026668902244431896,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.23887311629706373,
+            "std": 0.01604566346239186,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.039234300057541874,
+            "std": 0.058146827009751205,
+            "n": 5
+          }
+        },
+        "tfidf_ridge_raw": {
+          "mae": {
+            "mean": 0.16276852796858243,
+            "std": 0.020092816655345645,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.19473200861488443,
+            "std": 0.02493181600287255,
+            "n": 5
+          },
+          "r2": {
+            "mean": 0.3089336468678828,
+            "std": 0.11142837051078018,
+            "n": 5
+          }
+        }
+      },
+      "ridge_minus_baseline_pooled": {
+        "vs_mean": {
+          "mae": -0.04347442202353691,
+          "rmse": -0.04416243360414096,
+          "r2": 0.33971185881661925
+        },
+        "vs_median": {
+          "mae": -0.03622562757533815,
+          "rmse": -0.04367522324310763,
+          "r2": 0.3355879407139717
+        }
+      },
+      "prediction_range_raw": {
+        "raw_min": -0.06652662967709988,
+        "raw_max": 0.5612525263881152,
+        "below_zero_count": 5,
+        "above_one_count": 0
+      },
+      "descriptive_uncertainty": {
+        "kind": "descriptive uncertainty, not formal prediction intervals",
+        "residual_quantiles": {
+          "p10": -0.2493282092185593,
+          "p50": 0.01311441319790968,
+          "p90": 0.25501741033473657
+        },
+        "abs_error_quantiles": {
+          "p10": 0.03119874073046798,
+          "p50": 0.14816025128955482,
+          "p90": 0.29517710464485847
+        }
+      }
+    },
+    {
+      "variant_id": "gkf_shuffle_rs2",
+      "fold_construction": {
+        "splitter": "GroupKFold",
+        "n_splits": 5,
+        "shuffle": 1,
+        "random_state": 2,
+        "grouping": "occupation_code",
+        "note": "shuffle=False is deterministic fold construction, not a random seed. shuffle=True with random_state shuffles occupation groups, not rows."
+      },
+      "usable": 1,
+      "n_rows": 248,
+      "n_occupations": 224,
+      "number_of_folds": 5,
+      "folds": [
+        {
+          "fold": 1,
+          "train_row_count": 196,
+          "test_row_count": 52,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.1935832025117739,
+              "rmse": 0.2263764577422617,
+              "r2": -0.034104454300757814
+            },
+            "global_median": {
+              "mae": 0.19230769230769232,
+              "rmse": 0.22996655275194997,
+              "r2": -0.0671641791044777
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1589880278303958,
+              "rmse": 0.18826966705295126,
+              "r2": 0.28474220740934675
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.15890221852618075,
+              "rmse": 0.18826865018882258,
+              "r2": 0.28474993375251456
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.0345951746813781,
+            "rmse": -0.038106790689310444,
+            "r2": 0.31884666171010456
+          },
+          "ridge_minus_median": {
+            "mae": -0.03331966447729651,
+            "rmse": -0.04169688569899871,
+            "r2": 0.35190638651382444
+          }
+        },
+        {
+          "fold": 2,
+          "train_row_count": 197,
+          "test_row_count": 51,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.19391360605155772,
+              "rmse": 0.23616960454198324,
+              "r2": -0.011847180937074375
+            },
+            "global_median": {
+              "mae": 0.18137254901960784,
+              "rmse": 0.23483410915693106,
+              "r2": -0.00043591979075841003
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1652477200300278,
+              "rmse": 0.19876579561705043,
+              "r2": 0.28327884386794877
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1652477200300278,
+              "rmse": 0.19876579561705043,
+              "r2": 0.28327884386794877
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.02866588602152992,
+            "rmse": -0.03740380892493281,
+            "r2": 0.29512602480502315
+          },
+          "ridge_minus_median": {
+            "mae": -0.016124828989580037,
+            "rmse": -0.03606831353988063,
+            "r2": 0.2837147636587072
+          }
+        },
+        {
+          "fold": 3,
+          "train_row_count": 196,
+          "test_row_count": 52,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.21516875981161696,
+              "rmse": 0.24888645453142502,
+              "r2": -0.03234415680677505
+            },
+            "global_median": {
+              "mae": 0.20192307692307693,
+              "rmse": 0.24514516892273006,
+              "r2": -0.0015408320493068839
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.16634134066984693,
+              "rmse": 0.21420638196802608,
+              "r2": 0.2353075654788941
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.16588673629611284,
+              "rmse": 0.21418129584239548,
+              "r2": 0.23548666422483922
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.04882741914177002,
+            "rmse": -0.034680072563398945,
+            "r2": 0.26765172228566914
+          },
+          "ridge_minus_median": {
+            "mae": -0.035581736253229995,
+            "rmse": -0.03093878695470398,
+            "r2": 0.23684839752820097
+          }
+        },
+        {
+          "fold": 4,
+          "train_row_count": 202,
+          "test_row_count": 46,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.22282608695652173,
+              "rmse": 0.24917310600974688,
+              "r2": -0.02989979798985054
+            },
+            "global_median": {
+              "mae": 0.22282608695652173,
+              "rmse": 0.2527027812513624,
+              "r2": -0.059284664380205854
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.16185623175639718,
+              "rmse": 0.1912415790762577,
+              "r2": 0.393323345364034
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.16001262723984866,
+              "rmse": 0.1909975765762774,
+              "r2": 0.39487045855991243
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.060969855200124545,
+            "rmse": -0.057931526933489186,
+            "r2": 0.42322314335388456
+          },
+          "ridge_minus_median": {
+            "mae": -0.060969855200124545,
+            "rmse": -0.06146120217510473,
+            "r2": 0.45260800974423987
+          }
+        },
+        {
+          "fold": 5,
+          "train_row_count": 201,
+          "test_row_count": 47,
+          "train_occupation_count": 180,
+          "test_occupation_count": 44,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.20321266010373668,
+              "rmse": 0.2332310599594218,
+              "r2": -0.0023972527342486227
+            },
+            "global_median": {
+              "mae": 0.19680851063829788,
+              "rmse": 0.23349791561327626,
+              "r2": -0.004692387904066564
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.15048939476514545,
+              "rmse": 0.18672949193465208,
+              "r2": 0.3574707146910966
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.15034106339852668,
+              "rmse": 0.18672672292695577,
+              "r2": 0.357489770656237
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.05272326533859123,
+            "rmse": -0.046501568024769735,
+            "r2": 0.3598679674253452
+          },
+          "ridge_minus_median": {
+            "mae": -0.04631911587315243,
+            "rmse": -0.04676842367862419,
+            "r2": 0.36216310259516316
+          }
+        }
+      ],
+      "pooled_oof": {
+        "global_mean": {
+          "mae": 0.205426173283554,
+          "rmse": 0.23880717684019231,
+          "r2": -0.008066240494157162
+        },
+        "global_median": {
+          "mae": 0.19858870967741934,
+          "rmse": 0.23918123105779554,
+          "r2": -0.011226670977708242
+        },
+        "tfidf_ridge_raw": {
+          "mae": 0.16073850442862964,
+          "rmse": 0.19639099456467404,
+          "r2": 0.318230669015826
+        },
+        "tfidf_ridge_clipped": {
+          "mae": 0.16025512179457452,
+          "rmse": 0.19634050418999674,
+          "r2": 0.31858117759331983
+        }
+      },
+      "fold_statistics": {
+        "global_mean": {
+          "mae": {
+            "mean": 0.20574086308704137,
+            "std": 0.012989174736016964,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.23876733655696772,
+            "std": 0.010020092744983913,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.02211856855374128,
+            "std": 0.014170421174249543,
+            "n": 5
+          }
+        },
+        "global_median": {
+          "mae": {
+            "mean": 0.1990475831690393,
+            "std": 0.01530140609147721,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.23922930553924998,
+            "std": 0.009414047459225769,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.02662359664576308,
+            "std": 0.033564123656744514,
+            "n": 5
+          }
+        },
+        "tfidf_ridge_raw": {
+          "mae": {
+            "mean": 0.16058454301036265,
+            "std": 0.006343579633939821,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.1958425831297875,
+            "std": 0.011262115768753665,
+            "n": 5
+          },
+          "r2": {
+            "mean": 0.31082453536226406,
+            "std": 0.06348973418867628,
+            "n": 5
+          }
+        }
+      },
+      "ridge_minus_baseline_pooled": {
+        "vs_mean": {
+          "mae": -0.04468766885492437,
+          "rmse": -0.04241618227551827,
+          "r2": 0.32629690950998314
+        },
+        "vs_median": {
+          "mae": -0.03785020524878971,
+          "rmse": -0.0427902364931215,
+          "r2": 0.3294573399935342
+        }
+      },
+      "prediction_range_raw": {
+        "raw_min": -0.061034647293179256,
+        "raw_max": 0.5839525308408176,
+        "below_zero_count": 5,
+        "above_one_count": 0
+      },
+      "descriptive_uncertainty": {
+        "kind": "descriptive uncertainty, not formal prediction intervals",
+        "residual_quantiles": {
+          "p10": -0.25592061543817357,
+          "p50": 0.005394969724664717,
+          "p90": 0.2659191012255424
+        },
+        "abs_error_quantiles": {
+          "p10": 0.023585377375001326,
+          "p50": 0.14784059655095033,
+          "p90": 0.2962073127271552
+        }
+      }
+    },
+    {
+      "variant_id": "gkf_shuffle_rs3",
+      "fold_construction": {
+        "splitter": "GroupKFold",
+        "n_splits": 5,
+        "shuffle": 1,
+        "random_state": 3,
+        "grouping": "occupation_code",
+        "note": "shuffle=False is deterministic fold construction, not a random seed. shuffle=True with random_state shuffles occupation groups, not rows."
+      },
+      "usable": 1,
+      "n_rows": 248,
+      "n_occupations": 224,
+      "number_of_folds": 5,
+      "folds": [
+        {
+          "fold": 1,
+          "train_row_count": 200,
+          "test_row_count": 48,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.21328124999999998,
+              "rmse": 0.24815254884848553,
+              "r2": -0.0009142857142856453
+            },
+            "global_median": {
+              "mae": 0.20833333333333334,
+              "rmse": 0.25,
+              "r2": -0.015873015873015817
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.16867705476975522,
+              "rmse": 0.21055287829588912,
+              "r2": 0.27942071574457306
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.16760790919678695,
+              "rmse": 0.21042254415909434,
+              "r2": 0.280312529832456
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.04460419523024475,
+            "rmse": -0.037599670552596415,
+            "r2": 0.2803350014588587
+          },
+          "ridge_minus_median": {
+            "mae": -0.03965627856357812,
+            "rmse": -0.03944712170411088,
+            "r2": 0.2952937316175889
+          }
+        },
+        {
+          "fold": 2,
+          "train_row_count": 199,
+          "test_row_count": 49,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.21333709363142242,
+              "rmse": 0.24778242829459116,
+              "r2": -0.0028034856022152166
+            },
+            "global_median": {
+              "mae": 0.20918367346938777,
+              "rmse": 0.25,
+              "r2": -0.02083333333333326
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1759194096061743,
+              "rmse": 0.2141678901947692,
+              "r2": 0.25082454188884773
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.17577229107931586,
+              "rmse": 0.21416541420428373,
+              "r2": 0.250841864192224
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.037417684025248116,
+            "rmse": -0.033614538099821956,
+            "r2": 0.25362802749106295
+          },
+          "ridge_minus_median": {
+            "mae": -0.03326426386321346,
+            "rmse": -0.0358321098052308,
+            "r2": 0.271657875222181
+          }
+        },
+        {
+          "fold": 3,
+          "train_row_count": 196,
+          "test_row_count": 52,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.1964776295133438,
+              "rmse": 0.23257400618153348,
+              "r2": -0.005231389841861223
+            },
+            "global_median": {
+              "mae": 0.19230769230769232,
+              "rmse": 0.23513498578149006,
+              "r2": -0.027491408934707806
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.16008687723147258,
+              "rmse": 0.19382785211464273,
+              "r2": 0.30180608361143524
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.16008687723147258,
+              "rmse": 0.19382785211464273,
+              "r2": 0.30180608361143524
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.03639075228187122,
+            "rmse": -0.03874615406689075,
+            "r2": 0.30703747345329646
+          },
+          "ridge_minus_median": {
+            "mae": -0.03222081507621974,
+            "rmse": -0.04130713366684732,
+            "r2": 0.32929749254614304
+          }
+        },
+        {
+          "fold": 4,
+          "train_row_count": 196,
+          "test_row_count": 52,
+          "train_occupation_count": 179,
+          "test_occupation_count": 45,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.1828885400313972,
+              "rmse": 0.2104425329981525,
+              "r2": -0.023500046277014075
+            },
+            "global_median": {
+              "mae": 0.17307692307692307,
+              "rmse": 0.20801257358446093,
+              "r2": 0.0
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.13073125785624168,
+              "rmse": 0.15511814263741358,
+              "r2": 0.4439088066157284
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.12997838945729379,
+              "rmse": 0.15506153024152505,
+              "r2": 0.4443146380605083
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.05215728217515553,
+            "rmse": -0.05532439036073891,
+            "r2": 0.4674088528927425
+          },
+          "ridge_minus_median": {
+            "mae": -0.042345665220681394,
+            "rmse": -0.05289443094704735,
+            "r2": 0.4439088066157284
+          }
+        },
+        {
+          "fold": 5,
+          "train_row_count": 201,
+          "test_row_count": 47,
+          "train_occupation_count": 180,
+          "test_occupation_count": 44,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.21887900920927275,
+              "rmse": 0.2517946514315338,
+              "r2": -0.0003700513954747464
+            },
+            "global_median": {
+              "mae": 0.2127659574468085,
+              "rmse": 0.25264557631995566,
+              "r2": -0.0071428571428571175
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.17091717383965824,
+              "rmse": 0.20612821056882638,
+              "r2": 0.3295868158871078
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1699971186316098,
+              "rmse": 0.20603168110213327,
+              "r2": 0.3302145754167396
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.047961835369614514,
+            "rmse": -0.04566644086270741,
+            "r2": 0.32995686728258256
+          },
+          "ridge_minus_median": {
+            "mae": -0.041848783607150275,
+            "rmse": -0.046517365751129275,
+            "r2": 0.3367296730299649
+          }
+        }
+      ],
+      "pooled_oof": {
+        "global_mean": {
+          "mae": 0.20445714450444374,
+          "rmse": 0.23810111534779932,
+          "r2": -0.002114119897621558
+        },
+        "global_median": {
+          "mae": 0.19858870967741934,
+          "rmse": 0.23918123105779554,
+          "r2": -0.011226670977708242
+        },
+        "tfidf_ridge_raw": {
+          "mae": 0.16077499957530594,
+          "rmse": 0.19651467138841938,
+          "r2": 0.31737171297816424
+        },
+        "tfidf_ridge_clipped": {
+          "mae": 0.16020677559610388,
+          "rmse": 0.1964585581498668,
+          "r2": 0.3177614957345135
+        }
+      },
+      "fold_statistics": {
+        "global_mean": {
+          "mae": {
+            "mean": 0.2049727044770872,
+            "std": 0.014935334477672226,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.23814923355085932,
+            "std": 0.017159593546975847,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.006563851766170181,
+            "std": 0.009657008498786288,
+            "n": 5
+          }
+        },
+        "global_median": {
+          "mae": {
+            "mean": 0.19913351592682899,
+            "std": 0.01656067380697616,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.23915862713718133,
+            "std": 0.018729888354100083,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.0142681230567828,
+            "std": 0.010895890351915937,
+            "n": 5
+          }
+        },
+        "tfidf_ridge_raw": {
+          "mae": {
+            "mean": 0.1612663546606604,
+            "std": 0.018003833689176355,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.1959589947623082,
+            "std": 0.02408565564217513,
+            "n": 5
+          },
+          "r2": {
+            "mean": 0.3211093927495384,
+            "std": 0.07450182303733957,
+            "n": 5
+          }
+        }
+      },
+      "ridge_minus_baseline_pooled": {
+        "vs_mean": {
+          "mae": -0.0436821449291378,
+          "rmse": -0.04158644395937994,
+          "r2": 0.3194858328757858
+        },
+        "vs_median": {
+          "mae": -0.0378137101021134,
+          "rmse": -0.04266655966937616,
+          "r2": 0.3285983839558725
+        }
+      },
+      "prediction_range_raw": {
+        "raw_min": -0.05131898750247621,
+        "raw_max": 0.5916989628303335,
+        "below_zero_count": 5,
+        "above_one_count": 0
+      },
+      "descriptive_uncertainty": {
+        "kind": "descriptive uncertainty, not formal prediction intervals",
+        "residual_quantiles": {
+          "p10": -0.23133828323919609,
+          "p50": 0.011558049513188118,
+          "p90": 0.2604609764860495
+        },
+        "abs_error_quantiles": {
+          "p10": 0.02983028551993885,
+          "p50": 0.14799624284519833,
+          "p90": 0.29606521081141174
+        }
+      }
+    }
+  ],
+  "weak_label_sensitivity": {
+    "note": "Weak-supervision sensitivity analysis; labels are provisional AI-generated labels and not human-validated ground truth.",
+    "full_dataset": {
+      "n_rows": 248,
+      "n_occupations": 224,
+      "run_variant": "gkf_noshuffle",
+      "pooled": {
+        "global_mean": {
+          "mae": 0.20459068722563617,
+          "rmse": 0.23826470729200908,
+          "r2": -0.003491636464569181
+        },
+        "global_median": {
+          "mae": 0.19858870967741934,
+          "rmse": 0.23918123105779554,
+          "r2": -0.011226670977708464
+        },
+        "tfidf_ridge_raw": {
+          "mae": 0.16502665415756804,
+          "rmse": 0.1998684397174096,
+          "r2": 0.2938730840632441
+        },
+        "tfidf_ridge_clipped": {
+          "mae": 0.16391393064826412,
+          "rmse": 0.19970076126760683,
+          "r2": 0.2950573891026357
+        }
+      },
+      "usable_folds": 5
+    },
+    "exclude_snap_and_identical_scores_same_table": 1,
+    "identical_scores_or_exclude_snap": {
+      "n_rows": 205,
+      "n_occupations": 188,
+      "usable_folds": 5,
+      "run": {
+        "variant_id": "identical_scores_gkf_noshuffle",
+        "fold_construction": {
+          "splitter": "GroupKFold",
+          "n_splits": 5,
+          "shuffle": 0,
+          "random_state": null,
+          "grouping": "occupation_code",
+          "note": "shuffle=False is deterministic fold construction, not a random seed. shuffle=True with random_state shuffles occupation groups, not rows."
+        },
+        "usable": 1,
+        "n_rows": 205,
+        "n_occupations": 188,
+        "number_of_folds": 5,
+        "pooled_oof": {
+          "global_mean": {
+            "mae": 0.19733789411064845,
+            "rmse": 0.23455804125510193,
+            "r2": -0.004828063885266909
+          },
+          "global_median": {
+            "mae": 0.19146341463414634,
+            "rmse": 0.23491046555926004,
+            "r2": -0.007849847892220652
+          },
+          "tfidf_ridge_raw": {
+            "mae": 0.1510249888781561,
+            "rmse": 0.18478664507847117,
+            "r2": 0.37636243851457085
+          },
+          "tfidf_ridge_clipped": {
+            "mae": 0.14989169653998433,
+            "rmse": 0.18462939926093327,
+            "r2": 0.37742336663284803
+          }
+        },
+        "fold_statistics": {
+          "global_mean": {
+            "mae": {
+              "mean": 0.19733789411064842,
+              "std": 0.017382743008149647,
+              "n": 5
+            },
+            "rmse": {
+              "mean": 0.23421438119385812,
+              "std": 0.014190593689492652,
+              "n": 5
+            },
+            "r2": {
+              "mean": -0.015246386487308472,
+              "std": 0.019580595519778372,
+              "n": 5
+            }
+          },
+          "global_median": {
+            "mae": {
+              "mean": 0.19146341463414634,
+              "std": 0.019088385173778692,
+              "n": 5
+            },
+            "rmse": {
+              "mean": 0.23449141511410604,
+              "std": 0.015680524028723213,
+              "n": 5
+            },
+            "r2": {
+              "mean": -0.017038793657325434,
+              "std": 0.02414078576285929,
+              "n": 5
+            }
+          },
+          "tfidf_ridge_raw": {
+            "mae": {
+              "mean": 0.15102498887815607,
+              "std": 0.020603926851688964,
+              "n": 5
+            },
+            "rmse": {
+              "mean": 0.18388010230291668,
+              "std": 0.020439305774223582,
+              "n": 5
+            },
+            "r2": {
+              "mean": 0.3754304146528472,
+              "std": 0.06964584138190083,
+              "n": 5
+            }
+          }
+        },
+        "ridge_minus_baseline_pooled": {
+          "vs_mean": {
+            "mae": -0.046312905232492346,
+            "rmse": -0.04977139617663076,
+            "r2": 0.38119050239983776
+          },
+          "vs_median": {
+            "mae": -0.04043842575599024,
+            "rmse": -0.05012382048078887,
+            "r2": 0.3842122864067915
+          }
+        },
+        "prediction_range_raw": {
+          "raw_min": -0.06544297970102453,
+          "raw_max": 0.5430747722651662,
+          "below_zero_count": 5,
+          "above_one_count": 0
+        },
+        "descriptive_uncertainty": {
+          "kind": "descriptive uncertainty, not formal prediction intervals",
+          "residual_quantiles": {
+            "p10": -0.24473809696611612,
+            "p50": 0.016349155189819775,
+            "p90": 0.24145673061871795
+          },
+          "abs_error_quantiles": {
+            "p10": 0.020537070962755487,
+            "p50": 0.13038659465860025,
+            "p90": 0.2864648809618652
+          }
+        },
+        "folds": [
+          {
+            "fold": 1,
+            "train_row_count": 164,
+            "test_row_count": 41,
+            "train_occupation_count": 151,
+            "test_occupation_count": 37,
+            "occupation_intersection": [],
+            "inner_split_count": 3,
+            "selected_alpha": 0.01,
+            "train_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "test_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "metrics": {
+              "global_mean": {
+                "mae": 0.1827409280190363,
+                "rmse": 0.21743277455691207,
+                "r2": -0.03716353996737354
+              },
+              "global_median": {
+                "mae": 0.17073170731707318,
+                "rmse": 0.21384973069207538,
+                "r2": -0.0032626427406199365
+              },
+              "tfidf_ridge_raw": {
+                "mae": 0.13708893962089316,
+                "rmse": 0.16989207965033445,
+                "r2": 0.3667962312348959
+              },
+              "tfidf_ridge_clipped": {
+                "mae": 0.13708893962089316,
+                "rmse": 0.16989207965033445,
+                "r2": 0.3667962312348959
+              }
+            },
+            "ridge_minus_mean": {
+              "mae": -0.045651988398143134,
+              "rmse": -0.04754069490657761,
+              "r2": 0.40395977120226945
+            },
+            "ridge_minus_median": {
+              "mae": -0.03364276769618002,
+              "rmse": -0.04395765104174093,
+              "r2": 0.37005887397551585
+            }
+          },
+          {
+            "fold": 2,
+            "train_row_count": 164,
+            "test_row_count": 41,
+            "train_occupation_count": 151,
+            "test_occupation_count": 37,
+            "occupation_intersection": [],
+            "inner_split_count": 3,
+            "selected_alpha": 0.01,
+            "train_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "test_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "metrics": {
+              "global_mean": {
+                "mae": 0.20140541344437835,
+                "rmse": 0.2457674503448706,
+                "r2": -0.0003463669950738435
+              },
+              "global_median": {
+                "mae": 0.1951219512195122,
+                "rmse": 0.2469323991623974,
+                "r2": -0.009852216748768461
+              },
+              "tfidf_ridge_raw": {
+                "mae": 0.16922761451219034,
+                "rmse": 0.2079597067522035,
+                "r2": 0.28375753869783826
+              },
+              "tfidf_ridge_clipped": {
+                "mae": 0.16789291172985468,
+                "rmse": 0.20778402474747262,
+                "r2": 0.28496717457562326
+              }
+            },
+            "ridge_minus_mean": {
+              "mae": -0.032177798932188,
+              "rmse": -0.037807743592667115,
+              "r2": 0.2841039056929121
+            },
+            "ridge_minus_median": {
+              "mae": -0.025894336707321858,
+              "rmse": -0.03897269241019391,
+              "r2": 0.2936097554466067
+            }
+          },
+          {
+            "fold": 3,
+            "train_row_count": 164,
+            "test_row_count": 41,
+            "train_occupation_count": 150,
+            "test_occupation_count": 38,
+            "occupation_intersection": [],
+            "inner_split_count": 3,
+            "selected_alpha": 0.01,
+            "train_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "test_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "metrics": {
+              "global_mean": {
+                "mae": 0.22289559785841762,
+                "rmse": 0.2518936683142777,
+                "r2": -0.00032971864009390117
+              },
+              "global_median": {
+                "mae": 0.21951219512195122,
+                "rmse": 0.25303041367373696,
+                "r2": -0.009378663540445586
+              },
+              "tfidf_ridge_raw": {
+                "mae": 0.17550117841112794,
+                "rmse": 0.20362148592889498,
+                "r2": 0.3463340330775234
+              },
+              "tfidf_ridge_clipped": {
+                "mae": 0.1727598997135411,
+                "rmse": 0.2032325987301592,
+                "r2": 0.34882846121736955
+              }
+            },
+            "ridge_minus_mean": {
+              "mae": -0.04739441944728967,
+              "rmse": -0.048272182385382695,
+              "r2": 0.3466637517176173
+            },
+            "ridge_minus_median": {
+              "mae": -0.044011016710823275,
+              "rmse": -0.049408927744841985,
+              "r2": 0.355712696617969
+            }
+          },
+          {
+            "fold": 4,
+            "train_row_count": 164,
+            "test_row_count": 41,
+            "train_occupation_count": 150,
+            "test_occupation_count": 38,
+            "occupation_intersection": [],
+            "inner_split_count": 3,
+            "selected_alpha": 0.01,
+            "train_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "test_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "metrics": {
+              "global_mean": {
+                "mae": 0.179506246281975,
+                "rmse": 0.2283941561015615,
+                "r2": -0.03618906942392908
+              },
+              "global_median": {
+                "mae": 0.17682926829268292,
+                "rmse": 0.2309841088399489,
+                "r2": -0.059822747415066546
+              },
+              "tfidf_ridge_raw": {
+                "mae": 0.1276986908527707,
+                "rmse": 0.16344802290843966,
+                "r2": 0.46932530977971754
+              },
+              "tfidf_ridge_clipped": {
+                "mae": 0.12720241730794013,
+                "rmse": 0.1634171300934959,
+                "r2": 0.46952589324858063
+              }
+            },
+            "ridge_minus_mean": {
+              "mae": -0.051807555429204316,
+              "rmse": -0.06494613319312184,
+              "r2": 0.5055143792036466
+            },
+            "ridge_minus_median": {
+              "mae": -0.049130577439912226,
+              "rmse": -0.06753608593150925,
+              "r2": 0.5291480571947841
+            }
+          },
+          {
+            "fold": 5,
+            "train_row_count": 164,
+            "test_row_count": 41,
+            "train_occupation_count": 150,
+            "test_occupation_count": 38,
+            "occupation_intersection": [],
+            "inner_split_count": 3,
+            "selected_alpha": 0.01,
+            "train_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "test_target_values": [
+              "0.00",
+              "0.25",
+              "0.50",
+              "0.75"
+            ],
+            "metrics": {
+              "global_mean": {
+                "mae": 0.2001412849494349,
+                "rmse": 0.22758385665166883,
+                "r2": -0.002203237410072001
+              },
+              "global_median": {
+                "mae": 0.1951219512195122,
+                "rmse": 0.22766042320237156,
+                "r2": -0.0028776978417266452
+              },
+              "tfidf_ridge_raw": {
+                "mae": 0.14560852099379834,
+                "rmse": 0.17447921627471089,
+                "r2": 0.41093896047426115
+              },
+              "tfidf_ridge_clipped": {
+                "mae": 0.14451431432769243,
+                "rmse": 0.17433848712915678,
+                "r2": 0.41188881143221645
+              }
+            },
+            "ridge_minus_mean": {
+              "mae": -0.054532763955636554,
+              "rmse": -0.053104640376957946,
+              "r2": 0.41314219788433315
+            },
+            "ridge_minus_median": {
+              "mae": -0.04951343022571386,
+              "rmse": -0.05318120692766068,
+              "r2": 0.4138166583159878
+            }
+          }
+        ]
+      }
+    }
+  },
+  "occupation_size_sensitivity": {
+    "histogram": {
+      "n_occupations_n1": 201,
+      "n_occupations_n_ge2": 23,
+      "n_rows_n1": 201,
+      "n_rows_n_ge2": 47
+    },
+    "oof_slice_from_full_gkf_noshuffle": {
+      "one_task": {
+        "label": "one_task_occupations",
+        "n_rows": 201,
+        "n_occupations": 201,
+        "raw_metrics": {
+          "mae": 0.16498939875639484,
+          "rmse": 0.20140222360480145,
+          "r2": 0.3017182712998375
+        },
+        "note": "OOF slice from full-data gkf_noshuffle; not a separate occupation ranking."
+      },
+      "multi_task": {
+        "label": "multi_task_occupations",
+        "n_rows": 47,
+        "n_occupations": 23,
+        "raw_metrics": {
+          "mae": 0.16518598044769173,
+          "rmse": 0.19317170854224755,
+          "r2": 0.2130833647797763
+        },
+        "note": "OOF slice from full-data gkf_noshuffle; not a separate occupation ranking."
+      }
+    },
+    "retrain_on_multi_task_occupations_only": {
+      "variant_id": "multitask_occupations_gkf_noshuffle",
+      "fold_construction": {
+        "splitter": "GroupKFold",
+        "n_splits": 5,
+        "shuffle": 0,
+        "random_state": null,
+        "grouping": "occupation_code",
+        "note": "shuffle=False is deterministic fold construction, not a random seed. shuffle=True with random_state shuffles occupation groups, not rows."
+      },
+      "usable": 1,
+      "n_rows": 47,
+      "n_occupations": 23,
+      "number_of_folds": 5,
+      "folds": [
+        {
+          "fold": 1,
+          "train_row_count": 38,
+          "test_row_count": 9,
+          "train_occupation_count": 19,
+          "test_occupation_count": 4,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 1.0,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.22002923976608185,
+              "rmse": 0.2688796821476801,
+              "r2": -0.30133310249307477
+            },
+            "global_median": {
+              "mae": 0.19444444444444445,
+              "rmse": 0.25,
+              "r2": -0.12500000000000022
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.19588886036730196,
+              "rmse": 0.23265351227589598,
+              "r2": 0.025702178062411152
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.19588886036730196,
+              "rmse": 0.23265351227589598,
+              "r2": 0.025702178062411152
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.024140379398779888,
+            "rmse": -0.03622616987178412,
+            "r2": 0.3270352805554859
+          },
+          "ridge_minus_median": {
+            "mae": 0.001444415922857517,
+            "rmse": -0.01734648772410402,
+            "r2": 0.15070217806241137
+          }
+        },
+        {
+          "fold": 2,
+          "train_row_count": 37,
+          "test_row_count": 10,
+          "train_occupation_count": 18,
+          "test_occupation_count": 5,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 10.0,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.225,
+              "rmse": 0.26105051301101917,
+              "r2": -0.0003283720119819922
+            },
+            "global_median": {
+              "mae": 0.225,
+              "rmse": 0.2622022120425379,
+              "r2": -0.009174311926605228
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.22049374484627832,
+              "rmse": 0.2565493392211522,
+              "r2": 0.03387062818627795
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.22049374484627832,
+              "rmse": 0.2565493392211522,
+              "r2": 0.03387062818627795
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.004506255153721689,
+            "rmse": -0.004501173789866975,
+            "r2": 0.03419900019825994
+          },
+          "ridge_minus_median": {
+            "mae": -0.004506255153721689,
+            "rmse": -0.005652872821385713,
+            "r2": 0.04304494011288318
+          }
+        },
+        {
+          "fold": 3,
+          "train_row_count": 37,
+          "test_row_count": 10,
+          "train_occupation_count": 18,
+          "test_occupation_count": 5,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.13175675675675674,
+              "rmse": 0.18161729805021096,
+              "r2": -1.1110299488677864
+            },
+            "global_median": {
+              "mae": 0.125,
+              "rmse": 0.1767766952966369,
+              "r2": -1.0
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.1558894170032507,
+              "rmse": 0.1790442157619639,
+              "r2": -1.0516371966602676
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.1558894170032507,
+              "rmse": 0.1790442157619639,
+              "r2": -1.0516371966602676
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": 0.024132660246493964,
+            "rmse": -0.0025730822882470694,
+            "r2": 0.05939275220751883
+          },
+          "ridge_minus_median": {
+            "mae": 0.030889417003250708,
+            "rmse": 0.0022675204653269943,
+            "r2": -0.05163719666026756
+          }
+        },
+        {
+          "fold": 4,
+          "train_row_count": 37,
+          "test_row_count": 10,
+          "train_occupation_count": 18,
+          "test_occupation_count": 5,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.13310810810810808,
+              "rmse": 0.1750639035989895,
+              "r2": -0.0007304601899196239
+            },
+            "global_median": {
+              "mae": 0.125,
+              "rmse": 0.1767766952966369,
+              "r2": -0.020408163265306145
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.150741369686675,
+              "rmse": 0.1768664293115978,
+              "r2": -0.02144436954887885
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.150741369686675,
+              "rmse": 0.1768664293115978,
+              "r2": -0.02144436954887885
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": 0.017633261578566928,
+            "rmse": 0.001802525712608305,
+            "r2": -0.020713909358959226
+          },
+          "ridge_minus_median": {
+            "mae": 0.02574136968667501,
+            "rmse": 8.973401496090161e-05,
+            "r2": -0.0010362062835727048
+          }
+        },
+        {
+          "fold": 5,
+          "train_row_count": 39,
+          "test_row_count": 8,
+          "train_occupation_count": 19,
+          "test_occupation_count": 4,
+          "occupation_intersection": [],
+          "inner_split_count": 3,
+          "selected_alpha": 0.01,
+          "train_target_values": [
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75"
+          ],
+          "test_target_values": [
+            "0.00",
+            "0.25",
+            "0.50"
+          ],
+          "metrics": {
+            "global_mean": {
+              "mae": 0.19391025641025642,
+              "rmse": 0.2180194078423381,
+              "r2": -0.014025860179706529
+            },
+            "global_median": {
+              "mae": 0.1875,
+              "rmse": 0.21650635094610965,
+              "r2": 0.0
+            },
+            "tfidf_ridge_raw": {
+              "mae": 0.19250859085804273,
+              "rmse": 0.20715165917391473,
+              "r2": 0.08454805549854438
+            },
+            "tfidf_ridge_clipped": {
+              "mae": 0.19250859085804273,
+              "rmse": 0.20715165917391473,
+              "r2": 0.08454805549854438
+            }
+          },
+          "ridge_minus_mean": {
+            "mae": -0.0014016655522136878,
+            "rmse": -0.010867748668423355,
+            "r2": 0.09857391567825091
+          },
+          "ridge_minus_median": {
+            "mae": 0.005008590858042727,
+            "rmse": -0.009354691772194917,
+            "r2": 0.08454805549854438
+          }
+        }
+      ],
+      "pooled_oof": {
+        "global_mean": {
+          "mae": 0.17936582676224333,
+          "rmse": 0.2235459915167558,
+          "r2": -0.05384189025269359
+        },
+        "global_median": {
+          "mae": 0.1702127659574468,
+          "rmse": 0.21879748724684184,
+          "r2": -0.009546539379474694
+        },
+        "tfidf_ridge_raw": {
+          "mae": 0.18243220820281064,
+          "rmse": 0.21248302434609895,
+          "r2": 0.04788334397804206
+        },
+        "tfidf_ridge_clipped": {
+          "mae": 0.18243220820281064,
+          "rmse": 0.21248302434609895,
+          "r2": 0.04788334397804206
+        }
+      },
+      "fold_statistics": {
+        "global_mean": {
+          "mae": {
+            "mean": 0.1807608722082406,
+            "std": 0.0456732982192298,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.22092616093004755,
+            "std": 0.04349277638012604,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.28548954874849386,
+            "std": 0.4790263927671973,
+            "n": 5
+          }
+        },
+        "global_median": {
+          "mae": {
+            "mean": 0.1713888888888889,
+            "std": 0.04463500812834343,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.21645239071638428,
+            "std": 0.03989615509610118,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.23091649503838232,
+            "std": 0.4328722452188214,
+            "n": 5
+          }
+        },
+        "tfidf_ridge_raw": {
+          "mae": {
+            "mean": 0.18310439655230976,
+            "std": 0.029316656405472017,
+            "n": 5
+          },
+          "rmse": {
+            "mean": 0.21045303114890493,
+            "std": 0.0344354597183899,
+            "n": 5
+          },
+          "r2": {
+            "mean": -0.18579214089238258,
+            "std": 0.4854799819244379,
+            "n": 5
+          }
+        }
+      },
+      "ridge_minus_baseline_pooled": {
+        "vs_mean": {
+          "mae": 0.0030663814405673118,
+          "rmse": -0.011062967170656857,
+          "r2": 0.10172523423073565
+        },
+        "vs_median": {
+          "mae": 0.012219442245363837,
+          "rmse": -0.00631446290074289,
+          "r2": 0.05742988335751675
+        }
+      },
+      "prediction_range_raw": {
+        "raw_min": 0.11572259276037683,
+        "raw_max": 0.3836949271604021,
+        "below_zero_count": 0,
+        "above_one_count": 0
+      },
+      "descriptive_uncertainty": {
+        "kind": "descriptive uncertainty, not formal prediction intervals",
+        "residual_quantiles": {
+          "p10": -0.2633859819760371,
+          "p50": 0.025789965550186533,
+          "p90": 0.23536101504334206
+        },
+        "abs_error_quantiles": {
+          "p10": 0.036704074047378354,
+          "p50": 0.20367555470464638,
+          "p90": 0.27549549058211154
+        }
+      }
+    },
+    "warning": "One-task occupation errors are single-row absolute errors, not stable occupation-level estimates. No occupation ranking is produced."
+  },
+  "target_distribution": {
+    "verified_counts": {
+      "0.00": 86,
+      "0.25": 66,
+      "0.50": 81,
+      "0.75": 15,
+      "1.00": 0
+    },
+    "no_1_00_training_examples": 1,
+    "limitation": "the model has no observed training examples at target 1.00",
+    "reference_split_fold_class_presence": [
+      {
+        "fold": 1,
+        "train_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "test_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "absent_from_train": [
+          "1.00"
+        ],
+        "absent_from_test": [
+          "1.00"
+        ]
+      },
+      {
+        "fold": 2,
+        "train_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "test_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "absent_from_train": [
+          "1.00"
+        ],
+        "absent_from_test": [
+          "1.00"
+        ]
+      },
+      {
+        "fold": 3,
+        "train_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "test_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "absent_from_train": [
+          "1.00"
+        ],
+        "absent_from_test": [
+          "1.00"
+        ]
+      },
+      {
+        "fold": 4,
+        "train_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "test_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "absent_from_train": [
+          "1.00"
+        ],
+        "absent_from_test": [
+          "1.00"
+        ]
+      },
+      {
+        "fold": 5,
+        "train_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "test_target_values": [
+          "0.00",
+          "0.25",
+          "0.50",
+          "0.75"
+        ],
+        "absent_from_train": [
+          "1.00"
+        ],
+        "absent_from_test": [
+          "1.00"
+        ]
+      }
+    ]
+  },
+  "near_duplicate_diagnostics": {
+    "exact_task_text_duplicate_rows": 0,
+    "normalized_task_text_duplicate_rows": 0,
+    "method": "word/unigram-bigram TF-IDF cosine similarity on task_text (diagnostic only; not used in CV)",
+    "preprocessing": "sklearn TfidfVectorizer ngram_range=(1,2), stop_words=english, min_df=1; no source rewrite",
+    "threshold": 0.85,
+    "threshold_rationale": "0.85 is a conservative lexical-overlap cutoff for high textual similarity, not a claim of semantic equivalence.",
+    "n_pairs_scored": 30628,
+    "n_pairs_at_or_above_threshold": 0,
+    "pairs_at_or_above_threshold": [],
+    "top_pairs_regardless_of_threshold": [
+      {
+        "similarity": 0.3956291816079933,
+        "task_id_a": "13730",
+        "task_id_b": "13884",
+        "occupation_a": "49-2096.00",
+        "occupation_b": "49-9095.00",
+        "same_occupation": 0,
+        "text_a": "Confer with customers to determine the nature of malfunctions.",
+        "text_b": "Confer with customers or read work orders to determine the nature and extent of damage to units."
+      },
+      {
+        "similarity": 0.2860265919115238,
+        "task_id_a": "22469",
+        "task_id_b": "6592",
+        "occupation_a": "25-9042.00",
+        "occupation_b": "25-2022.00",
+        "same_occupation": 0,
+        "text_a": "Operate and maintain audio-visual equipment.",
+        "text_b": "Use computers, audio-visual aids, and other equipment and materials to supplement presentations."
+      },
+      {
+        "similarity": 0.2641604890930517,
+        "task_id_a": "1598",
+        "task_id_b": "17532",
+        "occupation_a": "21-1014.00",
+        "occupation_b": "31-9099.01",
+        "same_occupation": 0,
+        "text_a": "Develop and implement treatment plans based on clinical experience and knowledge.",
+        "text_b": "Implement treatment plans or protocols as directed by speech-language pathologists."
+      },
+      {
+        "similarity": 0.25323420011970366,
+        "task_id_a": "14099",
+        "task_id_b": "22015",
+        "occupation_a": "51-6042.00",
+        "occupation_b": "17-3024.00",
+        "same_occupation": 0,
+        "text_a": "Test machinery to ensure proper functioning before beginning production.",
+        "text_b": "Modify, maintain, or repair electrical, electronic, or mechanical components, equipment, or systems to ensure proper fun"
+      },
+      {
+        "similarity": 0.23869255263713396,
+        "task_id_a": "16908",
+        "task_id_b": "14680",
+        "occupation_a": "19-3011.01",
+        "occupation_b": "15-1299.08",
+        "same_occupation": 0,
+        "text_a": "Develop environmental research project plans, including information on budgets, goals, deliverables, timelines, and reso",
+        "text_b": "Develop or approve project plans, schedules, or budgets."
+      },
+      {
+        "similarity": 0.23645022928765358,
+        "task_id_a": "11788",
+        "task_id_b": "23446",
+        "occupation_a": "49-9012.00",
+        "occupation_b": "47-2031.00",
+        "same_occupation": 0,
+        "text_a": "Dismantle meters, and replace or adjust defective parts such as cases, shafts, gears, disks, and recording mechanisms, u",
+        "text_b": "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools."
+      },
+      {
+        "similarity": 0.23492232052023998,
+        "task_id_a": "22952",
+        "task_id_b": "15126",
+        "occupation_a": "33-1091.00",
+        "occupation_b": "51-9195.05",
+        "same_occupation": 0,
+        "text_a": "Order materials or supplies, such as keys, uniforms, and badges.",
+        "text_b": "Maintain supplies of tools, equipment, and materials, and order additional supplies as needed."
+      },
+      {
+        "similarity": 0.22547858333517545,
+        "task_id_a": "14099",
+        "task_id_b": "14686",
+        "occupation_a": "51-6042.00",
+        "occupation_b": "15-1299.08",
+        "same_occupation": 0,
+        "text_a": "Test machinery to ensure proper functioning before beginning production.",
+        "text_b": "Research, test, or verify proper functioning of software patches and fixes."
+      },
+      {
+        "similarity": 0.22416316729025387,
+        "task_id_a": "17709",
+        "task_id_b": "7572",
+        "occupation_a": "15-2099.01",
+        "occupation_b": "19-3032.00",
+        "same_occupation": 0,
+        "text_a": "Analyze or manipulate bioinformatics data using software packages, statistical applications, or data mining techniques.",
+        "text_b": "Analyze data, using statistical methods and applications, to evaluate the outcomes and effectiveness of workplace progra"
+      },
+      {
+        "similarity": 0.2031151951599912,
+        "task_id_a": "3327",
+        "task_id_b": "1598",
+        "occupation_a": "11-9021.00",
+        "occupation_b": "21-1014.00",
+        "same_occupation": 0,
+        "text_a": "Develop or implement quality control programs.",
+        "text_b": "Develop and implement treatment plans based on clinical experience and knowledge."
+      },
+      {
+        "similarity": 0.1924225293935915,
+        "task_id_a": "23446",
+        "task_id_b": "9922",
+        "occupation_a": "47-2031.00",
+        "occupation_b": "47-5032.00",
+        "same_occupation": 0,
+        "text_a": "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+        "text_b": "Repair and service blasting, shooting, and automotive equipment, and electrical wiring and instruments, using hand tools"
+      },
+      {
+        "similarity": 0.18979758111584366,
+        "task_id_a": "3245",
+        "task_id_b": "9672",
+        "occupation_a": "11-2011.00",
+        "occupation_b": "41-1012.00",
+        "same_occupation": 0,
+        "text_a": "Represent company at trade association meetings to promote products.",
+        "text_b": "Visit retailers and sales representatives to promote products and gather information."
+      },
+      {
+        "similarity": 0.1892276627163224,
+        "task_id_a": "10971",
+        "task_id_b": "15126",
+        "occupation_a": "25-9044.00",
+        "occupation_b": "51-9195.05",
+        "same_occupation": 0,
+        "text_a": "Order or obtain materials needed for classes.",
+        "text_b": "Maintain supplies of tools, equipment, and materials, and order additional supplies as needed."
+      },
+      {
+        "similarity": 0.1766597267488602,
+        "task_id_a": "16849",
+        "task_id_b": "18087",
+        "occupation_a": "19-2041.01",
+        "occupation_b": "47-4011.01",
+        "same_occupation": 0,
+        "text_a": "Provide analytical support for policy briefs related to renewable energy, energy efficiency, or climate change.",
+        "text_b": "Recommend energy-efficient technologies or alternate energy sources."
+      },
+      {
+        "similarity": 0.17182627856570742,
+        "task_id_a": "3327",
+        "task_id_b": "6895",
+        "occupation_a": "11-9021.00",
+        "occupation_b": "27-1014.00",
+        "same_occupation": 0,
+        "text_a": "Develop or implement quality control programs.",
+        "text_b": "Implement and maintain configuration control systems."
+      }
+    ],
+    "labels": {
+      "exact_duplicate": "identical task_text",
+      "normalized_duplicate": "identical normalized_task_text",
+      "high_textual_similarity": "cosine >= 0.85",
+      "semantic_similarity": "not claimed by this method"
+    }
+  },
+  "conclusions": {
+    "1_ridge_vs_train_mean": {
+      "status": "remained consistent",
+      "detail": "On the reference split and all shuffle variants, Ridge pooled and per-fold MAE were lower than the training-fold global mean."
+    },
+    "2_ridge_vs_train_median": {
+      "status": "remained consistent",
+      "detail": "On the reference split and all shuffle variants, Ridge pooled and per-fold MAE were lower than the training-fold global median."
+    },
+    "3_fold_construction_variants": {
+      "status": "remained consistent",
+      "detail": "Direction vs both baselines held across GroupKFold shuffle=False and shuffle=True random_state 0-3. Magnitude of MAE still varies by fold assignment."
+    },
+    "4_exclude_mean_snap": {
+      "status": "remained consistent",
+      "detail": "Excluding deterministic_mean_snap is the same 205-row table as identical_scores-only; one subset CV was run, not two independent tests."
+    },
+    "5_identical_scores_subset": {
+      "status": "same analysis as claim 4",
+      "detail": "B and C are identical (205 rows, 188 occupations)."
+    },
+    "6_one_task_occupations": {
+      "status": "sensitive to one-task occupations",
+      "detail": "201/224 occupations have n=1 (201 OOF rows). Full OOF Ridge MAE=0.1650; n=1 slice MAE=0.1650; n>=2 slice MAE=0.1652 on 47 rows / 23 occupations. Retraining grouped CV on the 47 multi-task rows only yielded Ridge pooled MAE 0.182 vs training-fold mean MAE 0.179 (Ridge did not have lower pooled MAE than the mean baseline in that small-n design)."
+    },
+    "7_near_duplicate_leakage": {
+      "status": "insufficient evidence of exact-duplicate leakage",
+      "detail": "Exact task_text duplicate rows=0; normalized duplicate rows=0; TF-IDF cosine pairs >=0.85: 0 of 30628. High cosine is textual similarity, not semantic equivalence."
+    },
+    "8_raw_boundary": {
+      "status": "does not materially replace the raw evaluation",
+      "detail": "Reference raw min=-0.07821327172285225, max=0.6386714473460542, below0=7, above1=0. Clipped metrics are diagnostic only."
+    }
+  },
+  "shadow_testing": {
+    "this_phase": "not started",
+    "blockers": [
+      "Labels remain provisional AI-generated weak supervision, not human-validated ground truth.",
+      "No employment-outcome validation exists.",
+      "201/224 occupations contribute only a single task; occupation-level claims are not supported.",
+      "No observed labels at 1.00; do not extrapolate to a maximum exposure class.",
+      "Raw Ridge can predict below 0; that is unconstrained regression, not a display policy."
+    ]
+  }
+}

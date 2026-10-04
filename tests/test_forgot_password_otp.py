@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import os
 import sys
+import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -24,8 +25,10 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-os.environ.setdefault("DATABASE_URL",
-                       f"sqlite:///{PROJECT_ROOT / 'instance' / 'test_prayash.db'}")
+os.environ.setdefault(
+    "DATABASE_URL",
+    f"sqlite:///{Path(tempfile.mkdtemp(prefix='prayash-otp-env-')) / 'otp.db'}",
+)
 
 STRONG_PASSWORD = "NewStrongP@ss1"
 
@@ -33,24 +36,35 @@ STRONG_PASSWORD = "NewStrongP@ss1"
 @pytest.fixture
 def app():
     """Create and configure a fresh Flask application for each test."""
+    import tempfile
     from app import app as flask_app
+    from tests.conftest import assert_not_project_database, rebind_database
 
+    previous_uri = flask_app.config["SQLALCHEMY_DATABASE_URI"]
     flask_app.config["WTF_CSRF_ENABLED"] = False
     flask_app.config["TESTING"] = True
+    db_dir = Path(tempfile.mkdtemp(prefix="prayash-otp-"))
+    db_path = db_dir / "otp.db"
+    rebind_database(flask_app, f"sqlite:///{db_path.as_posix()}")
 
     with flask_app.app_context():
-        from storage import db, init_database
+        from storage import db, seed_default_users
+        assert_not_project_database(flask_app)
         db.create_all()
-        from storage import seed_default_users
         seed_default_users()
         yield flask_app
+        db.session.remove()
         db.drop_all()
-        try:
-            db_path = PROJECT_ROOT / "instance" / "test_prayash.db"
-            if db_path.exists():
-                db_path.unlink()
-        except PermissionError:
-            pass
+    rebind_database(flask_app, previous_uri)
+    with flask_app.app_context():
+        from storage import db, seed_default_users
+        db.create_all()
+        seed_default_users()
+    try:
+        if db_path.exists():
+            db_path.unlink()
+    except PermissionError:
+        pass
 
 
 @pytest.fixture

@@ -1,24 +1,19 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "target_name": "adjudicated_exposure_score",
-  "target_definition": "Human-reviewed contextual task-exposure estimate on a 0.0-1.0 scale. Not personal job-loss probability and not a Frey-Osborne occupation probability.",
-  "score_bands": [
-    { "min": 0.0, "max": 0.2, "label": "minimal exposure" },
-    { "min": 0.21, "max": 0.4, "label": "low exposure" },
-    { "min": 0.41, "max": 0.6, "label": "moderate exposure" },
-    { "min": 0.61, "max": 0.8, "label": "high exposure" },
-    { "min": 0.81, "max": 1.0, "label": "very high exposure" }
+  "target_definition": "Human-reviewed contextual task-exposure estimate. Not personal job-loss probability and not a Frey-Osborne occupation probability.",
+  "allowed_reviewer_scores": [0.0, 0.25, 0.5, 0.75, 1.0],
+  "discrepancy_threshold": 0.3,
+  "kappa_gate": 0.7,
+  "score_labels": [
+    { "value": 0.0, "label": "no exposure" },
+    { "value": 0.25, "label": "low exposure" },
+    { "value": 0.5, "label": "partial exposure / augmentation" },
+    { "value": 0.75, "label": "high exposure" },
+    { "value": 1.0, "label": "full exposure / direct automation" }
   ],
-  "required_identity_fields": [
-    "occupation_code",
-    "task_id",
-    "task_statement"
-  ],
-  "reviewer_score_fields": [
-    "reviewer_1_score",
-    "reviewer_2_score",
-    "adjudicated_exposure_score"
-  ],
+  "required_identity_fields": ["occupation_code", "task_id", "task_statement"],
+  "reviewer_score_fields": ["reviewer_1_score", "reviewer_2_score", "adjudicated_exposure_score"],
   "required_completed_fields": [
     "reviewer_1_score",
     "reviewer_2_score",
@@ -34,6 +29,10 @@
     "invented_labels_forbidden": true,
     "automation_risk_score_forbidden_as_source": true,
     "frey_osborne_forbidden_as_task_label": true,
-    "fuzzy_occupation_match_forbidden": true
+    "fuzzy_occupation_match_forbidden": true,
+    "keep_logical_values": true,
+    "blank_is_not_zero": true,
+    "snap_consensus_to_nearest_allowed_score": true,
+    "tie_break": "lower_exposure"
   }
 }

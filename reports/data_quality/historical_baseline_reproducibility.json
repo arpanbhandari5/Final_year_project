@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-10-03T11:30:28.662406+00:00",
+  "model_path": "ml_models\\model.pkl",
+  "model_version": "risk-v2.0",
+  "training_timestamp": "2026-09-28T18:58:18.756518+00:00",
+  "stored_dataset_hash": "071a10f3c43776cfccba115791492ba4f4d1dc5a6080df853f44867b40ddd192",
+  "current_dataset_hash": "071a10f3c43776cfccba115791492ba4f4d1dc5a6080df853f44867b40ddd192",
+  "dataset_hash_matches": true,
+  "source_files": [
+    "automation_risk.csv",
+    "resume_corpus.csv",
+    "coursera_catalog.csv",
+    "onet_skils.csv",
+    "onet_interests.csv",
+    "onet_interest_keywords.csv"
+  ],
+  "missing_source_files": [],
+  "automation_risk_row_count": 3000,
+  "selected_alpha": 297.63514416313194,
+  "has_out_of_fold_predictions": false,
+  "has_evaluation_split_manifest": false,
+  "exact_historical_cv_reproduction_possible": false,
+  "status": "historical_baseline_not_exactly_reproducible_from_artifact",
+  "reason": "The stored model does not retain out-of-fold predictions and the evaluation split manifest. Recomputing MAE, RMSE, and R2 would require retraining, so no historical baseline metric is fabricated."
+}

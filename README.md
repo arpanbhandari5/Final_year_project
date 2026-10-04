@@ -4,18 +4,19 @@
 
 ## Overview
 
-Prayash combines local machine learning, O\*NET occupational intelligence, and an optional Llama 3 narrative layer to analyze resumes and provide:
+Prayash combines local machine learning, O\*NET occupational intelligence, published task-exposure labels, and an optional local Llama explanation layer:
 
-- **Automation Risk Scoring** — Predicts how susceptible a career profile is to automation using a local Ridge regression model trained on O\*NET data.
-- **Role Matching** — Maps resumes to the closest O\*NET job profiles using TF-IDF cosine similarity.
-- **Skill Clustering** — Groups skills into meaningful competency clusters for targeted upskilling.
-- **Learning Roadmap** — Recommends Coursera courses aligned to the strongest skill intersections in the resume.
-- **RIASEC Personality Profiling** — Derives a Holland Code (RIASEC) profile from resume content and O\*NET interest data.
-- **Skills Gap Analysis** — Compares resume skills against target roles to identify missing skills and learning priorities.
+- **Resume analysis** — Parse the upload, extract skills, and keep resume text ephemeral.
+- **Occupation matching** — Map the resume to job profiles and O\*NET clusters (exact SOC/title for task labels).
+- **Historical occupation reference** — Local Ridge model on `data/automation_risk.csv`. Shown as e.g. 62/100 — Moderate. This is an occupation-level reference, **not** a validated personal probability of job loss, unemployment, replacement, or displacement. Legacy API fields `risk_score` / `risk_label` alias this reference only.
+- **Contextual E0/E1/E2 task exposure** — After an exact occupation match, retrieve published GPTs-are-GPTs `human_labels`. Research model: GPTs-are-GPTs benchmark, **923 occupations**. Product coverage: selected **800** common occupations. The resume never creates or overrides a label. Percentages are task-distribution shares, not job-loss probabilities.
+- **Career-development recommendations** — Skill gaps, courses, projects, RIASEC, and roadmaps from the deterministic pipeline.
+- **Optional Ollama analysis** — Advanced mode only. Ollama explains verified JSON; it does not calculate or change scores, occupation codes, or E0/E1/E2 labels. If Ollama is off or unavailable, structured results still work.
+- **Skills Gap Analysis** — Compares resume skills against target roles.
 - **Career Path Suggestion** — Discovers suitable career trajectories based on detected skills.
 - **Resume Quality Scoring** — Evaluates completeness and provides actionable improvements.
-- **Contact & Section Extraction** — Parses resumes for email, phone, LinkedIn, GitHub, and structural sections.
-- **Cognitive Career Narrative** — In Advanced mode, generates a structured career narrative using a local Llama 3 model via Ollama.
+
+The five-level historical automation rubric remains deferred from the active model path and is not mixed into E0/E1/E2.
 
 ### Privacy-First Design
 
@@ -41,11 +42,12 @@ Resume data is **never** written to a permanent database. Files are read, analyz
 Final_year_project/
 ├── app.py                 # Flask application entry point & routes
 ├── bootstrap.py           # Model artifact initialization
-├── risk_assessor.py       # Core ML pipeline: risk scoring, role matching, RIASEC, roadmap
+├── risk_assessor.py       # Historical occupation reference, role matching, RIASEC, optional Ollama
+├── task_exposure_assessor.py  # Published E0/E1/E2 retrieval (exact occupation match only)
 ├── resume_parser.py       # PDF/DOCX/text resume extraction
 ├── storage.py             # SQLAlchemy models, auth, database helpers
 ├── utils.py               # Shared utilities (text cleaning, validation, ML helpers)
-├── evaluation.py          # Model evaluation & cross-validation scripts
+├── evaluation.py          # Historical baseline reproducibility audit
 ├── train_model.py         # Trains and serializes ML artifacts (model.pkl, courses.pkl)
 ├── requirements.txt       # Python dependencies
 ├── setup.ps1              # Windows PowerShell setup script
@@ -198,14 +200,15 @@ Copy `.env.example` to `.env` and fill in your values.
 
 ## How It Works
 
-### ML Pipeline
+### Layered analysis
 
-1. **Vectorization** — Resume text is converted to TF-IDF features using a vocabulary trained on O\*NET job descriptions and the resume corpus.
-2. **Risk Prediction** — A Ridge regression model predicts an automation risk score (0.0–1.0) from the TF-IDF vector.
-3. **Role Matching** — Cosine similarity between the resume vector and pre-computed job vectors identifies the closest O\*NET occupations.
-4. **Skill Clustering** — The resume is matched against O\*NET skill cluster profiles for competency grouping.
-5. **Course Recommendation** — A skill-to-course index maps detected skills to relevant Coursera courses.
-6. **RIASEC Profiling** — Keyword analysis combined with O\*NET interest cluster scores produces a Holland Code profile.
+Prayash uses resume evidence to identify a likely occupation, retrieve verified benchmark task labels when coverage exists, calculate contextual task-exposure shares, and recommend career-development actions. The historical occupation reference is an occupation-level index, not a personal employment probability. The E0/E1/E2 result describes contextual task exposure under the published GPTs-are-GPTs taxonomy; it is not a personal job-loss, unemployment, replacement, termination, or employment forecast. Optional local Ollama analysis explains verified results but does not calculate or modify them.
+
+1. **Resume parsing and occupation matching** — TF-IDF similarity to job profiles and O\*NET clusters. Task labels use exact SOC, exact title, or an approved reviewed crosswalk only.
+2. **Historical occupation reference** — Local Ridge model on `data/automation_risk.csv`. Shown as e.g. 62/100 — Moderate. Occupation-level only; not a validated personal employment probability. Legacy API fields `risk_score` / `risk_label` alias this reference.
+3. **Verified E0/E1/E2 lookup** — Production retrieves published `human_labels` from the GPTs-are-GPTs benchmark (O\*NET 27.2 source; project O\*NET 31.0). Research model population is 923 occupations; product coverage is a selected 800 common occupations. The TF-IDF E0/E1/E2 classifier is **research-only** and is not the production label source.
+4. **Career recommendations** — Skill gaps, courses, projects, RIASEC, and roadmaps from the deterministic pipeline.
+5. **Optional Ollama** — Advanced mode explains verified JSON locally; it cannot change scores or labels.
 
 ### Dual-Mode Architecture
 

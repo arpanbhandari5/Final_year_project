@@ -43,9 +43,31 @@ Attribution:
 - Do not download into the training tables
 - Known limitations: occupation-based labels should not be mixed with O*NET tasks and described as current task-level labels
 
-## Not downloaded in this phase
+## ESCO v1.2.1 (raw, not normalized)
 
-ESCO, BLS OEWS, BLS AI exposure, and CareerCorpus remain empty placeholders under `external_data/raw/`. They are not required for the two-track label decision above.
+- Dataset name: ESCO classification English CSV
+- Local folder: `external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/`
+- Version: 1.2.1 (folder name; no `esco_1.2.0_en_csv.zip` in this checkout)
+- Occupations: 3,043 rows in `occupations_en.csv`
+- Skills: 13,960 rows in `skills_en.csv`
+- Occupation-skill relations: 126,051 rows in `occupationSkillRelations_en.csv`
+- Transformation script: none in this phase (raw audit only)
+- Known limitations: European classification; not an automation-risk target; join later on ESCO URIs, not titles
+
+## CareerCorpus (raw, not normalized)
+
+- Dataset name: CareerCorpus annotated resumes
+- Required local filename: `external_data/raw/careercorpus/CareerCorpus.xlsx` (present)
+- SHA-256: `97b1fa6cca1232912dd3f7bc312d71a2478249787168fd41dfbf6c1da90479d3`
+- Extra identical copy (not deleted): `C:\Users\Owner\Downloads\CareerCorpus  A Comprehensive Dataset of Annotated\CareerCorpus  A Comprehensive Dataset of Annotated\CareerCorpus.xlsx`
+- Sheet: `Sheet1`; 998 data rows; columns `ID`, `Domain`, `Education`, `Skills and Achievements`, `Experience`, `Job_type`, `Annotator-1`, `Annotator-2`
+- Known limitations: resume/domain classification sample, not a full occupational census; annotator columns are CareerCorpus labels, not O*NET task-exposure scores
+
+## Missing in this phase
+
+- BLS OEWS (`external_data/raw/bls_oews/` contains only `.gitkeep`)
+- BLS AI exposure (`external_data/raw/bls_ai_exposure/` contains only `.gitkeep`)
+- `replacement_data/occupation_training_table_historical_benchmark.csv` (not generated; regenerate later from the canonical historical CSV)
 
 ## Production files left unchanged
 

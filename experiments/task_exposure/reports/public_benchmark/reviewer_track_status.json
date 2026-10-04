@@ -1,0 +1,21 @@
+{
+  "reviewer1": {
+    "path": "C:/4th project/project_data/task_exposure_labels/task_exposure_human_round1_reviewer1.csv",
+    "rows": 300,
+    "filled_reviewer_scores": 0,
+    "sha256": "7bb7b2bfaf28879b66e9f1f8e2642553d89f12ddee679d99a58d213d8942402d"
+  },
+  "reviewer2": {
+    "path": "C:/4th project/project_data/task_exposure_labels/task_exposure_human_round1_reviewer2.csv",
+    "rows": 300,
+    "filled_reviewer_scores": 0,
+    "sha256": "a1cdc2424aea78dd848227cfca08f497d0800e1fee5f26218830211fcbe04eb9"
+  },
+  "third": {
+    "path": "C:/4th project/project_data/task_exposure_labels/task_exposure_human_round1_third_reviewer.csv",
+    "rows": 60,
+    "filled_reviewer_scores": 0,
+    "sha256": "54291bac60a011e263cedea8a85fd5f64b0232b3c0d1872a1b01b12777d10b1f"
+  },
+  "status": "deferred_due_to_unavailable_independent_reviewers"
+}

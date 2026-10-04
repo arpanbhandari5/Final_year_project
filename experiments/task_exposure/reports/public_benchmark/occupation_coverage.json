@@ -1,0 +1,27 @@
+{
+  "project_occupation_count": 1016,
+  "public_benchmark_occupation_count": 923,
+  "selected_800_occupation_count": 800,
+  "selected_800_with_exact_benchmark_occupation_match": 800,
+  "selected_800_without_benchmark_occupation_match": 0,
+  "coverage_percentage": 100.0,
+  "public_exact_occupation_matches_to_project_master": 923,
+  "800_selection_modified": 0,
+  "task_matching": {
+    "public_task_rows": 19265,
+    "onet31_task_rows": 18838,
+    "exact_task_id_matches": 18735,
+    "exact_task_id_match_rate": 0.9724889696340514,
+    "exact_occupation_code_matches": 923,
+    "occupation_task_id_pair_mismatches_on_matched_ids": 0,
+    "exact_task_text_matches_among_matched_ids": 18677,
+    "normalized_task_text_matches_among_matched_ids": 18677,
+    "same_task_id_changed_task_text": 58,
+    "occupations_with_same_code_different_task_ids": 295,
+    "public_source_onet_version_documented": "27.2",
+    "project_onet_version": "31.0",
+    "silent_fuzzy_join_used": 0,
+    "used_as_own_task_corpus": 1,
+    "note": "Public benchmark task IDs are not treated as O*NET 31.0 IDs. No fuzzy or semantic label transfer is performed."
+  }
+}

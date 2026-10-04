@@ -1,6 +1,9 @@
 from unittest.mock import patch
 
 from app import app
+
+app.config["TESTING"] = True
+app.config["WTF_CSRF_ENABLED"] = False
 from risk_assessor import _generate_roadmap, build_jd_match
 from storage import CareerProfile, Feedback, PartnershipRequest, db
 
@@ -61,7 +64,7 @@ def test_feedback_and_partnership_response_persist():
 
 def test_authenticated_user_can_save_and_read_own_career_profile():
     client = app.test_client()
-    client.post("/login", data={"email": "student", "password": "student"})
+    client.post("/login", data={"email": "student", "password": "Student@123"})
     response = client.put("/api/career-profile", json={"intent": "Find a role", "target_role": "Data Analyst"})
     assert response.status_code == 200
     assert response.json["profile"]["confidence"] == "self-reported"
@@ -73,5 +76,5 @@ def test_authenticated_user_can_save_and_read_own_career_profile():
 def test_career_profile_requires_authentication_and_complete_fields():
     client = app.test_client()
     assert client.get("/api/career-profile").status_code == 401
-    client.post("/login", data={"email": "student", "password": "student"})
+    client.post("/login", data={"email": "student", "password": "Student@123"})
     assert client.put("/api/career-profile", json={"intent": "Find a role"}).status_code == 400

@@ -5,71 +5,120 @@
   <div class="container page-hero__grid">
     <div>
       <span class="eyebrow">Workspace</span>
-      <h1>Welcome back, {{ current_user.email }}.</h1>
-      <p class="lead">Your authenticated Prayash workspace. Run analyses, review past results, or dive into insights.</p>
-      <div class="actions workspace-actions">
-        <a class="button" href="{{ url_for('index') }}#analysis">Run new analysis</a>
-        <a class="button-outline" href="{{ url_for('insights') }}">View insights</a>
-        <a class="button-ghost" href="{{ url_for('methodology') }}">Methodology</a>
-      </div>
+      <h1>Your next step</h1>
+      <p class="lead">Set a supported occupation, review resume evidence, then complete one career-development action. Contextual task exposure is not a personal job-loss probability.</p>
+      <nav class="actions workspace-actions" aria-label="Workspace sections">
+        <a class="button" href="#career-goal">Career goal</a>
+        <a class="button-outline" href="#resume-evidence">Resume & evidence</a>
+        <a class="button-ghost" href="#learning-actions">Learning & actions</a>
+        <a class="button-ghost" href="{{ url_for('target_job_match_page') }}">Target jobs</a>
+        <a class="button-ghost" href="{{ url_for('applications_page') }}">Applications</a>
+      </nav>
     </div>
     <div class="glass-card">
       <h2 class="section-title">Session status</h2>
-      <div class="compact-list workspace-status-list">
-        <div class="list-card">
-          <div><strong>Auth state</strong><p>Logged in and persisted with Flask-Login.</p></div>
-          <span class="status-pill">Active</span>
-        </div>
-        <div class="list-card">
-          <div><strong>User</strong><p>{{ current_user.email }}</p></div>
-          <span class="status-pill is-warm">Signed in</span>
-        </div>
-        <div class="list-card">
-          <div><strong>Theme</strong><p>Switch between light, dark, or auto mode using the toggle in the navbar.</p></div>
-          <span class="status-pill">Customisable</span>
-        </div>
-      </div>
+      <p class="small-note" data-workspace-status aria-live="polite">Loading your workspace…</p>
     </div>
   </div>
 </section>
 
-<section class="content-section">
-  <div class="container">
-    <div class="workspace-dashboard-grid">
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">📄</div>
-        <h3 class="section-title">Analyze a resume</h3>
-        <p class="section-subtitle">Upload or paste your resume for automation risk scoring, role matching, and a personalised learning roadmap.</p>
-        <a class="button-secondary" href="{{ url_for('index') }}#analysis">Go to analysis</a>
-      </div>
+<section class="content-section" id="career-goal">
+  <div class="container loop-grid">
+    <article class="glass-card loop-card" aria-labelledby="goal-heading">
+      <h2 class="section-title" id="goal-heading">Current goal</h2>
+      <p class="section-subtitle" data-goal-empty>No goal yet. Choose a supported occupation from the server list.</p>
+      <p class="small-note" data-goal-summary hidden></p>
+      <form data-goal-form>
+        <div class="field">
+          <label for="goal-occupation">Target occupation</label>
+          <select id="goal-occupation" name="target_occupation_code" required aria-describedby="goal-form-error"></select>
+        </div>
+        <div class="field">
+          <label for="goal-alternative">Alternative occupation (optional)</label>
+          <select id="goal-alternative" name="alternative_occupation_code">
+            <option value="">None</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="goal-location">Location (optional)</label>
+          <input id="goal-location" name="geography" maxlength="120" autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label for="goal-seniority">Experience level</label>
+          <select id="goal-seniority" name="seniority">
+            <option value="">Select</option>
+            <option>Entry level</option>
+            <option>Mid level</option>
+            <option>Senior</option>
+            <option>Career change</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="goal-time">Weekly learning time (hours)</label>
+          <input id="goal-time" name="time_per_week" type="number" min="0" max="168" step="0.5">
+        </div>
+        <div class="field">
+          <label for="goal-immediate">Immediate goal</label>
+          <select id="goal-immediate" name="immediate_goal" required>
+            <option value="Explore careers">Explore careers</option>
+            <option value="Improve my resume">Improve my resume</option>
+            <option value="Prepare for a target role">Prepare for a target role</option>
+            <option value="Learn missing skills">Learn missing skills</option>
+            <option value="Apply for jobs">Apply for jobs</option>
+          </select>
+        </div>
+        <p class="form-error" data-goal-error id="goal-form-error" role="alert" hidden></p>
+        <div class="actions">
+          <button type="submit" class="button">Save goal</button>
+          <button type="button" class="button-ghost" data-delete-goal>Remove goal</button>
+        </div>
+      </form>
+    </article>
 
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">📊</div>
-        <h3 class="section-title">Review methodology</h3>
-        <p class="section-subtitle">Understand how the ML pipeline works — TF-IDF vectorization, Ridge regression, O*NET matching, and RIASEC profiling.</p>
-        <a class="button-outline" href="{{ url_for('methodology') }}">Open methodology</a>
-      </div>
+    <article class="glass-card loop-card" id="resume-evidence" aria-labelledby="evidence-heading">
+      <h2 class="section-title" id="evidence-heading">Resume evidence</h2>
+      <p class="section-subtitle" data-evidence-summary>No skills stored yet.</p>
+      <ul class="evidence-list" data-evidence-list></ul>
+      <form data-evidence-form>
+        <div class="field">
+          <label for="evidence-skill">Add skill</label>
+          <input id="evidence-skill" name="skill" maxlength="120" required aria-describedby="evidence-form-error">
+        </div>
+        <div class="field">
+          <label for="evidence-span">Evidence excerpt</label>
+          <input id="evidence-span" name="evidence_span" maxlength="280" placeholder="Short quote from your resume">
+        </div>
+        <p class="form-error" data-evidence-error id="evidence-form-error" role="alert" hidden></p>
+        <button type="submit" class="button-outline">Add evidence</button>
+      </form>
+    </article>
 
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">🛡️</div>
-        <h3 class="section-title">Privacy & data</h3>
-        <p class="section-subtitle">Resume data stays ephemeral — processed in memory and discarded after each analysis. No permanent storage of your personal data.</p>
-        <a class="button-outline" href="{{ url_for('privacy') }}">Privacy details</a>
-      </div>
+    <article class="glass-card loop-card" id="learning-actions" aria-labelledby="gap-heading">
+      <h2 class="section-title" id="gap-heading">Top skill gap</h2>
+      <p class="section-subtitle" data-gap-summary>Save a goal and evidence to see the main gap.</p>
+      <dl class="gap-dl">
+        <div><dt>Strong evidence</dt><dd data-gap-strong>—</dd></div>
+        <div><dt>Needs review</dt><dd data-gap-review>—</dd></div>
+        <div><dt>Not evidenced</dt><dd data-gap-missing>—</dd></div>
+      </dl>
+      <p class="small-note">Contextual task exposure for a confirmed occupation is shown after analysis. It is not a personal probability of job loss.</p>
+    </article>
 
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">🎯</div>
-        <h3 class="section-title">Skills gap analysis</h3>
-        <p class="section-subtitle">Compare your resume skills against 20+ career roles. Get a match score, missing skills, and a personalised learning action plan.</p>
-        <a class="button-outline" href="{{ url_for('skills_gap') }}">Analyze skills gap</a>
+    <article class="glass-card loop-card loop-card--primary" aria-labelledby="action-heading">
+      <h2 class="section-title" id="action-heading">One next action</h2>
+      <p class="small-note" data-action-empty>Your next action will appear here.</p>
+      <div data-action-card hidden>
+        <h3 data-action-title></h3>
+        <p data-action-body></p>
+        <p class="small-note" data-action-status aria-live="polite"></p>
+        <div class="actions">
+          <button type="button" class="button" data-start-action>Start action</button>
+          <button type="button" class="button-outline" data-complete-action>Mark complete</button>
+          <button type="button" class="button-ghost" data-review-action>Needs review</button>
+          <button type="button" class="button-ghost" data-refresh-action>Get next recommendation</button>
+        </div>
       </div>
-
-      <div class="workspace-card glass-card">
-        <div class="workspace-card__icon">🔑</div>
-        <h3 class="section-title">Quick tips</h3>
-        <p class="section-subtitle">Press <kbd>?</kbd> for keyboard shortcuts, <kbd>E</kbd> to focus the text area, <kbd>R</kbd> to run analysis, and <kbd>Esc</kbd> to close modals.</p>
-      </div>
-    </div>
+    </article>
   </div>
 </section>
 
@@ -94,7 +143,7 @@
   </button>
 
   <!-- Chat Panel -->
-  <div id="career-chat-panel" class="career-chat-panel" role="dialog" aria-label="Career assistant chat">
+  <div id="career-chat-panel" class="career-chat-panel" role="dialog" aria-modal="true" aria-label="Career assistant chat" aria-hidden="true" inert>
     <!-- Header -->
     <div class="career-chat__header">
       <div class="career-chat__avatar" aria-hidden="true">🤖</div>
@@ -152,5 +201,6 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='career-chat.css', v=static_version) }}">
 
+<script src="{{ url_for('static', filename='workspace-loop.js', v=static_version) }}"></script>
 <script src="{{ url_for('static', filename='career-chat.js', v=static_version) }}"></script>
 {% endblock %}

@@ -57,3 +57,7 @@ Occupation-based estimates can overestimate automatability because occupations c
 2. **Task-level expert-review template** — one row per O*NET task with blank independent exposure fields, completed later with a written rubric and at least two reviewers.
 
 Until track 2 is completed and evaluated, application wording must describe a **contextual occupational exposure estimate** or a **historical benchmark comparison**, never a validated automation prediction, personal job-loss risk, or employment probability.
+
+## Active external-benchmark track (research-only)
+
+A third, isolated track uses the published GPTs-are-GPTs `human_labels` (E0/E1/E2) on 923 occupations. That taxonomy does **not** validate track 2's five-level rubric. See `experiments/task_exposure/reports/public_benchmark/ARCHITECTURE.md`.

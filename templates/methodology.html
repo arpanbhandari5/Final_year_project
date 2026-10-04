@@ -6,7 +6,7 @@
     <div>
       <span class="eyebrow">Methodology</span>
       <h1>Production pipeline built for local ML, explainability, and fast iteration.</h1>
-      <p class="lead">The platform blends resume text, automation-risk modeling, O*NET clusters, and the optional Llama 3 narrative layer into a single request-response flow.</p>
+      <p class="lead">The platform blends resume parsing, occupation matching, a historical occupation reference, published E0/E1/E2 task-exposure retrieval, O*NET clusters, and an optional local Llama explanation layer.</p>
     </div>
     <div class="glass-card">
       <h2 class="section-title">Team standard</h2>
@@ -33,7 +33,7 @@
     </article>
     <article class="method-card">
       <h3 class="section-title">3. Predict</h3>
-      <p class="section-subtitle">Use the local model for immediate risk scoring and role matching, then optionally pass the structured result to Ollama for a richer career narrative.</p>
+      <p class="section-subtitle">Use the local model for the historical occupation reference and role matching, retrieve published E0/E1/E2 labels for the matched occupation, then optionally pass the verified structured result to Ollama for explanation only.</p>
     </article>
     <article class="method-card">
       <h3 class="section-title">4. Recommend</h3>
@@ -49,13 +49,14 @@
       <div class="timeline" style="margin-top: 1rem;">
         <div class="timeline-item"><div><strong>Resume input</strong><p>Uploaded file or pasted text only.</p></div><span class="status-pill">Ephemeral</span></div>
         <div class="timeline-item"><div><strong>Local vectorizer</strong><p>TF-IDF maps the text to role and cluster similarity.</p></div><span class="status-pill">In-memory</span></div>
-        <div class="timeline-item"><div><strong>Local ML score</strong><p>Risk is predicted before any advanced narrative layer.</p></div><span class="status-pill">Fast path</span></div>
+        <div class="timeline-item"><div><strong>Local historical reference</strong><p>Occupation-level Ridge score from automation_risk.csv. Not a personal job-loss probability.</p></div><span class="status-pill">Fast path</span></div>
+        <div class="timeline-item"><div><strong>Published E0/E1/E2 labels</strong><p>Retrieved by exact occupation code from the GPTs-are-GPTs benchmark (923 occupations). Product coverage is a selected 800 common occupations.</p></div><span class="status-pill">Retrieval</span></div>
       </div>
     </div>
 
     <div class="span-6 glass-card">
       <h3 class="section-title">Deployment posture</h3>
-      <p class="section-subtitle">The app never writes resumes to a permanent database. If the advanced mode is enabled, only the already-computed ML output and the resume text are posted to the local Ollama endpoint.</p>
+      <p class="section-subtitle">The app never writes resumes to a permanent database. If advanced mode is enabled, only verified structured results (not the full resume) are posted to the local Ollama endpoint. Ollama never recalculates scores or labels.</p>
       <div class="chart-placeholder" style="margin-top: 1rem;">
         <div class="chart-points">
           <span class="p1"></span><span class="p2"></span><span class="p3"></span><span class="p4"></span><span class="p5"></span>

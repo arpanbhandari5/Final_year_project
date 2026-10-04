@@ -1,0 +1,91 @@
+{
+  "source_confusion_matrix": "C:\\4th project\\experiments\\task_exposure\\reports\\public_benchmark\\confusion_matrix.csv",
+  "test_e1_support": 431,
+  "full_benchmark_e1_count": 2862,
+  "e1_true_predicted_e0": 107,
+  "e1_true_predicted_e1": 151,
+  "e1_true_predicted_e2": 173,
+  "e1_false_negatives": 280,
+  "e0_predicted_e1": 22,
+  "e2_predicted_e1": 45,
+  "e1_false_positives": 67,
+  "logreg_e1_precision": 0.6926605504587156,
+  "logreg_e1_recall": 0.3503480278422274,
+  "logreg_e1_f1": 0.4653312788906009,
+  "class_imbalance_full": {
+    "E0": 10256,
+    "E1": 2862,
+    "E2": 6147
+  },
+  "task_length_chars": {
+    "E0": {
+      "n": 10256,
+      "mean_chars": 96.19744539781591,
+      "median_chars": 92.0
+    },
+    "E1": {
+      "n": 2862,
+      "mean_chars": 98.46051712089448,
+      "median_chars": 93.0
+    },
+    "E2": {
+      "n": 6147,
+      "mean_chars": 100.3196681307955,
+      "median_chars": 96.0
+    }
+  },
+  "duplicate_task_text_rows": 1273,
+  "normalized_duplicate_task_text_rows": 1274,
+  "lowest_macro_f1_soc_major_groups": [
+    {
+      "soc_major_group": 45,
+      "n_tasks": 22,
+      "n_occupations": 1,
+      "accuracy": 0.4090909090909091,
+      "macro_f1": 0.2581369248035914,
+      "note": NaN
+    },
+    {
+      "soc_major_group": 37,
+      "n_tasks": 10,
+      "n_occupations": 1,
+      "accuracy": 0.8,
+      "macro_f1": 0.2962962962962963,
+      "note": "small_group_descriptive_only"
+    },
+    {
+      "soc_major_group": 23,
+      "n_tasks": 51,
+      "n_occupations": 3,
+      "accuracy": 0.5294117647058824,
+      "macro_f1": 0.3162612035851472,
+      "note": NaN
+    },
+    {
+      "soc_major_group": 21,
+      "n_tasks": 19,
+      "n_occupations": 1,
+      "accuracy": 0.3684210526315789,
+      "macro_f1": 0.3205128205128205,
+      "note": "small_group_descriptive_only"
+    },
+    {
+      "soc_major_group": 47,
+      "n_tasks": 218,
+      "n_occupations": 11,
+      "accuracy": 0.9174311926605504,
+      "macro_f1": 0.4690194825934206,
+      "note": NaN
+    }
+  ],
+  "row_level_predictions_archived": false,
+  "relabelled": false,
+  "note": "Row-level test predictions were not archived next to the confusion matrix. Occupation-group E1 rates and example misclassified task strings cannot be listed without retraining. This analysis uses the preserved confusion matrix, per-class CSV, SOC-group metrics, and full benchmark text statistics only.",
+  "future_experiments_not_run": [
+    "class weights",
+    "character n-grams",
+    "word plus character features",
+    "additional independent labels",
+    "probability calibration"
+  ]
+}

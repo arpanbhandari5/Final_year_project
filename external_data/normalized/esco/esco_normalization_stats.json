@@ -1,0 +1,258 @@
+{
+  "generated_at": "2026-10-02T07:37:45.979654+00:00",
+  "tables": [
+    {
+      "dataset": "esco_occupations.csv",
+      "input_path": "external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/occupations_en.csv",
+      "input_sha256": "8034348d84b6d1dd24a5bcf9609186ecbba0a85457ee2eacd65bddec33a51b4a",
+      "output_path": "external_data/normalized/esco/esco_occupations.csv",
+      "exclusion_log_path": "external_data/normalized/esco/esco_occupations_excluded.csv",
+      "input_row_count": 3043,
+      "output_row_count": 3043,
+      "excluded_row_count": 0,
+      "excluded_rows": [],
+      "column_names": [
+        "esco_occupation_uri",
+        "esco_occupation_code",
+        "isco_group",
+        "preferred_label",
+        "alt_labels",
+        "hidden_labels",
+        "status",
+        "modified_date",
+        "definition",
+        "description",
+        "concept_type",
+        "in_scheme",
+        "nace_code",
+        "regulated_profession_note",
+        "scope_note",
+        "source_version",
+        "transformation_version",
+        "source_licence_note"
+      ],
+      "source_column_names": [
+        "conceptType",
+        "conceptUri",
+        "iscoGroup",
+        "preferredLabel",
+        "altLabels",
+        "hiddenLabels",
+        "status",
+        "modifiedDate",
+        "regulatedProfessionNote",
+        "scopeNote",
+        "definition",
+        "inScheme",
+        "description",
+        "code",
+        "naceCode"
+      ],
+      "missing_value_counts": {
+        "esco_occupation_uri": 0,
+        "esco_occupation_code": 0,
+        "isco_group": 0,
+        "preferred_label": 0,
+        "alt_labels": 0,
+        "hidden_labels": 3035,
+        "status": 0,
+        "modified_date": 0,
+        "definition": 3035,
+        "description": 0,
+        "concept_type": 0,
+        "in_scheme": 0,
+        "nace_code": 0,
+        "regulated_profession_note": 0,
+        "scope_note": 2733,
+        "source_version": 0,
+        "transformation_version": 0,
+        "source_licence_note": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_identifier_values": 4,
+        "duplicate_identifier_row_extra": 4
+      },
+      "invalid_identifier_counts": 0,
+      "identity_fields": [
+        "esco_occupation_uri"
+      ],
+      "transformation_version": "norm-v1.0-esco-careercorpus",
+      "source_version": "1.2.1"
+    },
+    {
+      "dataset": "esco_skills.csv",
+      "input_path": "external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/skills_en.csv",
+      "input_sha256": "d03b10efca94b4bcfa260a992cfde89c375f0fa12095d6662a663cfd2f9f2950",
+      "output_path": "external_data/normalized/esco/esco_skills.csv",
+      "exclusion_log_path": "external_data/normalized/esco/esco_skills_excluded.csv",
+      "input_row_count": 13960,
+      "output_row_count": 13960,
+      "excluded_row_count": 0,
+      "excluded_rows": [],
+      "column_names": [
+        "esco_skill_uri",
+        "skill_type",
+        "reuse_level",
+        "preferred_label",
+        "alt_labels",
+        "hidden_labels",
+        "status",
+        "modified_date",
+        "definition",
+        "description",
+        "concept_type",
+        "in_scheme",
+        "scope_note",
+        "source_version",
+        "transformation_version",
+        "source_licence_note"
+      ],
+      "source_column_names": [
+        "conceptType",
+        "conceptUri",
+        "skillType",
+        "reuseLevel",
+        "preferredLabel",
+        "altLabels",
+        "hiddenLabels",
+        "status",
+        "modifiedDate",
+        "scopeNote",
+        "definition",
+        "inScheme",
+        "description"
+      ],
+      "missing_value_counts": {
+        "esco_skill_uri": 0,
+        "skill_type": 5,
+        "reuse_level": 5,
+        "preferred_label": 0,
+        "alt_labels": 18,
+        "hidden_labels": 13807,
+        "status": 0,
+        "modified_date": 0,
+        "definition": 13958,
+        "description": 0,
+        "concept_type": 0,
+        "in_scheme": 0,
+        "scope_note": 13724,
+        "source_version": 0,
+        "transformation_version": 0,
+        "source_licence_note": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_identifier_values": 21,
+        "duplicate_identifier_row_extra": 21
+      },
+      "invalid_identifier_counts": 0,
+      "identity_fields": [
+        "esco_skill_uri"
+      ],
+      "transformation_version": "norm-v1.0-esco-careercorpus",
+      "source_version": "1.2.1"
+    },
+    {
+      "dataset": "esco_occupation_skill_relations.csv",
+      "input_path": "external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/occupationSkillRelations_en.csv",
+      "input_sha256": "e1a46511f0ef4d505f106f1d41f528ef76d289f93e59d4d0cbaac38986102c44",
+      "output_path": "external_data/normalized/esco/esco_occupation_skill_relations.csv",
+      "exclusion_log_path": "external_data/normalized/esco/esco_occupation_skill_relations_excluded.csv",
+      "input_row_count": 126051,
+      "output_row_count": 126051,
+      "excluded_row_count": 0,
+      "excluded_rows": [],
+      "column_names": [
+        "esco_occupation_uri",
+        "occupation_label",
+        "relation_type",
+        "skill_type",
+        "esco_skill_uri",
+        "skill_label",
+        "source_version",
+        "transformation_version",
+        "source_licence_note"
+      ],
+      "source_column_names": [
+        "occupationUri",
+        "occupationLabel",
+        "relationType",
+        "skillType",
+        "skillUri",
+        "skillLabel"
+      ],
+      "missing_value_counts": {
+        "esco_occupation_uri": 0,
+        "occupation_label": 0,
+        "relation_type": 0,
+        "skill_type": 59,
+        "esco_skill_uri": 0,
+        "skill_label": 0,
+        "source_version": 0,
+        "transformation_version": 0,
+        "source_licence_note": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_identifier_values": 0,
+        "duplicate_identifier_row_extra": 0
+      },
+      "invalid_identifier_counts": 0,
+      "identity_fields": [
+        "esco_occupation_uri",
+        "esco_skill_uri",
+        "relation_type"
+      ],
+      "transformation_version": "norm-v1.0-esco-careercorpus",
+      "source_version": "1.2.1"
+    },
+    {
+      "dataset": "esco_skill_relations.csv",
+      "input_path": "external_data/raw/esco/ESCO dataset - v1.2.1 - classification - en - csv/skillSkillRelations_en.csv",
+      "input_sha256": "64a5f8fb7b8dda4932ff06db4738ce1beed3906e45a49b14453349056c609439",
+      "output_path": "external_data/normalized/esco/esco_skill_relations.csv",
+      "exclusion_log_path": "external_data/normalized/esco/esco_skill_relations_excluded.csv",
+      "input_row_count": 5818,
+      "output_row_count": 5818,
+      "excluded_row_count": 0,
+      "excluded_rows": [],
+      "column_names": [
+        "original_skill_uri",
+        "original_skill_type",
+        "relation_type",
+        "related_skill_type",
+        "related_skill_uri",
+        "source_version",
+        "transformation_version",
+        "source_licence_note"
+      ],
+      "source_column_names": [
+        "originalSkillUri",
+        "originalSkillType",
+        "relationType",
+        "relatedSkillType",
+        "relatedSkillUri"
+      ],
+      "missing_value_counts": {
+        "original_skill_uri": 0,
+        "original_skill_type": 0,
+        "relation_type": 0,
+        "related_skill_type": 0,
+        "related_skill_uri": 0,
+        "source_version": 0,
+        "transformation_version": 0,
+        "source_licence_note": 0
+      },
+      "duplicate_identifier_counts": {
+        "duplicate_identifier_values": 0,
+        "duplicate_identifier_row_extra": 0
+      },
+      "invalid_identifier_counts": 0,
+      "identity_fields": [
+        "original_skill_uri",
+        "related_skill_uri",
+        "relation_type"
+      ],
+      "transformation_version": "norm-v1.0-esco-careercorpus",
+      "source_version": "1.2.1"
+    }
+  ]
+}

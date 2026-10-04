@@ -71,23 +71,21 @@
   </aside>
 
   <!-- ═══ Right Panel: Form Side ═══ -->
-  <main class="auth-split__form">
+  <div class="auth-split__form">
     <div class="auth-split__card">
       <!-- Tabs -->
-      <div class="auth-tabs" role="tablist">
+      <div class="auth-tabs" role="navigation" aria-label="Sign in or sign up">
         <a
           href="{{ url_for('login') }}"
           class="auth-tab {% if mode == 'login' %}is-active{% endif %}"
-          role="tab"
-          aria-selected="{% if mode == 'login' %}true{% else %}false{% endif %}"
+          aria-current="{% if mode == 'login' %}page{% else %}false{% endif %}"
         >
           Sign In
         </a>
         <a
           href="{{ url_for('signup') }}"
           class="auth-tab {% if mode == 'signup' %}is-active{% endif %}"
-          role="tab"
-          aria-selected="{% if mode == 'signup' %}true{% else %}false{% endif %}"
+          aria-current="{% if mode == 'signup' %}page{% else %}false{% endif %}"
         >
           Sign Up
         </a>
@@ -147,6 +145,7 @@
           <input type="hidden" name="next" value="{{ next_url }}">
 
           <!-- Email / Username -->
+          <label class="auth-field__label" for="login-email">Email or username</label>
           <div class="auth-field">
             <div class="auth-field__icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -164,6 +163,7 @@
           </div>
 
           <!-- Password -->
+          <label class="auth-field__label" for="login-password">Password</label>
           <div class="auth-field">
             <div class="auth-field__icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -259,6 +259,7 @@
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
           <!-- Full Name -->
+          <label class="auth-field__label" for="signup-name">Full name</label>
           <div class="auth-field">
             <div class="auth-field__icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -278,6 +279,7 @@
           </div>
 
           <!-- Username -->
+          <label class="auth-field__label" for="signup-username">Username</label>
           <div class="auth-field">
             <div class="auth-field__icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -298,6 +300,7 @@
           </div>
 
           <!-- Email -->
+          <label class="auth-field__label" for="signup-email">Email address</label>
           <div class="auth-field">
             <div class="auth-field__icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -317,6 +320,7 @@
           </div>
 
           <!-- Phone (optional) -->
+          <label class="auth-field__label" for="signup-phone">Phone number (optional)</label>
           <div class="auth-field">
             <div class="auth-field__icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -336,6 +340,7 @@
           </div>
 
           <!-- Password -->
+          <label class="auth-field__label" for="signup-password">Password</label>
           <div class="auth-field">
             <div class="auth-field__icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -378,6 +383,7 @@
           </div>
 
           <!-- Confirm Password -->
+          <label class="auth-field__label" for="confirm-password">Confirm password</label>
           <div class="auth-field">
             <div class="auth-field__icon" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -422,7 +428,7 @@
         </p>
       </div>
     </div>
-  </main>
+  </div>
 </div>
 {% endblock %}
 

@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-10-03T04:59:25Z",
+  "product_subset_occupations": 800,
+  "product_subset_path": "C:/4th project/project_data/occupation_selection/occupation_master_800.csv",
+  "product_subset_sha256": "26eeee1a06e4919eaf699f7a9da2d0a5f417e625f4d968326ef12daec93c4aa5",
+  "summaries_path": "C:/4th project/experiments/task_exposure/data/public_benchmark/product_coverage_800_occupation_summaries.csv",
+  "summaries_sha256": "087f90d244e59b38e47da907615e29a99cd13ffe3c40f63c36280ba7a5e43a68",
+  "benchmark_occupations_outside_800": 123,
+  "outside_list_path": "C:/4th project/experiments/task_exposure/data/public_benchmark/benchmark_occupations_outside_product_800.csv",
+  "used_for_model_training": 0,
+  "note": "Descriptive summaries of published benchmark human_labels. Not a retrained 800-occupation model."
+}

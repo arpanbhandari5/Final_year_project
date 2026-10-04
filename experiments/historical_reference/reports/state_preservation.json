@@ -1,0 +1,14 @@
+{
+  "captured_at": "2026-10-03T12:01:00Z",
+  "branch": "main",
+  "hashes": {
+    "data/automation_risk.csv": "d28ca4cbc2ca746c9a033d1953d49d565c3e64a2d8ae54b6ce52bed1826a18f1",
+    "ml_models/model.pkl": "cca7933cc2fca7b37d405c5d5d0f111a88ec071a69cea536315064d60944398c",
+    "ml_models/automation_model.pkl": "cca7933cc2fca7b37d405c5d5d0f111a88ec071a69cea536315064d60944398c",
+    "project_data/task_exposure_labels/task_exposure_training.csv": "f10ad444afcb24605314c2e09b59022effc5a7db247a22a8bfa95bb699a1152c",
+    "experiments/task_exposure/data/public_benchmark/public_gpts_are_gpts_benchmark.csv": "bfc3b219d132449a17105dfc6efc2f0254a3dc613f6192405741c36be10d1299",
+    "project_data/occupation_selection/occupation_master_800.csv": "26eeee1a06e4919eaf699f7a9da2d0a5f417e625f4d968326ef12daec93c4aa5",
+    "experiments/task_exposure/reports/public_benchmark/model_evaluation.json": "39f7ba76ee5a11431c135f7ef2864b190554d569b69ff5d6b6d5d9f3bbb30b49",
+    "replacement_data/occupation_training_table_historical_benchmark.csv": "9f8c7cf38d487e19cd99f126dc03d6d6eaf77ec0aab406fe67f5a507b2e97e10"
+  }
+}

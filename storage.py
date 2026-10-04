@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
 import secrets
+import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -12,6 +14,8 @@ from flask_login import UserMixin
 log = logging.getLogger("prayash.storage")
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import UniqueConstraint, text
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from utils import RISK_LOW, RISK_MODERATE
@@ -72,6 +76,222 @@ class User(UserMixin, db.Model):
     def touch_last_login(self) -> None:
         self.last_login = datetime.now(timezone.utc)
         db.session.commit()
+
+
+class CareerProfile(db.Model):
+    __tablename__ = "career_profiles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    intent = db.Column(db.String(80), nullable=False, default="")
+    target_role = db.Column(db.String(160), nullable=False, default="")
+    target_role_source = db.Column(db.String(24), nullable=False, default="user")
+    confidence = db.Column(db.String(24), nullable=False, default="self-reported")
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=_utc_now, onupdate=_utc_now)
+
+
+class CareerGoal(db.Model):
+    __tablename__ = "career_goals"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    target_role = db.Column(db.String(160), nullable=False, default="")
+    alternative_roles_json = db.Column(db.Text, nullable=False, default="[]")
+    geography = db.Column(db.String(120), nullable=False, default="")
+    seniority = db.Column(db.String(60), nullable=False, default="")
+    time_per_week = db.Column(db.Float, nullable=True)
+    learning_budget = db.Column(db.Float, nullable=True)
+    target_occupation_code = db.Column(db.String(16), nullable=False, default="")
+    immediate_goal = db.Column(db.String(80), nullable=False, default="")
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=_utc_now, onupdate=_utc_now)
+
+
+class ResumeProfile(db.Model):
+    __tablename__ = "resume_profiles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    extracted_skills_json = db.Column(db.Text, nullable=False, default="[]")
+    evidence_spans_json = db.Column(db.Text, nullable=False, default="[]")
+    confidence = db.Column(db.Float, nullable=False, default=0.0)
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=_utc_now, onupdate=_utc_now)
+
+
+class ActionItem(db.Model):
+    __tablename__ = "action_items"
+
+    STATUSES = ("not_started", "in_progress", "completed", "needs_review")
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    source_type = db.Column(db.String(40), nullable=False, default="skill_gap")
+    source_id = db.Column(db.String(64), nullable=False, default="")
+    action_type = db.Column(db.String(40), nullable=False, default="learn_skill")
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False, default="")
+    status = db.Column(db.String(24), nullable=False, default="not_started", index=True)
+    priority = db.Column(db.Integer, nullable=False, default=1)
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+    completed_at = db.Column(db.DateTime, nullable=True)
+
+
+class TargetJobMatch(db.Model):
+    """User-owned pasted job description and last comparison payload. Not an application tracker."""
+
+    __tablename__ = "target_job_matches"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    title = db.Column(db.String(200), nullable=False, default="")
+    company = db.Column(db.String(160), nullable=False, default="")
+    location = db.Column(db.String(160), nullable=False, default="")
+    description_raw = db.Column(db.Text, nullable=False)
+    content_hash = db.Column(db.String(64), nullable=False, index=True)
+    evidence_source_type = db.Column(db.String(40), nullable=False, default="profile")
+    evidence_source_key = db.Column(db.String(80), nullable=False, default="profile")
+    evidence_source_label = db.Column(db.String(240), nullable=False, default="Current evidence profile")
+    resume_version_id = db.Column(db.Integer, nullable=True)
+    result_json = db.Column(db.Text, nullable=False, default="{}")
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now, index=True)
+    updated_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+
+
+class JobPosting(db.Model):
+    __tablename__ = "job_postings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    title = db.Column(db.String(200), nullable=False)
+    company = db.Column(db.String(160), nullable=False, default="")
+    description_raw = db.Column(db.Text, nullable=False)
+    source_url = db.Column(db.String(1000), nullable=False, default="")
+    content_hash = db.Column(db.String(64), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now, index=True)
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "content_hash", name="uq_job_postings_user_hash"),
+    )
+
+
+class ResumeVersion(db.Model):
+    __tablename__ = "resume_versions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    name = db.Column(db.String(160), nullable=False)
+    content_text = db.Column(db.Text, nullable=False)
+    content_hash = db.Column(db.String(64), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now, index=True)
+
+
+class AnalysisSnapshot(db.Model):
+    __tablename__ = "analysis_snapshots"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    job_posting_id = db.Column(db.Integer, db.ForeignKey("job_postings.id"), nullable=False)
+    resume_version_id = db.Column(db.Integer, db.ForeignKey("resume_versions.id"), nullable=False)
+    snapshot_hash = db.Column(db.String(64), nullable=False, unique=True, index=True)
+    result_json = db.Column(db.Text, nullable=False, default="{}")
+    comparison_timestamp = db.Column(db.DateTime, nullable=False, default=_utc_now, index=True)
+
+
+class Application(db.Model):
+    __tablename__ = "applications"
+
+    STATUSES = ("Bookmarked", "Applying", "Applied", "Interviewing", "Accepted", "Rejected")
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    job_posting_id = db.Column(db.Integer, db.ForeignKey("job_postings.id"), nullable=False, index=True)
+    resume_version_id = db.Column(db.Integer, db.ForeignKey("resume_versions.id"), nullable=True)
+    analysis_snapshot_id = db.Column(db.Integer, db.ForeignKey("analysis_snapshots.id"), nullable=True)
+    target_job_match_id = db.Column(db.Integer, nullable=True, index=True)
+    status = db.Column(db.String(24), nullable=False, default="Bookmarked", index=True)
+    follow_up_date = db.Column(db.Date, nullable=True)
+    notes = db.Column(db.Text, nullable=False, default="")
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now, index=True)
+    updated_at = db.Column(db.DateTime, nullable=False, default=_utc_now, onupdate=_utc_now)
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "job_posting_id", name="uq_applications_user_job"),
+    )
+
+
+class OnetOccupation(db.Model):
+    __tablename__ = "onet_occupations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    onet_soc_code = db.Column(db.String(32), nullable=False, unique=True, index=True)
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False, default="")
+    job_zone = db.Column(db.String(32), nullable=False, default="")
+    release_version = db.Column(db.String(32), nullable=False, index=True)
+    release_date = db.Column(db.String(16), nullable=False, default="2026")
+    imported_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+
+
+class OnetTask(db.Model):
+    __tablename__ = "onet_tasks"
+
+    id = db.Column(db.Integer, primary_key=True)
+    occupation_id = db.Column(db.Integer, db.ForeignKey("onet_occupations.id"), nullable=False, index=True)
+    task_id = db.Column(db.String(80), nullable=False, default="")
+    statement = db.Column(db.Text, nullable=False)
+    release_version = db.Column(db.String(32), nullable=False)
+    imported_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+
+
+class OnetSkill(db.Model):
+    __tablename__ = "onet_skills"
+
+    id = db.Column(db.Integer, primary_key=True)
+    occupation_id = db.Column(db.Integer, db.ForeignKey("onet_occupations.id"), nullable=False, index=True)
+    element_id = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    scale_id = db.Column(db.String(16), nullable=False, default="")
+    value = db.Column(db.Float, nullable=True)
+    release_version = db.Column(db.String(32), nullable=False)
+    imported_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+
+
+class OnetTechnology(db.Model):
+    __tablename__ = "onet_technologies"
+
+    id = db.Column(db.Integer, primary_key=True)
+    occupation_id = db.Column(db.Integer, db.ForeignKey("onet_occupations.id"), nullable=False, index=True)
+    name = db.Column(db.String(255), nullable=False)
+    category = db.Column(db.String(120), nullable=False, default="")
+    release_version = db.Column(db.String(32), nullable=False)
+    imported_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+
+
+class OnetInterest(db.Model):
+    __tablename__ = "onet_interests"
+
+    id = db.Column(db.Integer, primary_key=True)
+    occupation_id = db.Column(db.Integer, db.ForeignKey("onet_occupations.id"), nullable=False, index=True)
+    name = db.Column(db.String(120), nullable=False)
+    score = db.Column(db.Float, nullable=True)
+    release_version = db.Column(db.String(32), nullable=False)
+    imported_at = db.Column(db.DateTime, nullable=False, default=_utc_now)
+
+
+class PartnershipRequest(db.Model):
+    __tablename__ = "partnership_requests"
+
+    id = db.Column(db.Integer, primary_key=True)
+    organization = db.Column(db.String(160), nullable=False)
+    contact_email = db.Column(db.String(255), nullable=False)
+    use_case = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(24), nullable=False, default="new")
+    notes = db.Column(db.Text, nullable=False, default="")
+    response_message = db.Column(db.Text, nullable=True)
+    responded_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=_utc_now, index=True)
 
 
 class Upload(db.Model):
@@ -136,6 +356,7 @@ def init_database(app) -> None:
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        _ensure_sqlite_workspace_columns()
         seed_default_users()
 
 
@@ -170,6 +391,76 @@ def seed_default_users() -> None:
         db.session.add(student_user)
 
     db.session.commit()
+
+
+def _ensure_sqlite_workspace_columns() -> None:
+    if db.engine.dialect.name != "sqlite":
+        return
+    statements = {
+        "career_goals": (
+            ("target_occupation_code", "ALTER TABLE career_goals ADD COLUMN target_occupation_code VARCHAR(16) DEFAULT ''"),
+            ("immediate_goal", "ALTER TABLE career_goals ADD COLUMN immediate_goal VARCHAR(80) DEFAULT ''"),
+        ),
+        "target_job_matches": (
+            ("evidence_source_type", "ALTER TABLE target_job_matches ADD COLUMN evidence_source_type VARCHAR(40) DEFAULT 'profile'"),
+            ("evidence_source_key", "ALTER TABLE target_job_matches ADD COLUMN evidence_source_key VARCHAR(80) DEFAULT 'profile'"),
+            ("evidence_source_label", "ALTER TABLE target_job_matches ADD COLUMN evidence_source_label VARCHAR(240) DEFAULT 'Current evidence profile'"),
+            ("resume_version_id", "ALTER TABLE target_job_matches ADD COLUMN resume_version_id INTEGER"),
+        ),
+        "applications": (
+            ("target_job_match_id", "ALTER TABLE applications ADD COLUMN target_job_match_id INTEGER"),
+        ),
+    }
+    with db.engine.begin() as conn:
+        for table, columns in statements.items():
+            existing = {row[1] for row in conn.execute(text(f"PRAGMA table_info({table})"))}
+            if not existing:
+                continue
+            for name, ddl in columns:
+                if name not in existing:
+                    conn.execute(text(ddl))
+        _dedupe_and_index_sqlite_applications(conn)
+
+
+def _dedupe_and_index_sqlite_applications(conn) -> None:
+    tables = {row[0] for row in conn.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))}
+    if "job_postings" in tables:
+        rows = conn.execute(text("SELECT id, user_id, content_hash FROM job_postings")).fetchall()
+        keepers: dict[tuple[Any, Any], int] = {}
+        extras: list[tuple[int, int]] = []
+        for job_id, user_id, digest in rows:
+            key = (user_id, digest)
+            if key in keepers:
+                extras.append((int(job_id), keepers[key]))
+            else:
+                keepers[key] = int(job_id)
+        for extra_id, keeper_id in extras:
+            if "applications" in tables:
+                conn.execute(
+                    text("UPDATE applications SET job_posting_id = :keeper WHERE job_posting_id = :extra"),
+                    {"keeper": keeper_id, "extra": extra_id},
+                )
+            if "analysis_snapshots" in tables:
+                conn.execute(
+                    text("UPDATE analysis_snapshots SET job_posting_id = :keeper WHERE job_posting_id = :extra"),
+                    {"keeper": keeper_id, "extra": extra_id},
+                )
+            conn.execute(text("DELETE FROM job_postings WHERE id = :extra"), {"extra": extra_id})
+        conn.execute(text(
+            "CREATE UNIQUE INDEX IF NOT EXISTS uq_job_postings_user_hash ON job_postings (user_id, content_hash)"
+        ))
+    if "applications" in tables:
+        conn.execute(text(
+            """
+            DELETE FROM applications
+            WHERE id NOT IN (
+                SELECT MIN(id) FROM applications GROUP BY user_id, job_posting_id
+            )
+            """
+        ))
+        conn.execute(text(
+            "CREATE UNIQUE INDEX IF NOT EXISTS uq_applications_user_job ON applications (user_id, job_posting_id)"
+        ))
 
 
 def authenticate_user(email_or_username: str, password: str) -> User | None:
@@ -328,12 +619,15 @@ def send_email(to_email: str, subject: str, html_body: str, text_body: str | Non
     otherwise falls back to the standard-library smtplib, and finally to the
     console logger. Returns True if the message was 'sent' (logged or delivered)
     so the caller never leaks whether an account exists."""
-    # Always log (useful in development and for auditing)
-    log.info("=" * 50)
+    # Log delivery metadata. Production logs never include the message body,
+    # because OTP and reset emails contain one-time secrets.
+    production_logs = os.environ.get("FLASK_ENV", "development") == "production"
     log.info("EMAIL TO: %s", to_email)
     log.info("SUBJECT: %s", subject)
-    log.info("BODY:\n%s\n", html_body if not text_body else text_body)
-    log.info("=" * 50)
+    if production_logs:
+        log.info("EMAIL BODY: redacted")
+    else:
+        log.info("BODY:\n%s\n", html_body if not text_body else text_body)
 
     # 1) Flask-Mail (preferred transport)
     if _MAIL_CONFIG["username"] and _MAIL_CONFIG["password"]:
@@ -553,6 +847,577 @@ def consume_reset_token(token: str) -> bool:
 def update_user_password(user: User, new_password: str) -> None:
     user.set_password(new_password)
     db.session.commit()
+
+
+def get_career_profile(user_id: int) -> CareerProfile | None:
+    return CareerProfile.query.filter_by(user_id=user_id).first()
+
+
+def save_career_profile(*, user_id: int, intent: str, target_role: str) -> CareerProfile:
+    profile = get_career_profile(user_id)
+    if profile is None:
+        profile = CareerProfile(user_id=user_id)
+        db.session.add(profile)
+    profile.intent = intent
+    profile.target_role = target_role
+    profile.target_role_source = "user"
+    profile.confidence = "self-reported"
+    db.session.commit()
+    return profile
+
+
+def _json_list(value: str) -> list[Any]:
+    try:
+        parsed = json.loads(value or "[]")
+    except (TypeError, json.JSONDecodeError):
+        return []
+    return parsed if isinstance(parsed, list) else []
+
+
+def career_goal_payload(goal: CareerGoal | None) -> dict[str, Any] | None:
+    if goal is None:
+        return None
+    return {
+        "id": goal.id,
+        "target_role": goal.target_role,
+        "target_occupation_code": goal.target_occupation_code or "",
+        "alternative_roles": _json_list(goal.alternative_roles_json),
+        "geography": goal.geography,
+        "seniority": goal.seniority,
+        "time_per_week": goal.time_per_week,
+        "learning_budget": goal.learning_budget,
+        "immediate_goal": goal.immediate_goal or "",
+    }
+
+
+def get_career_goal(user_id: int) -> CareerGoal | None:
+    return CareerGoal.query.filter_by(user_id=user_id).first()
+
+
+def save_career_goal(*, user_id: int, values: dict[str, Any]) -> CareerGoal:
+    goal = get_career_goal(user_id)
+    if goal is None:
+        goal = CareerGoal(user_id=user_id)
+        db.session.add(goal)
+    goal.target_role = values["target_role"]
+    goal.alternative_roles_json = json.dumps(values["alternative_roles"], ensure_ascii=False)
+    goal.geography = values["geography"]
+    goal.seniority = values["seniority"]
+    goal.time_per_week = values["time_per_week"]
+    goal.learning_budget = values["learning_budget"]
+    goal.target_occupation_code = values.get("target_occupation_code") or ""
+    goal.immediate_goal = values.get("immediate_goal") or ""
+    db.session.commit()
+    return goal
+
+
+def delete_career_goal(user_id: int) -> bool:
+    goal = get_career_goal(user_id)
+    if goal is None:
+        return False
+    db.session.delete(goal)
+    db.session.commit()
+    return True
+
+
+def _new_resume_profile(user_id: int) -> ResumeProfile:
+    profile = ResumeProfile(user_id=user_id, extracted_skills_json="[]", evidence_spans_json="[]", confidence=0.0)
+    db.session.add(profile)
+    db.session.commit()
+    return profile
+
+
+def get_resume_profile(user_id: int, *, create: bool = False) -> ResumeProfile | None:
+    profile = ResumeProfile.query.filter_by(user_id=user_id).first()
+    return _new_resume_profile(user_id) if profile is None and create else profile
+
+
+def resume_profile_payload(profile: ResumeProfile | None) -> dict[str, Any]:
+    if profile is None:
+        return {"extracted_skills": [], "evidence_spans": [], "confidence": 0.0}
+    return {
+        "id": profile.id,
+        "extracted_skills": _json_list(profile.extracted_skills_json),
+        "evidence_spans": _json_list(profile.evidence_spans_json),
+        "confidence": profile.confidence,
+    }
+
+
+def correct_resume_skill(
+    *,
+    user_id: int,
+    action: str,
+    skill_id: str | None,
+    skill: str | None,
+    evidence_span: str | None,
+    confidence: float | None,
+    status: str | None = None,
+) -> ResumeProfile | None:
+    profile = get_resume_profile(user_id, create=True)
+    if profile is None:
+        return None
+    skills = _json_list(profile.extracted_skills_json)
+    index = next((position for position, item in enumerate(skills) if str(item.get("id")) == skill_id), None)
+    if action == "add":
+        if not skill:
+            return None
+        skills.append({
+            "id": uuid.uuid4().hex,
+            "skill": skill,
+            "evidence_span": evidence_span or "",
+            "confidence": confidence if confidence is not None else 0.5,
+            "status": "user-added",
+            "source_section": "user",
+        })
+    elif action == "edit":
+        if index is None or not skill:
+            return None
+        updates = {
+            "skill": skill,
+            "evidence_span": evidence_span if evidence_span is not None else skills[index].get("evidence_span", ""),
+            "confidence": confidence if confidence is not None else skills[index].get("confidence", 0.5),
+        }
+        if status:
+            updates["status"] = status
+        skills[index].update(updates)
+    elif action == "delete":
+        if index is None:
+            return None
+        skills.pop(index)
+    else:
+        return None
+    profile.extracted_skills_json = json.dumps(skills, ensure_ascii=False)
+    profile.confidence = round(sum(float(item.get("confidence", 0.0)) for item in skills) / len(skills), 3) if skills else 0.0
+    db.session.commit()
+    return profile
+
+
+def replace_resume_skills(user_id: int, skills: list[dict[str, Any]]) -> ResumeProfile:
+    profile = get_resume_profile(user_id, create=True)
+    stored = []
+    for item in skills[:40]:
+        name = str(item.get("skill") or "").strip()[:120]
+        if not name:
+            continue
+        stored.append({
+            "id": str(item.get("id") or uuid.uuid4().hex),
+            "skill": name,
+            "evidence_span": str(item.get("evidence_span") or "")[:280],
+            "confidence": float(item.get("confidence") or 0.5),
+            "status": str(item.get("status") or "needs_review"),
+            "source_section": str(item.get("source_section") or "resume"),
+        })
+    profile.extracted_skills_json = json.dumps(stored, ensure_ascii=False)
+    profile.confidence = round(sum(float(item.get("confidence", 0.0)) for item in stored) / len(stored), 3) if stored else 0.0
+    db.session.commit()
+    return profile
+
+
+def action_item_payload(item: ActionItem | None) -> dict[str, Any] | None:
+    if item is None:
+        return None
+    return {
+        "id": item.id,
+        "source_type": item.source_type,
+        "source_id": item.source_id,
+        "action_type": item.action_type,
+        "title": item.title,
+        "description": item.description,
+        "status": item.status,
+        "priority": item.priority,
+        "created_at": item.created_at.isoformat() if item.created_at else None,
+        "completed_at": item.completed_at.isoformat() if item.completed_at else None,
+    }
+
+
+def get_current_action(user_id: int) -> ActionItem | None:
+    open_item = (
+        ActionItem.query.filter_by(user_id=user_id)
+        .filter(ActionItem.status.in_(("not_started", "in_progress", "needs_review")))
+        .order_by(ActionItem.created_at.desc())
+        .first()
+    )
+    if open_item is not None:
+        return open_item
+    return ActionItem.query.filter_by(user_id=user_id).order_by(ActionItem.created_at.desc()).first()
+
+
+def save_action_item(*, user_id: int, values: dict[str, Any]) -> ActionItem:
+    current = get_current_action(user_id)
+    if current is not None and current.status in {"not_started", "in_progress"}:
+        item = current
+    else:
+        item = ActionItem(user_id=user_id)
+        db.session.add(item)
+    item.source_type = values.get("source_type") or "skill_gap"
+    item.source_id = values.get("source_id") or ""
+    item.action_type = values.get("action_type") or "learn_skill"
+    item.title = values["title"]
+    item.description = values.get("description") or ""
+    item.status = values.get("status") or "not_started"
+    item.priority = int(values.get("priority") or 1)
+    item.completed_at = None
+    db.session.commit()
+    return item
+
+
+def update_action_status(*, user_id: int, action_id: int, status: str) -> ActionItem | None:
+    item = ActionItem.query.filter_by(id=action_id, user_id=user_id).first()
+    if item is None or status not in ActionItem.STATUSES:
+        return None
+    item.status = status
+    item.completed_at = _utc_now() if status == "completed" else None
+    db.session.commit()
+    return item
+
+
+def target_job_match_payload(row: TargetJobMatch | None) -> dict[str, Any] | None:
+    if row is None:
+        return None
+    try:
+        result = json.loads(row.result_json or "{}")
+    except json.JSONDecodeError:
+        result = {}
+    return {
+        "id": row.id,
+        "title": row.title,
+        "company": row.company,
+        "location": row.location,
+        "description_raw": row.description_raw,
+        "content_hash": row.content_hash,
+        "evidence_source_type": getattr(row, "evidence_source_type", None) or "profile",
+        "evidence_source_key": getattr(row, "evidence_source_key", None) or "profile",
+        "evidence_source_label": getattr(row, "evidence_source_label", None) or "Current evidence profile",
+        "resume_version_id": getattr(row, "resume_version_id", None),
+        "created_at": row.created_at.isoformat() if row.created_at else None,
+        "updated_at": row.updated_at.isoformat() if row.updated_at else None,
+        "result": result,
+        "export_supported": False,
+    }
+
+
+def get_owned_target_job_match(user_id: int, match_id: int) -> TargetJobMatch | None:
+    return TargetJobMatch.query.filter_by(id=match_id, user_id=user_id).first()
+
+
+def list_owned_target_job_matches(user_id: int) -> list[TargetJobMatch]:
+    return TargetJobMatch.query.filter_by(user_id=user_id).order_by(TargetJobMatch.created_at.desc()).all()
+
+
+def save_target_job_match(*, user_id: int, values: dict[str, Any]) -> tuple[TargetJobMatch, bool]:
+    """Reuse the owned row for the same description hash and evidence source (Option B)."""
+    description = values["description_raw"]
+    digest = _content_hash(description)
+    source_key = values.get("evidence_source_key") or "profile"
+    existing = TargetJobMatch.query.filter_by(
+        user_id=user_id,
+        content_hash=digest,
+        evidence_source_key=source_key,
+    ).first()
+    now = _utc_now()
+    payload = json.dumps(values.get("result") or {}, ensure_ascii=False)
+    if existing is not None:
+        existing.title = values.get("title") or existing.title
+        existing.company = values.get("company") or existing.company
+        existing.location = values.get("location") or existing.location
+        existing.description_raw = description
+        existing.result_json = payload
+        existing.evidence_source_type = values.get("evidence_source_type") or "profile"
+        existing.evidence_source_label = values.get("evidence_source_label") or "Current evidence profile"
+        existing.resume_version_id = values.get("resume_version_id")
+        existing.updated_at = now
+        db.session.commit()
+        return existing, False
+    row = TargetJobMatch(
+        user_id=user_id,
+        title=values.get("title") or "",
+        company=values.get("company") or "",
+        location=values.get("location") or "",
+        description_raw=description,
+        content_hash=digest,
+        evidence_source_type=values.get("evidence_source_type") or "profile",
+        evidence_source_key=source_key,
+        evidence_source_label=values.get("evidence_source_label") or "Current evidence profile",
+        resume_version_id=values.get("resume_version_id"),
+        result_json=payload,
+        created_at=now,
+        updated_at=now,
+    )
+    db.session.add(row)
+    db.session.commit()
+    return row, True
+
+
+def update_owned_target_job_match(*, user_id: int, match_id: int, values: dict[str, Any]) -> TargetJobMatch | None:
+    row = get_owned_target_job_match(user_id, match_id)
+    if row is None:
+        return None
+    if "title" in values:
+        row.title = values.get("title") or ""
+    if "company" in values:
+        row.company = values.get("company") or ""
+    if "location" in values:
+        row.location = values.get("location") or ""
+    row.updated_at = _utc_now()
+    db.session.commit()
+    return row
+
+
+def delete_owned_target_job_match(*, user_id: int, match_id: int) -> bool:
+    row = get_owned_target_job_match(user_id, match_id)
+    if row is None:
+        return False
+    Application.query.filter_by(user_id=user_id, target_job_match_id=match_id).update(
+        {Application.target_job_match_id: None}
+    )
+    db.session.delete(row)
+    db.session.commit()
+    return True
+
+
+def _content_hash(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def job_posting_payload(job: JobPosting) -> dict[str, Any]:
+    return {
+        "id": job.id,
+        "title": job.title,
+        "company": job.company,
+        "description_raw": job.description_raw,
+        "source_url": job.source_url,
+        "content_hash": job.content_hash,
+        "created_at": job.created_at.isoformat(),
+    }
+
+
+def resume_version_payload(version: ResumeVersion) -> dict[str, Any]:
+    return {
+        "id": version.id,
+        "name": version.name,
+        "content_hash": version.content_hash,
+        "created_at": version.created_at.isoformat(),
+    }
+
+
+def application_payload(application: Application) -> dict[str, Any]:
+    job = db.session.get(JobPosting, application.job_posting_id)
+    match_id = getattr(application, "target_job_match_id", None)
+    match = get_owned_target_job_match(application.user_id, match_id) if match_id else None
+    version = None
+    if application.resume_version_id:
+        version = get_owned_resume_version(application.user_id, application.resume_version_id)
+    return {
+        "id": application.id,
+        "job_posting_id": application.job_posting_id,
+        "resume_version_id": application.resume_version_id,
+        "resume_version_name": version.name if version else None,
+        "analysis_snapshot_id": application.analysis_snapshot_id,
+        "target_job_match_id": match_id,
+        "comparison_available": match is not None,
+        "status": application.status,
+        "follow_up_date": application.follow_up_date.isoformat() if application.follow_up_date else None,
+        "notes": application.notes,
+        "job": {"title": job.title, "company": job.company, "source_url": job.source_url} if job else None,
+        "export_supported": False,
+    }
+
+
+def snapshot_payload(snapshot: AnalysisSnapshot) -> dict[str, Any]:
+    return {
+        "id": snapshot.id,
+        "snapshot_hash": snapshot.snapshot_hash,
+        "comparison_timestamp": snapshot.comparison_timestamp.isoformat(),
+        "result": json.loads(snapshot.result_json or "{}"),
+    }
+
+
+def create_job_posting(*, user_id: int, title: str, company: str, description_raw: str, source_url: str) -> JobPosting:
+    job = JobPosting(
+        user_id=user_id,
+        title=title,
+        company=company,
+        description_raw=description_raw,
+        source_url=source_url,
+        content_hash=_content_hash(description_raw),
+    )
+    db.session.add(job)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        existing = JobPosting.query.filter_by(user_id=user_id, content_hash=_content_hash(description_raw)).first()
+        if existing is None:
+            raise
+        return existing
+    return job
+
+
+def get_owned_job(user_id: int, job_id: int) -> JobPosting | None:
+    return JobPosting.query.filter_by(id=job_id, user_id=user_id).first()
+
+
+def create_resume_version(*, user_id: int, name: str, content_text: str) -> ResumeVersion:
+    version = ResumeVersion(
+        user_id=user_id,
+        name=name,
+        content_text=content_text,
+        content_hash=_content_hash(content_text),
+    )
+    db.session.add(version)
+    db.session.commit()
+    return version
+
+
+def get_owned_resume_version(user_id: int, version_id: int) -> ResumeVersion | None:
+    return ResumeVersion.query.filter_by(id=version_id, user_id=user_id).first()
+
+
+def create_application(
+    *,
+    user_id: int,
+    job_posting_id: int,
+    resume_version_id: int | None = None,
+    status: str = "Bookmarked",
+    notes: str = "",
+    target_job_match_id: int | None = None,
+) -> Application:
+    application = Application(
+        user_id=user_id,
+        job_posting_id=job_posting_id,
+        resume_version_id=resume_version_id,
+        status=status,
+        notes=notes,
+        target_job_match_id=target_job_match_id,
+    )
+    db.session.add(application)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        existing = Application.query.filter_by(user_id=user_id, job_posting_id=job_posting_id).first()
+        if existing is None:
+            raise
+        return existing
+    return application
+
+
+def get_or_create_owned_job_posting(
+    *,
+    user_id: int,
+    title: str,
+    company: str,
+    description_raw: str,
+    source_url: str = "",
+) -> JobPosting:
+    digest = _content_hash(description_raw)
+    existing = JobPosting.query.filter_by(user_id=user_id, content_hash=digest).first()
+    if existing is not None:
+        if title:
+            existing.title = title[:200]
+        if company:
+            existing.company = company[:160]
+        db.session.commit()
+        return existing
+    return create_job_posting(
+        user_id=user_id,
+        title=title or "Saved job",
+        company=company,
+        description_raw=description_raw,
+        source_url=source_url,
+    )
+
+
+def save_application_from_target_job_match(*, user_id: int, match: TargetJobMatch) -> tuple[Application, bool]:
+    """Reuse one application per user and job-description hash. Comparison engine stays Target Job Match."""
+    job = get_or_create_owned_job_posting(
+        user_id=user_id,
+        title=match.title or "Saved job",
+        company=match.company or "",
+        description_raw=match.description_raw,
+    )
+    resume_version_id = match.resume_version_id
+    if resume_version_id is not None and get_owned_resume_version(user_id, resume_version_id) is None:
+        resume_version_id = None
+    existing = Application.query.filter_by(user_id=user_id, job_posting_id=job.id).first()
+    if existing is not None:
+        existing.target_job_match_id = match.id
+        if resume_version_id is not None:
+            existing.resume_version_id = resume_version_id
+        existing.updated_at = _utc_now()
+        db.session.commit()
+        return existing, False
+    application = create_application(
+        user_id=user_id,
+        job_posting_id=job.id,
+        resume_version_id=resume_version_id,
+        status="Bookmarked",
+        target_job_match_id=match.id,
+    )
+    created = application.target_job_match_id == match.id and Application.query.filter_by(
+        user_id=user_id, job_posting_id=job.id
+    ).count() == 1
+    if not created:
+        application.target_job_match_id = match.id
+        db.session.commit()
+        return application, False
+    return application, True
+
+
+def get_owned_application(user_id: int, application_id: int) -> Application | None:
+    return Application.query.filter_by(id=application_id, user_id=user_id).first()
+
+
+def list_owned_applications(user_id: int) -> list[Application]:
+    return Application.query.filter_by(user_id=user_id).order_by(Application.updated_at.desc()).all()
+
+
+def create_analysis_snapshot(
+    *,
+    user_id: int,
+    job_posting_id: int,
+    resume_version_id: int,
+    result: dict[str, Any],
+    snapshot_hash: str,
+) -> AnalysisSnapshot:
+    snapshot = AnalysisSnapshot(
+        user_id=user_id,
+        job_posting_id=job_posting_id,
+        resume_version_id=resume_version_id,
+        result_json=json.dumps(result, ensure_ascii=False),
+        snapshot_hash=snapshot_hash,
+    )
+    db.session.add(snapshot)
+    db.session.commit()
+    return snapshot
+
+
+def create_partnership_request(*, organization: str, contact_email: str, use_case: str) -> PartnershipRequest | None:
+    try:
+        item = PartnershipRequest(organization=organization, contact_email=contact_email, use_case=use_case)
+        db.session.add(item)
+        db.session.commit()
+        return item
+    except Exception:
+        db.session.rollback()
+        log.exception("Could not store partnership request")
+        return None
+
+
+def record_partnership_response(request_id: int, message: str) -> PartnershipRequest | None:
+    try:
+        item = db.session.get(PartnershipRequest, request_id)
+        if item is None:
+            return None
+        item.response_message = message
+        item.responded_at = _utc_now()
+        item.status = "responded"
+        db.session.commit()
+        return item
+    except Exception:
+        db.session.rollback()
+        log.exception("Could not store partnership response")
+        return None
 
 
 def record_upload(*, filename: str, file_type: str, mode: str, risk_score: float, risk_label: str, reasoning: dict[str, Any], user_id: int | None = None) -> Upload | None:

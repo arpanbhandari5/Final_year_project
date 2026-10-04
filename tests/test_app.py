@@ -40,29 +40,35 @@ os.environ.setdefault("DATABASE_URL",
 def app():
     """Create and configure a fresh Flask application for each test."""
     from app import app as flask_app
+    from tests.conftest import assert_not_project_database, rebind_database
 
+    previous_uri = flask_app.config["SQLALCHEMY_DATABASE_URI"]
     # Disable CSRF for testing; we'll test CSRF separately via the API endpoint.
     flask_app.config["WTF_CSRF_ENABLED"] = False
     flask_app.config["TESTING"] = True
-    # Use a unique in-memory / temp database for isolation
+    # Use a unique temp database for isolation. Never the project database.
     db_path = _TEST_DB_DIR / f"test_{uuid4().hex[:8]}.db"
-    flask_app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path.as_posix()}"
+    test_uri = f"sqlite:///{db_path.as_posix()}"
+    rebind_database(flask_app, test_uri)
 
     with flask_app.app_context():
-        from storage import db
-        # Create tables inside the test DB
+        from storage import db, seed_default_users
+        assert_not_project_database(flask_app)
         db.create_all()
-        from storage import seed_default_users
         seed_default_users()
         yield flask_app
-        # Clean up test DB after the test
+        db.session.remove()
         db.drop_all()
-        # Remove the temp DB file
-        try:
-            if db_path.exists():
-                db_path.unlink()
-        except PermissionError:
-            pass
+    rebind_database(flask_app, previous_uri)
+    with flask_app.app_context():
+        from storage import db, seed_default_users
+        db.create_all()
+        seed_default_users()
+    try:
+        if db_path.exists():
+            db_path.unlink()
+    except PermissionError:
+        pass
 
 
 @pytest.fixture
@@ -376,8 +382,18 @@ def test_analysis_basic(client) -> None:
     assert data["success"] is True
     assert "risk_score" in data
     assert "risk_label" in data
+    assert "historical_occupation_reference" in data
+    assert data["historical_occupation_reference"]["score"] == data["risk_score"]
+    assert "task_exposure" in data
+    assert "occupation_match" in data
+    assert data["occupation_match"]["status"] in {"candidate", "unresolved", "unavailable"}
+    te = data.get("task_exposure") or {}
+    assert te.get("status") != "verified"
     assert "top_roles" in data
     assert len(data["top_roles"]) > 0
+    narrative = (data.get("cognitive_career_narrative") or "").lower()
+    assert "chance of losing your job" not in narrative
+    assert "probability of job loss is" not in narrative
 
 
 def test_analysis_rejects_empty(client) -> None:

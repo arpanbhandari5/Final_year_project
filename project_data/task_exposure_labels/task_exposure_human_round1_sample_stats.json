@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-10-03T03:02:34.167873+00:00",
+  "rubric_version": "human-task-exposure-v2.0",
+  "seed": 20261003,
+  "row_count": 300,
+  "occupations": 100,
+  "soc_major_groups": 22,
+  "tasks_per_occupation_min": 3,
+  "tasks_per_occupation_max": 3,
+  "filled_reviewer_scores": 0,
+  "split_occupation_counts": {
+    "train": 70,
+    "validation": 15,
+    "test": 15
+  },
+  "soc_allocation_occupations": {
+    "11": 6,
+    "13": 5,
+    "15": 4,
+    "17": 6,
+    "19": 6,
+    "21": 1,
+    "23": 1,
+    "25": 7,
+    "27": 4,
+    "29": 10,
+    "31": 2,
+    "33": 3,
+    "35": 2,
+    "37": 1,
+    "39": 3,
+    "41": 2,
+    "43": 6,
+    "45": 1,
+    "47": 7,
+    "49": 5,
+    "51": 12,
+    "53": 6
+  },
+  "sha256": "3483ab6a5e5cde7c5e61e2fb03c2865eaf687bc056c4bbd91077b682cacdca7c",
+  "note": "All scores blank. Do not invent labels. Reviewer worksheets are independent."
+}

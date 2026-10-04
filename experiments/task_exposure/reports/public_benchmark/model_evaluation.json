@@ -1,0 +1,1256 @@
+{
+  "generated_at": "2026-10-03T04:35:55Z",
+  "target": "human_labels",
+  "classes": [
+    "E0",
+    "E1",
+    "E2"
+  ],
+  "gpt_fields_excluded_from_target": [
+    "gpt4_exposure",
+    "gpt4_exposure_alt_rubric",
+    "gpt4_automation"
+  ],
+  "tfidf": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 1,
+    "sublinear_tf": 1,
+    "max_features": 12000,
+    "stop_words": "english"
+  },
+  "split_seed": 202610031,
+  "hyperparameter_selection": {
+    "group": "occupation_code",
+    "method": "GroupKFold_macro_f1_on_train_occupations_only",
+    "C_candidates": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "logreg_selected_C": 1.0,
+    "linearsvm_selected_C": 1.0,
+    "test_not_used": 1,
+    "validation_not_used_for_selection": 1
+  },
+  "class_distribution_full": {
+    "E0": 10256,
+    "E1": 2862,
+    "E2": 6147
+  },
+  "majority_baseline": {
+    "accuracy": 0.5458028561476838,
+    "balanced_accuracy": 0.3333333333333333,
+    "macro_f1": 0.23539131741024485,
+    "weighted_f1": 0.3854317600646329,
+    "mcc": 0.0,
+    "per_class": {
+      "E0": {
+        "precision": 0.5458028561476838,
+        "recall": 1.0,
+        "f1": 0.7061739522307345,
+        "support": 1567
+      },
+      "E1": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 431
+      },
+      "E2": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 873
+      }
+    },
+    "confusion_matrix": [
+      [
+        1567,
+        0,
+        0
+      ],
+      [
+        431,
+        0,
+        0
+      ],
+      [
+        873,
+        0,
+        0
+      ]
+    ],
+    "test_task_count": 2871,
+    "test_class_distribution": {
+      "E0": 1567,
+      "E1": 431,
+      "E2": 873
+    },
+    "log_loss": {
+      "status": "unavailable",
+      "reason": "estimator does not provide class probabilities"
+    },
+    "multiclass_roc_auc": {
+      "status": "unavailable",
+      "reason": "estimator does not provide class probabilities"
+    }
+  },
+  "dummy_stratified_baseline": {
+    "accuracy": 0.39846743295019155,
+    "balanced_accuracy": 0.32395061793221985,
+    "macro_f1": 0.3236691058850052,
+    "weighted_f1": 0.39947612758924744,
+    "mcc": -0.020030344027139192,
+    "per_class": {
+      "E0": {
+        "precision": 0.5303430079155673,
+        "recall": 0.5130823229100191,
+        "f1": 0.521569899448589,
+        "support": 1567
+      },
+      "E1": {
+        "precision": 0.1475,
+        "recall": 0.1368909512761021,
+        "f1": 0.14199759326113118,
+        "support": 431
+      },
+      "E2": {
+        "precision": 0.2942408376963351,
+        "recall": 0.3218785796105384,
+        "f1": 0.3074398249452954,
+        "support": 873
+      }
+    },
+    "confusion_matrix": [
+      [
+        804,
+        226,
+        537
+      ],
+      [
+        235,
+        59,
+        137
+      ],
+      [
+        477,
+        115,
+        281
+      ]
+    ],
+    "test_task_count": 2871,
+    "test_class_distribution": {
+      "E0": 1567,
+      "E1": 431,
+      "E2": 873
+    },
+    "log_loss": {
+      "status": "unavailable",
+      "reason": "estimator does not provide class probabilities"
+    },
+    "multiclass_roc_auc": {
+      "status": "unavailable",
+      "reason": "estimator does not provide class probabilities"
+    }
+  },
+  "tfidf_logistic_regression": {
+    "accuracy": 0.7352838732149077,
+    "balanced_accuracy": 0.6328104373386269,
+    "macro_f1": 0.6502057897039095,
+    "weighted_f1": 0.723400152865464,
+    "mcc": 0.5343495916417348,
+    "per_class": {
+      "E0": {
+        "precision": 0.7974463145676146,
+        "recall": 0.8768347160178686,
+        "f1": 0.835258358662614,
+        "support": 1567
+      },
+      "E1": {
+        "precision": 0.6926605504587156,
+        "recall": 0.3503480278422274,
+        "f1": 0.46533127889060094,
+        "support": 431
+      },
+      "E2": {
+        "precision": 0.6301075268817204,
+        "recall": 0.6712485681557846,
+        "f1": 0.6500277315585136,
+        "support": 873
+      }
+    },
+    "confusion_matrix": [
+      [
+        1374,
+        22,
+        171
+      ],
+      [
+        107,
+        151,
+        173
+      ],
+      [
+        242,
+        45,
+        586
+      ]
+    ],
+    "test_task_count": 2871,
+    "test_class_distribution": {
+      "E0": 1567,
+      "E1": 431,
+      "E2": 873
+    },
+    "log_loss": 0.6341287805494095,
+    "multiclass_roc_auc": 0.8662181400471027,
+    "test_occupation_count": 139,
+    "grouped_cv_train": {
+      "folds": [
+        {
+          "fold": 1,
+          "accuracy": 0.7357859531772575,
+          "balanced_accuracy": 0.6329048211325737,
+          "macro_f1": 0.6507137055748515,
+          "weighted_f1": 0.7206440252074869,
+          "mcc": 0.5453115346373522,
+          "n_train_occupations": 517,
+          "n_val_occupations": 129
+        },
+        {
+          "fold": 2,
+          "accuracy": 0.7193308550185874,
+          "balanced_accuracy": 0.6181636879469153,
+          "macro_f1": 0.6322004583445139,
+          "weighted_f1": 0.7074284910392078,
+          "mcc": 0.5114400817335816,
+          "n_train_occupations": 517,
+          "n_val_occupations": 129
+        },
+        {
+          "fold": 3,
+          "accuracy": 0.7420074349442379,
+          "balanced_accuracy": 0.6149420846842214,
+          "macro_f1": 0.6308811354619742,
+          "weighted_f1": 0.7269730033591859,
+          "mcc": 0.536303434226111,
+          "n_train_occupations": 517,
+          "n_val_occupations": 129
+        },
+        {
+          "fold": 4,
+          "accuracy": 0.721128852580765,
+          "balanced_accuracy": 0.6219686958026944,
+          "macro_f1": 0.6392304940589678,
+          "weighted_f1": 0.703975526729999,
+          "mcc": 0.524457814741238,
+          "n_train_occupations": 516,
+          "n_val_occupations": 130
+        },
+        {
+          "fold": 5,
+          "accuracy": 0.7322424693194496,
+          "balanced_accuracy": 0.6240021852193401,
+          "macro_f1": 0.6392123371364192,
+          "weighted_f1": 0.7213739319938302,
+          "mcc": 0.5250798831701129,
+          "n_train_occupations": 517,
+          "n_val_occupations": 129
+        }
+      ],
+      "summary": {
+        "accuracy": {
+          "mean": 0.7300991130080595,
+          "std": 0.008662138430948372
+        },
+        "balanced_accuracy": {
+          "mean": 0.622396294957149,
+          "std": 0.0061101728264718646
+        },
+        "macro_f1": {
+          "mean": 0.6384476261153453,
+          "std": 0.007041778985942275
+        },
+        "weighted_f1": {
+          "mean": 0.7160789956659419,
+          "std": 0.008819075230799577
+        },
+        "mcc": {
+          "mean": 0.5285185497016791,
+          "std": 0.011511705644083136
+        }
+      }
+    },
+    "top_features_associated_with_predictions": {
+      "E0": {
+        "associated_with_class": [
+          {
+            "feature": "clean",
+            "weight": 2.7624240138135256
+          },
+          {
+            "feature": "inspect",
+            "weight": 2.6331741312467156
+          },
+          {
+            "feature": "operate",
+            "weight": 2.2492523914074307
+          },
+          {
+            "feature": "remove",
+            "weight": 2.133266332028064
+          },
+          {
+            "feature": "supervise",
+            "weight": 2.0886810611720588
+          },
+          {
+            "feature": "adjust",
+            "weight": 2.0783563946770034
+          },
+          {
+            "feature": "equipment",
+            "weight": 2.001222026523003
+          },
+          {
+            "feature": "using",
+            "weight": 1.9878208733611795
+          },
+          {
+            "feature": "hand",
+            "weight": 1.887083854480409
+          },
+          {
+            "feature": "collect",
+            "weight": 1.7031821835623042
+          },
+          {
+            "feature": "samples",
+            "weight": 1.6853059060362008
+          },
+          {
+            "feature": "surfaces",
+            "weight": 1.6840582374918422
+          },
+          {
+            "feature": "install",
+            "weight": 1.6797232816725247
+          },
+          {
+            "feature": "assemble",
+            "weight": 1.6768764016981963
+          },
+          {
+            "feature": "treat",
+            "weight": 1.6503934319920655
+          }
+        ],
+        "associated_against_class": [
+          {
+            "feature": "develop",
+            "weight": -3.6524710608068256
+          },
+          {
+            "feature": "data",
+            "weight": -3.369562906986376
+          },
+          {
+            "feature": "reports",
+            "weight": -3.0692720315297595
+          },
+          {
+            "feature": "research",
+            "weight": -3.064729854117843
+          },
+          {
+            "feature": "design",
+            "weight": -2.9264053715681455
+          },
+          {
+            "feature": "records",
+            "weight": -2.916108263133756
+          },
+          {
+            "feature": "write",
+            "weight": -2.9066958783306114
+          },
+          {
+            "feature": "information",
+            "weight": -2.5512400264950776
+          },
+          {
+            "feature": "record",
+            "weight": -2.414581018955808
+          },
+          {
+            "feature": "document",
+            "weight": -2.2998594901675244
+          },
+          {
+            "feature": "refer",
+            "weight": -2.1794075302197893
+          },
+          {
+            "feature": "programs",
+            "weight": -2.179307420976857
+          },
+          {
+            "feature": "recommend",
+            "weight": -2.1589562693741393
+          },
+          {
+            "feature": "advise",
+            "weight": -2.1203919461137546
+          },
+          {
+            "feature": "software",
+            "weight": -2.1015217941787836
+          }
+        ]
+      },
+      "E1": {
+        "associated_with_class": [
+          {
+            "feature": "write",
+            "weight": 3.7464663995565757
+          },
+          {
+            "feature": "refer",
+            "weight": 2.638511784728088
+          },
+          {
+            "feature": "develop",
+            "weight": 2.5638580367232016
+          },
+          {
+            "feature": "explain",
+            "weight": 2.483738063101698
+          },
+          {
+            "feature": "recommend",
+            "weight": 2.4164042452549
+          },
+          {
+            "feature": "advise",
+            "weight": 2.0493865657349306
+          },
+          {
+            "feature": "prepare",
+            "weight": 1.9817905564539549
+          },
+          {
+            "feature": "reports",
+            "weight": 1.947283732671699
+          },
+          {
+            "feature": "research",
+            "weight": 1.8910110860335236
+          },
+          {
+            "feature": "scripts",
+            "weight": 1.8583696790877378
+          },
+          {
+            "feature": "web site",
+            "weight": 1.7319453934430193
+          },
+          {
+            "feature": "proposals",
+            "weight": 1.629923294831123
+          },
+          {
+            "feature": "requests",
+            "weight": 1.5950176479526958
+          },
+          {
+            "feature": "data",
+            "weight": 1.5711138436568999
+          },
+          {
+            "feature": "options",
+            "weight": 1.4953951173408937
+          }
+        ],
+        "associated_against_class": [
+          {
+            "feature": "monitor",
+            "weight": -1.8360465591676625
+          },
+          {
+            "feature": "inspect",
+            "weight": -1.650192615047305
+          },
+          {
+            "feature": "using",
+            "weight": -1.2518567379019623
+          },
+          {
+            "feature": "measure",
+            "weight": -1.2106301056379822
+          },
+          {
+            "feature": "install",
+            "weight": -1.1945638992783423
+          },
+          {
+            "feature": "clean",
+            "weight": -1.1836801379659445
+          },
+          {
+            "feature": "meet",
+            "weight": -1.1108388174413282
+          },
+          {
+            "feature": "supervise",
+            "weight": -1.0983234061028169
+          },
+          {
+            "feature": "serve",
+            "weight": -1.0797276766674302
+          },
+          {
+            "feature": "remove",
+            "weight": -1.0557283328297375
+          },
+          {
+            "feature": "trends",
+            "weight": -1.010104324177395
+          },
+          {
+            "feature": "attend",
+            "weight": -1.0081442711323816
+          },
+          {
+            "feature": "devices",
+            "weight": -1.003338195565827
+          },
+          {
+            "feature": "sites",
+            "weight": -0.9894373715290355
+          },
+          {
+            "feature": "hand",
+            "weight": -0.9734871044713272
+          }
+        ]
+      },
+      "E2": {
+        "associated_with_class": [
+          {
+            "feature": "record",
+            "weight": 2.930793745233029
+          },
+          {
+            "feature": "design",
+            "weight": 2.745590427852978
+          },
+          {
+            "feature": "records",
+            "weight": 2.571022838147914
+          },
+          {
+            "feature": "budgets",
+            "weight": 2.070809844689565
+          },
+          {
+            "feature": "trends",
+            "weight": 1.9909824554261868
+          },
+          {
+            "feature": "data",
+            "weight": 1.7984490633295012
+          },
+          {
+            "feature": "computer",
+            "weight": 1.7428204604977124
+          },
+          {
+            "feature": "software",
+            "weight": 1.7144282137957187
+          },
+          {
+            "feature": "report",
+            "weight": 1.6721371173041222
+          },
+          {
+            "feature": "analyze",
+            "weight": 1.6007089019382574
+          },
+          {
+            "feature": "diagnostic",
+            "weight": 1.5805668996215474
+          },
+          {
+            "feature": "network",
+            "weight": 1.5404943800166104
+          },
+          {
+            "feature": "calculate",
+            "weight": 1.4986665259888128
+          },
+          {
+            "feature": "cost",
+            "weight": 1.4877762149768983
+          },
+          {
+            "feature": "information",
+            "weight": 1.420698498713021
+          }
+        ],
+        "associated_against_class": [
+          {
+            "feature": "instruct",
+            "weight": -1.7440301972834875
+          },
+          {
+            "feature": "clean",
+            "weight": -1.5787438758475802
+          },
+          {
+            "feature": "operate",
+            "weight": -1.4816607780305655
+          },
+          {
+            "feature": "explain",
+            "weight": -1.3712973990472315
+          },
+          {
+            "feature": "resolve",
+            "weight": -1.339769898604617
+          },
+          {
+            "feature": "assemble",
+            "weight": -1.3290560807877947
+          },
+          {
+            "feature": "train",
+            "weight": -1.2867192066306583
+          },
+          {
+            "feature": "test",
+            "weight": -1.217652437667764
+          },
+          {
+            "feature": "material",
+            "weight": -1.1530809490487934
+          },
+          {
+            "feature": "adjust",
+            "weight": -1.1348366661024114
+          },
+          {
+            "feature": "articles",
+            "weight": -1.1328254889748917
+          },
+          {
+            "feature": "transport",
+            "weight": -1.0973891209185123
+          },
+          {
+            "feature": "equipment",
+            "weight": -1.083829198281314
+          },
+          {
+            "feature": "answer",
+            "weight": -1.081624598493808
+          },
+          {
+            "feature": "remove",
+            "weight": -1.0775379991983198
+          }
+        ]
+      }
+    }
+  },
+  "tfidf_linear_svm": {
+    "accuracy": 0.7255311738070359,
+    "balanced_accuracy": 0.6401233000653783,
+    "macro_f1": 0.651889358863993,
+    "weighted_f1": 0.7190856750721878,
+    "mcc": 0.5219036037712729,
+    "per_class": {
+      "E0": {
+        "precision": 0.8025210084033614,
+        "recall": 0.8532227185705169,
+        "f1": 0.8270955768635941,
+        "support": 1567
+      },
+      "E1": {
+        "precision": 0.5895765472312704,
+        "recall": 0.419953596287703,
+        "f1": 0.4905149051490515,
+        "support": 431
+      },
+      "E2": {
+        "precision": 0.6291759465478842,
+        "recall": 0.6471935853379153,
+        "f1": 0.6380575945793338,
+        "support": 873
+      }
+    },
+    "confusion_matrix": [
+      [
+        1337,
+        41,
+        189
+      ],
+      [
+        106,
+        181,
+        144
+      ],
+      [
+        223,
+        85,
+        565
+      ]
+    ],
+    "test_task_count": 2871,
+    "test_class_distribution": {
+      "E0": 1567,
+      "E1": 431,
+      "E2": 873
+    },
+    "log_loss": {
+      "status": "unavailable",
+      "reason": "estimator does not provide class probabilities"
+    },
+    "multiclass_roc_auc": {
+      "status": "unavailable",
+      "reason": "estimator does not provide class probabilities"
+    },
+    "test_occupation_count": 139,
+    "grouped_cv_train": {
+      "folds": [
+        {
+          "fold": 1,
+          "accuracy": 0.7123745819397993,
+          "balanced_accuracy": 0.625255586189408,
+          "macro_f1": 0.6362493866915989,
+          "weighted_f1": 0.7034902661624173,
+          "mcc": 0.5092170923360799,
+          "n_train_occupations": 517,
+          "n_val_occupations": 129
+        },
+        {
+          "fold": 2,
+          "accuracy": 0.7044609665427509,
+          "balanced_accuracy": 0.6216965933575408,
+          "macro_f1": 0.6312331139362284,
+          "weighted_f1": 0.6987802829377759,
+          "mcc": 0.49115970498714606,
+          "n_train_occupations": 517,
+          "n_val_occupations": 129
+        },
+        {
+          "fold": 3,
+          "accuracy": 0.7230483271375465,
+          "balanced_accuracy": 0.6223399204233937,
+          "macro_f1": 0.6307541742936906,
+          "weighted_f1": 0.7166455545552165,
+          "mcc": 0.5102979763273228,
+          "n_train_occupations": 517,
+          "n_val_occupations": 129
+        },
+        {
+          "fold": 4,
+          "accuracy": 0.6999628666914222,
+          "balanced_accuracy": 0.6209541542680833,
+          "macro_f1": 0.6319408062512558,
+          "weighted_f1": 0.6910457615036597,
+          "mcc": 0.4933791738568263,
+          "n_train_occupations": 516,
+          "n_val_occupations": 130
+        },
+        {
+          "fold": 5,
+          "accuracy": 0.7080699144663444,
+          "balanced_accuracy": 0.6218631419883781,
+          "macro_f1": 0.6271317031017604,
+          "weighted_f1": 0.7055595042018236,
+          "mcc": 0.4941549491994496,
+          "n_train_occupations": 517,
+          "n_val_occupations": 129
+        }
+      ],
+      "summary": {
+        "accuracy": {
+          "mean": 0.7095833313555726,
+          "std": 0.007876288257077995
+        },
+        "balanced_accuracy": {
+          "mean": 0.6224218792453609,
+          "std": 0.0014851973500902337
+        },
+        "macro_f1": {
+          "mean": 0.6314618368549068,
+          "std": 0.0029138704128929107
+        },
+        "weighted_f1": {
+          "mean": 0.7031042738721786,
+          "std": 0.008410089734349655
+        },
+        "mcc": {
+          "mean": 0.49964177934136494,
+          "std": 0.008324809558926817
+        }
+      }
+    },
+    "top_features_associated_with_predictions": {
+      "E0": {
+        "associated_with_class": [
+          {
+            "feature": "competition",
+            "weight": 2.2275172677769537
+          },
+          {
+            "feature": "inspect",
+            "weight": 1.9358055782950263
+          },
+          {
+            "feature": "clean",
+            "weight": 1.895093831449729
+          },
+          {
+            "feature": "assemble",
+            "weight": 1.7898090444168189
+          },
+          {
+            "feature": "adjustments",
+            "weight": 1.7233867749916236
+          },
+          {
+            "feature": "productivity",
+            "weight": 1.6917556827491647
+          },
+          {
+            "feature": "monitor patients",
+            "weight": 1.6837922027336139
+          },
+          {
+            "feature": "supervise",
+            "weight": 1.6713681388848456
+          },
+          {
+            "feature": "operate",
+            "weight": 1.6204069506969736
+          },
+          {
+            "feature": "treat",
+            "weight": 1.6050179408343859
+          },
+          {
+            "feature": "feasibility design",
+            "weight": 1.592757893783046
+          },
+          {
+            "feature": "transport",
+            "weight": 1.5854753191809614
+          },
+          {
+            "feature": "escort",
+            "weight": 1.5547791665982327
+          },
+          {
+            "feature": "adjust",
+            "weight": 1.5442696547070838
+          },
+          {
+            "feature": "problems complaints",
+            "weight": 1.5247272865081778
+          }
+        ],
+        "associated_against_class": [
+          {
+            "feature": "design",
+            "weight": -2.448983516429649
+          },
+          {
+            "feature": "refer",
+            "weight": -2.1813696983645516
+          },
+          {
+            "feature": "data",
+            "weight": -2.1610137345809908
+          },
+          {
+            "feature": "develop",
+            "weight": -2.1466570805506677
+          },
+          {
+            "feature": "select install",
+            "weight": -2.1459421490812285
+          },
+          {
+            "feature": "write",
+            "weight": -2.1082140621779386
+          },
+          {
+            "feature": "research",
+            "weight": -2.017638358820305
+          },
+          {
+            "feature": "records",
+            "weight": -2.0037229158084506
+          },
+          {
+            "feature": "documentation",
+            "weight": -1.9242414627601108
+          },
+          {
+            "feature": "record",
+            "weight": -1.9046930652814709
+          },
+          {
+            "feature": "reports",
+            "weight": -1.8947224821045368
+          },
+          {
+            "feature": "tax",
+            "weight": -1.8299455734967487
+          },
+          {
+            "feature": "document",
+            "weight": -1.8052299860883938
+          },
+          {
+            "feature": "interpreters",
+            "weight": -1.7986231845979768
+          },
+          {
+            "feature": "report",
+            "weight": -1.783559561899754
+          }
+        ]
+      },
+      "E1": {
+        "associated_with_class": [
+          {
+            "feature": "write",
+            "weight": 2.6769928719584275
+          },
+          {
+            "feature": "refer",
+            "weight": 2.442647281914259
+          },
+          {
+            "feature": "taxpayers",
+            "weight": 2.4342592124852023
+          },
+          {
+            "feature": "scripts",
+            "weight": 2.1439506725854995
+          },
+          {
+            "feature": "web site",
+            "weight": 2.142610348702536
+          },
+          {
+            "feature": "prevention",
+            "weight": 1.8793646699845286
+          },
+          {
+            "feature": "recommend",
+            "weight": 1.7543377955094501
+          },
+          {
+            "feature": "explain",
+            "weight": 1.706077643432047
+          },
+          {
+            "feature": "matters",
+            "weight": 1.6834414108604667
+          },
+          {
+            "feature": "phases",
+            "weight": 1.6498311069293141
+          },
+          {
+            "feature": "refer patients",
+            "weight": 1.641306079826419
+          },
+          {
+            "feature": "advise",
+            "weight": 1.62781930184773
+          },
+          {
+            "feature": "summarize",
+            "weight": 1.6275892218521242
+          },
+          {
+            "feature": "options",
+            "weight": 1.604983162641423
+          },
+          {
+            "feature": "recovery plans",
+            "weight": 1.602131738020978
+          }
+        ],
+        "associated_against_class": [
+          {
+            "feature": "inspect",
+            "weight": -1.6690803457171874
+          },
+          {
+            "feature": "sales presentations",
+            "weight": -1.6316599964553093
+          },
+          {
+            "feature": "businesses",
+            "weight": -1.5529426468841658
+          },
+          {
+            "feature": "matters related",
+            "weight": -1.3683589017741105
+          },
+          {
+            "feature": "serve",
+            "weight": -1.340693523454447
+          },
+          {
+            "feature": "trends",
+            "weight": -1.3333119014344004
+          },
+          {
+            "feature": "required research",
+            "weight": -1.3238937552300898
+          },
+          {
+            "feature": "research develop",
+            "weight": -1.3173059840252326
+          },
+          {
+            "feature": "sort",
+            "weight": -1.2982002939265151
+          },
+          {
+            "feature": "personnel regarding",
+            "weight": -1.2853524739486122
+          },
+          {
+            "feature": "maintain knowledge",
+            "weight": -1.2388626147561919
+          },
+          {
+            "feature": "monitor",
+            "weight": -1.2369736178645858
+          },
+          {
+            "feature": "counseling services",
+            "weight": -1.23145232417628
+          },
+          {
+            "feature": "regarding issues",
+            "weight": -1.2296523677498876
+          },
+          {
+            "feature": "inmates",
+            "weight": -1.2179201487757063
+          }
+        ]
+      },
+      "E2": {
+        "associated_with_class": [
+          {
+            "feature": "design",
+            "weight": 2.2435432789219023
+          },
+          {
+            "feature": "record",
+            "weight": 2.225884994627476
+          },
+          {
+            "feature": "select install",
+            "weight": 2.170283814297064
+          },
+          {
+            "feature": "test results",
+            "weight": 2.1531436792904475
+          },
+          {
+            "feature": "trends",
+            "weight": 1.9935019402232492
+          },
+          {
+            "feature": "traffic control",
+            "weight": 1.9439555907754036
+          },
+          {
+            "feature": "analysis results",
+            "weight": 1.8893223383115025
+          },
+          {
+            "feature": "budgets",
+            "weight": 1.8852249556531766
+          },
+          {
+            "feature": "public regarding",
+            "weight": 1.8625823483248451
+          },
+          {
+            "feature": "ergonomics",
+            "weight": 1.8155576685440458
+          },
+          {
+            "feature": "hire staff",
+            "weight": 1.792316745154565
+          },
+          {
+            "feature": "records",
+            "weight": 1.7706047849592643
+          },
+          {
+            "feature": "diagnostic",
+            "weight": 1.7361537103931963
+          },
+          {
+            "feature": "sketch",
+            "weight": 1.7347798682633522
+          },
+          {
+            "feature": "prepare review",
+            "weight": 1.7239654613266928
+          }
+        ],
+        "associated_against_class": [
+          {
+            "feature": "data collection",
+            "weight": -1.9053715619539906
+          },
+          {
+            "feature": "taxpayers",
+            "weight": -1.852309833932048
+          },
+          {
+            "feature": "investigate report",
+            "weight": -1.7821543161208258
+          },
+          {
+            "feature": "instruct",
+            "weight": -1.7273652230127161
+          },
+          {
+            "feature": "remedial",
+            "weight": -1.6966733136157006
+          },
+          {
+            "feature": "web site",
+            "weight": -1.6643145439806732
+          },
+          {
+            "feature": "survey data",
+            "weight": -1.59086581877973
+          },
+          {
+            "feature": "research compile",
+            "weight": -1.5828381017337498
+          },
+          {
+            "feature": "prepare invoices",
+            "weight": -1.5801504458725852
+          },
+          {
+            "feature": "assemble",
+            "weight": -1.5741758803307446
+          },
+          {
+            "feature": "summarize",
+            "weight": -1.5602682213987777
+          },
+          {
+            "feature": "error",
+            "weight": -1.538705066010807
+          },
+          {
+            "feature": "competition",
+            "weight": -1.53778385004721
+          },
+          {
+            "feature": "reports summarizing",
+            "weight": -1.5335920612506913
+          },
+          {
+            "feature": "productivity",
+            "weight": -1.5315485462005614
+          }
+        ]
+      }
+    }
+  },
+  "validation_logreg_unused_for_selection": {
+    "accuracy": 0.7242434546072765,
+    "balanced_accuracy": 0.6282897007252558,
+    "macro_f1": 0.6421475708628473,
+    "weighted_f1": 0.7119455777912738,
+    "mcc": 0.52686065226585,
+    "per_class": {
+      "E0": {
+        "precision": 0.7878787878787878,
+        "recall": 0.8672334859385219,
+        "f1": 0.825653798256538,
+        "support": 1529
+      },
+      "E1": {
+        "precision": 0.6390041493775933,
+        "recall": 0.33771929824561403,
+        "f1": 0.4418938307030129,
+        "support": 456
+      },
+      "E2": {
+        "precision": 0.63913470993117,
+        "recall": 0.6799163179916318,
+        "f1": 0.6588950836289914,
+        "support": 956
+      }
+    },
+    "confusion_matrix": [
+      [
+        1326,
+        28,
+        175
+      ],
+      [
+        110,
+        154,
+        192
+      ],
+      [
+        247,
+        59,
+        650
+      ]
+    ],
+    "test_task_count": 2941,
+    "test_class_distribution": {
+      "E0": 1529,
+      "E1": 456,
+      "E2": 956
+    },
+    "log_loss": {
+      "status": "unavailable",
+      "reason": "estimator does not provide class probabilities"
+    },
+    "multiclass_roc_auc": {
+      "status": "unavailable",
+      "reason": "estimator does not provide class probabilities"
+    },
+    "note": "validation occupations unused for hyperparameter selection"
+  },
+  "leakage": {
+    "occupation_leakage": 0,
+    "tfidf_leakage": 0,
+    "target_leakage": 0,
+    "hyperparameter_test_leakage": 0
+  },
+  "package_versions": {
+    "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+    "pandas": "2.3.3",
+    "numpy": "2.5.3",
+    "scikit-learn": "1.9.1"
+  },
+  "derived_dataset_sha256": "bfc3b219d132449a17105dfc6efc2f0254a3dc613f6192405741c36be10d1299",
+  "claim_boundary": "This experiment evaluates task-level classification against a published GPTs-are-GPTs exposure taxonomy using human-derived benchmark labels. The benchmark provides an external reference and does not constitute new human validation of Prayash's original 0-1 scoring rubric."
+}

@@ -1,0 +1,251 @@
+task_group_id,task_id,occupation_code,soc_code,occupation_title,adjudicated_exposure_score
+tg_95f587e1cc9ecc24,22955,33-1091.00,33,First-Line Supervisors of Security Workers,0.50
+tg_ab54d1f7b791e009,974,11-3021.00,11,Computer and Information Systems Managers,0.50
+tg_28b16016846edc34,6172,25-1082.00,25,"Library Science Teachers, Postsecondary",0.25
+tg_18215a149e0cf321,16849,19-2041.01,19,Climate Change Policy Analysts,0.50
+tg_18d2dba480ee6022,18675,29-1181.00,29,Audiologists,0.00
+tg_82c616b82e9a4586,13624,47-4031.00,47,Fence Erectors,0.00
+tg_d8eb62d41b4dee15,8364,49-3093.00,49,Tire Repairers and Changers,0.00
+tg_6698630ddef4ed5c,9922,47-5032.00,47,"Explosives Workers, Ordnance Handling Experts, and Blasters",0.00
+tg_884e7658600172a9,3245,11-2011.00,11,Advertising and Promotions Managers,0.00
+tg_38e082dc8a26baa3,4056,27-4032.00,27,Film and Video Editors,0.75
+tg_381956b151e30d58,13863,49-9092.00,49,Commercial Divers,0.00
+tg_816b65cf66bd0fb8,12184,51-6052.00,51,"Tailors, Dressmakers, and Custom Sewers",0.00
+tg_c1cd94fdf3141e8c,12015,51-4052.00,51,"Pourers and Casters, Metal",0.00
+tg_f8947a24a1223ef1,12750,53-4011.00,53,Locomotive Engineers,0.25
+tg_6991161ab94d93e9,16908,19-3011.01,19,Environmental Economists,0.50
+tg_469636df6377752f,12177,51-6052.00,51,"Tailors, Dressmakers, and Custom Sewers",0.00
+tg_f49753cc4854191a,11576,47-4021.00,47,Elevator and Escalator Installers and Repairers,0.00
+tg_038d2804b12146e5,7272,11-9161.00,11,Emergency Management Directors,0.50
+tg_ea0e105afaa6aeb6,8208,43-5011.00,43,Cargo and Freight Agents,0.00
+tg_dfee4006475885a1,21418,13-1031.00,13,"Claims Adjusters, Examiners, and Investigators",0.50
+tg_958c44a37c234340,17888,53-1042.01,53,Recycling Coordinators,0.25
+tg_6c1a91f039b6495d,18904,13-1075.00,13,Labor Relations Specialists,0.25
+tg_b2ff162f7e6f1f20,22817,29-2034.00,29,Radiologic Technologists and Technicians,0.00
+tg_7d1fae273313edf4,22261,19-4013.00,19,Food Science Technicians,0.25
+tg_71f6263087242cc4,2478,43-3011.00,43,Bill and Account Collectors,0.25
+tg_0a02f6b18c8cd788,21934,17-3011.00,17,Architectural and Civil Drafters,0.50
+tg_a7d6128df6fcfabc,5424,19-1041.00,19,Epidemiologists,0.50
+tg_4f515e166d3d1293,3327,11-9021.00,11,Construction Managers,0.50
+tg_13b679aa27a2b213,17709,15-2099.01,15,Bioinformatics Technicians,0.50
+tg_13c27e5f882759cf,17487,29-9099.01,29,Midwives,0.25
+tg_e93db2a8faa2d2d6,8378,49-3093.00,49,Tire Repairers and Changers,0.00
+tg_c918459ef943a0bc,16277,15-2051.02,15,Clinical Data Managers,0.75
+tg_c27773f9444596c0,11111,33-2022.00,33,Forest Fire Inspectors and Prevention Specialists,0.00
+tg_ac6fd9f45e1ec738,12233,51-7032.00,51,"Patternmakers, Wood",0.00
+tg_8151819f0cabf172,15954,13-1199.04,13,Business Continuity Planners,0.50
+tg_ea2259cc07a8ed8f,15236,29-2031.00,29,Cardiovascular Technologists and Technicians,0.00
+tg_b5b8f197ca8deeb7,94,13-1151.00,13,Training and Development Specialists,0.25
+tg_d81b684f6ed05e0f,20807,49-9052.00,49,Telecommunications Line Installers and Repairers,0.00
+tg_e8d6d811bec3c53c,23388,45-2092.00,45,"Farmworkers and Laborers, Crop, Nursery, and Greenhouse",0.00
+tg_43c1024c654da64f,13235,41-9091.00,41,"Door-to-Door Sales Workers, News and Street Vendors, and Related Workers",0.25
+tg_41f9a41557fd53ec,17266,29-1229.06,29,Sports Medicine Physicians,0.25
+tg_e021111850c5bff1,6214,25-1111.00,25,"Criminal Justice and Law Enforcement Teachers, Postsecondary",0.00
+tg_e021111850c5bff1,5914,25-1053.00,25,"Environmental Science Teachers, Postsecondary",0.00
+tg_0076afa9a67d0619,3976,27-3042.00,27,Technical Writers,0.50
+tg_215bc6df7725e8d4,13535,47-2082.00,47,Tapers,0.00
+tg_d4cb34d0fed627da,12643,51-9195.04,51,"Glass Blowers, Molders, Benders, and Finishers",0.00
+tg_caadd1d669876aca,19554,13-1041.07,13,Regulatory Affairs Specialists,0.50
+tg_832b758094c05282,2281,35-3031.00,35,Waiters and Waitresses,0.75
+tg_8a6302606b7727fd,5467,19-3041.00,19,Sociologists,0.25
+tg_09b0dfd9f842b735,778,43-6013.00,43,Medical Secretaries and Administrative Assistants,0.75
+tg_85588fb5363c4d5c,16063,15-1241.01,15,Telecommunications Engineering Specialists,0.50
+tg_d23416cb7410cde6,22872,29-2043.00,29,Paramedics,0.25
+tg_c6ba6067f8b7d0af,10306,51-4192.00,51,"Layout Workers, Metal and Plastic",0.50
+tg_8f000630af8fcfe1,10678,53-4013.00,53,"Rail Yard Engineers, Dinkey Operators, and Hostlers",0.25
+tg_4472cfec7bb2a190,17113,29-1217.00,29,Neurologists,0.25
+tg_a7fdf47f81558b03,2048,31-9095.00,31,Pharmacy Aides,0.00
+tg_be1167ebb6cdd259,7535,19-2011.00,19,Astronomers,0.25
+tg_92c5ce5c30e6ce1a,10071,51-3091.00,51,"Food and Tobacco Roasting, Baking, and Drying Machine Operators and Tenders",0.00
+tg_ff090a9da0b2d1a0,20599,39-4021.00,39,Funeral Attendants,0.50
+tg_5920ef95b15ec953,2690,43-4161.00,43,"Human Resources Assistants, Except Payroll and Timekeeping",0.50
+tg_098dcba808a5f90d,13994,51-3023.00,51,Slaughterers and Meat Packers,0.00
+tg_3a0d70031498a580,10175,51-4072.00,51,"Molding, Coremaking, and Casting Machine Setters, Operators, and Tenders, Metal and Plastic",0.00
+tg_758aab4baf82e977,6993,39-9041.00,39,Residential Advisors,0.00
+tg_4c266cf2376e79ed,17243,29-1224.00,29,Radiologists,0.50
+tg_5f83e0e5e894a48e,6838,25-3011.00,25,"Adult Basic Education, Adult Secondary Education, and English as a Second Language Instructors",0.25
+tg_e386b66ee440ef0e,1875,29-1127.00,29,Speech-Language Pathologists,0.50
+tg_9d8774ebee51bd4b,2545,43-3061.00,43,Procurement Clerks,0.50
+tg_8652e8bd910eb5ee,8632,53-6041.00,53,Traffic Technicians,0.50
+tg_567d16c7aebd0f8e,6895,27-1014.00,27,Special Effects Artists and Animators,0.50
+tg_84fd1e92e7e82512,2721,43-5031.00,43,Public Safety Telecommunicators,0.25
+tg_87af3f010f0c6009,10126,51-4031.00,51,"Cutting, Punching, and Press Machine Setters, Operators, and Tenders, Metal and Plastic",0.00
+tg_57d843402910bc9b,1598,21-1014.00,21,Mental Health Counselors,0.25
+tg_11026df00aba8ed2,640,39-5012.00,39,"Hairdressers, Hairstylists, and Cosmetologists",0.75
+tg_2dc0b932f9a099c9,17217,29-1229.05,29,Preventive Medicine Physicians,0.50
+tg_9765759f216c9f8b,3792,23-1011.00,23,Lawyers,0.50
+tg_121fa1850d5f9665,3140,51-9111.00,51,Packaging and Filling Machine Operators and Tenders,0.00
+tg_774f5b40b171de36,6636,25-2023.00,25,"Career/Technical Education Teachers, Middle School",0.00
+tg_01fe9ec0462c3062,8963,15-2041.00,15,Statisticians,0.25
+tg_61ee458268d5fd31,18003,29-1141.04,29,Clinical Nurse Specialists,0.00
+tg_38372a1b783e95c5,6592,25-2022.00,25,"Middle School Teachers, Except Special and Career/Technical Education",0.25
+tg_345e16b68b6d593d,1008,11-3131.00,11,Training and Development Managers,0.25
+tg_9907feb8b1985500,7572,19-3032.00,19,Industrial-Organizational Psychologists,0.50
+tg_66bfcfd851549038,2840,47-2041.00,47,Carpet Installers,0.00
+tg_5a146b3b0b530417,20821,51-4031.00,51,"Cutting, Punching, and Press Machine Setters, Operators, and Tenders, Metal and Plastic",0.00
+tg_f1f4f0ddc5e5fe82,23315,43-9041.00,43,Insurance Claims and Policy Processing Clerks,0.75
+tg_126a8aa84207f03c,16998,19-4099.03,19,Remote Sensing Technicians,0.50
+tg_5676b9f9d750b7e9,9435,33-1011.00,33,First-Line Supervisors of Correctional Officers,0.00
+tg_a4b5831358cf7566,18339,29-1141.03,29,Critical Care Nurses,0.50
+tg_f8764e664cf05786,15126,51-9195.05,51,"Potters, Manufacturing",0.25
+tg_38e171afd7666930,5066,35-2011.00,35,"Cooks, Fast Food",0.00
+tg_3bb19660f2a38293,16135,15-2051.01,15,Business Intelligence Analysts,0.75
+tg_2a2d02675a616a43,1019,11-3131.00,11,Training and Development Managers,0.50
+tg_89b2573b1f46b9a3,1283,15-1232.00,15,Computer User Support Specialists,0.50
+tg_4c6dcdcb1e2f328d,21432,13-1031.00,13,"Claims Adjusters, Examiners, and Investigators",0.25
+tg_b6a9ce0f9431b266,1470,17-3022.00,17,Civil Engineering Technologists and Technicians,0.25
+tg_3d96db0f64e10a72,23654,51-9124.00,51,"Coating, Painting, and Spraying Machine Setters, Operators, and Tenders",0.00
+tg_d4a7efb94dd1b22d,14838,13-1074.00,13,Farm Labor Contractors,0.50
+tg_7858efe2beda4acf,6112,25-1071.00,25,"Health Specialties Teachers, Postsecondary",0.25
+tg_7858efe2beda4acf,6297,25-1122.00,25,"Communications Teachers, Postsecondary",0.25
+tg_45e8cb204b937fea,14317,51-8093.00,51,"Petroleum Pump System Operators, Refinery Operators, and Gaugers",0.00
+tg_35269e9b236d9333,7661,27-2011.00,27,Actors,0.00
+tg_59789bd5033f3cbf,16563,17-2199.11,17,Solar Energy Systems Engineers,0.25
+tg_b3fbdee3f6eef210,6677,25-2032.00,25,"Career/Technical Education Teachers, Secondary School",0.25
+tg_cc1125680e139363,17579,33-9099.02,33,Retail Loss Prevention Specialists,0.50
+tg_c2ab8cab1926536f,13884,49-9095.00,49,Manufactured Building and Mobile Home Installers,0.25
+tg_9b85f81fc8a9ae8c,7625,23-1021.00,23,"Administrative Law Judges, Adjudicators, and Hearing Officers",0.25
+tg_a9b520567ef83b40,21929,17-3011.00,17,Architectural and Civil Drafters,0.50
+tg_cb01f2604b37b689,17465,29-9099.01,29,Midwives,0.00
+tg_875c59fc6f4a04f8,2397,39-9032.00,39,Recreation Workers,0.25
+tg_56c015c9105193f3,22507,25-9043.00,25,"Teaching Assistants, Special Education",0.00
+tg_a7dd52b3dc8c0c5e,18714,35-1012.00,35,First-Line Supervisors of Food Preparation and Serving Workers,0.25
+tg_51b1bd6d9f7cca5a,15864,13-1081.01,13,Logistics Engineers,0.25
+tg_5d044d06af4b5e9e,12751,53-4011.00,53,Locomotive Engineers,0.00
+tg_6960f63360ce7774,17657,41-4011.07,41,Solar Sales Representatives and Assessors,0.25
+tg_1c3edea77664f4b7,23816,53-5021.00,53,"Captains, Mates, and Pilots of Water Vessels",0.00
+tg_5bdd147cd1a9dd63,19382,31-9097.00,31,Phlebotomists,0.00
+tg_91d8c57ec186cdcc,15434,11-3051.02,11,Geothermal Production Managers,0.50
+tg_3a90f8f75ebfcdef,15381,11-1011.03,11,Chief Sustainability Officers,0.50
+tg_4364a3426fe82750,6294,25-1122.00,25,"Communications Teachers, Postsecondary",0.50
+tg_65bac16e3025ead9,3546,17-1022.00,17,Surveyors,0.50
+tg_04b3be9efad0e304,11027,27-2012.04,27,Talent Directors,0.25
+tg_df4f110533188319,17508,29-9092.00,29,Genetic Counselors,0.50
+tg_23242fc4883e173d,9591,37-3011.00,37,Landscaping and Groundskeeping Workers,0.00
+tg_96f229e58f94faf5,23835,53-6032.00,53,Aircraft Service Attendants,0.00
+tg_f5a75e86a643d991,22503,25-9043.00,25,"Teaching Assistants, Special Education",0.25
+tg_f2a978b722131158,10971,25-9044.00,25,"Teaching Assistants, Postsecondary",0.50
+tg_541f274f788aec91,843,43-9061.00,43,"Office Clerks, General",0.50
+tg_9ea35194ff4b0fde,9919,47-5032.00,47,"Explosives Workers, Ordnance Handling Experts, and Blasters",0.00
+tg_5178b43fbc3b856e,16171,15-1299.09,15,Information Technology Project Managers,0.50
+tg_2087fa9156229067,20523,19-3051.00,19,Urban and Regional Planners,0.50
+tg_d13920a72ab80539,9672,41-1012.00,41,First-Line Supervisors of Non-Retail Sales Workers,0.00
+tg_5591b6131e1a9866,22952,33-1091.00,33,First-Line Supervisors of Security Workers,0.50
+tg_75d54f0b0495f198,951,11-2021.00,11,Marketing Managers,0.50
+tg_576b5f67734b7ed6,10770,53-7021.00,53,Crane and Tower Operators,0.00
+tg_ba5d0730438943e0,11751,49-2095.00,49,"Electrical and Electronics Repairers, Powerhouse, Substation, and Relay",0.00
+tg_0ff986eae5098877,1224,13-1121.00,13,"Meeting, Convention, and Event Planners",0.75
+tg_b84a8cc11ad5b0f8,4450,39-3011.00,39,Gambling Dealers,0.00
+tg_04b0d21afd068426,21367,11-3071.00,11,"Transportation, Storage, and Distribution Managers",0.50
+tg_5edcd4bc7bc138b2,19142,29-1129.01,29,Art Therapists,0.50
+tg_cf1dc39952d58a97,14680,15-1299.08,15,Computer Systems Engineers/Architects,0.50
+tg_a14e0e64d1d7587f,9460,33-3051.04,33,Customs and Border Protection Officers,0.50
+tg_97121fa04e23733e,23349,45-1011.00,45,"First-Line Supervisors of Farming, Fishing, and Forestry Workers",0.25
+tg_42677bf2348a08b4,17553,33-3021.06,33,Intelligence Analysts,0.50
+tg_a646cef33d34e572,19771,19-2042.00,19,"Geoscientists, Except Hydrologists and Geographers",0.50
+tg_fb6012eb4d44fedf,17532,31-9099.01,31,Speech-Language Pathology Assistants,0.25
+tg_d8b64593edf0076c,4127,29-2031.00,29,Cardiovascular Technologists and Technicians,0.25
+tg_b47498c0b8c07b48,4927,51-3092.00,51,Food Batchmakers,0.00
+tg_03f4e527e51b0d7e,11788,49-9012.00,49,"Control and Valve Installers and Repairers, Except Mechanical Door",0.00
+tg_4561f62f31539c82,22210,19-3039.03,19,Clinical Neuropsychologists,0.25
+tg_298d3f2ec1c51f20,23446,47-2031.00,47,Carpenters,0.00
+tg_ae5e9ac6c3947c66,22324,19-4051.00,19,Nuclear Technicians,0.00
+tg_483518245578fae2,21056,17-2199.07,17,Photonics Engineers,0.50
+tg_713fa11d6cbf92bb,2569,43-3071.00,43,Tellers,0.25
+tg_3cce46fc9e39c9fb,20491,17-2051.00,17,Civil Engineers,0.50
+tg_94efca50abd67843,1839,29-1141.00,29,Registered Nurses,0.50
+tg_f8d489c23e6a991b,5077,39-2021.00,39,Animal Caretakers,0.00
+tg_fc57e1d0e0fa8e13,21459,13-1041.00,13,Compliance Officers,0.50
+tg_64f4b767b08495cf,7135,51-9081.00,51,Dental Laboratory Technicians,0.00
+tg_c8fb3ec3cb3f4195,9875,47-2073.00,47,Operating Engineers and Other Construction Equipment Operators,0.00
+tg_372b70648e504757,17029,25-3041.00,25,Tutors,0.75
+tg_4f9a1be930ff76e4,3568,17-2151.00,17,"Mining and Geological Engineers, Including Mining Safety Engineers",0.50
+tg_c07eaf282a6e2d1b,23554,49-9021.00,49,"Heating, Air Conditioning, and Refrigeration Mechanics and Installers",0.25
+tg_b3f519242d97a7c9,7403,17-2061.00,17,Computer Hardware Engineers,0.50
+tg_2f1b996667a4a799,6160,25-1081.00,25,"Education Teachers, Postsecondary",0.50
+tg_881ba36c5f029f4a,11473,47-2061.00,47,Construction Laborers,0.00
+tg_02d417729d91f8aa,736,41-3021.00,41,Insurance Sales Agents,0.25
+tg_32960d88ae988e1f,22015,17-3024.00,17,Electro-Mechanical and Mechatronics Technologists and Technicians,0.00
+tg_d75bf2945b31c0d2,2237,35-3011.00,35,Bartenders,0.25
+tg_8287a368197aa207,21205,47-4099.03,47,Weatherization Installers and Technicians,0.25
+tg_1fd2f5c63e6e5647,7,11-2022.00,11,Sales Managers,0.25
+tg_cbcc74fbb7e7a5fe,9291,27-1027.00,27,Set and Exhibit Designers,0.25
+tg_237ef8f2e5c4f28e,19625,17-2081.00,17,Environmental Engineers,0.50
+tg_68706f28b236a5b3,19388,31-9097.00,31,Phlebotomists,0.25
+tg_551837e53a6be89b,19465,51-9151.00,51,Photographic Process Workers and Processing Machine Operators,0.50
+tg_da0b1335c5e08686,20446,47-4011.00,47,Construction and Building Inspectors,0.25
+tg_c7c4ec956a98f2c2,17822,51-8099.01,51,Biofuels Processing Technicians,0.00
+tg_377f1cfdfe9ff646,20495,17-2072.00,17,"Electronics Engineers, Except Computer",0.50
+tg_fdf91bedab86fd07,2460,41-9022.00,41,Real Estate Sales Agents,0.50
+tg_84841454a489377b,6229,25-1112.00,25,"Law Teachers, Postsecondary",0.25
+tg_a22c22e4b9f83e1f,21660,15-1243.00,15,Database Architects,0.75
+tg_0c6eef2f05553642,11789,49-9012.00,49,"Control and Valve Installers and Repairers, Except Mechanical Door",0.25
+tg_f6ef2c53501df19e,21373,11-9013.00,11,"Farmers, Ranchers, and Other Agricultural Managers",0.00
+tg_bfacd12711b80f42,11338,43-5051.00,43,Postal Service Clerks,0.00
+tg_4906aa713f532c1f,18384,29-1171.00,29,Nurse Practitioners,0.25
+tg_e82ec10677e26891,6311,25-1123.00,25,"English Language and Literature Teachers, Postsecondary",0.50
+tg_003b6b86f8a84bc9,22473,25-9042.00,25,"Teaching Assistants, Preschool, Elementary, Middle, and Secondary School, Except Special Education",0.75
+tg_7addb06a30687e80,12206,51-6092.00,51,Fabric and Apparel Patternmakers,0.50
+tg_93737de5c5f98484,15108,51-9071.06,51,Gem and Diamond Workers,0.00
+tg_baf585d0132d117e,6661,25-2031.00,25,"Secondary School Teachers, Except Special and Career/Technical Education",0.25
+tg_fe937d75fdbaa724,3236,11-2011.00,11,Advertising and Promotions Managers,0.25
+tg_613f56c3ea458c48,15476,11-3051.04,11,Biomass Power Plant Managers,0.25
+tg_77b3987c5e7eee8f,18614,19-1029.04,19,Biologists,0.50
+tg_ce9065f735e4dccb,8498,51-4111.00,51,Tool and Die Makers,0.00
+tg_a8f568e3af70db60,19177,29-1129.02,29,Music Therapists,0.50
+tg_c8e8bef3a017a027,8951,13-1081.00,13,Logisticians,0.50
+tg_c1b33e288ad83fb4,2795,43-6014.00,43,"Secretaries and Administrative Assistants, Except Legal, Medical, and Executive",0.75
+tg_27d8a68730bab961,259,21-1022.00,21,Healthcare Social Workers,0.25
+tg_8bddd11dd5bca001,19444,51-5113.00,51,Print Binding and Finishing Workers,0.25
+tg_880b9cc7958ec7ac,18701,31-2011.00,31,Occupational Therapy Assistants,0.50
+tg_4f1b4547c4e084ad,13730,49-2096.00,49,"Electronic Equipment Installers and Repairers, Motor Vehicles",0.25
+tg_cdc3f74f1505c064,10522,51-9082.00,51,Medical Appliance Technicians,0.25
+tg_e865ec2940a9b304,12957,19-4061.00,19,Social Science Research Assistants,0.75
+tg_2055265c6f97a48f,22001,17-3023.00,17,Electrical and Electronic Engineering Technologists and Technicians,0.50
+tg_7b189d23d35ada7b,22588,27-2042.00,27,Musicians and Singers,0.00
+tg_98e3503a6ca2fe45,16426,17-2141.02,17,Automotive Engineers,0.50
+tg_fe939eec940ce650,14610,53-7072.00,53,"Pump Operators, Except Wellhead Pumpers",0.50
+tg_aa12860d37ba9ca6,2522,43-3051.00,43,Payroll and Timekeeping Clerks,0.50
+tg_c4a11ec9e71d73c8,8397,49-9011.00,49,Mechanical Door Repairers,0.00
+tg_a96bd76feeca4bf7,18087,47-4011.01,47,Energy Auditors,0.50
+tg_7984b2bebef1e802,7169,53-6011.00,53,Bridge and Lock Tenders,0.00
+tg_ffe32da4e89e8aec,9991,49-3043.00,49,Rail Car Repairers,0.00
+tg_ee98202703d27324,8514,51-8011.00,51,Nuclear Power Reactor Operators,0.00
+tg_18adab771fa4b460,18559,43-3011.00,43,Bill and Account Collectors,0.50
+tg_24c53408a6b060c3,16785,19-1029.01,19,Bioinformatics Scientists,0.25
+tg_30080587e202c4e0,16599,17-3027.01,17,Automotive Engineering Technicians,0.00
+tg_03ad1ab1c676ec68,22469,25-9042.00,25,"Teaching Assistants, Preschool, Elementary, Middle, and Secondary School, Except Special Education",0.00
+tg_9826bce4786d2cf7,20329,13-1161.01,13,Search Marketing Strategists,0.75
+tg_372f15d99fc5dee7,11070,19-5011.00,19,Occupational Health and Safety Specialists,0.25
+tg_743d9c1a1df8102d,11748,49-2095.00,49,"Electrical and Electronics Repairers, Powerhouse, Substation, and Relay",0.50
+tg_44b036c8e810d845,7009,41-2012.00,41,Gambling Change Persons and Booth Cashiers,0.50
+tg_d7391ff3c24738c4,12757,53-4011.00,53,Locomotive Engineers,0.25
+tg_453cb98ad08e27fe,24051,47-2171.00,47,Reinforcing Iron and Rebar Workers,0.00
+tg_ebc3880ecdc81508,17802,47-4099.03,47,Weatherization Installers and Technicians,0.25
+tg_6514aae46b1fec84,4213,29-2081.00,29,"Opticians, Dispensing",0.00
+tg_5d39a760f45ed242,14686,15-1299.08,15,Computer Systems Engineers/Architects,0.50
+tg_13551a56fce38d05,4510,39-4011.00,39,Embalmers,0.00
+tg_dbcdd6673d406d08,10147,51-4033.00,51,"Grinding, Lapping, Polishing, and Buffing Machine Tool Setters, Operators, and Tenders, Metal and Plastic",0.50
+tg_d571b635effe091b,7191,11-9071.00,11,Gambling Managers,0.50
+tg_02b1b779f9dc9c8c,19953,17-2141.01,17,Fuel Cell Engineers,0.50
+tg_500329c373240fcb,11232,37-3012.00,37,"Pesticide Handlers, Sprayers, and Applicators, Vegetation",0.00
+tg_283dba30c717adb5,18361,29-1151.00,29,Nurse Anesthetists,0.00
+tg_ac093a19e9b0613b,13140,39-1022.00,39,First-Line Supervisors of Personal Service Workers,0.25
+tg_48e95c53360de1ec,1767,27-3031.00,27,Public Relations Specialists,0.25
+tg_ec6a1c3a55910128,18659,27-4012.00,27,Broadcast Technicians,0.50
+tg_0b826a11689cf60a,6938,29-1021.00,29,"Dentists, General",0.00
+tg_d6e9690c37ee353d,21121,25-1067.00,25,"Sociology Teachers, Postsecondary",0.00
+tg_71b501f85415c9c1,11872,49-9063.00,49,Musical Instrument Repairers and Tuners,0.00
+tg_bb569a0a094bfc40,1593,21-1014.00,21,Mental Health Counselors,0.25
+tg_09cfeadcf8dca892,14099,51-6042.00,51,Shoe Machine Operators and Tenders,0.00
+tg_f798f6477cc6e3f9,14348,51-9022.00,51,"Grinding and Polishing Workers, Hand",0.00
+tg_0f53ebf1a7234ac6,1915,29-2012.00,29,Medical and Clinical Laboratory Technicians,0.00
+tg_f91e0dec5daa0008,14556,53-5031.00,53,Ship Engineers,0.00
+tg_7092892cc29f6b4e,7247,13-1032.00,13,"Insurance Appraisers, Auto Damage",0.50
+tg_dee240be5372ba83,4778,47-2021.00,47,Brickmasons and Blockmasons,0.00
+tg_89e61b0ae5529bbc,20749,21-2011.00,21,Clergy,0.00
+tg_482b6c3d985f1731,22533,27-2012.00,27,Producers and Directors,0.50
+tg_724ccf4ab7c07955,1,11-2022.00,11,Sales Managers,0.25
+tg_57673982de0c1d7a,6096,25-1067.00,25,"Sociology Teachers, Postsecondary",0.75
+tg_95194d1ff8f8b3bd,7039,45-4011.00,45,Forest and Conservation Workers,0.00
+tg_1dce85be430e5b77,1758,27-2022.00,27,Coaches and Scouts,0.00

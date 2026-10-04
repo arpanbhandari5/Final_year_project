@@ -1,0 +1,22 @@
+{
+  "model_id": "prayash-task-exposure-gpts-are-gpts-v1",
+  "status": "research-only",
+  "benchmark_source": "openai/GPTs-are-GPTs",
+  "benchmark_commit": "0471612fef3cc22b74fb884d27bff9dbd3770582",
+  "license": "MIT",
+  "source_file_sha256": "094378905e1f3349e50a9a83dc69643a2ef227954d611c8316a46da08cb3d8de",
+  "derived_dataset": "experiments/task_exposure/data/public_benchmark/public_gpts_are_gpts_benchmark.csv",
+  "derived_dataset_sha256": "bfc3b219d132449a17105dfc6efc2f0254a3dc613f6192405741c36be10d1299",
+  "target_taxonomy": "human_labels E0/E1/E2",
+  "model_type": "TfidfVectorizer ngram=(1,2) max_features=12000 + LogisticRegression/LinearSVC",
+  "training_population": "923 occupations, 19265 labelled task rows; train split 646 occupations / 13453 tasks",
+  "evaluation_population": "held-out test 139 occupations / 2871 tasks; validation 138 occupations / 2941 tasks unused for hyperparameter selection",
+  "split_manifest": "experiments/task_exposure/reports/public_benchmark/split_manifest.json",
+  "split_seed": 202610031,
+  "training_date_utc": "2026-10-03T04:35:55Z",
+  "evaluation_artifact": "experiments/task_exposure/reports/public_benchmark/model_evaluation.json",
+  "product_subset_800": "project_data/occupation_selection/occupation_master_800.csv",
+  "product_subset_sha256": "26eeee1a06e4919eaf699f7a9da2d0a5f417e625f4d968326ef12daec93c4aa5",
+  "product_subset_used_for_training": false,
+  "production_integrated": false
+}

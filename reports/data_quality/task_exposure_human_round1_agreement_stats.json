@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-10-03T03:02:53.020437+00:00",
+  "paired_rows": 300,
+  "paired_human_scores": 0,
+  "exact_agreement": null,
+  "quadratic_weighted_kappa": null,
+  "mean_absolute_disagreement": null,
+  "third_reviewer_file_rows": 60,
+  "trainable_rows": 0,
+  "unresolved_rows": 0,
+  "note": "AI dual-pass kappa is not human IRR. No human scores present; kappa not computed; no training table written."
+}

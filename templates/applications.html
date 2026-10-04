@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container">
+    <span class="eyebrow">Workspace</span>
+    <h1>Saved jobs and applications</h1>
+    <p class="lead">This list records jobs you chose to track and what you did next. It is not an ATS score or a prediction that you will be hired.</p>
+    <p class="small-note">Track jobs you saved, applied to, and followed up on. Statuses are your own action labels. Scraping, LinkedIn import, and automatic applications are not available.</p>
+    <nav class="actions" aria-label="Workspace links">
+      <a class="button-outline" href="{{ url_for('workspace') }}">Back to workspace</a>
+      <a class="button-outline" href="{{ url_for('target_job_match_page') }}">Target Job Match</a>
+    </nav>
+  </div>
+</section>
+
+<section class="content-section" id="saved-jobs">
+  <div class="container">
+    <p class="tjm-status" data-applications-status role="status" aria-live="polite">Loading saved jobs.</p>
+    <p class="form-error" data-applications-error role="alert" hidden></p>
+    <p class="section-subtitle" data-applications-empty hidden>No saved jobs yet. Compare a target job, then choose Save this job.</p>
+    <ul class="evidence-list" data-applications-list></ul>
+  </div>
+</section>
+
+<script nonce="{{ csp_nonce }}">
+  window.PRAYASH_APPLICATION_STATUSES = {{ application_statuses | tojson }};
+</script>
+<script src="{{ url_for('static', filename='applications.js', v=static_version) }}"></script>
+{% endblock %}

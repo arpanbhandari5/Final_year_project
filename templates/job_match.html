@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-section page-hero">
+  <div class="container">
+    <span class="eyebrow">Workspace</span>
+    <h1>Target Job Match</h1>
+    <p class="lead">Compare a target job with saved evidence. This is evidence coverage, not a hiring, interview, ATS, or job-loss probability.</p>
+    <p class="small-note">Target Job Match export: not currently supported. Resume quality checks such as layout scoring are not part of this comparison.</p>
+    <nav class="actions" aria-label="Workspace links">
+      <a class="button-outline" href="{{ url_for('workspace') }}">Back to workspace</a>
+      <a class="button-outline" href="{{ url_for('applications_page') }}">Saved jobs</a>
+    </nav>
+  </div>
+</section>
+
+<section class="content-section" id="job-match">
+  <div class="container tjm-flow">
+    <p class="tjm-status" data-job-status role="status" aria-live="polite">Ready to compare. Add a target job description.</p>
+
+    <article class="glass-card loop-card loop-card--primary" aria-labelledby="target-job-heading">
+      <h2 class="section-title" id="target-job-heading">Target job</h2>
+      <p class="section-subtitle" data-empty-job>Add a target job description to compare its requirements with your available evidence. Scraping and automatic applications are not available.</p>
+      <p class="small-note" data-compared-job hidden></p>
+      <form data-job-match-form>
+        <fieldset class="source-fieldset">
+          <legend>Evidence source</legend>
+          <p class="small-note">Choose which saved evidence should be used for this comparison. The selected evidence profile or resume version is used as stored. This does not imply that an original resume file is being freshly parsed unless you upload a file below.</p>
+          <label class="source-option">
+            <input type="radio" name="evidence_source" value="profile" checked>
+            Current evidence profile (stored extracted evidence, not a fresh reparse)
+          </label>
+          <label class="source-option">
+            <input type="radio" name="evidence_source" value="resume_version">
+            Owned resume version (stored text for that version)
+          </label>
+          <div class="field">
+            <label for="resume-version">Owned resume versions</label>
+            <select id="resume-version" name="resume_version_id">
+              <option value="">Select a resume version</option>
+            </select>
+          </div>
+        </fieldset>
+        <p class="small-note" data-evidence-source-display>
+          This analysis used the following evidence source:
+          <strong data-evidence-source-value>Current evidence profile</strong>
+        </p>
+        <div class="field">
+          <label for="job-title">Job title (optional)</label>
+          <input id="job-title" name="title" maxlength="200" autocomplete="organization-title">
+        </div>
+        <div class="field">
+          <label for="job-company">Company (optional)</label>
+          <input id="job-company" name="company" maxlength="160" autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="job-location">Location (optional)</label>
+          <input id="job-location" name="location" maxlength="160" autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label for="job-description">Job description</label>
+          <textarea id="job-description" name="description" required minlength="40" maxlength="20000" rows="10" aria-describedby="job-form-error job-desc-hint"></textarea>
+          <p class="small-note" id="job-desc-hint">Paste at least 40 characters. Maximum 20,000.</p>
+        </div>
+        <p class="form-error" data-job-error id="job-form-error" role="alert" hidden></p>
+        <button type="submit" class="button" data-analyze-button>Compare with selected evidence</button>
+      </form>
+      <form class="upload-form" data-resume-upload-form>
+        <div class="field">
+          <label for="job-resume-file">Upload a different resume</label>
+          <input id="job-resume-file" name="resume_file" type="file" accept=".pdf,.doc,.docx,.txt">
+        </div>
+        <button type="submit" class="button-outline">Store as an owned resume version</button>
+        <p class="small-note">Uses the existing resume parser. Raw text is stored as an owned resume version, not in the Flask session. Uploading is the only path that parses a file in this step.</p>
+      </form>
+    </article>
+
+    <article class="glass-card loop-card" aria-labelledby="req-heading">
+      <h2 class="section-title" id="req-heading">Requirements summary</h2>
+      <p class="small-note" data-job-counts>Counts for matched, partial, not evidenced, and review appear after comparison.</p>
+      <p class="section-subtitle" data-job-empty>No comparison yet.</p>
+      <ul class="evidence-list" data-req-list></ul>
+    </article>
+
+    <article class="glass-card loop-card" aria-labelledby="supported-heading">
+      <h2 class="section-title" id="supported-heading">What your evidence supports</h2>
+      <p class="section-subtitle">Short excerpts from the selected source only. Full resumes are not shown.</p>
+      <ul class="evidence-list" data-evidence-map></ul>
+      <p class="small-note" data-empty-supported>Matched and partial requirements will appear here after comparison.</p>
+    </article>
+
+    <article class="glass-card loop-card" aria-labelledby="incomplete-heading">
+      <h2 class="section-title" id="incomplete-heading">Where evidence is incomplete</h2>
+      <p class="section-subtitle">Not evidenced means the selected source does not provide sufficient evidence. It does not mean you lack the skill.</p>
+      <ul class="evidence-list" data-incomplete-list></ul>
+      <p class="small-note" data-empty-incomplete>Gaps and review items will appear here after comparison.</p>
+    </article>
+
+    <article class="glass-card loop-card loop-card--primary tjm-next-action" aria-labelledby="action-heading">
+      <h2 class="section-title" id="action-heading">Next action</h2>
+      <p class="small-note" data-job-gap hidden></p>
+      <h3 data-job-action-title>No action yet</h3>
+      <p data-job-action-body>One evidence-backed action will appear here after comparison.</p>
+      <p class="small-note">Saving a job records an action you chose. It is not an ATS score or a prediction that you will be hired.</p>
+      <button type="button" class="button" data-save-application hidden>Save this job</button>
+      <p class="small-note" data-save-application-status hidden></p>
+      <a class="button-outline" href="{{ url_for('applications_page') }}">Open saved jobs</a>
+      <button type="button" class="button-outline" data-delete-match hidden>Delete this comparison</button>
+    </article>
+  </div>
+</section>
+
+<div class="job-match-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" hidden data-delete-dialog tabindex="-1">
+  <h2 id="delete-dialog-title">Delete this comparison?</h2>
+  <p>This removes the Target Job Match record only. Your resume and evidence profile are not deleted.</p>
+  <button type="button" class="button" data-confirm-delete>Delete comparison</button>
+  <button type="button" class="button-outline" data-cancel-delete>Keep comparison</button>
+</div>
+<script src="{{ url_for('static', filename='job-match.js', v=static_version) }}"></script>
+{% endblock %}

@@ -31,7 +31,7 @@ with app.app_context():
     print(rec.otp if rec else 'NO_OTP')
 """
     result = subprocess.run(
-        ["python", "-c", script, email, purpose],
+        [sys.executable, "-c", script, email, purpose],
         capture_output=True, text=True,
         cwd=os.path.dirname(os.path.abspath(__file__)),
     )
@@ -115,7 +115,7 @@ with app.app_context():
         print('USER_NOT_FOUND')
 """
 result = subprocess.run(
-    ["python", "-c", script, test_email],
+        [sys.executable, "-c", script, test_email],
     capture_output=True, text=True, cwd=os.path.dirname(os.path.abspath(__file__))
 )
 token_value = result.stdout.strip()

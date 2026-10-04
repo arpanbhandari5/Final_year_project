@@ -1,0 +1,251 @@
+occupation_code,task_id,task_text,adjudicated_exposure_score,label_source,adjudication_status,adjudication_reason,reviewer_1_score,reviewer_2_score,not_human_ground_truth,split_group
+33-1091.00,22955,"Schedule training or drills for emergencies, such as fires, bombs, and other threats.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,33-1091.00
+11-3021.00,974,Control operational budget and expenditures.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-3021.00
+25-1082.00,6172,"Prepare and deliver lectures to undergraduate or graduate students on topics such as collection development, archival methods, and indexing and abstracting.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-1082.00
+19-2041.01,16849,"Provide analytical support for policy briefs related to renewable energy, energy efficiency, or climate change.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,19-2041.01
+29-1181.00,18675,Participate in conferences or training to update or share knowledge of new hearing or balance disorder treatment methods or technologies.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,29-1181.00
+47-4031.00,13624,"Align posts, by lines or sighting, and verify vertical alignment of posts, using plumb bobs or spirit levels.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-4031.00
+49-3093.00,8364,"Raise vehicles, using hydraulic jacks.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-3093.00
+47-5032.00,9922,"Repair and service blasting, shooting, and automotive equipment, and electrical wiring and instruments, using hand tools.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-5032.00
+11-2011.00,3245,Represent company at trade association meetings to promote products.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,11-2011.00
+27-4032.00,4056,Verify key numbers and time codes on materials.,0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,27-4032.00
+49-9092.00,13863,Install pilings or footings for piers or bridges.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-9092.00
+51-6052.00,12184,"Fit, alter, repair, and make made-to-measure clothing, according to customers' and clothing manufacturers' specifications and fit, and applying principles of garment design, construction, and styling.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-6052.00
+51-4052.00,12015,Load specified amounts of metal and flux into furnaces or clay crucibles.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-4052.00
+53-4011.00,12750,"Monitor gauges or meters that measure speed, amperage, battery charge, or air pressure in brake lines or in main reservoirs.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,53-4011.00
+19-3011.01,16908,"Develop environmental research project plans, including information on budgets, goals, deliverables, timelines, and resource requirements.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,19-3011.01
+51-6052.00,12177,"Measure parts, such as sleeves or pant legs, and mark or pin-fold alteration lines.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-6052.00
+47-4021.00,11576,"Connect car frames to counterweights, using steel cables.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-4021.00
+11-9161.00,7272,"Apply for federal funding for emergency-management-related needs, and administer and report on the progress of such grants.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-9161.00
+43-5011.00,8208,"Route received goods to first available flight or to appropriate storage areas or departments, using forklifts, hand trucks, or other equipment.",0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.25,0.00,true,43-5011.00
+13-1031.00,21418,Analyze information gathered by investigation and report findings and recommendations.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,13-1031.00
+53-1042.01,17888,Oversee recycling pick-up or drop-off programs to ensure compliance with community ordinances.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,53-1042.01
+13-1075.00,18904,"Train managers or supervisors on topics related to labor relations, such as working conditions, safety, or equal opportunity practices.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,13-1075.00
+29-2034.00,22817,Provide assistance to physicians or other technologists in the performance of more complex procedures.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,29-2034.00
+19-4013.00,22261,Supervise other food science technicians.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,19-4013.00
+43-3011.00,2478,"Persuade customers to pay amounts due on credit accounts, damage claims, or nonpayable checks, or to return merchandise.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,43-3011.00
+17-3011.00,21934,Locate and identify symbols on topographical surveys to denote geological and geophysical formations or oil field installations.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-3011.00
+19-1041.00,5424,"Plan, administer and evaluate health safety standards and programs to improve public health, conferring with health department, industry personnel, physicians, and others.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,19-1041.00
+11-9021.00,3327,Develop or implement quality control programs.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-9021.00
+15-2099.01,17709,"Analyze or manipulate bioinformatics data using software packages, statistical applications, or data mining techniques.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,15-2099.01
+29-9099.01,17487,"Provide, or refer patients to other providers for, education or counseling on topics such as genetic testing, newborn care, contraception, or breastfeeding.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,29-9099.01
+49-3093.00,8378,Inflate inner tubes and immerse them in water to locate leaks.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-3093.00
+15-2051.02,16277,"Prepare data analysis listings and activity, performance, or progress reports.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,15-2051.02
+33-2022.00,11111,Restrict public access and recreational use of forest lands during critical fire seasons.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,33-2022.00
+51-7032.00,12233,"Set up, operate, and adjust a variety of woodworking machines such as bandsaws and lathes to cut and shape sections, parts, and patterns, according to specifications.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-7032.00
+13-1199.04,15954,Create or administer training and awareness presentations or materials.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,13-1199.04
+29-2031.00,15236,"Assist physicians in the diagnosis and treatment of cardiac or peripheral vascular treatments, such as implanting pacemakers or assisting with balloon angioplasties to treat blood vessel blockages.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,29-2031.00
+13-1151.00,94,"Present information with a variety of instructional techniques or formats, such as role playing, simulations, team exercises, group discussions, videos, or lectures.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,13-1151.00
+49-9052.00,20807,Pull cable through ducts by hand or with winches.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-9052.00
+45-2092.00,23388,"Repair farm buildings, fences, and other structures.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,45-2092.00
+41-9091.00,13235,Arrange buying parties and solicit sponsorship of such parties to sell merchandise.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,41-9091.00
+29-1229.06,17266,Supervise the rehabilitation of injured athletes.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,29-1229.06
+25-1111.00,6214,Act as advisers to student organizations.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,25-1111.00
+27-3042.00,3976,Assist in laying out material for publication.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,27-3042.00
+47-2082.00,13535,Sand or patch nicks or cracks in plasterboard or wallboard.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-2082.00
+51-9195.04,12643,Strike necks of finished articles to separate articles from blowpipes.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-9195.04
+13-1041.07,19554,"Determine the legal implications of the production, supply, or use of ozone-depleting substances or equipment containing such substances.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,13-1041.07
+35-3031.00,2281,Prepare checks that itemize and total meal costs and sales taxes.,0.75,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.75,1.00,true,35-3031.00
+19-3041.00,5467,"Collect data about the attitudes, values, and behaviors of people in groups, using observation, interviews, and review of documents.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,19-3041.00
+43-6013.00,778,"Receive and route messages or documents, such as laboratory results, to appropriate staff.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,43-6013.00
+15-1241.01,16063,"Review and evaluate requests from engineers, managers, and technicians for system modifications.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,15-1241.01
+29-2043.00,22872,"Observe, record, and report to physician the patient's condition or injury, the treatment provided, and reactions to drugs or treatment.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,29-2043.00
+51-4192.00,10306,Add dimensional details to blueprints or drawings made by other workers.,0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,51-4192.00
+53-4013.00,10678,"Receive, relay, and act upon instructions and inquiries from train operations and customer service center personnel.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,53-4013.00
+29-1217.00,17113,"Counsel patients or others on the background of neurological disorders including risk factors, or genetic or environmental concerns.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,29-1217.00
+31-9095.00,2048,Greet customers and help them locate merchandise.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,31-9095.00
+19-2011.00,7535,Direct the operations of a planetarium.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,19-2011.00
+51-3091.00,10071,"Push racks or carts to transfer products to storage, cooling stations, or the next stage of processing.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-3091.00
+39-4021.00,20599,"Perform various administrative tasks, such as typing documents or answering telephone calls.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,39-4021.00
+43-4161.00,2690,Process and review employment applications to evaluate qualifications or eligibility of applicants.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,43-4161.00
+51-3023.00,13994,Shackle hind legs of animals to raise them for slaughtering or skinning.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-3023.00
+51-4072.00,10175,"Set up, operate, or tend metal or plastic molding, casting, or coremaking machines to mold or cast metal or thermoplastic parts or products.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-4072.00
+39-9041.00,6993,Chaperone group-sponsored trips and social functions.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,39-9041.00
+29-1224.00,17243,"Obtain patients' histories from electronic records, patient interviews, dictated reports, or by communicating with referring clinicians.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,29-1224.00
+25-3011.00,6838,Prepare and implement remedial programs for students requiring extra help.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-3011.00
+29-1127.00,1875,Develop speech exercise programs to reduce disabilities.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,29-1127.00
+43-3061.00,2545,"Maintain knowledge of all organizational and governmental rules affecting purchases, and provide information about these rules to organization staff members and to vendors.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,43-3061.00
+53-6041.00,8632,"Plan, design, and improve components of traffic control systems to accommodate current or projected traffic and to increase usability and efficiency.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,53-6041.00
+27-1014.00,6895,Implement and maintain configuration control systems.,0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,27-1014.00
+43-5031.00,2721,"Test and adjust communication and alarm systems, and report malfunctions to maintenance units.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,43-5031.00
+51-4031.00,10126,Turn valves to start flow of coolant against cutting areas or to start airflow that blows cuttings away from kerfs.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-4031.00
+21-1014.00,1598,Develop and implement treatment plans based on clinical experience and knowledge.,0.25,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.25,0.50,true,21-1014.00
+39-5012.00,640,"Update and maintain customer information records, such as beauty services provided.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,39-5012.00
+29-1229.05,17217,Identify groups at risk for specific preventable diseases or injuries.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,29-1229.05
+23-1011.00,3792,Probate wills and represent and advise executors and administrators of estates.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,23-1011.00
+51-9111.00,3140,"Package the product in the form in which it will be sent out, for example, filling bags with flour from a chute or spout.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-9111.00
+25-2023.00,6636,"Attend staff meetings and serve on committees, as required.",0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,25-2023.00
+15-2041.00,8963,Supervise and provide instructions for workers collecting and tabulating data.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,15-2041.00
+29-1141.04,18003,"Provide direct care by performing comprehensive health assessments, developing differential diagnoses, conducting specialized tests, or prescribing medications or treatments.",0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,29-1141.04
+25-2022.00,6592,"Use computers, audio-visual aids, and other equipment and materials to supplement presentations.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-2022.00
+25-1053.00,5914,Act as advisers to student organizations.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,25-1053.00
+11-3131.00,1008,Conduct orientation sessions and arrange on-the-job training for new hires.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,11-3131.00
+19-3032.00,7572,"Analyze data, using statistical methods and applications, to evaluate the outcomes and effectiveness of workplace programs.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,19-3032.00
+47-2041.00,2840,"Cut carpet padding to size and install padding, following prescribed method.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-2041.00
+51-4031.00,20821,Operate forklifts to deliver materials.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-4031.00
+43-9041.00,23315,Post or attach information to claim file.,0.75,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.75,1.00,true,43-9041.00
+19-4099.03,16998,"Manipulate raw data to enhance interpretation, either on the ground or during remote sensing flights.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,19-4099.03
+33-1011.00,9435,"Monitor behavior of subordinates to ensure alert, courteous, and professional behavior toward inmates, parolees, fellow employees, visitors, and the public.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,33-1011.00
+29-1141.03,18339,Compile and analyze data obtained from monitoring or diagnostic tests.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,29-1141.03
+51-9195.05,15126,"Maintain supplies of tools, equipment, and materials, and order additional supplies as needed.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,51-9195.05
+35-2011.00,5066,"Prepare dough, following recipe.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,35-2011.00
+15-2051.01,16135,"Maintain library of model documents, templates, or other reusable knowledge assets.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,15-2051.01
+11-3131.00,1019,Prepare training budget for department or organization.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-3131.00
+15-1232.00,1283,Enter commands and observe system functioning to verify correct operations and detect errors.,0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,15-1232.00
+13-1031.00,21432,Confer with legal counsel on claims requiring litigation.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,13-1031.00
+17-3022.00,1470,Report maintenance problems occurring at project site to supervisor and negotiate changes to resolve system conflicts.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,17-3022.00
+51-9124.00,23654,Clean equipment and work areas.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-9124.00
+13-1074.00,14838,Pay wages of contracted farm laborers.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,13-1074.00
+25-1071.00,6112,Advise students on academic and vocational curricula and on career issues.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-1071.00
+51-8093.00,14317,"Patrol units to monitor the amount of oil in storage tanks, and to verify that activities and operations are safe, efficient, and in compliance with regulations.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-8093.00
+27-2011.00,7661,"Construct puppets and ventriloquist dummies, and sew accessory clothing, using hand tools and machines.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,27-2011.00
+17-2199.11,16563,Test or evaluate photovoltaic (PV) cells or modules.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,17-2199.11
+25-2032.00,6677,"Plan and conduct activities for a balanced program of instruction, demonstration, and work time that provides students with opportunities to observe, question, and investigate.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-2032.00
+33-9099.02,17579,Recommend methods to reduce potential financial fraud losses.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,33-9099.02
+49-9095.00,13884,Confer with customers or read work orders to determine the nature and extent of damage to units.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,49-9095.00
+23-1021.00,7625,"Conduct hearings to review and decide claims regarding issues, such as social program eligibility, environmental protection, or enforcement of health and safety regulations.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,23-1021.00
+17-3011.00,21929,"Determine procedures and instructions to be followed, according to design specifications and quantity of required materials.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-3011.00
+29-9099.01,17465,Assist maternal patients to find physical positions that will facilitate childbirth.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,29-9099.01
+39-9032.00,2397,Serve as liaison between park or recreation administrators and activity instructors.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,39-9032.00
+25-9043.00,22507,"Provide students with disabilities with assistive devices, supportive technology, and assistance accessing facilities, such as restrooms.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,25-9043.00
+35-1012.00,18714,"Perform various financial activities, such as cash handling, deposit preparation, and payroll.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,35-1012.00
+13-1081.01,15864,Direct the work of logistics analysts.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,13-1081.01
+53-4011.00,12751,Observe tracks to detect obstructions.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,53-4011.00
+41-4011.07,17657,"Assess sites to determine suitability for solar equipment, using equipment such as tape measures, compasses, and computer software.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,41-4011.07
+53-5021.00,23816,"Maintain boats or equipment on board, such as engines, winches, navigational systems, fire extinguishers, or life preservers.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,53-5021.00
+31-9097.00,19382,"Organize or clean blood-drawing trays, ensuring that all instruments are sterile and all needles, syringes, or related items are of first-time use.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,31-9097.00
+11-3051.02,15434,Communicate geothermal plant conditions to employees.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-3051.02
+11-1011.03,15381,Develop methodologies to assess the viability or success of sustainability initiatives.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-1011.03
+25-1122.00,6294,"Plan, evaluate, and revise curricula, course content, course materials, and methods of instruction.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,25-1122.00
+17-1022.00,3546,"Conduct research in surveying and mapping methods, using knowledge of photogrammetric map compilation and electronic data processing.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-1022.00
+27-2012.04,11027,"Locate performers or extras for crowd and background scenes, and stand-ins or photo doubles for actors, by direct contact or through agents.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,27-2012.04
+29-9092.00,17508,"Interview patients or review medical records to obtain comprehensive patient or family medical histories, and document findings.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,29-9092.00
+37-3011.00,9591,"Care for established lawns by mulching, aerating, weeding, grubbing, removing thatch, or trimming or edging around flower beds, walks, or walls.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,37-3011.00
+53-6032.00,23835,Climb ladders to reach aircraft surfaces to be cleaned.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,53-6032.00
+25-9043.00,22503,"Prepare lesson materials, bulletin board displays, exhibits, equipment, and demonstrations.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-9043.00
+25-9044.00,10971,Order or obtain materials needed for classes.,0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,25-9044.00
+43-9061.00,843,"Prepare meeting agendas, attend meetings, and record and transcribe minutes.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.75,0.50,true,43-9061.00
+47-5032.00,9919,Cut specified lengths of primacord and attach primers to cord ends.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-5032.00
+25-1122.00,6297,Advise students on academic and vocational curricula and on career issues.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-1122.00
+15-1299.09,16171,Develop and manage work breakdown structure (WBS) of information technology projects.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,15-1299.09
+19-3051.00,20523,Determine the effects of regulatory limitations on land use projects.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,19-3051.00
+41-1012.00,9672,Visit retailers and sales representatives to promote products and gather information.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,41-1012.00
+33-1091.00,22952,"Order materials or supplies, such as keys, uniforms, and badges.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,33-1091.00
+11-2021.00,951,"Identify, develop, or evaluate marketing strategy, based on knowledge of establishment objectives, market characteristics, and cost and markup factors.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-2021.00
+53-7021.00,10770,"Clean, lubricate, and maintain mechanisms such as cables, pulleys, or grappling devices, making repairs, as necessary.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,53-7021.00
+49-2095.00,11751,"Disconnect voltage regulators, bolts, and screws, and connect replacement regulators to high-voltage lines.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-2095.00
+13-1121.00,1224,Organize registration of event participants.,0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,13-1121.00
+39-3011.00,4450,Stand behind a gaming table and deal the appropriate number of cards to each player.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,39-3011.00
+11-3071.00,21367,Plan or implement improvements to internal or external systems or processes.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-3071.00
+29-1129.01,19142,"Communicate client assessment findings and recommendations in oral, written, audio, video, or other forms.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,29-1129.01
+15-1299.08,14680,"Develop or approve project plans, schedules, or budgets.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,15-1299.08
+33-3051.04,9460,Investigate applications for duty refunds and petition for remission or mitigation of penalties when warranted.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,33-3051.04
+45-1011.00,23349,"Confer with managers to evaluate weather or soil conditions, to develop plans or procedures, or to discuss issues such as changes in fertilizers, herbicides, or cultivating techniques.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,45-1011.00
+33-3021.06,17553,Prepare plans to intercept foreign communications transmissions.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,33-3021.06
+19-2042.00,19771,Review work plans to determine the effectiveness of activities for mitigating soil or groundwater contamination.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,19-2042.00
+31-9099.01,17532,Implement treatment plans or protocols as directed by speech-language pathologists.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,31-9099.01
+29-2031.00,4127,Monitor patients' blood pressure and heart rate using electrocardiogram (EKG) equipment during diagnostic or therapeutic procedures to notify the physician if something appears wrong.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,29-2031.00
+51-3092.00,4927,"Select and measure or weigh ingredients, using English or metric measures and balance scales.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-3092.00
+49-9012.00,11788,"Dismantle meters, and replace or adjust defective parts such as cases, shafts, gears, disks, and recording mechanisms, using soldering irons and hand tools.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-9012.00
+19-3039.03,22210,Design or implement rehabilitation plans for patients with cognitive dysfunction.,0.25,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.25,0.50,true,19-3039.03
+47-2031.00,23446,"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-2031.00
+19-4051.00,22324,"Decontaminate objects by cleaning them using soap or solvents or by abrading using brushes, buffing machines, or sandblasting machines.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,19-4051.00
+17-2199.07,21056,"Document photonics system or component design processes, including objectives, issues, or outcomes.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,17-2199.07
+43-3071.00,2569,"Carry out special services for customers, such as ordering bank cards and checks.",0.25,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.25,0.50,true,43-3071.00
+17-2051.00,20491,"Plan and design transportation or hydraulic systems or structures, using computer-assisted design or drawing tools.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-2051.00
+29-1141.00,1839,"Maintain accurate, detailed reports and records.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,29-1141.00
+39-2021.00,5077,"Provide treatment to sick or injured animals, or contact veterinarians to secure treatment.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,39-2021.00
+13-1041.00,21459,"Keep informed regarding pending industry changes, trends, or best practices.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,13-1041.00
+51-9081.00,7135,"Test appliances for conformance to specifications and accuracy of occlusion, using articulators and micrometers.",0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,51-9081.00
+47-2073.00,9875,"Operate equipment to demolish or remove debris or to remove snow from streets, roads, or parking lots.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-2073.00
+25-3041.00,17029,"Maintain records of students' assessment results, progress, feedback, or school performance, ensuring confidentiality of all records.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,25-3041.00
+17-2151.00,3568,"Select or develop mineral location, extraction, and production methods, based on factors such as safety, cost, and deposit characteristics.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-2151.00
+49-9021.00,23554,Discuss heating or cooling system malfunctions with users to isolate problems or to verify that repairs corrected malfunctions.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,49-9021.00
+17-2061.00,7403,"Specify power supply requirements and configuration, drawing on system performance expectations and design specifications.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-2061.00
+25-1081.00,6160,"Conduct research in a particular field of knowledge and publish findings in professional journals, books, or electronic media.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,25-1081.00
+47-2061.00,11473,"Mop, brush, or spread paints, cleaning solutions, or other compounds over surfaces to clean them or to provide protection.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-2061.00
+41-3021.00,736,Explain necessary bookkeeping requirements for customer to implement and provide group insurance program.,0.25,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.25,0.50,true,41-3021.00
+17-3024.00,22015,"Modify, maintain, or repair electrical, electronic, or mechanical components, equipment, or systems to ensure proper functioning.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,17-3024.00
+35-3011.00,2237,"Plan, organize, and control the operations of a cocktail lounge or bar.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,35-3011.00
+47-4099.03,21205,"Determine amount of air leakage in buildings, using a blower door machine.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,47-4099.03
+11-2022.00,7,Confer or consult with department heads to plan advertising services and to secure information on equipment and customer specifications.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,11-2022.00
+27-1027.00,9291,Inspect installed exhibits for conformance to specifications and satisfactory operation of special-effects components.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,27-1027.00
+17-2081.00,19625,Prepare or present public briefings on the status of environmental engineering projects.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-2081.00
+31-9097.00,19388,"Determine donor suitability, according to interview results, vital signs, and medical history.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,31-9097.00
+51-9151.00,19465,Create prints according to customer specifications and laboratory protocols.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,51-9151.00
+47-4011.00,20446,"Confer with owners, violators, or authorities to explain regulations or recommend remedial actions.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,47-4011.00
+51-8099.01,17822,Process refined feedstock with additives in fermentation or reaction process vessels.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-8099.01
+17-2072.00,20495,"Analyze electronics system requirements, capacity, cost, or customer needs to determine project feasibility.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-2072.00
+41-9022.00,2460,"Review property listings, trade journals, and relevant literature, and attend conventions, seminars, and staff and association meetings, to remain knowledgeable about real estate markets.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,41-9022.00
+25-1112.00,6229,"Perform administrative duties, such as serving as department head.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-1112.00
+15-1243.00,21660,"Write and code logical and physical database descriptions, and specify identifiers of database to management system or direct others in coding descriptions.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,15-1243.00
+49-9012.00,11789,Advise customers on proper installation of valves or regulators and related equipment.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,49-9012.00
+11-9013.00,21373,"Direct and monitor the transfer of mature fish to lakes, ponds, streams, or commercial tanks.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,11-9013.00
+43-5051.00,11338,Transport mail from one work station to another.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,43-5051.00
+29-1171.00,18384,"Diagnose or treat chronic health care problems, such as high blood pressure and diabetes.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,29-1171.00
+25-1123.00,6311,"Evaluate and grade students' class work, assignments, and papers.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,25-1123.00
+25-9042.00,22473,"Plan, prepare, and develop various teaching aids, such as bibliographies, charts, and graphs.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,25-9042.00
+51-6092.00,12206,"Compute dimensions of patterns according to sizes, considering stretching of material.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,51-6092.00
+51-9071.06,15108,"Split gems along pre-marked lines to remove imperfections, using blades and jewelers' hammers.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-9071.06
+25-2031.00,6661,"Confer with other staff members to plan and schedule lessons promoting learning, following approved curricula.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,25-2031.00
+11-2011.00,3236,Provide presentation and product demonstration support during the introduction of new products and services to field staff and customers.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,11-2011.00
+11-3051.04,15476,"Inspect biomass gasification processes, equipment, and facilities for ways to maximize capacity and minimize operating costs.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,11-3051.04
+19-1029.04,18614,"Review reports and proposals, such as those relating to land use classifications and recreational development, for accuracy, adequacy, or adherence to policies, regulations, or scientific standards.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,19-1029.04
+51-4111.00,8498,"Lift, position, and secure machined parts on surface plates or worktables, using hoists, vises, v-blocks, or angle plates.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-4111.00
+29-1129.02,19177,"Plan or structure music therapy sessions to achieve appropriate transitions, pacing, sequencing, energy level, or intensity in accordance with treatment plans.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,29-1129.02
+13-1081.00,8951,"Manage the logistical aspects of product life cycles, including coordination or provisioning of samples, and the minimization of obsolescence.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,13-1081.00
+43-6014.00,2795,Complete forms in accordance with company procedures.,0.75,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.75,1.00,true,43-6014.00
+21-1022.00,259,Investigate child abuse or neglect cases and take authorized protective action when necessary.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,21-1022.00
+51-5113.00,19444,Design original or special bindings for limited editions or other custom binding projects.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,51-5113.00
+31-2011.00,18701,Attend care plan meetings to review patient progress and update care plans.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,31-2011.00
+49-2096.00,13730,Confer with customers to determine the nature of malfunctions.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,49-2096.00
+51-9082.00,10522,"Test medical supportive devices for proper alignment, movement, or biomechanical stability, using meters and alignment fixtures.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,51-9082.00
+19-4061.00,12957,"Prepare tables, graphs, fact sheets, and written reports summarizing research results.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,19-4061.00
+17-3023.00,22001,Conduct statistical studies to analyze or compare production costs for sustainable or nonsustainable designs.,0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,17-3023.00
+27-2042.00,22588,"Audition for orchestras, bands, or other musical groups.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,27-2042.00
+17-2141.02,16426,Conduct research studies to develop new concepts in the field of automotive engineering.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-2141.02
+53-7072.00,14610,"Record operating data such as products and quantities pumped, stocks used, gauging results, and operating times.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,53-7072.00
+43-3051.00,2522,Keep informed about changes in tax and deduction laws that apply to the payroll process.,0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,43-3051.00
+49-9011.00,8397,"Install door frames, rails, steel rolling curtains, electronic-eye mechanisms, or electric door openers and closers, using power tools, hand tools, and electronic test equipment.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-9011.00
+47-4011.01,18087,Recommend energy-efficient technologies or alternate energy sources.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,47-4011.01
+53-6011.00,7169,Attach ropes or cable lines to bitts on lock decks or wharfs to secure vessels.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,53-6011.00
+49-3043.00,9991,"Perform scheduled maintenance, and clean units and components.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-3043.00
+51-8011.00,8514,"Participate in nuclear fuel element handling activities, such as preparation, transfer, loading, or unloading.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-8011.00
+43-3011.00,18559,Answer customer questions regarding problems with their accounts.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,43-3011.00
+19-1029.01,16785,"Direct the work of technicians and information technology staff applying bioinformatics tools or applications in areas such as proteomics, transcriptomics, metabolomics, or clinical bioinformatics.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,19-1029.01
+17-3027.01,16599,"Set up mechanical, hydraulic, or electric test equipment in accordance with engineering specifications, standards, or test procedures.",0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,17-3027.01
+25-9042.00,22469,Operate and maintain audio-visual equipment.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,25-9042.00
+13-1161.01,20329,"Optimize digital assets, such as text, graphics, or multimedia assets, for search engine optimization (SEO) or for display and usability on internet-connected devices.",0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,13-1161.01
+19-5011.00,11070,Provide new-employee health and safety orientations and develop materials for these presentations.,0.25,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.25,true,19-5011.00
+49-2095.00,11748,"Analyze test data to diagnose malfunctions, to determine performance characteristics of systems, or to evaluate effects of system modifications.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,49-2095.00
+41-2012.00,7009,Accept credit applications and verify credit references to provide check-cashing authorization or to establish house credit accounts.,0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,41-2012.00
+53-4011.00,12757,Check to ensure that brake examination tests are conducted at shunting stations.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,53-4011.00
+47-2171.00,24051,"Use forklifts or cranes to move construction material, such as rebar.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-2171.00
+47-4099.03,17802,"Explain recommendations, policies, procedures, requirements, or other related information to residents or building owners.",0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,47-4099.03
+29-2081.00,4213,"Show customers how to insert, remove, and care for their contact lenses.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,29-2081.00
+15-1299.08,14686,"Research, test, or verify proper functioning of software patches and fixes.",0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,15-1299.08
+39-4011.00,4510,Press diaphragm to evacuate air from lungs.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,39-4011.00
+51-4033.00,10147,"Study blueprints, work orders, or machining instructions to determine product specifications, tool requirements, and operational sequences.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,51-4033.00
+11-9071.00,7191,"Monitor staffing levels to ensure that games and tables are adequately staffed for each shift, arranging for staff rotations and breaks and locating substitute employees as necessary.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,11-9071.00
+17-2141.01,19953,"Evaluate the power output, system cost, or environmental impact of new hydrogen or non-hydrogen fuel cell system designs.",0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,17-2141.01
+37-3012.00,11232,"Connect hoses and nozzles selected according to terrain, distribution pattern requirements, types of infestations, and velocities.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,37-3012.00
+29-1151.00,18361,"Manage patients' airway or pulmonary status, using techniques such as endotracheal intubation, mechanical ventilation, pharmacological support, respiratory therapy, and extubation.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,29-1151.00
+39-1022.00,13140,Train workers in proper operational procedures and functions and explain company policies.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,39-1022.00
+27-3031.00,1767,Confer with production or support personnel to produce or coordinate production of advertisements or promotions.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,27-3031.00
+27-4012.00,18659,Produce graphics for broadcasts.,0.50,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.50,0.75,true,27-4012.00
+29-1021.00,6938,"Remove diseased tissue, using surgical instruments.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,29-1021.00
+25-1067.00,21121,Mentor new faculty.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,25-1067.00
+49-9063.00,11872,"String instruments, and adjust trusses and bridges of instruments to obtain specified string tensions and heights.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,49-9063.00
+21-1014.00,1593,Guide clients in the development of skills or strategies for dealing with their problems.,0.25,ai_pass_identical,identical,identical_scores,0.25,0.25,true,21-1014.00
+51-6042.00,14099,Test machinery to ensure proper functioning before beginning production.,0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,51-6042.00
+51-9022.00,14348,Clean brass particles from files by drawing file cards through file grooves.,0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,51-9022.00
+29-2012.00,1915,"Prepare standard volumetric solutions or reagents to be combined with samples, following standardized formulas or experimental procedures.",0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,29-2012.00
+53-5031.00,14556,"Perform or participate in emergency drills, as required.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,53-5031.00
+13-1032.00,7247,Review repair cost estimates with automobile repair shop to secure agreement on cost of repairs.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,13-1032.00
+47-2021.00,4778,"Clean working surface to remove scale, dust, soot, or chips of brick and mortar, using broom, wire brush, or scraper.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,47-2021.00
+21-2011.00,20749,"Organize or engage in interfaith, community, civic, educational, or recreational activities sponsored by or related to religious programs.",0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,21-2011.00
+27-2012.00,22533,Compose and edit scripts or provide screenwriters with story outlines from which scripts can be written.,0.50,ai_pass_identical,identical,identical_scores,0.50,0.50,true,27-2012.00
+11-2022.00,1,Resolve customer complaints regarding sales and service.,0.25,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.25,0.50,true,11-2022.00
+25-1067.00,6096,Compile bibliographies of specialized materials for outside reading assignments.,0.75,ai_pass_identical,identical,identical_scores,0.75,0.75,true,25-1067.00
+45-4011.00,7039,"Select tree seedlings, prepare the ground, or plant the trees in reforestation areas, using manual planting tools.",0.00,ai_pass_identical,identical,identical_scores,0.00,0.00,true,45-4011.00
+27-2022.00,1758,"Explain and demonstrate the use of sports and training equipment, such as trampolines or weights.",0.00,ai_pass_deterministic_mean_snap,deterministic_mean,deterministic_mean_and_snap,0.00,0.25,true,27-2022.00

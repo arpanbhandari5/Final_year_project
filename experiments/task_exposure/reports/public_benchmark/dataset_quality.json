@@ -1,0 +1,46 @@
+{
+  "rows": 19265,
+  "unique_occupations": 923,
+  "missing_occupation_code": 0,
+  "missing_task_id": 0,
+  "missing_task_text": 0,
+  "missing_human_labels": 0,
+  "invalid_human_labels": [],
+  "duplicate_occupation_task_pairs": 0,
+  "duplicate_task_ids": 0,
+  "duplicate_task_text": 1273,
+  "duplicate_normalized_task_text": 1276,
+  "class_counts": {
+    "E0": 10256,
+    "E1": 2862,
+    "E2": 6147
+  },
+  "human_vs_human_exposure_agg_mismatches": 0,
+  "human_vs_gpt_mismatches": {
+    "gpt4_exposure": 6620,
+    "gpt4_exposure_alt_rubric": 6565,
+    "gpt4_automation": 19265
+  },
+  "gpt_fields_excluded_from_target": [
+    "gpt4_exposure",
+    "gpt4_exposure_alt_rubric",
+    "gpt4_automation"
+  ],
+  "label_info": {
+    "rows": 19265,
+    "non_empty_human_labels": 19265,
+    "missing_human_labels": 0,
+    "observed_labels": [
+      "E0",
+      "E1",
+      "E2"
+    ],
+    "e3_in_human_labels": 0,
+    "invalid_labels": [],
+    "class_counts": {
+      "E0": 10256,
+      "E1": 2862,
+      "E2": 6147
+    }
+  }
+}

@@ -42,6 +42,7 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="site-shell">
     <header class="navbar">
       <div class="container navbar__inner">
@@ -59,15 +60,18 @@
 
         <nav class="nav-links" aria-label="Primary" data-nav-links>
           <a class="nav-link {% if active_page == 'home' %}is-active{% endif %}" href="{{ url_for('index') }}">Home</a>
-          <a class="nav-link" href="{{ url_for('index') }}#start-here">Start Here</a>
-          <a class="nav-link" href="{{ url_for('index') }}#resource-hub">Resources</a>
-          <a class="nav-link {% if active_page == 'methodology' %}is-active{% endif %}" href="{{ url_for('methodology') }}">Methodology</a>
-          <a class="nav-link {% if active_page == 'privacy' %}is-active{% endif %}" href="{{ url_for('privacy') }}">Privacy</a>
-          <a class="nav-link {% if active_page == 'insights' %}is-active{% endif %}" href="{{ url_for('insights') }}">Insights</a>
-          <a class="nav-link {% if active_page == 'partnerships' %}is-active{% endif %}" href="{{ url_for('partnerships') }}">Partnerships</a>
           {% if is_authenticated %}
           <a class="nav-link {% if active_page == 'workspace' %}is-active{% endif %}" href="{{ url_for('workspace') }}">Workspace</a>
+          <a class="nav-link" href="{{ url_for('workspace') }}#career-goal">Career goal</a>
+          <a class="nav-link" href="{{ url_for('workspace') }}#resume-evidence">Resume & evidence</a>
+          <a class="nav-link" href="{{ url_for('target_job_match_page') }}">Target jobs</a>
+          <a class="nav-link" href="{{ url_for('workspace') }}#learning-actions">Learning & actions</a>
+          <a class="nav-link" href="{{ url_for('applications_page') }}">Applications</a>
           {% else %}
+          <a class="nav-link" href="{{ url_for('index') }}#start-here">Start Here</a>
+          {% endif %}
+          <a class="nav-link {% if active_page == 'privacy' %}is-active{% endif %}" href="{{ url_for('privacy') }}">Privacy</a>
+          {% if not is_authenticated %}
           <a class="nav-link {% if active_page == 'login' %}is-active{% endif %}" href="{{ url_for('login') }}">Login</a>
           <a class="nav-link {% if active_page == 'signup' %}is-active{% endif %}" href="{{ url_for('signup') }}">Sign Up</a>
           {% endif %}
@@ -95,7 +99,7 @@
     <!-- Mobile nav backdrop -->
     <div class="nav-backdrop" data-nav-backdrop></div>
 
-    <main>
+    <main id="main-content">
       {% block content %}{% endblock %}
     </main>
 
@@ -107,6 +111,7 @@
         </div>
         <div class="footer__links">
           <a href="{{ url_for('index') }}#start-here">Start Here</a>
+          <a href="{{ url_for('index') }}#resource-hub">Resources</a>
           <a href="{{ url_for('index') }}#next-steps">What to do next</a>
           <a href="{{ url_for('privacy') }}">Privacy Policy</a>
           <a href="{{ url_for('methodology') }}">Methodology</a>
@@ -127,7 +132,7 @@
   <div class="toast-container" data-toast-container role="status" aria-live="polite"></div>
 
   <!-- Keyboard Shortcuts Panel -->
-  <div class="shortcuts-panel" data-shortcuts-panel role="dialog" aria-label="Keyboard shortcuts"></div>
+  <div class="shortcuts-panel" data-shortcuts-panel role="dialog" aria-label="Keyboard shortcuts" aria-hidden="true" inert></div>
 
   <!-- Service Worker Update Banner -->
   <div class="sw-update-banner hidden" data-sw-update>

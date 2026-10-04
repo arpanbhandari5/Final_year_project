@@ -238,6 +238,10 @@
     isOpen = !isOpen;
     toggleBtn.classList.toggle('is-open', isOpen);
     panel.classList.toggle('is-visible', isOpen);
+    panel.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+    panel.setAttribute('aria-modal', isOpen ? 'true' : 'false');
+    if (isOpen) panel.removeAttribute('inert');
+    else panel.setAttribute('inert', '');
 
     if (isOpen) {
       scrollToBottom();
@@ -257,6 +261,9 @@
     isOpen = false;
     toggleBtn.classList.remove('is-open');
     panel.classList.remove('is-visible');
+    panel.setAttribute('aria-hidden', 'true');
+    panel.setAttribute('aria-modal', 'false');
+    panel.setAttribute('inert', '');
   };
 
   // ─── RESTORE SESSION ───
