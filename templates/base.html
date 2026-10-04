@@ -18,9 +18,9 @@
   <!-- Favicon -->
   <!-- Favicon: multiple formats for broad browser support -->
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/icon.svg') }}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/icon-72x72.png') }}">
+  <link rel="icon" type="image/png" sizes="72x72" href="{{ url_for('static', filename='icons/icon-72x72.png') }}">
   <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+  <link rel="apple-touch-icon" sizes="192x192" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
   <link rel="mask-icon" href="{{ url_for('static', filename='icons/icon.svg') }}" color="#4c1d95">
   <title>{{ title or site_name }}</title>
   <meta name="description" content="Prayash: Learning for better future career intelligence platform.">
@@ -135,13 +135,13 @@
   <div class="shortcuts-panel" data-shortcuts-panel role="dialog" aria-label="Keyboard shortcuts" aria-hidden="true" inert></div>
 
   <!-- Service Worker Update Banner -->
-  <div class="sw-update-banner hidden" data-sw-update>
+  <div class="sw-update-banner hidden" data-sw-update role="status" aria-live="polite">
     <span>New version available</span>
     <button class="button" data-sw-update-btn>Refresh</button>
   </div>
 
   <!-- PWA Install Banner -->
-  <div class="pwa-install-banner hidden" data-pwa-install-banner>
+  <div class="pwa-install-banner hidden" data-pwa-install-banner role="region" aria-label="Install Prayash">
     <div class="pwa-install-banner__content">
       <span class="pwa-install-banner__icon">📱</span>
       <div>
@@ -149,7 +149,7 @@
         <p>Add to your home screen for the best experience</p>
       </div>
       <button class="button" data-pwa-install-button>Install</button>
-      <button class="button-ghost" data-pwa-dismiss>✕</button>
+      <button class="button-ghost" data-pwa-dismiss aria-label="Dismiss install prompt">✕</button>
     </div>
   </div>
 

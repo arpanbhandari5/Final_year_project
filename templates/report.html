@@ -7,23 +7,33 @@
 <style>
   @page { margin: 1.5cm; size: A4; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', -apple-system, Helvetica, Arial, sans-serif; color: #111c2d; line-height: 1.6; font-size: 11pt; }
+  body { max-width: 100%; font-family: 'Inter', -apple-system, Helvetica, Arial, sans-serif; color: #111c2d; line-height: 1.6; font-size: 11pt; overflow-wrap: anywhere; }
   .header { text-align: center; padding-bottom: 1.5rem; border-bottom: 2px solid #4c1d95; margin-bottom: 1.5rem; }
   .header h1 { font-size: 20pt; color: #4c1d95; }
   .header p { color: #4a4452; font-size: 10pt; }
   .section { margin-bottom: 1.5rem; }
   .section h2 { font-size: 13pt; color: #340075; border-left: 3px solid #4c1d95; padding-left: 0.6rem; margin-bottom: 0.6rem; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1rem; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; margin-bottom: 1rem; }
   .kpi { background: #f0f3ff; border-radius: 6px; padding: 0.6rem; text-align: center; }
   .kpi .label { font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4452; }
-  .kpi .value { font-size: 14pt; font-weight: 700; color: #4c1d95; }
-  table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
-  th, td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ccc3d4; font-size: 10pt; }
+  .kpi .value { font-size: 14pt; font-weight: 700; color: #4c1d95; overflow-wrap: anywhere; }
+  .table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; min-width: 34rem; border-collapse: collapse; margin-top: 0.5rem; }
+  th, td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ccc3d4; font-size: 10pt; overflow-wrap: anywhere; }
   th { background: #e7eeff; font-weight: 600; color: #340075; }
   .pill { display: inline-block; padding: 0.15rem 0.45rem; background: #e7eeff; border-radius: 999px; font-size: 8pt; font-weight: 600; color: #4c1d95; }
   .narrative { background: #f9f9ff; border: 1px solid #ccc3d4; border-radius: 8px; padding: 0.8rem; margin-top: 0.5rem; font-size: 10pt; line-height: 1.7; }
   .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ccc3d4; text-align: center; font-size: 8pt; color: #7b7483; }
-  @media print { .no-print { display: none; } }
+  @media (max-width: 600px) {
+    body { padding: 0 0.75rem; }
+    .kpi-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media print {
+    .no-print { display: none; }
+    body { padding: 0; }
+    .table-scroll { overflow: visible; }
+    table { min-width: 0; }
+  }
 </style>
 </head>
 <body>
@@ -46,6 +56,7 @@
 {% if analysis.top_roles %}
 <div class="section">
   <h2>Top Role Matches</h2>
+  <div class="table-scroll" role="region" aria-label="Top role matches" tabindex="0">
   <table>
     <tr><th>Role</th><th>Industry</th><th>Similarity</th><th>Historical reference</th></tr>
     {% for role in analysis.top_roles[:5] %}
@@ -57,6 +68,7 @@
     </tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endif %}
 {% if analysis.task_exposure %}
@@ -73,6 +85,7 @@
 {% if analysis.roadmap %}
 <div class="section">
   <h2>Learning Roadmap</h2>
+  <div class="table-scroll" role="region" aria-label="Learning roadmap" tabindex="0">
   <table>
     <tr><th>Course</th><th>Skill</th><th>Reason</th></tr>
     {% for item in analysis.roadmap[:5] %}
@@ -83,11 +96,13 @@
     </tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endif %}
 {% if analysis.riasec %}
 <div class="section">
   <h2>RIASEC Personality Fit</h2>
+  <div class="table-scroll" role="region" aria-label="RIASEC personality fit" tabindex="0">
   <table>
     <tr><th>Dimension</th><th>Score</th></tr>
     {% for name, score in (analysis.riasec.scores or {}).items() %}
@@ -95,6 +110,7 @@
     {% endfor %}
     <tr><td colspan="2" style="font-size:9pt;color:#4a4452;">Primary: {{ analysis.riasec.primary }} | Secondary: {{ analysis.riasec.secondary }} | Tertiary: {{ analysis.riasec.tertiary }}</td></tr>
   </table>
+  </div>
 </div>
 {% endif %}
 {% if analysis.skills and analysis.skills.get('count', 0) > 0 %}
@@ -123,6 +139,7 @@
 {% if analysis.guided_next_steps %}
 <div class="section">
   <h2>Guided Next Steps</h2>
+  <div class="table-scroll" role="region" aria-label="Guided next steps" tabindex="0">
   <table>
     <tr><th>Category</th><th>Action</th></tr>
     {% for action in (analysis.guided_next_steps.learning_actions or [])[:2] %}
@@ -135,6 +152,7 @@
     <tr><td>Education</td><td>{{ action }}</td></tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endif %}
 <div class="footer">

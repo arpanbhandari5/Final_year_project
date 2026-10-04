@@ -1,10 +1,10 @@
 {
   "name": "Prayash — Career Intelligence Platform",
   "short_name": "Prayash",
+  "id": "/",
   "description": "AI-powered career intelligence that turns resumes into learning strategies",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
   "background_color": "#0f0a1a",
   "theme_color": "#7c3aed",
   "scope": "/",

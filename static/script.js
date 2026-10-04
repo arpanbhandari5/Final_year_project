@@ -136,8 +136,65 @@
   const swUpdateBtn = $('[data-sw-update-btn]');
   let swRegistration = null;
   if ('serviceWorker' in navigator) {
+    const hadController = Boolean(navigator.serviceWorker.controller);
+    const waitForActivation = (reg) => new Promise((resolve, reject) => {
+      const worker = reg.installing || reg.waiting || reg.active;
+      if (!worker) { reject(new Error('Service worker unavailable')); return; }
+      const changed = () => {
+        if (worker.state === 'activated' || worker.state === 'redundant') {
+          worker.removeEventListener('statechange', changed);
+          if (worker.state === 'activated') resolve();
+          else reject(new Error('Service worker installation failed'));
+        }
+      };
+      worker.addEventListener('statechange', changed);
+      changed();
+    });
+    const waitForLegacyUpgrade = async (reg) => {
+      const timeoutMs = 15000;
+      const deadline = Date.now() + timeoutMs;
+      await Promise.race([
+        reg.update(),
+        new Promise((_, reject) => setTimeout(
+          () => reject(new Error('Legacy worker update check timed out')),
+          Math.max(0, deadline - Date.now()),
+        )),
+      ]);
+      let worker = reg.installing || reg.waiting;
+      // A successful update check with no replacement means the activated
+      // worker already matches the script served at this URL.
+      if (!worker && reg.active?.state === 'activated') return;
+      while (Date.now() < deadline) {
+        worker = reg.installing || reg.waiting || worker;
+        if (worker?.state === 'installed') {
+          worker.postMessage({ type: 'SKIP_WAITING' });
+        } else if (worker?.state === 'activated') {
+          return;
+        } else if (worker?.state === 'redundant') {
+          throw new Error('Legacy worker privacy update failed');
+        }
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      throw new Error('Legacy worker privacy update timed out');
+    };
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/static/sw.js').then(reg => {
+      (async () => {
+        const scriptURL = new URL('/static/sw.js', location.origin).href;
+        const legacyScope = new URL('/static/', location.origin).href;
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        const legacy = registrations.find(reg => reg.scope === legacyScope &&
+          [reg.active, reg.waiting, reg.installing].some(worker => worker?.scriptURL === scriptURL));
+        // Upgrade before retiring: unregister alone leaves an unsafe worker
+        // alive in tabs it already controls.
+        if (legacy) {
+          const safeLegacy = await navigator.serviceWorker.register('/static/sw.js', {
+            scope: '/static/', updateViaCache: 'none',
+          });
+          await waitForLegacyUpgrade(safeLegacy);
+        }
+        const reg = await navigator.serviceWorker.register('/static/sw.js', {
+          scope: '/', updateViaCache: 'none',
+        });
         swRegistration = reg;
         reg.addEventListener('updatefound', () => {
           const inst = reg.installing;
@@ -148,11 +205,23 @@
             }
           });
         });
-      }).catch(() => {});
+        if (reg.waiting && hadController) {
+          swUpdateBanner?.classList.remove('hidden');
+        }
+        await waitForActivation(reg);
+        if (legacy) await legacy.unregister();
+      })().catch(error => console.warn('Prayash service worker registration failed:', error));
     });
-    swUpdateBtn?.addEventListener('click', () => { swRegistration?.waiting?.postMessage({ type: 'SKIP_WAITING' }); window.location.reload(); });
+    let userAcceptedUpdate = false;
+    swUpdateBtn?.addEventListener('click', () => {
+      if (!swRegistration?.waiting) return;
+      userAcceptedUpdate = true;
+      swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    });
     let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!refreshing) { refreshing = true; window.location.reload(); } });
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (userAcceptedUpdate && !refreshing) { refreshing = true; window.location.reload(); }
+    });
   }
 
   // ─── DARK MODE ───
@@ -181,8 +250,39 @@
   const installBanner = $('[data-pwa-install-banner]');
   const installButton = $('[data-pwa-install-button]');
   const dismissButton = $('[data-pwa-dismiss]');
-  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if (installBanner && !load(STORAGE.pwaDismissed, null)) installBanner.classList.remove('hidden'); });
-  installButton?.addEventListener('click', () => { deferredPrompt?.prompt(); deferredPrompt?.userChoice.then(() => { deferredPrompt = null; installBanner?.classList.add('hidden'); }); });
+  const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const showInstallBanner = () => {
+    if (isStandalone() || load(STORAGE.pwaDismissed, null)) return;
+    if (installBanner) installBanner.classList.remove('hidden');
+    if (installButton && isAppleMobile) installButton.textContent = 'How to install';
+  };
+  window.addEventListener('beforeinstallprompt', (e) => {
+    if (isStandalone()) return;
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallBanner();
+  });
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    installBanner?.classList.add('hidden');
+  });
+  if (isAppleMobile && !isStandalone()) showInstallBanner();
+  installButton?.addEventListener('click', async () => {
+    if (!deferredPrompt) {
+      if (isAppleMobile) toast('In Safari, tap Share, then Add to Home Screen.', 'info', 8000);
+      return;
+    }
+    const prompt = deferredPrompt;
+    deferredPrompt = null;
+    try {
+      await prompt.prompt();
+      await prompt.userChoice;
+    } finally {
+      installBanner?.classList.add('hidden');
+    }
+  });
   dismissButton?.addEventListener('click', () => { installBanner?.classList.add('hidden'); save(STORAGE.pwaDismissed, '1'); });
 
   // ─── MOBILE MENU ───

@@ -2188,6 +2188,7 @@ def add_security_headers(response):
     # Allow service worker scope from static folder
     if request.path == "/static/sw.js":
         response.headers["Service-Worker-Allowed"] = "/"
+        response.headers["Cache-Control"] = "no-cache, max-age=0, must-revalidate"
     # Security headers
     response.headers.setdefault("X-Content-Type-Options", "nosniff")
     response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
@@ -2196,8 +2197,14 @@ def add_security_headers(response):
     response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
     nonce = getattr(g, "csp_nonce", secrets.token_urlsafe(16))
     response.headers.setdefault("Content-Security-Policy", _make_csp(nonce))
+    # Dynamic responses include sessions, CSRF tokens, private JSON and streams.
+    # The worker independently refuses to cache any of these responses.
+    if request.endpoint != "static" or response.status_code >= 400:
+        response.headers["Cache-Control"] = "private, no-store"
+    elif request.path == "/static/offline.html":
+        response.headers["Cache-Control"] = "no-cache, max-age=0, must-revalidate"
     # Cache static assets aggressively
-    if request.path.startswith("/static/") and not request.path.endswith(".html"):
+    elif request.path.startswith("/static/") and not request.path.endswith(".html"):
         response.headers.setdefault("Cache-Control", "public, max-age=31536000, immutable")
     return response
 
